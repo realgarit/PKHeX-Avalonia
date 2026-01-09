@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <RootNamespace>PKHeX.Avalonia</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Avalonia UI -->
+    <PackageReference Include="Avalonia" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.3" />
+
+    <!-- MVVM -->
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+
+    <!-- DI -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+
+    <!-- Rendering (for sprites) -->
+    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+
+    <!-- Diagnostics (dev only) -->
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.2.3" Condition="'$(Configuration)' == 'Debug'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Reference existing PKHeX.Core (no modifications!) -->
+    <ProjectReference Include="..\PKHeX.Core\PKHeX.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Embed sprite resources from PKHeX.Drawing.PokeSprite -->
+    <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Big Pokemon Sprites\*.png" LinkBase="Resources\Sprites" />
+    <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Big Shiny Sprites\*.png" LinkBase="Resources\SpritesShiny" />
+    <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Big Items\*.png" LinkBase="Resources\Items" />
+    <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Pokemon Sprite Overlays\*.png" LinkBase="Resources\Overlays" />
+  </ItemGroup>
+</Project>

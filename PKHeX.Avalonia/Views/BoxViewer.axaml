@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             xmlns:models="using:PKHeX.Avalonia.Models"
+             x:Class="PKHeX.Avalonia.Views.BoxViewer"
+             x:DataType="vm:BoxViewerViewModel"
+             Focusable="True">
+
+    <!-- Keyboard Navigation -->
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Left" Command="{Binding MoveSelectionCommand}" CommandParameter="Left" />
+        <KeyBinding Gesture="Right" Command="{Binding MoveSelectionCommand}" CommandParameter="Right" />
+        <KeyBinding Gesture="Up" Command="{Binding MoveSelectionCommand}" CommandParameter="Up" />
+        <KeyBinding Gesture="Down" Command="{Binding MoveSelectionCommand}" CommandParameter="Down" />
+        <KeyBinding Gesture="Enter" Command="{Binding ActivateSlotCommand}" />
+        <KeyBinding Gesture="Space" Command="{Binding ActivateSlotCommand}" />
+        <KeyBinding Gesture="Home" Command="{Binding SelectFirstSlotCommand}" />
+        <KeyBinding Gesture="End" Command="{Binding SelectLastSlotCommand}" />
+        <KeyBinding Gesture="PageUp" Command="{Binding PreviousBoxCommand}" />
+        <KeyBinding Gesture="PageDown" Command="{Binding NextBoxCommand}" />
+    </UserControl.KeyBindings>
+
+    <Border Padding="16">
+        <StackPanel Spacing="8" HorizontalAlignment="Center">
+            <!-- Box Navigation -->
+            <DockPanel MinWidth="450">
+                <Button DockPanel.Dock="Left"
+                        Content="◀"
+                        Command="{Binding PreviousBoxCommand}"
+                        Width="40"
+                        ToolTip.Tip="Previous Box (PageUp)" />
+                <Button DockPanel.Dock="Right"
+                        Content="▶"
+                        Command="{Binding NextBoxCommand}"
+                        Width="40"
+                        ToolTip.Tip="Next Box (PageDown)" />
+                <TextBlock Text="{Binding BoxName}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontWeight="SemiBold"
+                           FontSize="16" />
+            </DockPanel>
+
+            <TextBlock Text="{Binding CurrentBox, StringFormat='Box {0}'}"
+                       Opacity="0.6"
+                       HorizontalAlignment="Center" />
+
+            <!-- Box Grid (6 columns x 5 rows = 30 slots) -->
+            <ItemsControl ItemsSource="{Binding Slots}" x:Name="SlotGrid">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="6" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:SlotData">
+                        <Button Command="{Binding $parent[ItemsControl].((vm:BoxViewerViewModel)DataContext).SelectSlotByClickCommand}"
+                                CommandParameter="{Binding}"
+                                Background="Transparent"
+                                Padding="2"
+                                Margin="1"
+                                BorderThickness="2"
+                                Classes.selected="{Binding IsSelected}">
+                            <Button.Styles>
+                                <Style Selector="Button">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
+                                </Style>
+                                <Style Selector="Button.selected">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SystemAccentColor}" />
+                                    <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}" />
+                                </Style>
+                                <Style Selector="Button:pointerover">
+                                    <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundListLowBrush}" />
+                                </Style>
+                            </Button.Styles>
+                            <Panel Width="68" Height="56">
+                                <!-- Empty slot background -->
+                                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                                        CornerRadius="4"
+                                        IsVisible="{Binding IsEmpty}" />
+
+                                <!-- Sprite -->
+                                <Image Source="{Binding Sprite}"
+                                       Width="68" Height="56"
+                                       IsVisible="{Binding !IsEmpty}" />
+
+                                <!-- Shiny indicator -->
+                                <Ellipse Width="10" Height="10"
+                                         Fill="Gold"
+                                         Stroke="White"
+                                         StrokeThickness="1"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         Margin="2"
+                                         IsVisible="{Binding IsShiny}" />
+                            </Panel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Keyboard hints -->
+            <TextBlock Text="Arrow keys: Navigate | Enter: Select | PageUp/Down: Switch Box"
+                       Opacity="0.5"
+                       FontSize="11"
+                       HorizontalAlignment="Center"
+                       Margin="0,8,0,0" />
+        </StackPanel>
+    </Border>
+</UserControl>
