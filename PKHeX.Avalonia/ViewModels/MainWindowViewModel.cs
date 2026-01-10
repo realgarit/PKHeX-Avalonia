@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Avalonia.Services;
+using PKHeX.Avalonia.Views;
 using PKHeX.Core;
 
 namespace PKHeX.Avalonia.ViewModels;
@@ -46,11 +47,35 @@ public partial class MainWindowViewModel : ViewModelBase
         if (sav is not null)
         {
             _spriteRenderer.Initialize(sav);
-            BoxViewer = new BoxViewerViewModel(sav, _spriteRenderer);
+            var boxViewer = new BoxViewerViewModel(sav, _spriteRenderer);
+            boxViewer.SlotActivated += OnSlotActivated;
+            BoxViewer = boxViewer;
         }
         else
         {
+            if (BoxViewer is not null)
+                BoxViewer.SlotActivated -= OnSlotActivated;
             BoxViewer = null;
+        }
+    }
+
+    private async void OnSlotActivated(int box, int slot)
+    {
+        if (CurrentSave is null)
+            return;
+
+        var pk = CurrentSave.GetBoxSlotAtIndex(box, slot);
+        if (pk.Species == 0)
+            return; // Empty slot
+
+        var editorVm = new PokemonEditorViewModel(pk, CurrentSave, _spriteRenderer, box, slot);
+        var editorView = new PokemonEditor { DataContext = editorVm };
+
+        var saved = await _dialogService.ShowDialogAsync(editorView, "Edit Pokémon");
+        if (saved)
+        {
+            // Refresh the box viewer to show updated sprite
+            BoxViewer?.RefreshCurrentBox();
         }
     }
 

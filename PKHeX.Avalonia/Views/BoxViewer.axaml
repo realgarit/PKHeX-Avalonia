@@ -54,13 +54,14 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:SlotData">
-                        <Button Command="{Binding $parent[ItemsControl].((vm:BoxViewerViewModel)DataContext).SelectSlotByClickCommand}"
-                                CommandParameter="{Binding}"
-                                Background="Transparent"
+                        <Button Background="Transparent"
                                 Padding="2"
                                 Margin="1"
                                 BorderThickness="2"
-                                Classes.selected="{Binding IsSelected}">
+                                Classes.selected="{Binding IsSelected}"
+                                Click="OnSlotClicked"
+                                DoubleTapped="OnSlotDoubleTapped"
+                                Tag="{Binding}">
                             <Button.Styles>
                                 <Style Selector="Button">
                                     <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />

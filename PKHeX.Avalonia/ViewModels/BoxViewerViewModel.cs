@@ -142,7 +142,13 @@ public partial class BoxViewerViewModel : ViewModelBase
             return;
 
         var slot = Slots[SelectedIndex];
-        // Future: open PKM editor
-        System.Diagnostics.Debug.WriteLine($"Activated slot {slot.Slot} in box {slot.Box} (Species: {slot.Species})");
+        SlotActivated?.Invoke(CurrentBox, slot.Slot);
     }
+
+    public void RefreshCurrentBox()
+    {
+        LoadBox(CurrentBox);
+    }
+
+    public event Action<int, int>? SlotActivated;
 }

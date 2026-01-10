@@ -105,4 +105,31 @@ public sealed class DialogService : IDialogService
 
         await dialog.ShowDialog(window);
     }
+
+    public async Task<bool> ShowDialogAsync(Control content, string title)
+    {
+        var window = GetMainWindow();
+        if (window is null) return false;
+
+        var result = false;
+
+        var dialog = new Window
+        {
+            Title = title,
+            Content = content,
+            SizeToContent = SizeToContent.WidthAndHeight,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            CanResize = false
+        };
+
+        // Wire up the view model events if it's a PokemonEditor
+        if (content.DataContext is ViewModels.PokemonEditorViewModel vm)
+        {
+            vm.SaveCompleted += () => { result = true; dialog.Close(); };
+            vm.CancelRequested += () => dialog.Close();
+        }
+
+        await dialog.ShowDialog(window);
+        return result;
+    }
 }
