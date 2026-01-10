@@ -1,5 +1,6 @@
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
+using PKHeX.Avalonia.Services;
 
 namespace PKHeX.Avalonia.Models;
 
@@ -8,6 +9,8 @@ namespace PKHeX.Avalonia.Models;
 /// </summary>
 public partial class PartySlotData : ObservableObject
 {
+    public SlotLocation Location => SlotLocation.FromParty(Slot);
+    
     [ObservableProperty] private int _slot;
     [ObservableProperty] private ushort _species;
     [ObservableProperty] private Bitmap? _sprite;
@@ -24,6 +27,7 @@ public partial class PartySlotData : ObservableObject
     [ObservableProperty] private ushort _currentHp;
     [ObservableProperty] private ushort _maxHp;
     [ObservableProperty] private byte _status; // Status condition
+    [ObservableProperty] private string _showdownSummary = string.Empty;
     
     /// <summary>
     /// HP percentage for display.
@@ -42,5 +46,5 @@ public partial class PartySlotData : ObservableObject
     /// </summary>
     public string ToolTipSummary => IsEmpty 
         ? "Empty" 
-        : $"{Nickname} ({SpeciesName})\nLv. {Level} {GenderSymbol}\nHP: {CurrentHp}/{MaxHp}";
+        : ShowdownSummary;
 }

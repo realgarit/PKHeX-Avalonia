@@ -12,14 +12,43 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private PKM _pk;
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
+    private readonly IDialogService _dialogService;
+    private bool _isLoading; // Flag to prevent modifying _pk during load
 
-    // Data sources from GameInfo
+    // Data sources (mostly filtered by SaveFile context)
     public IReadOnlyList<ComboItem> SpeciesList { get; }
     public IReadOnlyList<ComboItem> MoveList { get; }
     public IReadOnlyList<ComboItem> NatureList { get; }
-    public IReadOnlyList<ComboItem> AbilityList { get; }
     public IReadOnlyList<ComboItem> BallList { get; }
     public IReadOnlyList<ComboItem> ItemList { get; }
+    public IReadOnlyList<ComboItem> OriginGameList { get; }
+    public IReadOnlyList<ComboItem> RelearnMoveDataSource { get; }
+    public IReadOnlyList<ComboItem> GenderList { get; } = [
+        new ComboItem("Male", 0),
+        new ComboItem("Female", 1),
+        new ComboItem("Genderless", 2)
+    ];
+
+    public IReadOnlyList<ComboItem> LanguageList { get; }
+
+    // Dynamic lists
+    [ObservableProperty]
+    private ObservableCollection<ComboItem> _abilityList = [];
+
+    [ObservableProperty]
+    private ObservableCollection<ComboItem> _formList = [];
+
+    [ObservableProperty]
+    private ObservableCollection<ComboItem> _metLocationList = [];
+
+    [ObservableProperty]
+    private ObservableCollection<ComboItem> _eggLocationList = [];
+
+    [ObservableProperty]
+    private bool _isLegal;
+
+    [ObservableProperty]
+    private string _legalityReport = string.Empty;
 
     [ObservableProperty]
     private Bitmap? _sprite;
@@ -30,32 +59,35 @@ public partial class PokemonEditorViewModel : ViewModelBase
     // Basic Info
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Sprite))]
-    private ushort _species;
+    private int _species;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Sprite))]
-    private byte _form;
+    private int _form;
 
     [ObservableProperty]
     private string _nickname = string.Empty;
 
     [ObservableProperty]
-    private byte _level;
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE))]
+    private int _level;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE))]
     private int _nature;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE))]
     private int _ability;
 
     [ObservableProperty]
     private int _heldItem;
 
     [ObservableProperty]
-    private byte _ball;
+    private int _ball;
 
     [ObservableProperty]
-    private byte _gender;
+    private int _gender;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Sprite))]
@@ -64,64 +96,165 @@ public partial class PokemonEditorViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isEgg;
 
+    [ObservableProperty]
+    private bool _isFatefulEncounter;
+
+    [ObservableProperty]
+    private int _happiness;
+
+    [ObservableProperty]
+    private int _sid;
+
+    // PID/EC
+    [ObservableProperty]
+    private string _pid = string.Empty;
+
+    [ObservableProperty]
+    private string _encryptionConstant = string.Empty;
+
+    // EXP
+    [ObservableProperty]
+    private long _exp;
+
+    // Language
+    [ObservableProperty]
+    private int _language;
+
+    // Pokerus
+    [ObservableProperty]
+    private int _pkrsStrain;
+
+    [ObservableProperty]
+    private int _pkrsDays;
+
+    // PP
+    [ObservableProperty]
+    private int _pp1;
+
+    [ObservableProperty]
+    private int _pp2;
+
+    [ObservableProperty]
+    private int _pp3;
+
+    [ObservableProperty]
+    private int _pp4;
+
+    [ObservableProperty]
+    private int _ppUps1;
+
+    [ObservableProperty]
+    private int _ppUps2;
+
+    [ObservableProperty]
+    private int _ppUps3;
+
+    [ObservableProperty]
+    private int _ppUps4;
+
+    // Met Info
+    [ObservableProperty]
+    private int _originGame;
+
+    [ObservableProperty]
+    private int _metLocation;
+
+    [ObservableProperty]
+    private int _eggLocation;
+
+    [ObservableProperty]
+    private int _metLevel;
+
+    [ObservableProperty]
+    private DateTimeOffset? _metDate;
+
+    [ObservableProperty]
+    private DateTimeOffset? _eggDate;
+
     // Moves
     [ObservableProperty]
-    private ushort _move1;
+    private int _move1;
 
     [ObservableProperty]
-    private ushort _move2;
+    private int _move2;
 
     [ObservableProperty]
-    private ushort _move3;
+    private int _move3;
 
     [ObservableProperty]
-    private ushort _move4;
+    private int _move4;
+
+    // Relearn Moves
+    [ObservableProperty]
+    private int _relearnMove1;
+
+    [ObservableProperty]
+    private int _relearnMove2;
+
+    [ObservableProperty]
+    private int _relearnMove3;
+
+    [ObservableProperty]
+    private int _relearnMove4;
 
     // IVs
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
     private int _ivHP;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
     private int _ivATK;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
     private int _ivDEF;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
     private int _ivSPA;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
     private int _ivSPD;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
     private int _ivSPE;
 
     // EVs
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
     private int _evHP;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
     private int _evATK;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
     private int _evDEF;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
     private int _evSPA;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
     private int _evSPD;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
     private int _evSPE;
 
     // Computed Stats
-    public int Stat_HP => _pk.Stat_HPMax;
-    public int Stat_ATK => _pk.Stat_ATK;
-    public int Stat_DEF => _pk.Stat_DEF;
-    public int Stat_SPA => _pk.Stat_SPA;
-    public int Stat_SPD => _pk.Stat_SPD;
-    public int Stat_SPE => _pk.Stat_SPE;
+    // Computed Stats (ensure they refresh by calling RecalculateStats)
+    public int Stat_HP { get { RecalculateStats(); return _pk.Stat_HPMax; } }
+    public int Stat_ATK { get { RecalculateStats(); return _pk.Stat_ATK; } }
+    public int Stat_DEF { get { RecalculateStats(); return _pk.Stat_DEF; } }
+    public int Stat_SPA { get { RecalculateStats(); return _pk.Stat_SPA; } }
+    public int Stat_SPD { get { RecalculateStats(); return _pk.Stat_SPD; } }
+    public int Stat_SPE { get { RecalculateStats(); return _pk.Stat_SPE; } }
 
     public int IVTotal => IvHP + IvATK + IvDEF + IvSPA + IvSPD + IvSPE;
     public int EVTotal => EvHP + EvATK + EvDEF + EvSPA + EvSPD + EvSPE;
@@ -131,34 +264,33 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private string _originalTrainerName = string.Empty;
 
     [ObservableProperty]
-    private uint _trainerID;
+    private long _trainerID;
 
     [ObservableProperty]
-    private byte _originalTrainerGender;
-
-    // Form options for current species
-    [ObservableProperty]
-    private ObservableCollection<ComboItem> _formList = [];
+    private int _originalTrainerGender;
 
     public bool HasForms => FormList.Count > 1;
 
     // Exposed for "Set" operations
     public PKM TargetPKM => _pk;
 
-    public PokemonEditorViewModel(PKM pk, SaveFile sav, ISpriteRenderer spriteRenderer)
+    public PokemonEditorViewModel(PKM pk, SaveFile sav, ISpriteRenderer spriteRenderer, IDialogService dialogService)
     {
         _pk = pk.Clone(); // Always work on a copy
         _sav = sav;
         _spriteRenderer = spriteRenderer;
+        _dialogService = dialogService;
         
-        // Initialize data sources
-        var sources = GameInfo.Sources;
-        SpeciesList = sources.SpeciesDataSource;
-        MoveList = sources.LegalMoveDataSource;
-        NatureList = sources.NatureDataSource;
-        AbilityList = sources.AbilityDataSource;
-        BallList = sources.BallDataSource;
-        ItemList = sources.GetItemDataSource(_sav.Version, _sav.Context, [], HaX: true);
+        // Initialize filtered data sources
+        var filtered = GameInfo.FilteredSources;
+        SpeciesList = filtered.Species;
+        MoveList = filtered.Moves;
+        NatureList = filtered.Natures;
+        BallList = filtered.Balls;
+        ItemList = filtered.Items;
+        OriginGameList = filtered.Games;
+        RelearnMoveDataSource = filtered.Relearn;
+        LanguageList = GameInfo.Sources.LanguageDataSource(sav.Generation, sav.Context);
 
         // Load PKM data into view model
         LoadFromPKM();
@@ -172,67 +304,217 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     private void LoadFromPKM()
     {
-        Species = _pk.Species;
-        Form = _pk.Form;
-        Nickname = _pk.Nickname;
-        Level = _pk.Stat_Level;
-        Nature = (int)_pk.Nature;
-        Ability = _pk.Ability;
-        HeldItem = _pk.HeldItem;
-        Ball = _pk.Ball;
-        Gender = _pk.Gender;
-        IsShiny = _pk.IsShiny;
-        IsEgg = _pk.IsEgg;
+        _isLoading = true;
+        try
+        {
+            // First set species/form to populate dynamic lists
+            Species = _pk.Species;
+            Form = _pk.Form;
 
-        Move1 = _pk.Move1;
-        Move2 = _pk.Move2;
-        Move3 = _pk.Move3;
-        Move4 = _pk.Move4;
+            // Update dynamic lists BEFORE setting their selected values
+            UpdateFormList();
+            UpdateAbilityList();
 
-        IvHP = _pk.IV_HP;
-        IvATK = _pk.IV_ATK;
-        IvDEF = _pk.IV_DEF;
-        IvSPA = _pk.IV_SPA;
-        IvSPD = _pk.IV_SPD;
-        IvSPE = _pk.IV_SPE;
+            // Now set the values that depend on those lists
+            Ability = _pk.Ability;
 
-        EvHP = _pk.EV_HP;
-        EvATK = _pk.EV_ATK;
-        EvDEF = _pk.EV_DEF;
-        EvSPA = _pk.EV_SPA;
-        EvSPD = _pk.EV_SPD;
-        EvSPE = _pk.EV_SPE;
+            // Basic info
+            Nickname = _pk.Nickname;
+            Level = _pk.CurrentLevel;
+            Nature = (int)_pk.Nature;
+            HeldItem = _pk.HeldItem;
+            Ball = _pk.Ball;
+            Gender = _pk.Gender;
+            IsShiny = _pk.IsShiny;
+            IsEgg = _pk.IsEgg;
 
-        OriginalTrainerName = _pk.OriginalTrainerName;
-        TrainerID = _pk.ID32;
-        OriginalTrainerGender = _pk.OriginalTrainerGender;
+            // Moves
+            Move1 = _pk.Move1;
+            Move2 = _pk.Move2;
+            Move3 = _pk.Move3;
+            Move4 = _pk.Move4;
 
+            RelearnMove1 = _pk.RelearnMove1;
+            RelearnMove2 = _pk.RelearnMove2;
+            RelearnMove3 = _pk.RelearnMove3;
+            RelearnMove4 = _pk.RelearnMove4;
+
+            // PP values
+            Pp1 = _pk.Move1_PP;
+            Pp2 = _pk.Move2_PP;
+            Pp3 = _pk.Move3_PP;
+            Pp4 = _pk.Move4_PP;
+            PpUps1 = _pk.Move1_PPUps;
+            PpUps2 = _pk.Move2_PPUps;
+            PpUps3 = _pk.Move3_PPUps;
+            PpUps4 = _pk.Move4_PPUps;
+
+            // Stats
+            IvHP = _pk.IV_HP;
+            IvATK = _pk.IV_ATK;
+            IvDEF = _pk.IV_DEF;
+            IvSPA = _pk.IV_SPA;
+            IvSPD = _pk.IV_SPD;
+            IvSPE = _pk.IV_SPE;
+
+            EvHP = _pk.EV_HP;
+            EvATK = _pk.EV_ATK;
+            EvDEF = _pk.EV_DEF;
+            EvSPA = _pk.EV_SPA;
+            EvSPD = _pk.EV_SPD;
+            EvSPE = _pk.EV_SPE;
+
+            // Misc
+            IsFatefulEncounter = _pk.FatefulEncounter;
+            Happiness = _pk.CurrentFriendship;
+            Sid = (int)_pk.DisplaySID;
+
+            // PID/EC
+            Pid = _pk.PID.ToString("X8");
+            EncryptionConstant = _pk.EncryptionConstant.ToString("X8");
+
+            // EXP
+            Exp = _pk.EXP;
+
+            // Language
+            Language = _pk.Language;
+
+            // Pokerus
+            PkrsStrain = _pk.PokerusStrain;
+            PkrsDays = _pk.PokerusDays;
+
+            // Met data - set origin game first to populate location lists
+            OriginGame = (int)_pk.Version;
+            UpdateMetDataLists();
+
+            // Now set locations after lists are populated
+            MetLocation = _pk.MetLocation;
+            EggLocation = _pk.EggLocation;
+            MetLevel = _pk.MetLevel;
+
+            MetDate = _pk.MetDate is { } md ? new DateTimeOffset(md.Year, md.Month, md.Day, 0, 0, 0, TimeSpan.Zero) : null;
+            EggDate = _pk.EggMetDate is { } ed ? new DateTimeOffset(ed.Year, ed.Month, ed.Day, 0, 0, 0, TimeSpan.Zero) : null;
+
+            // OT info
+            OriginalTrainerName = _pk.OriginalTrainerName;
+            TrainerID = _pk.ID32;
+            OriginalTrainerGender = _pk.OriginalTrainerGender;
+
+            UpdateTitle();
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+
+        // These can modify _pk, but now we're done loading so it's OK
+        UpdateSprite();
+        Validate();
+    }
+
+    partial void OnSpeciesChanged(int value)
+    {
+        if (_isLoading) return;
         UpdateFormList();
+        UpdateAbilityList();
         UpdateSprite();
         UpdateTitle();
     }
 
-    partial void OnSpeciesChanged(ushort value)
+    partial void OnFormChanged(int value)
     {
-        UpdateFormList();
+        if (_isLoading) return;
+        UpdateAbilityList();
         UpdateSprite();
-        UpdateTitle();
     }
 
-    partial void OnFormChanged(byte value)
+    partial void OnOriginGameChanged(int value)
     {
-        UpdateSprite();
+        if (_isLoading) return;
+        UpdateMetDataLists();
+    }
+
+    private void UpdateMetDataLists()
+    {
+        MetLocationList.Clear();
+        var context = _sav.Context;
+        var locations = GameInfo.Sources.Met.GetLocationList((GameVersion)OriginGame, context);
+        foreach (var item in locations)
+            MetLocationList.Add(item);
+
+        EggLocationList.Clear();
+        var eggLocations = GameInfo.Sources.Met.GetLocationList((GameVersion)OriginGame, context, egg: true);
+        foreach (var item in eggLocations)
+            EggLocationList.Add(item);
     }
 
     partial void OnIsShinyChanged(bool value)
     {
+        if (_isLoading) return;
         UpdateSprite();
+        Validate();
+    }
+
+    partial void OnNicknameChanged(string value) { if (!_isLoading) Validate(); }
+    partial void OnLevelChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnNatureChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnAbilityChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnHeldItemChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnBallChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnMove1Changed(int value) { if (!_isLoading) Validate(); }
+    partial void OnMove2Changed(int value) { if (!_isLoading) Validate(); }
+    partial void OnMove3Changed(int value) { if (!_isLoading) Validate(); }
+    partial void OnMove4Changed(int value) { if (!_isLoading) Validate(); }
+    partial void OnRelearnMove1Changed(int value) { if (!_isLoading) Validate(); }
+    partial void OnRelearnMove2Changed(int value) { if (!_isLoading) Validate(); }
+    partial void OnRelearnMove3Changed(int value) { if (!_isLoading) Validate(); }
+    partial void OnRelearnMove4Changed(int value) { if (!_isLoading) Validate(); }
+    partial void OnIvHPChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnIvATKChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnIvDEFChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnIvSPAChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnIvSPDChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnIvSPEChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnEvHPChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnEvATKChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnEvDEFChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnEvSPAChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnEvSPDChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnEvSPEChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnMetLocationChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnMetLevelChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnMetDateChanged(DateTimeOffset? value) { if (!_isLoading) Validate(); }
+    partial void OnEggLocationChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnEggDateChanged(DateTimeOffset? value) { if (!_isLoading) Validate(); }
+    partial void OnIsFatefulEncounterChanged(bool value) { if (!_isLoading) Validate(); }
+    partial void OnIsEggChanged(bool value) { if (!_isLoading) Validate(); }
+    partial void OnGenderChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnOriginalTrainerGenderChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnTrainerIDChanged(long value) { if (!_isLoading) Validate(); }
+
+    private void Validate()
+    {
+        var pk = PreparePKM();
+        var la = new LegalityAnalysis(pk, _sav.Personal);
+        IsLegal = la.Valid;
+        LegalityReport = la.Report();
+    }
+
+    private void UpdateAbilityList()
+    {
+        AbilityList.Clear();
+        var pi = _sav.Personal.GetFormEntry((ushort)Species, (byte)Form);
+        var filtered = GameInfo.FilteredSources;
+        foreach (var item in filtered.GetAbilityList(pi))
+        {
+            AbilityList.Add(item);
+        }
     }
 
     private void UpdateFormList()
     {
         FormList.Clear();
-        var pi = PersonalTable.USUM.GetFormEntry(Species, 0);
+        var pi = _sav.Personal.GetFormEntry((ushort)Species, 0);
         var formCount = pi.FormCount;
 
         if (formCount <= 1)
@@ -241,7 +523,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         }
         else
         {
-            var formNames = FormConverter.GetFormList(Species, GameInfo.Strings.Types, GameInfo.Strings.forms, [], _sav.Context);
+            var formNames = FormConverter.GetFormList((ushort)Species, GameInfo.Strings.Types, GameInfo.Strings.forms, [], _sav.Context);
             for (int i = 0; i < formCount && i < formNames.Length; i++)
             {
                 var name = string.IsNullOrWhiteSpace(formNames[i]) ? $"Form {i}" : formNames[i];
@@ -255,8 +537,8 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private void UpdateSprite()
     {
         // Create a temporary PKM with current values to render sprite
-        _pk.Species = Species;
-        _pk.Form = Form;
+        _pk.Species = (ushort)Species;
+        _pk.Form = (byte)Form;
         if (IsShiny)
             _pk.SetShiny();
 
@@ -265,8 +547,26 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     private void UpdateTitle()
     {
-        var speciesName = SpeciesName.GetSpeciesName(Species, 2); // English
+        var speciesName = GameInfo.Strings.Species[Species];
         Title = Species == 0 ? "Empty Slot" : $"Editing: {speciesName}";
+    }
+
+    private void RecalculateStats()
+    {
+        _pk.Stat_Level = (byte)Level;
+        _pk.IV_HP = IvHP;
+        _pk.IV_ATK = IvATK;
+        _pk.IV_DEF = IvDEF;
+        _pk.IV_SPA = IvSPA;
+        _pk.IV_SPD = IvSPD;
+        _pk.IV_SPE = IvSPE;
+        _pk.EV_HP = EvHP;
+        _pk.EV_ATK = EvATK;
+        _pk.EV_DEF = EvDEF;
+        _pk.EV_SPA = EvSPA;
+        _pk.EV_SPD = EvSPD;
+        _pk.EV_SPE = EvSPE;
+        _pk.ResetPartyStats();
     }
 
     /// <summary>
@@ -275,15 +575,15 @@ public partial class PokemonEditorViewModel : ViewModelBase
     public PKM PreparePKM()
     {
         // Apply changes to PKM
-        _pk.Species = Species;
-        _pk.Form = Form;
+        _pk.Species = (ushort)Species;
+        _pk.Form = (byte)Form;
         _pk.Nickname = Nickname;
-        _pk.Stat_Level = Level;
+        _pk.Stat_Level = (byte)Level;
         _pk.Nature = (Nature)Nature;
         _pk.Ability = Ability;
         _pk.HeldItem = HeldItem;
-        _pk.Ball = Ball;
-        _pk.Gender = Gender;
+        _pk.Ball = (byte)Ball;
+        _pk.Gender = (byte)Gender;
         _pk.IsEgg = IsEgg;
 
         if (IsShiny && !_pk.IsShiny)
@@ -291,10 +591,24 @@ public partial class PokemonEditorViewModel : ViewModelBase
         else if (!IsShiny && _pk.IsShiny)
             _pk.SetUnshiny();
 
-        _pk.Move1 = Move1;
-        _pk.Move2 = Move2;
-        _pk.Move3 = Move3;
-        _pk.Move4 = Move4;
+        _pk.Move1 = (ushort)Move1;
+        _pk.Move2 = (ushort)Move2;
+        _pk.Move3 = (ushort)Move3;
+        _pk.Move4 = (ushort)Move4;
+
+        _pk.RelearnMove1 = (ushort)RelearnMove1;
+        _pk.RelearnMove2 = (ushort)RelearnMove2;
+        _pk.RelearnMove3 = (ushort)RelearnMove3;
+        _pk.RelearnMove4 = (ushort)RelearnMove4;
+
+        _pk.Move1_PP = Pp1;
+        _pk.Move2_PP = Pp2;
+        _pk.Move3_PP = Pp3;
+        _pk.Move4_PP = Pp4;
+        _pk.Move1_PPUps = PpUps1;
+        _pk.Move2_PPUps = PpUps2;
+        _pk.Move3_PPUps = PpUps3;
+        _pk.Move4_PPUps = PpUps4;
 
         _pk.IV_HP = IvHP;
         _pk.IV_ATK = IvATK;
@@ -311,7 +625,35 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _pk.EV_SPE = EvSPE;
 
         _pk.OriginalTrainerName = OriginalTrainerName;
-        _pk.OriginalTrainerGender = OriginalTrainerGender;
+        _pk.OriginalTrainerGender = (byte)OriginalTrainerGender;
+        _pk.ID32 = (uint)TrainerID;
+        _pk.DisplaySID = (uint)Sid;
+        _pk.CurrentFriendship = (byte)Happiness;
+        _pk.FatefulEncounter = IsFatefulEncounter;
+
+        // PID/EC
+        if (uint.TryParse(Pid, System.Globalization.NumberStyles.HexNumber, null, out var pid))
+            _pk.PID = pid;
+        if (uint.TryParse(EncryptionConstant, System.Globalization.NumberStyles.HexNumber, null, out var ec))
+            _pk.EncryptionConstant = ec;
+
+        // EXP
+        _pk.EXP = (uint)Exp;
+
+        // Language
+        _pk.Language = Language;
+
+        // Pokerus
+        _pk.PokerusStrain = PkrsStrain;
+        _pk.PokerusDays = PkrsDays;
+
+        _pk.Version = (GameVersion)OriginGame;
+        _pk.MetLocation = (ushort)MetLocation;
+        _pk.EggLocation = (ushort)EggLocation;
+        _pk.MetLevel = (byte)MetLevel;
+
+        _pk.MetDate = MetDate is { } md ? new DateOnly(md.Year, md.Month, md.Day) : null;
+        _pk.EggMetDate = EggDate is { } ed ? new DateOnly(ed.Year, ed.Month, ed.Day) : null;
 
         // Recalculate stats
         _pk.ResetPartyStats();
@@ -339,6 +681,63 @@ public partial class PokemonEditorViewModel : ViewModelBase
         EvSPA = 0;
         EvSPD = 0;
         EvSPE = 0;
+    }
+
+    [RelayCommand]
+    private async Task ImportShowdown()
+    {
+        var text = await _dialogService.GetClipboardTextAsync();
+        if (string.IsNullOrWhiteSpace(text)) return;
+
+        if (ShowdownParsing.TryParseAnyLanguage(text, out var set))
+        {
+            _pk.ApplySetDetails(set);
+            LoadFromPKM();
+        }
+        else
+        {
+            await _dialogService.ShowErrorAsync("Import Failed", "Could not parse Showdown text.");
+        }
+    }
+
+    [RelayCommand]
+    private async Task ExportShowdown()
+    {
+        var pk = PreparePKM();
+        var set = new ShowdownSet(pk);
+        await _dialogService.SetClipboardTextAsync(set.Text);
+    }
+
+    [RelayCommand]
+    private void SuggestRelearnMoves()
+    {
+        var pk = PreparePKM();
+        var la = new LegalityAnalysis(pk, _sav.Personal);
+        Span<ushort> moves = stackalloc ushort[4];
+        la.GetSuggestedRelearnMovesFromEncounter(moves);
+        
+        RelearnMove1 = moves[0];
+        RelearnMove2 = moves[1];
+        RelearnMove3 = moves[2];
+        RelearnMove4 = moves[3];
+        
+        Validate();
+    }
+
+    [RelayCommand]
+    private void SuggestCurrentMoves()
+    {
+        var pk = PreparePKM();
+        var la = new LegalityAnalysis(pk, _sav.Personal);
+        Span<ushort> moves = stackalloc ushort[4];
+        la.GetSuggestedCurrentMoves(moves);
+        
+        Move1 = moves[0];
+        Move2 = moves[1];
+        Move3 = moves[2];
+        Move4 = moves[3];
+        
+        Validate();
     }
 
     [RelayCommand]

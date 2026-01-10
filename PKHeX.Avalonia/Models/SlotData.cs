@@ -1,5 +1,6 @@
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
+using PKHeX.Avalonia.Services;
 
 namespace PKHeX.Avalonia.Models;
 
@@ -8,6 +9,8 @@ namespace PKHeX.Avalonia.Models;
 /// </summary>
 public partial class SlotData : ObservableObject
 {
+    public SlotLocation Location => SlotLocation.FromBox(Box, Slot);
+    
     [ObservableProperty] private int _slot;
     [ObservableProperty] private int _box;
     [ObservableProperty] private ushort _species;
@@ -27,13 +30,14 @@ public partial class SlotData : ObservableObject
     [ObservableProperty] private string _abilityName = string.Empty;
     [ObservableProperty] private byte _nature;
     [ObservableProperty] private string _natureName = string.Empty;
+    [ObservableProperty] private string _showdownSummary = string.Empty;
     
     /// <summary>
     /// Short summary for tooltip.
     /// </summary>
     public string ToolTipSummary => IsEmpty 
         ? "Empty" 
-        : $"{Nickname} ({SpeciesName})\nLv. {Level}\n{GenderSymbol}";
+        : ShowdownSummary;
     
     public string GenderSymbol => Gender switch
     {

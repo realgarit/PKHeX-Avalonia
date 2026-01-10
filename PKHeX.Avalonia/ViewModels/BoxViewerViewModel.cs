@@ -86,6 +86,7 @@ public partial class BoxViewerViewModel : ViewModelBase
                 AbilityName = strings.Ability[pk.Ability],
                 Nature = (byte)pk.Nature,
                 NatureName = strings.Natures[(int)pk.Nature],
+                ShowdownSummary = isEmpty ? string.Empty : new ShowdownSet(pk).Text,
                 IsSelected = false
             });
         }
@@ -231,5 +232,12 @@ public partial class BoxViewerViewModel : ViewModelBase
     {
         _sav.SetBoxSlotAtIndex(_sav.BlankPKM, CurrentBox, slot);
         RefreshCurrentBox();
+    }
+
+    [RelayCommand]
+    private void RequestMove((SlotDragData data, SlotData dest, global::Avalonia.Input.KeyModifiers modifiers) param)
+    {
+        bool clone = param.modifiers.HasFlag(global::Avalonia.Input.KeyModifiers.Control);
+        _slotService?.RequestMove(param.data.Source, param.dest.Location, clone);
     }
 }

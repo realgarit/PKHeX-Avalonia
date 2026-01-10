@@ -42,6 +42,11 @@ public interface ISlotService
     event Action<SlotLocation>? DeleteRequested;
     
     /// <summary>
+    /// Event fired when a PKM should be moved/swapped between slots.
+    /// </summary>
+    event Action<SlotLocation, SlotLocation, bool>? MoveRequested;
+    
+    /// <summary>
     /// Sets the clipboard PKM for future Set operations.
     /// </summary>
     void SetClipboard(PKM pk);
@@ -65,6 +70,11 @@ public interface ISlotService
     /// Triggers a delete request for the given slot.
     /// </summary>
     void RequestDelete(SlotLocation location);
+
+    /// <summary>
+    /// Triggers a move request between two slots.
+    /// </summary>
+    void RequestMove(SlotLocation source, SlotLocation destination, bool clone);
 }
 
 /// <summary>
@@ -77,6 +87,7 @@ public class SlotService : ISlotService
     public event Action<SlotLocation>? ViewRequested;
     public event Action<SlotLocation>? SetRequested;
     public event Action<SlotLocation>? DeleteRequested;
+    public event Action<SlotLocation, SlotLocation, bool>? MoveRequested;
     
     public void SetClipboard(PKM pk)
     {
@@ -101,5 +112,10 @@ public class SlotService : ISlotService
     public void RequestDelete(SlotLocation location)
     {
         DeleteRequested?.Invoke(location);
+    }
+
+    public void RequestMove(SlotLocation source, SlotLocation destination, bool clone)
+    {
+        MoveRequested?.Invoke(source, destination, clone);
     }
 }

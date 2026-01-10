@@ -122,14 +122,24 @@ public sealed class DialogService : IDialogService
             CanResize = false
         };
 
-        // Wire up the view model events if it's a PokemonEditor
-        if (content.DataContext is ViewModels.PokemonEditorViewModel vm)
-        {
-            vm.SaveCompleted += () => { result = true; dialog.Close(); };
-            vm.CancelRequested += () => dialog.Close();
-        }
+
 
         await dialog.ShowDialog(window);
         return result;
+    }
+
+    public async Task<string?> GetClipboardTextAsync()
+    {
+        var window = GetMainWindow();
+        if (window?.Clipboard is { } clipboard)
+            return await clipboard.GetTextAsync();
+        return null;
+    }
+
+    public async Task SetClipboardTextAsync(string text)
+    {
+        var window = GetMainWindow();
+        if (window?.Clipboard is { } clipboard)
+            await clipboard.SetTextAsync(text);
     }
 }

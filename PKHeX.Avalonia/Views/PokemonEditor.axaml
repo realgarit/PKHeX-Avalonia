@@ -3,13 +3,13 @@
              xmlns:vm="using:PKHeX.Avalonia.ViewModels"
              x:Class="PKHeX.Avalonia.Views.PokemonEditor"
              x:DataType="vm:PokemonEditorViewModel"
-             Width="500" Height="550">
+             Width="380" MinHeight="480">
 
     <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
         <DockPanel>
             <!-- Header with sprite and title -->
             <Border DockPanel.Dock="Top" Margin="0,0,0,16">
-                <Grid ColumnDefinitions="Auto,*,Auto">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto">
                     <!-- Sprite -->
                     <Border Grid.Column="0"
                             Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
@@ -41,8 +41,51 @@
                         </StackPanel>
                     </StackPanel>
 
+                    <!-- Legality Indicator -->
+                    <Border Grid.Column="2" 
+                            Width="40" Height="40"
+                            Margin="0,0,8,0"
+                            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                            CornerRadius="20"
+                            ToolTip.Tip="{Binding LegalityReport}">
+                        <Panel>
+                            <TextBlock Text="✔" 
+                                       FontSize="24"
+                                       Foreground="Green"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding IsLegal}" />
+                            <TextBlock Text="✘" 
+                                       FontSize="24"
+                                       Foreground="Red"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding !IsLegal}" />
+                        </Panel>
+                    </Border>
+
+                    <!-- Showdown Export -->
+                    <Button Grid.Column="3"
+                            Command="{Binding ExportShowdownCommand}"
+                            ToolTip.Tip="Export Showdown to Clipboard"
+                            Width="40" Height="40"
+                            Margin="0,0,8,0"
+                            Padding="0">
+                        <TextBlock Text="📤" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Button>
+
+                    <!-- Showdown Import -->
+                    <Button Grid.Column="4"
+                            Command="{Binding ImportShowdownCommand}"
+                            ToolTip.Tip="Import Showdown from Clipboard"
+                            Width="40" Height="40"
+                            Margin="0,0,8,0"
+                            Padding="0">
+                        <TextBlock Text="📥" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Button>
+
                     <!-- Shiny Toggle -->
-                    <Button Grid.Column="2"
+                    <Button Grid.Column="5"
                             Command="{Binding ToggleShinyCommand}"
                             ToolTip.Tip="Toggle Shiny"
                             Width="40" Height="40"
@@ -91,19 +134,42 @@
                                           HorizontalAlignment="Stretch" />
                             </StackPanel>
 
-                            <!-- Nickname -->
-                            <StackPanel>
-                                <TextBlock Text="Nickname" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                <TextBox Text="{Binding Nickname}" />
-                            </StackPanel>
+                            <!-- Nickname and Gender Row -->
+                            <Grid ColumnDefinitions="*,16,120">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Nickname" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <TextBox Text="{Binding Nickname}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Gender" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <ComboBox ItemsSource="{Binding GenderList}"
+                                              SelectedValue="{Binding Gender}"
+                                              SelectedValueBinding="{Binding Value}"
+                                              DisplayMemberBinding="{Binding Text}"
+                                              HorizontalAlignment="Stretch" />
+                                </StackPanel>
+                            </Grid>
 
-                            <!-- Level -->
+                            <!-- Level and EXP Row -->
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Level" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding Level}" Minimum="1" Maximum="100" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="EXP" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding Exp}" Minimum="0" Maximum="10000000" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Language -->
                             <StackPanel>
-                                <TextBlock Text="Level" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                <NumericUpDown Value="{Binding Level}"
-                                               Minimum="1"
-                                               Maximum="100"
-                                               FormatString="0" />
+                                <TextBlock Text="Language" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <ComboBox ItemsSource="{Binding LanguageList}"
+                                          SelectedValue="{Binding Language}"
+                                          SelectedValueBinding="{Binding Value}"
+                                          DisplayMemberBinding="{Binding Text}"
+                                          HorizontalAlignment="Stretch" />
                             </StackPanel>
 
                             <!-- Nature and Ability Row -->
@@ -154,104 +220,90 @@
 
                 <!-- Stats Tab -->
                 <TabItem Header="Stats">
-                    <ScrollViewer Padding="8">
-                        <StackPanel Spacing="16">
+                    <ScrollViewer Padding="4">
+                        <StackPanel Spacing="8">
                             <!-- IVs Section -->
                             <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
-                                    CornerRadius="8" Padding="12">
-                                <StackPanel>
-                                    <DockPanel Margin="0,0,0,8">
-                                        <TextBlock Text="Individual Values (IVs)"
-                                                   FontWeight="SemiBold"
-                                                   VerticalAlignment="Center" />
-                                        <Button Content="Max All"
-                                                Command="{Binding SetMaxIVsCommand}"
-                                                DockPanel.Dock="Right"
-                                                Padding="8,4" />
+                                    CornerRadius="4" Padding="8">
+                                <StackPanel Spacing="4">
+                                    <DockPanel>
+                                        <TextBlock Text="IVs" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding IVTotal, StringFormat='{}{0}/186'}" Opacity="0.6" Margin="8,0" VerticalAlignment="Center" />
+                                        <Button Content="Max" Command="{Binding SetMaxIVsCommand}" DockPanel.Dock="Right" Padding="6,2" FontSize="11" />
                                     </DockPanel>
-                                    <Grid ColumnDefinitions="60,*,60,*,60,*" RowDefinitions="Auto,8,Auto">
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="HP" VerticalAlignment="Center" />
-                                        <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding IvHP}" Minimum="0" Maximum="31" FormatString="0" />
-                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Atk" VerticalAlignment="Center" Margin="8,0,0,0" />
-                                        <NumericUpDown Grid.Row="0" Grid.Column="3" Value="{Binding IvATK}" Minimum="0" Maximum="31" FormatString="0" />
-                                        <TextBlock Grid.Row="0" Grid.Column="4" Text="Def" VerticalAlignment="Center" Margin="8,0,0,0" />
-                                        <NumericUpDown Grid.Row="0" Grid.Column="5" Value="{Binding IvDEF}" Minimum="0" Maximum="31" FormatString="0" />
+                                    <Grid ColumnDefinitions="28,*,28,*,28,*" RowDefinitions="Auto,4,Auto">
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="HP" FontSize="11" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding IvHP}" Minimum="0" Maximum="31" FormatString="0" Padding="2" ShowButtonSpinner="False" />
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Atk" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0" />
+                                        <NumericUpDown Grid.Row="0" Grid.Column="3" Value="{Binding IvATK}" Minimum="0" Maximum="31" FormatString="0" Padding="2" ShowButtonSpinner="False" />
+                                        <TextBlock Grid.Row="0" Grid.Column="4" Text="Def" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0" />
+                                        <NumericUpDown Grid.Row="0" Grid.Column="5" Value="{Binding IvDEF}" Minimum="0" Maximum="31" FormatString="0" Padding="2" ShowButtonSpinner="False" />
 
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="SpA" VerticalAlignment="Center" />
-                                        <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding IvSPA}" Minimum="0" Maximum="31" FormatString="0" />
-                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="SpD" VerticalAlignment="Center" Margin="8,0,0,0" />
-                                        <NumericUpDown Grid.Row="2" Grid.Column="3" Value="{Binding IvSPD}" Minimum="0" Maximum="31" FormatString="0" />
-                                        <TextBlock Grid.Row="2" Grid.Column="4" Text="Spe" VerticalAlignment="Center" Margin="8,0,0,0" />
-                                        <NumericUpDown Grid.Row="2" Grid.Column="5" Value="{Binding IvSPE}" Minimum="0" Maximum="31" FormatString="0" />
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="SpA" FontSize="11" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding IvSPA}" Minimum="0" Maximum="31" FormatString="0" Padding="2" ShowButtonSpinner="False" />
+                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="SpD" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0" />
+                                        <NumericUpDown Grid.Row="2" Grid.Column="3" Value="{Binding IvSPD}" Minimum="0" Maximum="31" FormatString="0" Padding="2" ShowButtonSpinner="False" />
+                                        <TextBlock Grid.Row="2" Grid.Column="4" Text="Spe" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0" />
+                                        <NumericUpDown Grid.Row="2" Grid.Column="5" Value="{Binding IvSPE}" Minimum="0" Maximum="31" FormatString="0" Padding="2" ShowButtonSpinner="False" />
                                     </Grid>
-                                    <TextBlock Text="{Binding IVTotal, StringFormat='Total: {0}/186'}"
-                                               Opacity="0.7"
-                                               Margin="0,8,0,0" />
                                 </StackPanel>
                             </Border>
 
                             <!-- EVs Section -->
                             <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
-                                    CornerRadius="8" Padding="12">
-                                <StackPanel>
-                                    <DockPanel Margin="0,0,0,8">
-                                        <TextBlock Text="Effort Values (EVs)"
-                                                   FontWeight="SemiBold"
-                                                   VerticalAlignment="Center" />
-                                        <Button Content="Clear"
-                                                Command="{Binding ClearEVsCommand}"
-                                                DockPanel.Dock="Right"
-                                                Padding="8,4" />
+                                    CornerRadius="4" Padding="8">
+                                <StackPanel Spacing="4">
+                                    <DockPanel>
+                                        <TextBlock Text="EVs" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding EVTotal, StringFormat='{}{0}/510'}" Opacity="0.6" Margin="8,0" VerticalAlignment="Center" />
+                                        <Button Content="Clear" Command="{Binding ClearEVsCommand}" DockPanel.Dock="Right" Padding="6,2" FontSize="11" />
                                     </DockPanel>
-                                    <Grid ColumnDefinitions="60,*,60,*,60,*" RowDefinitions="Auto,8,Auto">
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="HP" VerticalAlignment="Center" />
-                                        <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding EvHP}" Minimum="0" Maximum="252" FormatString="0" />
-                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Atk" VerticalAlignment="Center" Margin="8,0,0,0" />
-                                        <NumericUpDown Grid.Row="0" Grid.Column="3" Value="{Binding EvATK}" Minimum="0" Maximum="252" FormatString="0" />
-                                        <TextBlock Grid.Row="0" Grid.Column="4" Text="Def" VerticalAlignment="Center" Margin="8,0,0,0" />
-                                        <NumericUpDown Grid.Row="0" Grid.Column="5" Value="{Binding EvDEF}" Minimum="0" Maximum="252" FormatString="0" />
+                                    <Grid ColumnDefinitions="28,*,28,*,28,*" RowDefinitions="Auto,4,Auto">
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="HP" FontSize="11" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding EvHP}" Minimum="0" Maximum="252" FormatString="0" Padding="2" ShowButtonSpinner="False" />
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Atk" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0" />
+                                        <NumericUpDown Grid.Row="0" Grid.Column="3" Value="{Binding EvATK}" Minimum="0" Maximum="252" FormatString="0" Padding="2" ShowButtonSpinner="False" />
+                                        <TextBlock Grid.Row="0" Grid.Column="4" Text="Def" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0" />
+                                        <NumericUpDown Grid.Row="0" Grid.Column="5" Value="{Binding EvDEF}" Minimum="0" Maximum="252" FormatString="0" Padding="2" ShowButtonSpinner="False" />
 
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="SpA" VerticalAlignment="Center" />
-                                        <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding EvSPA}" Minimum="0" Maximum="252" FormatString="0" />
-                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="SpD" VerticalAlignment="Center" Margin="8,0,0,0" />
-                                        <NumericUpDown Grid.Row="2" Grid.Column="3" Value="{Binding EvSPD}" Minimum="0" Maximum="252" FormatString="0" />
-                                        <TextBlock Grid.Row="2" Grid.Column="4" Text="Spe" VerticalAlignment="Center" Margin="8,0,0,0" />
-                                        <NumericUpDown Grid.Row="2" Grid.Column="5" Value="{Binding EvSPE}" Minimum="0" Maximum="252" FormatString="0" />
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="SpA" FontSize="11" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding EvSPA}" Minimum="0" Maximum="252" FormatString="0" Padding="2" ShowButtonSpinner="False" />
+                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="SpD" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0" />
+                                        <NumericUpDown Grid.Row="2" Grid.Column="3" Value="{Binding EvSPD}" Minimum="0" Maximum="252" FormatString="0" Padding="2" ShowButtonSpinner="False" />
+                                        <TextBlock Grid.Row="2" Grid.Column="4" Text="Spe" FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0" />
+                                        <NumericUpDown Grid.Row="2" Grid.Column="5" Value="{Binding EvSPE}" Minimum="0" Maximum="252" FormatString="0" Padding="2" ShowButtonSpinner="False" />
                                     </Grid>
-                                    <TextBlock Text="{Binding EVTotal, StringFormat='Total: {0}/510'}"
-                                               Opacity="0.7"
-                                               Margin="0,8,0,0" />
                                 </StackPanel>
                             </Border>
 
                             <!-- Calculated Stats (read-only) -->
                             <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
-                                    CornerRadius="8" Padding="12">
-                                <StackPanel>
-                                    <TextBlock Text="Calculated Stats" FontWeight="SemiBold" Margin="0,0,0,8" />
+                                    CornerRadius="4" Padding="8">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Stats" FontWeight="SemiBold" />
                                     <Grid ColumnDefinitions="*,*,*,*,*,*">
                                         <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                                            <TextBlock Text="HP" Opacity="0.7" HorizontalAlignment="Center" />
+                                            <TextBlock Text="HP" Opacity="0.6" FontSize="10" HorizontalAlignment="Center" />
                                             <TextBlock Text="{Binding Stat_HP}" FontWeight="SemiBold" HorizontalAlignment="Center" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                                            <TextBlock Text="Atk" Opacity="0.7" HorizontalAlignment="Center" />
+                                            <TextBlock Text="Atk" Opacity="0.6" FontSize="10" HorizontalAlignment="Center" />
                                             <TextBlock Text="{Binding Stat_ATK}" FontWeight="SemiBold" HorizontalAlignment="Center" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Center">
-                                            <TextBlock Text="Def" Opacity="0.7" HorizontalAlignment="Center" />
+                                            <TextBlock Text="Def" Opacity="0.6" FontSize="10" HorizontalAlignment="Center" />
                                             <TextBlock Text="{Binding Stat_DEF}" FontWeight="SemiBold" HorizontalAlignment="Center" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="3" HorizontalAlignment="Center">
-                                            <TextBlock Text="SpA" Opacity="0.7" HorizontalAlignment="Center" />
+                                            <TextBlock Text="SpA" Opacity="0.6" FontSize="10" HorizontalAlignment="Center" />
                                             <TextBlock Text="{Binding Stat_SPA}" FontWeight="SemiBold" HorizontalAlignment="Center" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="4" HorizontalAlignment="Center">
-                                            <TextBlock Text="SpD" Opacity="0.7" HorizontalAlignment="Center" />
+                                            <TextBlock Text="SpD" Opacity="0.6" FontSize="10" HorizontalAlignment="Center" />
                                             <TextBlock Text="{Binding Stat_SPD}" FontWeight="SemiBold" HorizontalAlignment="Center" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="5" HorizontalAlignment="Center">
-                                            <TextBlock Text="Spe" Opacity="0.7" HorizontalAlignment="Center" />
+                                            <TextBlock Text="Spe" Opacity="0.6" FontSize="10" HorizontalAlignment="Center" />
                                             <TextBlock Text="{Binding Stat_SPE}" FontWeight="SemiBold" HorizontalAlignment="Center" />
                                         </StackPanel>
                                     </Grid>
@@ -261,41 +313,143 @@
                     </ScrollViewer>
                 </TabItem>
 
+                <!-- Met Tab -->
+                <TabItem Header="Met">
+                    <ScrollViewer Padding="8">
+                        <StackPanel Spacing="12">
+                            <!-- Origin Game -->
+                            <StackPanel>
+                                <TextBlock Text="Origin Game" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <ComboBox ItemsSource="{Binding OriginGameList}"
+                                          SelectedValue="{Binding OriginGame}"
+                                          SelectedValueBinding="{Binding Value}"
+                                          DisplayMemberBinding="{Binding Text}"
+                                          HorizontalAlignment="Stretch" />
+                            </StackPanel>
+
+                            <!-- Met Location -->
+                            <StackPanel>
+                                <TextBlock Text="Met Location" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <ComboBox ItemsSource="{Binding MetLocationList}"
+                                          SelectedValue="{Binding MetLocation}"
+                                          SelectedValueBinding="{Binding Value}"
+                                          DisplayMemberBinding="{Binding Text}"
+                                          HorizontalAlignment="Stretch" />
+                            </StackPanel>
+
+                            <!-- Met Level and Date Row -->
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Met Level" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding MetLevel}" Minimum="0" Maximum="100" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Met Date" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <DatePicker SelectedDate="{Binding MetDate}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Egg Location -->
+                            <StackPanel>
+                                <TextBlock Text="Egg Location" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <ComboBox ItemsSource="{Binding EggLocationList}"
+                                          SelectedValue="{Binding EggLocation}"
+                                          SelectedValueBinding="{Binding Value}"
+                                          DisplayMemberBinding="{Binding Text}"
+                                          HorizontalAlignment="Stretch" />
+                            </StackPanel>
+
+                            <!-- Egg Date -->
+                            <StackPanel>
+                                <TextBlock Text="Egg Date" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <DatePicker SelectedDate="{Binding EggDate}" />
+                            </StackPanel>
+
+                            <CheckBox Content="Fateful Encounter" IsChecked="{Binding IsFatefulEncounter}" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
                 <!-- Moves Tab -->
                 <TabItem Header="Moves">
                     <ScrollViewer Padding="8">
                         <StackPanel Spacing="12">
-                            <StackPanel>
-                                <TextBlock Text="Move 1" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                <ComboBox ItemsSource="{Binding MoveList}"
+                            <DockPanel>
+                                <TextBlock Text="Current Moves" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                                <Button Content="Suggest" 
+                                        Command="{Binding SuggestCurrentMovesCommand}"
+                                        HorizontalAlignment="Right"
+                                        Padding="8,2" />
+                            </DockPanel>
+
+                            <!-- Move 1 -->
+                            <Grid ColumnDefinitions="*,50,50">
+                                <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
                                           SelectedValue="{Binding Move1}"
                                           SelectedValueBinding="{Binding Value}"
-                                          DisplayMemberBinding="{Binding Text}"
-                                          HorizontalAlignment="Stretch" />
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock Text="Move 2" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                <ComboBox ItemsSource="{Binding MoveList}"
+                                          DisplayMemberBinding="{Binding Text}" />
+                                <NumericUpDown Grid.Column="1" Value="{Binding Pp1}" Minimum="0" Maximum="64" FormatString="0" Margin="4,0,0,0" ShowButtonSpinner="False" ToolTip.Tip="PP" />
+                                <NumericUpDown Grid.Column="2" Value="{Binding PpUps1}" Minimum="0" Maximum="3" FormatString="0" Margin="4,0,0,0" ShowButtonSpinner="False" ToolTip.Tip="PP Ups" />
+                            </Grid>
+                            <!-- Move 2 -->
+                            <Grid ColumnDefinitions="*,50,50">
+                                <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
                                           SelectedValue="{Binding Move2}"
                                           SelectedValueBinding="{Binding Value}"
-                                          DisplayMemberBinding="{Binding Text}"
-                                          HorizontalAlignment="Stretch" />
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock Text="Move 3" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                <ComboBox ItemsSource="{Binding MoveList}"
+                                          DisplayMemberBinding="{Binding Text}" />
+                                <NumericUpDown Grid.Column="1" Value="{Binding Pp2}" Minimum="0" Maximum="64" FormatString="0" Margin="4,0,0,0" ShowButtonSpinner="False" ToolTip.Tip="PP" />
+                                <NumericUpDown Grid.Column="2" Value="{Binding PpUps2}" Minimum="0" Maximum="3" FormatString="0" Margin="4,0,0,0" ShowButtonSpinner="False" ToolTip.Tip="PP Ups" />
+                            </Grid>
+                            <!-- Move 3 -->
+                            <Grid ColumnDefinitions="*,50,50">
+                                <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
                                           SelectedValue="{Binding Move3}"
                                           SelectedValueBinding="{Binding Value}"
-                                          DisplayMemberBinding="{Binding Text}"
-                                          HorizontalAlignment="Stretch" />
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock Text="Move 4" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                <ComboBox ItemsSource="{Binding MoveList}"
+                                          DisplayMemberBinding="{Binding Text}" />
+                                <NumericUpDown Grid.Column="1" Value="{Binding Pp3}" Minimum="0" Maximum="64" FormatString="0" Margin="4,0,0,0" ShowButtonSpinner="False" ToolTip.Tip="PP" />
+                                <NumericUpDown Grid.Column="2" Value="{Binding PpUps3}" Minimum="0" Maximum="3" FormatString="0" Margin="4,0,0,0" ShowButtonSpinner="False" ToolTip.Tip="PP Ups" />
+                            </Grid>
+                            <!-- Move 4 -->
+                            <Grid ColumnDefinitions="*,50,50">
+                                <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
                                           SelectedValue="{Binding Move4}"
                                           SelectedValueBinding="{Binding Value}"
+                                          DisplayMemberBinding="{Binding Text}" />
+                                <NumericUpDown Grid.Column="1" Value="{Binding Pp4}" Minimum="0" Maximum="64" FormatString="0" Margin="4,0,0,0" ShowButtonSpinner="False" ToolTip.Tip="PP" />
+                                <NumericUpDown Grid.Column="2" Value="{Binding PpUps4}" Minimum="0" Maximum="3" FormatString="0" Margin="4,0,0,0" ShowButtonSpinner="False" ToolTip.Tip="PP Ups" />
+                            </Grid>
+
+                            <Separator Margin="0,8" />
+
+                            <DockPanel>
+                                <TextBlock Text="Relearn Moves" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                                <Button Content="Suggest" 
+                                        Command="{Binding SuggestRelearnMovesCommand}"
+                                        HorizontalAlignment="Right"
+                                        Padding="8,2" />
+                            </DockPanel>
+
+                            <StackPanel>
+                                <ComboBox ItemsSource="{Binding RelearnMoveDataSource}"
+                                          SelectedValue="{Binding RelearnMove1}"
+                                          SelectedValueBinding="{Binding Value}"
                                           DisplayMemberBinding="{Binding Text}"
-                                          HorizontalAlignment="Stretch" />
+                                          HorizontalAlignment="Stretch" Margin="0,0,0,4" />
+                                <ComboBox ItemsSource="{Binding RelearnMoveDataSource}"
+                                          SelectedValue="{Binding RelearnMove2}"
+                                          SelectedValueBinding="{Binding Value}"
+                                          DisplayMemberBinding="{Binding Text}"
+                                          HorizontalAlignment="Stretch" Margin="0,0,0,4" />
+                                <ComboBox ItemsSource="{Binding RelearnMoveDataSource}"
+                                          SelectedValue="{Binding RelearnMove3}"
+                                          SelectedValueBinding="{Binding Value}"
+                                          DisplayMemberBinding="{Binding Text}"
+                                          HorizontalAlignment="Stretch" Margin="0,0,0,4" />
+                                <ComboBox ItemsSource="{Binding RelearnMoveDataSource}"
+                                          SelectedValue="{Binding RelearnMove4}"
+                                          SelectedValueBinding="{Binding Value}"
+                                          DisplayMemberBinding="{Binding Text}"
+                                          HorizontalAlignment="Stretch" Margin="0,0,0,4" />
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
@@ -310,21 +464,57 @@
                                 <TextBox Text="{Binding OriginalTrainerName}" />
                             </StackPanel>
 
-                            <StackPanel>
-                                <TextBlock Text="Trainer ID" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                <NumericUpDown Value="{Binding TrainerID}"
-                                               Minimum="0"
-                                               Maximum="4294967295"
-                                               FormatString="0" />
-                            </StackPanel>
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="TID" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding TrainerID}" Minimum="0" Maximum="4294967295" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="SID" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding Sid}" Minimum="0" Maximum="65535" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
 
-                            <StackPanel>
-                                <TextBlock Text="OT Gender" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                <ComboBox SelectedIndex="{Binding OriginalTrainerGender}" HorizontalAlignment="Stretch">
-                                    <ComboBoxItem Content="Male" />
-                                    <ComboBoxItem Content="Female" />
-                                </ComboBox>
-                            </StackPanel>
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="OT Gender" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <ComboBox ItemsSource="{Binding GenderList}"
+                                              SelectedValue="{Binding OriginalTrainerGender}"
+                                              SelectedValueBinding="{Binding Value}"
+                                              DisplayMemberBinding="{Binding Text}"
+                                              HorizontalAlignment="Stretch" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Happiness" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding Happiness}" Minimum="0" Maximum="255" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Separator />
+
+                            <!-- PID/EC -->
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="PID" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <TextBox Text="{Binding Pid}" FontFamily="Consolas" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="EC" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <TextBox Text="{Binding EncryptionConstant}" FontFamily="Consolas" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Pokerus -->
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="PKRS Strain" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding PkrsStrain}" Minimum="0" Maximum="15" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="PKRS Days" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding PkrsDays}" Minimum="0" Maximum="15" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>

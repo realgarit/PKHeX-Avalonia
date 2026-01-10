@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -16,11 +17,15 @@ public partial class BoxViewer : UserControl
         AttachedToVisualTree += (_, _) => Focus();
     }
 
+    private Point _dragStartPoint;
+
     private void OnSlotPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (sender is not Button { Tag: SlotData slot } || DataContext is not BoxViewerViewModel vm)
             return;
         
+        _dragStartPoint = e.GetPosition(this);
+
         // Only handle left-click for modifier actions
         if (!e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
             return;
@@ -46,6 +51,39 @@ public partial class BoxViewer : UserControl
             e.Handled = true;
         }
         // Normal click without modifiers - let Click event handle it for selection
+    }
+
+    private async void OnSlotPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (sender is not Button button || !e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            return;
+
+        var currentPoint = e.GetPosition(this);
+        var delta = currentPoint - _dragStartPoint;
+        if (Math.Abs(delta.X) < 5 && Math.Abs(delta.Y) < 5)
+            return;
+
+        if (button.Tag is not SlotData slot || slot.IsEmpty)
+            return;
+
+        var data = new DataObject();
+        data.Set("SlotDragData", new SlotDragData(slot.Location));
+
+        await DragDrop.DoDragDrop(e, data, DragDropEffects.Move | DragDropEffects.Copy);
+    }
+
+    private void OnSlotDrop(object? sender, DragEventArgs e)
+    {
+        if (sender is not Button button || button.Tag is not SlotData destSlot || DataContext is not BoxViewerViewModel vm)
+            return;
+
+        var data = e.Data.Get("SlotDragData") as SlotDragData;
+        if (data == null) return;
+
+        bool clone = e.KeyModifiers.HasFlag(KeyModifiers.Control);
+        
+        // Use a service or ViewModel method to request the move
+        vm.RequestMoveCommand.Execute((data, destSlot, e.KeyModifiers));
     }
 
     private void OnSlotClicked(object? sender, RoutedEventArgs e)

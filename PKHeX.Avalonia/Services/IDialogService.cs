@@ -8,4 +8,6 @@ public interface IDialogService
     Task<string?> SaveFileAsync(string title, string? defaultFileName = null, string[]? filters = null);
     Task ShowErrorAsync(string title, string message);
     Task<bool> ShowDialogAsync(Control content, string title);
+    Task<string?> GetClipboardTextAsync();
+    Task SetClipboardTextAsync(string text);
 }

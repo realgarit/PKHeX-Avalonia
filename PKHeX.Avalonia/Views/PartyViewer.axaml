@@ -22,6 +22,10 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:PartySlotData">
                         <Button PointerPressed="OnSlotPointerPressed"
+                                PointerMoved="OnSlotPointerMoved"
+                                DragDrop.AllowDrop="True"
+                                DragDrop.Drop="OnSlotDrop"
+                                ToolTip.Tip="{Binding ToolTipSummary}"
                                 Click="OnSlotClicked" 
                                 DoubleTapped="OnSlotDoubleTapped"
                                 Tag="{Binding}"
@@ -40,6 +44,11 @@
                                     <MenuItem Header="Set (Shift+Click)"
                                               Command="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).SetSlotCommand}"
                                               CommandParameter="{Binding}" />
+                                    <Separator />
+                                    <MenuItem Header="Delete (Alt+Click)"
+                                              Command="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).DeleteSlotCommand}"
+                                              CommandParameter="{Binding}"
+                                              IsEnabled="{Binding !IsEmpty}" />
                                 </ContextMenu>
                             </Button.ContextMenu>
                             <Button.Styles>

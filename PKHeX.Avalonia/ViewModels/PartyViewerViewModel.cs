@@ -23,6 +23,7 @@ public partial class PartyViewerViewModel : ViewModelBase
     public event Action<int>? SlotActivated;
     public event Action<int>? ViewSlotRequested;
     public event Action<int>? SetSlotRequested;
+    public event Action<int>? DeleteSlotRequested;
 
     public PartyViewerViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, ISlotService? slotService = null)
     {
@@ -68,6 +69,7 @@ public partial class PartyViewerViewModel : ViewModelBase
                 IsEgg = pk.IsEgg,
                 CurrentHp = (ushort)(pk is PKM pkm ? pkm.Stat_HPCurrent : 0),
                 MaxHp = (ushort)(pk is PKM pkm2 ? pkm2.Stat_HPMax : 0),
+                ShowdownSummary = isEmpty ? string.Empty : new ShowdownSet(pk).Text,
                 IsSelected = false
             });
         }
@@ -136,8 +138,27 @@ public partial class PartyViewerViewModel : ViewModelBase
             SetSlotRequested?.Invoke(slot.Slot);
     }
     
+    [RelayCommand]
+    private void DeleteSlot(PartySlotData? slot)
+    {
+        if (slot is null || slot.IsEmpty)
+            return;
+        
+        if (_slotService is not null)
+            _slotService.RequestDelete(SlotLocation.FromParty(slot.Slot));
+        else
+            DeleteSlotRequested?.Invoke(slot.Slot);
+    }
+    
     /// <summary>
     /// Gets the PKM at the specified slot.
     /// </summary>
     public PKM GetSlotPKM(int slot) => _sav.GetPartySlotAtIndex(slot);
+
+    [RelayCommand]
+    private void RequestMove((SlotDragData data, PartySlotData dest, global::Avalonia.Input.KeyModifiers modifiers) param)
+    {
+        bool clone = param.modifiers.HasFlag(global::Avalonia.Input.KeyModifiers.Control);
+        _slotService?.RequestMove(param.data.Source, param.dest.Location, clone);
+    }
 }

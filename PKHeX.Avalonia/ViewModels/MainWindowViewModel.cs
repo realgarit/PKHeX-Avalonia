@@ -48,6 +48,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _slotService.ViewRequested += OnViewRequested;
         _slotService.SetRequested += OnSetRequested;
         _slotService.DeleteRequested += OnDeleteRequested;
+        _slotService.MoveRequested += OnMoveRequested;
     }
 
     [ObservableProperty]
@@ -60,9 +61,12 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             _spriteRenderer.Initialize(sav);
             
+            // Initialize PKHeX Core data filters for the current save
+            GameInfo.FilteredSources = new FilteredGameDataSource(sav, GameInfo.Sources);
+            
             // Initialize Editor with a blank PKM (or first slot?)
             var blank = sav.BlankPKM;
-            CurrentPokemonEditor = new PokemonEditorViewModel(blank, sav, _spriteRenderer);
+            CurrentPokemonEditor = new PokemonEditorViewModel(blank, sav, _spriteRenderer, _dialogService);
             
             var boxViewer = new BoxViewerViewModel(sav, _spriteRenderer, _slotService);
             boxViewer.SlotActivated += OnBoxSlotActivated;
@@ -192,6 +196,47 @@ public partial class MainWindowViewModel : ViewModelBase
             OnBoxDeleteSlot(location.Box, location.Slot);
     }
     
+    private void OnMoveRequested(SlotLocation source, SlotLocation destination, bool clone)
+    {
+        if (CurrentSave is null) return;
+
+        var pkSource = source.IsParty
+            ? CurrentSave.GetPartySlotAtIndex(source.Slot)
+            : CurrentSave.GetBoxSlotAtIndex(source.Box, source.Slot);
+
+        if (pkSource.Species == 0) return;
+
+        var pkDest = destination.IsParty
+            ? CurrentSave.GetPartySlotAtIndex(destination.Slot)
+            : CurrentSave.GetBoxSlotAtIndex(destination.Box, destination.Slot);
+
+        // Perform move/swap/clone
+        if (clone)
+        {
+            if (destination.IsParty)
+                CurrentSave.SetPartySlotAtIndex(pkSource.Clone(), destination.Slot);
+            else
+                CurrentSave.SetBoxSlotAtIndex(pkSource.Clone(), destination.Box, destination.Slot);
+        }
+        else
+        {
+            // Swap
+            if (source.IsParty)
+                CurrentSave.SetPartySlotAtIndex(pkDest, source.Slot);
+            else
+                CurrentSave.SetBoxSlotAtIndex(pkDest, source.Box, source.Slot);
+
+            if (destination.IsParty)
+                CurrentSave.SetPartySlotAtIndex(pkSource, destination.Slot);
+            else
+                CurrentSave.SetBoxSlotAtIndex(pkSource, destination.Box, destination.Slot);
+        }
+
+        // Refresh viewers
+        BoxViewer?.RefreshCurrentBox();
+        PartyViewer?.RefreshParty();
+    }
+
     // Box slot action handlers
     private void OnBoxViewSlot(int box, int slot)
     {
