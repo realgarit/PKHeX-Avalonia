@@ -1,53 +1,39 @@
-PKHeX
-=====
-<div>
-  <span>English</span> / <a href=".github/README-es.md">Español</a> / <a href=".github/README-fr.md">Français</a> / <a href=".github/README-de.md">Deutsch</a> / <a href=".github/README-it.md">Italiano</a> / <a href=".github/README-ko.md">한국어</a> / <a href=".github/README-zh-Hant.md">繁體中文</a> / <a href=".github/README-zh-Hans.md">简体中文</a>
-</div>
+# PKHeX Avalonia
 
 ![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
-Pokémon core series save editor, programmed in [C#](https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29).
+PKHeX Avalonia is a cross-platform port of [PKHeX](https://github.com/kwsch/PKHeX). By using the Avalonia UI framework, we're bringing the classic Pokémon save editor to macOS and Linux with a native look and feel.
 
-Supports the following files:
-* Save files ("main", \*.sav, \*.dsv, \*.dat, \*.gci, \*.bin)
-* GameCube Memory Card files (\*.raw, \*.bin) containing GC Pokémon savegames.
-* Individual Pokémon entity files (.pk\*, \*.ck3, \*.xk3, \*.pb7, \*.sk2, \*.bk4, \*.rk4)
-* Mystery Gift files (\*.pgt, \*.pcd, \*.pgf, .wc\*) including conversion to .pk\*
-* Importing GO Park entities (\*.gp1) including conversion to .pb7
-* Importing teams from Decrypted 3DS Battle Videos
-* Transferring from one generation to another, converting formats along the way.
+### ⚠️ Project Status: Early Development
+This is currently in a pre-alpha state. Most features are still being moved over from the original Windows version. Expect bugs and missing functionality.
 
-Data is displayed in a view which can be edited and saved.
-The interface can be translated with resource/external text files so that different languages can be supported.
+---
 
-Pokémon Showdown sets and QR codes can be imported/exported to assist in sharing.
+## Features
+We're working on full support for everything the original PKHeX offers:
+* **Save Editing:** Core series save files (.sav, .dsv, .dat, .gci, .bin).
+* **Entity Files:** Import and export .pk\*, .ck3, .xk3, .pb7, and more.
+* **Mystery Gifts:** Support for .pgt, .pcd, .pgf, and .wc\* files.
+* **Transferring:** Move Pokémon between generations while converting formats automatically.
 
-PKHeX expects save files that are not encrypted with console-specific keys. Use a savedata manager to import and export savedata from the console ([Checkpoint](https://github.com/FlagBrew/Checkpoint), save_manager, [JKSM](https://github.com/J-D-K/JKSM), or SaveDataFiler).
+## Requirements
+To build and run this, you'll need:
+* [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
-**We do not support or condone cheating at the expense of others. Do not use significantly hacked Pokémon in battle or in trades with those who are unaware hacked Pokémon are in use.**
+## Getting Started
+You can run the project directly from your terminal. Navigate to the root folder and run:
+
+```bash
+dotnet run --project PKHeX.Avalonia/PKHeX.Avalonia.csproj
+```
 
 ## Screenshots
+*Work in progress — the UI is changing fast.*
 
-![Main Window](https://i.imgur.com/pIHdoTp.png)
+## Credits
+This fork is built on the incredible work of the [PKHeX team](https://github.com/kwsch/PKHeX).
 
-## Building
-
-PKHeX is a Windows Forms application which requires [.NET 10](https://dotnet.microsoft.com/download/dotnet/10.0).
-
-The executable can be built with any compiler that supports C# 14.
-
-### Build Configurations
-
-Use the Debug or Release build configurations when building. There isn't any platform specific code to worry about!
-
-## Dependencies
-
-PKHeX's QR code generation code is taken from [QRCoder](https://github.com/codebude/QRCoder), which is licensed under [the MIT license](https://github.com/codebude/QRCoder/blob/master/LICENSE.txt).
-
-PKHeX's shiny sprite collection is taken from [pokesprite](https://github.com/msikma/pokesprite), which is licensed under [the MIT license](https://github.com/msikma/pokesprite/blob/master/LICENSE).
-
-PKHeX's Pokémon Legends: Arceus sprite collection is taken from the [National Pokédex - Icon Dex](https://www.deviantart.com/pikafan2000/art/National-Pokedex-Version-Delta-Icon-Dex-824897934) project and its abundance of collaborators and contributors.
-
-### IDE
-
-PKHeX can be opened with IDEs such as [Visual Studio](https://visualstudio.microsoft.com/downloads/) by opening the .sln or .csproj file.
+* **Logic & Research:** [PKHeX](https://github.com/kwsch/PKHeX)
+* **QR Codes:** [QRCoder](https://github.com/codebude/QRCoder) (MIT)
+* **Sprites:** [pokesprite](https://github.com/msikma/pokesprite) (MIT)
+* **Arceus Sprites:** National Pokédex - Icon Dex project and contributors.

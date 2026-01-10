@@ -14,6 +14,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly int _box;
     private readonly int _slot;
+    private readonly bool _isParty;
 
     // Data sources from GameInfo
     public IReadOnlyList<ComboItem> SpeciesList { get; }
@@ -144,13 +145,14 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     public bool HasForms => FormList.Count > 1;
 
-    public PokemonEditorViewModel(PKM pk, SaveFile sav, ISpriteRenderer spriteRenderer, int box, int slot)
+    public PokemonEditorViewModel(PKM pk, SaveFile sav, ISpriteRenderer spriteRenderer, int box, int slot, bool isParty = false)
     {
         _pk = pk;
         _sav = sav;
         _spriteRenderer = spriteRenderer;
         _box = box;
         _slot = slot;
+        _isParty = isParty;
 
         // Initialize data sources
         var sources = GameInfo.Sources;
@@ -310,7 +312,10 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _pk.ResetPartyStats();
 
         // Write back to save
-        _sav.SetBoxSlotAtIndex(_pk, _box, _slot);
+        if (_isParty)
+            _sav.SetPartySlotAtIndex(_pk, _slot);
+        else
+            _sav.SetBoxSlotAtIndex(_pk, _box, _slot);
 
         SaveCompleted?.Invoke();
     }

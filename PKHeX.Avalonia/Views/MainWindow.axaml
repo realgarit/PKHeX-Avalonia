@@ -51,7 +51,17 @@
             </StackPanel>
 
             <!-- Save Loaded State -->
-            <views:BoxViewer DataContext="{Binding BoxViewer}" IsVisible="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).HasSave}" />
+            <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="*,Auto">
+                <!-- Box Viewer (left) -->
+                <views:BoxViewer Grid.Column="0" DataContext="{Binding BoxViewer}" />
+                
+                <!-- Party Viewer (right) -->
+                <views:PartyViewer Grid.Column="1" 
+                                   DataContext="{Binding PartyViewer}"
+                                   Width="350"
+                                   BorderThickness="1,0,0,0"
+                                   BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
+            </Grid>
         </Grid>
     </DockPanel>
 </Window>

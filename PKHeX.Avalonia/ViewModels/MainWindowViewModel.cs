@@ -23,6 +23,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private BoxViewerViewModel? _boxViewer;
 
+    [ObservableProperty]
+    private PartyViewerViewModel? _partyViewer;
+
     public bool HasSave => CurrentSave is not null;
 
     public string WindowTitle => CurrentSave is not null
@@ -47,19 +50,28 @@ public partial class MainWindowViewModel : ViewModelBase
         if (sav is not null)
         {
             _spriteRenderer.Initialize(sav);
+            
             var boxViewer = new BoxViewerViewModel(sav, _spriteRenderer);
-            boxViewer.SlotActivated += OnSlotActivated;
+            boxViewer.SlotActivated += OnBoxSlotActivated;
             BoxViewer = boxViewer;
+            
+            var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer);
+            partyViewer.SlotActivated += OnPartySlotActivated;
+            PartyViewer = partyViewer;
         }
         else
         {
             if (BoxViewer is not null)
-                BoxViewer.SlotActivated -= OnSlotActivated;
+                BoxViewer.SlotActivated -= OnBoxSlotActivated;
             BoxViewer = null;
+            
+            if (PartyViewer is not null)
+                PartyViewer.SlotActivated -= OnPartySlotActivated;
+            PartyViewer = null;
         }
     }
 
-    private async void OnSlotActivated(int box, int slot)
+    private async void OnBoxSlotActivated(int box, int slot)
     {
         if (CurrentSave is null)
             return;
@@ -68,7 +80,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (pk.Species == 0)
             return; // Empty slot
 
-        var editorVm = new PokemonEditorViewModel(pk, CurrentSave, _spriteRenderer, box, slot);
+        var editorVm = new PokemonEditorViewModel(pk, CurrentSave, _spriteRenderer, box, slot, isParty: false);
         var editorView = new PokemonEditor { DataContext = editorVm };
 
         var saved = await _dialogService.ShowDialogAsync(editorView, "Edit Pokémon");
@@ -76,6 +88,26 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             // Refresh the box viewer to show updated sprite
             BoxViewer?.RefreshCurrentBox();
+        }
+    }
+
+    private async void OnPartySlotActivated(int slot)
+    {
+        if (CurrentSave is null)
+            return;
+
+        var pk = CurrentSave.GetPartySlotAtIndex(slot);
+        if (pk.Species == 0)
+            return; // Empty slot
+
+        var editorVm = new PokemonEditorViewModel(pk, CurrentSave, _spriteRenderer, -1, slot, isParty: true);
+        var editorView = new PokemonEditor { DataContext = editorVm };
+
+        var saved = await _dialogService.ShowDialogAsync(editorView, "Edit Pokémon");
+        if (saved)
+        {
+            // Refresh the party viewer to show updated sprite
+            PartyViewer?.RefreshParty();
         }
     }
 
