@@ -21,7 +21,8 @@
             <ItemsControl ItemsSource="{Binding Slots}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:PartySlotData">
-                        <Button Click="OnSlotClicked" 
+                        <Button PointerPressed="OnSlotPointerPressed"
+                                Click="OnSlotClicked" 
                                 DoubleTapped="OnSlotDoubleTapped"
                                 Tag="{Binding}"
                                 Background="Transparent"
@@ -30,6 +31,17 @@
                                 BorderThickness="2"
                                 HorizontalContentAlignment="Stretch"
                                 Classes.selected="{Binding IsSelected}">
+                            <Button.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="View (Ctrl+Click)"
+                                              Command="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).ViewSlotCommand}"
+                                              CommandParameter="{Binding}"
+                                              IsEnabled="{Binding !IsEmpty}" />
+                                    <MenuItem Header="Set (Shift+Click)"
+                                              Command="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).SetSlotCommand}"
+                                              CommandParameter="{Binding}" />
+                                </ContextMenu>
+                            </Button.ContextMenu>
                             <Button.Styles>
                                 <Style Selector="Button">
                                     <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />

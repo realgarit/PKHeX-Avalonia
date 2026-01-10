@@ -11,6 +11,7 @@ public partial class BoxViewerViewModel : ViewModelBase
 {
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
+    private readonly ISlotService? _slotService;
 
     private const int Columns = 6;
 
@@ -29,10 +30,11 @@ public partial class BoxViewerViewModel : ViewModelBase
     public int BoxCount => _sav.BoxCount;
     public int SlotsPerBox => _sav.BoxSlotCount;
 
-    public BoxViewerViewModel(SaveFile sav, ISpriteRenderer spriteRenderer)
+    public BoxViewerViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, ISlotService? slotService = null)
     {
         _sav = sav;
         _spriteRenderer = spriteRenderer;
+        _slotService = slotService;
 
         LoadBox(0);
     }
@@ -57,18 +59,33 @@ public partial class BoxViewerViewModel : ViewModelBase
         Slots.Clear();
 
         var boxData = _sav.GetBoxData(box);
+        var strings = GameInfo.Strings;
+        
         for (int slot = 0; slot < boxData.Length; slot++)
         {
             var pk = boxData[slot];
+            var isEmpty = pk.Species == 0;
+            
             Slots.Add(new SlotData
             {
                 Slot = slot,
                 Box = box,
                 Species = pk.Species,
                 Sprite = _spriteRenderer.GetSprite(pk),
-                IsEmpty = pk.Species == 0,
+                IsEmpty = isEmpty,
                 IsShiny = pk.IsShiny,
-                Nickname = pk.Nickname,
+                Nickname = isEmpty ? string.Empty : pk.Nickname,
+                SpeciesName = isEmpty ? string.Empty : strings.Species[pk.Species],
+                Level = pk.CurrentLevel,
+                Gender = (byte)pk.Gender,
+                HeldItem = (ushort)pk.HeldItem,
+                HeldItemName = pk.HeldItem > 0 ? strings.Item[pk.HeldItem] : string.Empty,
+                IsEgg = pk.IsEgg,
+                Form = pk.Form,
+                Ability = (ushort)pk.Ability,
+                AbilityName = strings.Ability[pk.Ability],
+                Nature = (byte)pk.Nature,
+                NatureName = strings.Natures[(int)pk.Nature],
                 IsSelected = false
             });
         }
@@ -151,4 +168,68 @@ public partial class BoxViewerViewModel : ViewModelBase
     }
 
     public event Action<int, int>? SlotActivated;
+    
+    // Context menu events - pass-through to slot service or handle locally
+    public event Action<int, int>? ViewSlotRequested;
+    public event Action<int, int>? SetSlotRequested;
+    public event Action<int, int>? DeleteSlotRequested;
+    
+    [RelayCommand]
+    private void ViewSlot(SlotData? slot)
+    {
+        if (slot is null || slot.IsEmpty)
+            return;
+        
+        if (_slotService is not null)
+            _slotService.RequestView(SlotLocation.FromBox(CurrentBox, slot.Slot));
+        else
+            ViewSlotRequested?.Invoke(CurrentBox, slot.Slot);
+    }
+    
+    [RelayCommand]
+    private void SetSlot(SlotData? slot)
+    {
+        if (slot is null)
+            return;
+        
+        if (_slotService is not null)
+            _slotService.RequestSet(SlotLocation.FromBox(CurrentBox, slot.Slot));
+        else
+            SetSlotRequested?.Invoke(CurrentBox, slot.Slot);
+    }
+    
+    [RelayCommand]
+    private void DeleteSlot(SlotData? slot)
+    {
+        if (slot is null || slot.IsEmpty)
+            return;
+        
+        if (_slotService is not null)
+            _slotService.RequestDelete(SlotLocation.FromBox(CurrentBox, slot.Slot));
+        else
+            DeleteSlotRequested?.Invoke(CurrentBox, slot.Slot);
+    }
+    
+    /// <summary>
+    /// Gets the PKM at the specified slot.
+    /// </summary>
+    public PKM GetSlotPKM(int slot) => _sav.GetBoxSlotAtIndex(CurrentBox, slot);
+    
+    /// <summary>
+    /// Sets the PKM at the specified slot.
+    /// </summary>
+    public void SetSlotPKM(int slot, PKM pk)
+    {
+        _sav.SetBoxSlotAtIndex(pk, CurrentBox, slot);
+        RefreshCurrentBox();
+    }
+    
+    /// <summary>
+    /// Deletes (clears) the PKM at the specified slot.
+    /// </summary>
+    public void ClearSlot(int slot)
+    {
+        _sav.SetBoxSlotAtIndex(_sav.BlankPKM, CurrentBox, slot);
+        RefreshCurrentBox();
+    }
 }

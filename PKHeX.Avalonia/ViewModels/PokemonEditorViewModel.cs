@@ -9,12 +9,9 @@ namespace PKHeX.Avalonia.ViewModels;
 
 public partial class PokemonEditorViewModel : ViewModelBase
 {
-    private readonly PKM _pk;
+    private PKM _pk;
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
-    private readonly int _box;
-    private readonly int _slot;
-    private readonly bool _isParty;
 
     // Data sources from GameInfo
     public IReadOnlyList<ComboItem> SpeciesList { get; }
@@ -145,15 +142,15 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     public bool HasForms => FormList.Count > 1;
 
-    public PokemonEditorViewModel(PKM pk, SaveFile sav, ISpriteRenderer spriteRenderer, int box, int slot, bool isParty = false)
+    // Exposed for "Set" operations
+    public PKM TargetPKM => _pk;
+
+    public PokemonEditorViewModel(PKM pk, SaveFile sav, ISpriteRenderer spriteRenderer)
     {
-        _pk = pk;
+        _pk = pk.Clone(); // Always work on a copy
         _sav = sav;
         _spriteRenderer = spriteRenderer;
-        _box = box;
-        _slot = slot;
-        _isParty = isParty;
-
+        
         // Initialize data sources
         var sources = GameInfo.Sources;
         SpeciesList = sources.SpeciesDataSource;
@@ -164,6 +161,12 @@ public partial class PokemonEditorViewModel : ViewModelBase
         ItemList = sources.GetItemDataSource(_sav.Version, _sav.Context, [], HaX: true);
 
         // Load PKM data into view model
+        LoadFromPKM();
+    }
+
+    public void LoadPKM(PKM pk)
+    {
+        _pk = pk.Clone();
         LoadFromPKM();
     }
 
@@ -266,8 +269,10 @@ public partial class PokemonEditorViewModel : ViewModelBase
         Title = Species == 0 ? "Empty Slot" : $"Editing: {speciesName}";
     }
 
-    [RelayCommand]
-    private void Save()
+    /// <summary>
+    /// Applies current ViewModel state to the internal PKM and returns it.
+    /// </summary>
+    public PKM PreparePKM()
     {
         // Apply changes to PKM
         _pk.Species = Species;
@@ -310,20 +315,8 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
         // Recalculate stats
         _pk.ResetPartyStats();
-
-        // Write back to save
-        if (_isParty)
-            _sav.SetPartySlotAtIndex(_pk, _slot);
-        else
-            _sav.SetBoxSlotAtIndex(_pk, _box, _slot);
-
-        SaveCompleted?.Invoke();
-    }
-
-    [RelayCommand]
-    private void Cancel()
-    {
-        CancelRequested?.Invoke();
+        
+        return _pk;
     }
 
     [RelayCommand]
@@ -353,7 +346,4 @@ public partial class PokemonEditorViewModel : ViewModelBase
     {
         IsShiny = !IsShiny;
     }
-
-    public event Action? SaveCompleted;
-    public event Action? CancelRequested;
 }

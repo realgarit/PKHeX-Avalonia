@@ -138,11 +138,11 @@ public sealed class SpriteLoader
     private string GetResourceName(ushort species, byte form, byte gender, uint formarg, bool shiny, EntityContext context)
     {
         var prefix = shiny ? ShinyPrefix : SpritePrefix;
-        var spriteName = GetSpriteName(species, form, gender, formarg, shiny, context);
+        var spriteName = GetSpriteName(species, form, gender, formarg, context);
         return $"{prefix}b{spriteName}.png";
     }
 
-    private static string GetSpriteName(ushort species, byte form, byte gender, uint formarg, bool shiny, EntityContext context)
+    private static string GetSpriteName(ushort species, byte form, byte gender, uint formarg, EntityContext context)
     {
         // Species that always show default form
         if (SpeciesDefaultFormSprite.Contains(species))
@@ -182,10 +182,7 @@ public sealed class SpriteLoader
             sb.Append('-').Append(formarg);
         }
 
-        // Shiny suffix (only for shiny folder naming, not used with ShinyPrefix)
-        if (shiny)
-            sb.Append('s');
-
+        // Note: Shiny uses separate folder (ShinyPrefix), not a filename suffix
         return sb.ToString();
     }
 

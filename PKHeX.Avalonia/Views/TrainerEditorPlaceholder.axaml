@@ -1,0 +1,13 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="PKHeX.Avalonia.Views.TrainerEditorPlaceholder">
+    
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundChromeLowBrush}">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
+            <TextBlock Text="👤" FontSize="48" HorizontalAlignment="Center" />
+            <TextBlock Text="Trainer Editor" FontWeight="SemiBold" FontSize="16" HorizontalAlignment="Center" />
+            <TextBlock Text="Coming Soon" Opacity="0.6" HorizontalAlignment="Center" />
+            <TextBlock Text="Edit trainer name, ID, money, etc." Opacity="0.5" FontSize="12" HorizontalAlignment="Center" />
+        </StackPanel>
+    </Border>
+</UserControl>

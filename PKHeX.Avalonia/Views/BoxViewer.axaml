@@ -59,9 +59,26 @@
                                 Margin="1"
                                 BorderThickness="2"
                                 Classes.selected="{Binding IsSelected}"
+                                PointerPressed="OnSlotPointerPressed"
                                 Click="OnSlotClicked"
                                 DoubleTapped="OnSlotDoubleTapped"
                                 Tag="{Binding}">
+                            <Button.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="View (Ctrl+Click)"
+                                              Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).ViewSlotCommand}"
+                                              CommandParameter="{Binding}"
+                                              IsEnabled="{Binding !IsEmpty}" />
+                                    <MenuItem Header="Set (Shift+Click)"
+                                              Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).SetSlotCommand}"
+                                              CommandParameter="{Binding}" />
+                                    <Separator />
+                                    <MenuItem Header="Delete (Alt+Click)"
+                                              Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).DeleteSlotCommand}"
+                                              CommandParameter="{Binding}"
+                                              IsEnabled="{Binding !IsEmpty}" />
+                                </ContextMenu>
+                            </Button.ContextMenu>
                             <Button.Styles>
                                 <Style Selector="Button">
                                     <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />

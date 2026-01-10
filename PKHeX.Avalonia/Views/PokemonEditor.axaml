@@ -63,20 +63,7 @@
                 </Grid>
             </Border>
 
-            <!-- Bottom Buttons -->
-            <StackPanel DockPanel.Dock="Bottom"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Spacing="8"
-                        Margin="0,16,0,0">
-                <Button Content="Cancel"
-                        Command="{Binding CancelCommand}"
-                        Width="80" />
-                <Button Content="Save"
-                        Command="{Binding SaveCommand}"
-                        Classes="accent"
-                        Width="80" />
-            </StackPanel>
+
 
             <!-- Tab Control -->
             <TabControl Margin="0,0,0,0">

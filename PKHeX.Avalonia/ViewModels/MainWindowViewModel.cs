@@ -11,6 +11,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly ISaveFileService _saveFileService;
     private readonly IDialogService _dialogService;
     private readonly ISpriteRenderer _spriteRenderer;
+    private readonly ISlotService _slotService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSave))]
@@ -35,14 +36,22 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(
         ISaveFileService saveFileService,
         IDialogService dialogService,
-        ISpriteRenderer spriteRenderer)
+        ISpriteRenderer spriteRenderer,
+        ISlotService slotService)
     {
         _saveFileService = saveFileService;
         _dialogService = dialogService;
         _spriteRenderer = spriteRenderer;
+        _slotService = slotService;
 
         _saveFileService.SaveFileChanged += OnSaveFileChanged;
+        _slotService.ViewRequested += OnViewRequested;
+        _slotService.SetRequested += OnSetRequested;
+        _slotService.DeleteRequested += OnDeleteRequested;
     }
+
+    [ObservableProperty]
+    private PokemonEditorViewModel? _currentPokemonEditor;
 
     private void OnSaveFileChanged(SaveFile? sav)
     {
@@ -51,64 +60,56 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             _spriteRenderer.Initialize(sav);
             
-            var boxViewer = new BoxViewerViewModel(sav, _spriteRenderer);
+            // Initialize Editor with a blank PKM (or first slot?)
+            var blank = sav.BlankPKM;
+            CurrentPokemonEditor = new PokemonEditorViewModel(blank, sav, _spriteRenderer);
+            
+            var boxViewer = new BoxViewerViewModel(sav, _spriteRenderer, _slotService);
             boxViewer.SlotActivated += OnBoxSlotActivated;
+            boxViewer.ViewSlotRequested += OnBoxViewSlot;
+            boxViewer.SetSlotRequested += OnBoxSetSlot;
+            boxViewer.DeleteSlotRequested += OnBoxDeleteSlot;
             BoxViewer = boxViewer;
             
-            var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer);
+            var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer, _slotService);
             partyViewer.SlotActivated += OnPartySlotActivated;
+            partyViewer.ViewSlotRequested += OnPartyViewSlot;
+            partyViewer.SetSlotRequested += OnPartySetSlot;
             PartyViewer = partyViewer;
         }
         else
         {
+            CurrentPokemonEditor = null;
+            
             if (BoxViewer is not null)
+            {
                 BoxViewer.SlotActivated -= OnBoxSlotActivated;
+                BoxViewer.ViewSlotRequested -= OnBoxViewSlot;
+                BoxViewer.SetSlotRequested -= OnBoxSetSlot;
+                BoxViewer.DeleteSlotRequested -= OnBoxDeleteSlot;
+            }
             BoxViewer = null;
             
             if (PartyViewer is not null)
+            {
                 PartyViewer.SlotActivated -= OnPartySlotActivated;
+                PartyViewer.ViewSlotRequested -= OnPartyViewSlot;
+                PartyViewer.SetSlotRequested -= OnPartySetSlot;
+            }
             PartyViewer = null;
         }
     }
 
-    private async void OnBoxSlotActivated(int box, int slot)
+    private void OnBoxSlotActivated(int box, int slot)
     {
-        if (CurrentSave is null)
-            return;
-
-        var pk = CurrentSave.GetBoxSlotAtIndex(box, slot);
-        if (pk.Species == 0)
-            return; // Empty slot
-
-        var editorVm = new PokemonEditorViewModel(pk, CurrentSave, _spriteRenderer, box, slot, isParty: false);
-        var editorView = new PokemonEditor { DataContext = editorVm };
-
-        var saved = await _dialogService.ShowDialogAsync(editorView, "Edit Pokémon");
-        if (saved)
-        {
-            // Refresh the box viewer to show updated sprite
-            BoxViewer?.RefreshCurrentBox();
-        }
+        // Double click = View
+        OnBoxViewSlot(box, slot);
     }
 
-    private async void OnPartySlotActivated(int slot)
+    private void OnPartySlotActivated(int slot)
     {
-        if (CurrentSave is null)
-            return;
-
-        var pk = CurrentSave.GetPartySlotAtIndex(slot);
-        if (pk.Species == 0)
-            return; // Empty slot
-
-        var editorVm = new PokemonEditorViewModel(pk, CurrentSave, _spriteRenderer, -1, slot, isParty: true);
-        var editorView = new PokemonEditor { DataContext = editorVm };
-
-        var saved = await _dialogService.ShowDialogAsync(editorView, "Edit Pokémon");
-        if (saved)
-        {
-            // Refresh the party viewer to show updated sprite
-            PartyViewer?.RefreshParty();
-        }
+        // Double click = View
+        OnPartyViewSlot(slot);
     }
 
     [RelayCommand]
@@ -164,5 +165,106 @@ public partial class MainWindowViewModel : ViewModelBase
     private void CloseFile()
     {
         _saveFileService.CloseSave();
+    }
+    
+    // Slot Service event handlers
+    private void OnViewRequested(SlotLocation location)
+    {
+        if (location.IsParty)
+            OnPartyViewSlot(location.Slot);
+        else
+            OnBoxViewSlot(location.Box, location.Slot);
+    }
+    
+    private void OnSetRequested(SlotLocation location)
+    {
+        if (location.IsParty)
+            OnPartySetSlot(location.Slot);
+        else
+            OnBoxSetSlot(location.Box, location.Slot);
+    }
+    
+    private void OnDeleteRequested(SlotLocation location)
+    {
+        if (location.IsParty)
+            OnPartyDeleteSlot(location.Slot);
+        else
+            OnBoxDeleteSlot(location.Box, location.Slot);
+    }
+    
+    // Box slot action handlers
+    private void OnBoxViewSlot(int box, int slot)
+    {
+        if (CurrentSave is null || BoxViewer is null || CurrentPokemonEditor is null)
+            return;
+        
+        var pk = CurrentSave.GetBoxSlotAtIndex(box, slot);
+        if (pk.Species == 0)
+            return;
+        
+        // Load into Side Panel Editor
+        CurrentPokemonEditor.LoadPKM(pk);
+    }
+    
+    private void OnBoxSetSlot(int box, int slot)
+    {
+        if (CurrentSave is null || BoxViewer is null || CurrentPokemonEditor is null)
+            return;
+        
+        // Get modified PKM from editor
+        var pkm = CurrentPokemonEditor.PreparePKM();
+        
+        // Set to slot
+        CurrentSave.SetBoxSlotAtIndex(pkm, box, slot);
+        BoxViewer.RefreshCurrentBox();
+    }
+    
+    private void OnBoxDeleteSlot(int box, int slot)
+    {
+        if (CurrentSave is null || BoxViewer is null)
+            return;
+        
+        var pk = CurrentSave.GetBoxSlotAtIndex(box, slot);
+        if (pk.Species == 0)
+            return; // Already empty
+        
+        // Clear the slot
+        CurrentSave.SetBoxSlotAtIndex(CurrentSave.BlankPKM, box, slot);
+        BoxViewer.RefreshCurrentBox();
+    }
+    
+    // Party slot action handlers
+    private void OnPartyViewSlot(int slot)
+    {
+        if (CurrentSave is null || CurrentPokemonEditor is null)
+            return;
+        
+        var pk = CurrentSave.GetPartySlotAtIndex(slot);
+        if (pk.Species == 0)
+            return;
+        
+        // Load into Side Panel Editor
+        CurrentPokemonEditor.LoadPKM(pk);
+    }
+    
+    private void OnPartySetSlot(int slot)
+    {
+        if (CurrentSave is null || PartyViewer is null || CurrentPokemonEditor is null)
+            return;
+        
+        var pkm = CurrentPokemonEditor.PreparePKM();
+        
+        CurrentSave.SetPartySlotAtIndex(pkm, slot);
+        PartyViewer.RefreshParty();
+    }
+    
+    private void OnPartyDeleteSlot(int slot)
+    {
+        if (CurrentSave is null || PartyViewer is null)
+            return;
+        
+        // Party slots can't be deleted in the middle - only if it's the last slot
+        // For now, just show an error
+        _ = _dialogService.ShowErrorAsync("Delete", "Cannot delete party Pokémon. Move to a box first.");
     }
 }

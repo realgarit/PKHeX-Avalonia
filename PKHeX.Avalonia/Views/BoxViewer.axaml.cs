@@ -16,12 +16,45 @@ public partial class BoxViewer : UserControl
         AttachedToVisualTree += (_, _) => Focus();
     }
 
+    private void OnSlotPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (sender is not Button { Tag: SlotData slot } || DataContext is not BoxViewerViewModel vm)
+            return;
+        
+        // Only handle left-click for modifier actions
+        if (!e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
+            return;
+        
+        var modifiers = e.KeyModifiers;
+        
+        if (modifiers.HasFlag(KeyModifiers.Control))
+        {
+            // Ctrl+Click = View
+            vm.ViewSlotCommand.Execute(slot);
+            e.Handled = true;
+        }
+        else if (modifiers.HasFlag(KeyModifiers.Shift))
+        {
+            // Shift+Click = Set
+            vm.SetSlotCommand.Execute(slot);
+            e.Handled = true;
+        }
+        else if (modifiers.HasFlag(KeyModifiers.Alt))
+        {
+            // Alt+Click = Delete
+            vm.DeleteSlotCommand.Execute(slot);
+            e.Handled = true;
+        }
+        // Normal click without modifiers - let Click event handle it for selection
+    }
+
     private void OnSlotClicked(object? sender, RoutedEventArgs e)
     {
-        if (sender is Button { Tag: SlotData slot } && DataContext is BoxViewerViewModel vm)
-        {
-            vm.SelectSlotByClickCommand.Execute(slot);
-        }
+        if (sender is not Button { Tag: SlotData slot } || DataContext is not BoxViewerViewModel vm)
+            return;
+        
+        // Normal click = Select (modifier clicks are handled by PointerPressed)
+        vm.SelectSlotByClickCommand.Execute(slot);
     }
 
     private void OnSlotDoubleTapped(object? sender, TappedEventArgs e)

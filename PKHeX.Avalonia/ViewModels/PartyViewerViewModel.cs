@@ -12,6 +12,7 @@ public partial class PartyViewerViewModel : ViewModelBase
 {
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
+    private readonly ISlotService? _slotService;
 
     [ObservableProperty]
     private int _selectedIndex;
@@ -20,11 +21,14 @@ public partial class PartyViewerViewModel : ViewModelBase
     private ObservableCollection<PartySlotData> _slots = [];
 
     public event Action<int>? SlotActivated;
+    public event Action<int>? ViewSlotRequested;
+    public event Action<int>? SetSlotRequested;
 
-    public PartyViewerViewModel(SaveFile sav, ISpriteRenderer spriteRenderer)
+    public PartyViewerViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, ISlotService? slotService = null)
     {
         _sav = sav;
         _spriteRenderer = spriteRenderer;
+        _slotService = slotService;
         LoadParty();
     }
 
@@ -40,19 +44,30 @@ public partial class PartyViewerViewModel : ViewModelBase
         var previousIndex = SelectedIndex;
         Slots.Clear();
         
+        var strings = GameInfo.Strings;
+        var partyCount = _sav.PartyCount;
+        
         for (int i = 0; i < 6; i++)
         {
             var pk = _sav.GetPartySlotAtIndex(i);
+            var isEmpty = pk.Species == 0 || i >= partyCount;
+            
             Slots.Add(new PartySlotData
             {
                 Slot = i,
                 Species = pk.Species,
                 Sprite = _spriteRenderer.GetSprite(pk),
-                IsEmpty = pk.Species == 0,
+                IsEmpty = isEmpty,
                 IsShiny = pk.IsShiny,
-                Nickname = pk.Nickname,
+                Nickname = isEmpty ? string.Empty : pk.Nickname,
+                SpeciesName = isEmpty ? string.Empty : strings.Species[pk.Species],
                 Level = pk.CurrentLevel,
-                SpeciesName = GameInfo.Strings.Species[pk.Species],
+                Gender = (byte)pk.Gender,
+                HeldItem = (ushort)pk.HeldItem,
+                HeldItemName = pk.HeldItem > 0 ? strings.Item[pk.HeldItem] : string.Empty,
+                IsEgg = pk.IsEgg,
+                CurrentHp = (ushort)(pk is PKM pkm ? pkm.Stat_HPCurrent : 0),
+                MaxHp = (ushort)(pk is PKM pkm2 ? pkm2.Stat_HPMax : 0),
                 IsSelected = false
             });
         }
@@ -96,4 +111,33 @@ public partial class PartyViewerViewModel : ViewModelBase
     }
 
     public void RefreshParty() => LoadParty();
+    
+    [RelayCommand]
+    private void ViewSlot(PartySlotData? slot)
+    {
+        if (slot is null || slot.IsEmpty)
+            return;
+        
+        if (_slotService is not null)
+            _slotService.RequestView(SlotLocation.FromParty(slot.Slot));
+        else
+            ViewSlotRequested?.Invoke(slot.Slot);
+    }
+    
+    [RelayCommand]
+    private void SetSlot(PartySlotData? slot)
+    {
+        if (slot is null)
+            return;
+        
+        if (_slotService is not null)
+            _slotService.RequestSet(SlotLocation.FromParty(slot.Slot));
+        else
+            SetSlotRequested?.Invoke(slot.Slot);
+    }
+    
+    /// <summary>
+    /// Gets the PKM at the specified slot.
+    /// </summary>
+    public PKM GetSlotPKM(int slot) => _sav.GetPartySlotAtIndex(slot);
 }

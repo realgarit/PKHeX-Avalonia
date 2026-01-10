@@ -23,6 +23,9 @@ public partial class App : Application
         ConfigureServices(services);
         Services = services.BuildServiceProvider();
 
+        // Initialize PKHeX Core
+        Core.GameInfo.CurrentLanguage = "en";
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow
@@ -40,6 +43,7 @@ public partial class App : Application
         services.AddSingleton<ISaveFileService, SaveFileService>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<ISpriteRenderer, AvaloniaSpriteRenderer>();
+        services.AddSingleton<ISlotService, SlotService>();
 
         // ViewModels (Transient - created fresh each time)
         services.AddTransient<MainWindowViewModel>();

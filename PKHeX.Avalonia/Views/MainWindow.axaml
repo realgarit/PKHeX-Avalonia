@@ -5,8 +5,8 @@
         x:Class="PKHeX.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="{Binding WindowTitle}"
-        Width="800" Height="600"
-        MinWidth="600" MinHeight="400">
+        Width="1100" Height="650"
+        MinWidth="900" MinHeight="500">
 
     <Window.KeyBindings>
         <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}" />
@@ -23,6 +23,27 @@
                 <MenuItem Header="Save _As..." Command="{Binding SaveFileAsCommand}" InputGesture="Ctrl+Shift+S" />
                 <Separator />
                 <MenuItem Header="_Close" Command="{Binding CloseFileCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Showdown">
+                    <MenuItem Header="Import Set from Clipboard" InputGesture="Ctrl+T" IsEnabled="False" />
+                    <MenuItem Header="Export Set to Clipboard" InputGesture="Ctrl+Shift+T" IsEnabled="False" />
+                </MenuItem>
+                <MenuItem Header="Data">
+                    <MenuItem Header="Load Boxes" IsEnabled="False" />
+                    <MenuItem Header="Dump Boxes" IsEnabled="False" />
+                    <MenuItem Header="PKM Database" IsEnabled="False" />
+                    <MenuItem Header="Mystery Gift Database" IsEnabled="False" />
+                </MenuItem>
+                <MenuItem Header="Batch Editor" IsEnabled="False" />
+            </MenuItem>
+            <MenuItem Header="_Options">
+                <MenuItem Header="Language" IsEnabled="False" />
+                <MenuItem Header="Undo" InputGesture="Ctrl+U" IsEnabled="False" />
+                <MenuItem Header="Redo" InputGesture="Ctrl+Y" IsEnabled="False" />
+                <Separator />
+                <MenuItem Header="Settings" IsEnabled="False" />
+                <MenuItem Header="About PKHeX" IsEnabled="False" />
             </MenuItem>
         </Menu>
 
@@ -50,17 +71,41 @@
                         Classes="accent" />
             </StackPanel>
 
-            <!-- Save Loaded State -->
-            <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="*,Auto">
-                <!-- Box Viewer (left) -->
-                <views:BoxViewer Grid.Column="0" DataContext="{Binding BoxViewer}" />
+            <!-- Save Loaded State: WinForms-style layout -->
+            <!-- Left: PKMEditor (persistent side panel) | Right: SAVEditor (tabs with Box/Party/Trainer/etc) -->
+            <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="400,*">
                 
-                <!-- Party Viewer (right) -->
-                <views:PartyViewer Grid.Column="1" 
-                                   DataContext="{Binding PartyViewer}"
-                                   Width="350"
-                                   BorderThickness="1,0,0,0"
-                                   BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
+                <!-- Left Panel: PKM Editor -->
+                <Border Grid.Column="0" 
+                        BorderThickness="0,0,1,0" 
+                        BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}">
+                    <ContentControl Content="{Binding CurrentPokemonEditor}">
+                        <ContentControl.ContentTemplate>
+                            <DataTemplate DataType="vm:PokemonEditorViewModel">
+                                <views:PokemonEditor />
+                            </DataTemplate>
+                        </ContentControl.ContentTemplate>
+                    </ContentControl>
+                </Border>
+                
+                <!-- Right Panel: SAV Editor (Box, Party, Trainer, etc.) -->
+                <TabControl Grid.Column="1" Margin="0">
+                    <TabItem Header="Box">
+                        <views:BoxViewer DataContext="{Binding BoxViewer}" />
+                    </TabItem>
+                    <TabItem Header="Party">
+                        <views:PartyViewer DataContext="{Binding PartyViewer}" />
+                    </TabItem>
+                    <TabItem Header="Trainer">
+                        <views:TrainerEditorPlaceholder />
+                    </TabItem>
+                    <TabItem Header="Inventory">
+                        <views:InventoryPlaceholder />
+                    </TabItem>
+                    <TabItem Header="Misc">
+                        <views:MiscEditorPlaceholder />
+                    </TabItem>
+                </TabControl>
             </Grid>
         </Grid>
     </DockPanel>
