@@ -244,13 +244,14 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         
         var pk = CurrentSave.GetBoxSlotAtIndex(box, slot);
+        Console.WriteLine($"GetBoxSlotAtIndex({box}, {slot}): Species={pk.Species}, IV_HP={pk.IV_HP}, Level={pk.CurrentLevel}, OT={pk.OriginalTrainerName}");
         if (pk.Species == 0)
             return;
-        
+
         // Load into Side Panel Editor
         CurrentPokemonEditor.LoadPKM(pk);
     }
-    
+
     private void OnBoxSetSlot(int box, int slot)
     {
         if (CurrentSave is null || BoxViewer is null || CurrentPokemonEditor is null)

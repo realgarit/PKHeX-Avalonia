@@ -298,7 +298,9 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     public void LoadPKM(PKM pk)
     {
+        Console.WriteLine($"LoadPKM: BEFORE clone pk.IV_HP={pk.IV_HP}, pk.Type={pk.GetType().Name}");
         _pk = pk.Clone();
+        Console.WriteLine($"LoadPKM: AFTER clone _pk.IV_HP={_pk.IV_HP}, _pk.Type={_pk.GetType().Name}");
         LoadFromPKM();
     }
 
@@ -307,32 +309,45 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _isLoading = true;
         try
         {
+            Console.WriteLine($"LoadFromPKM START: _pk.IV_HP={_pk.IV_HP}");
+
             // First set species/form to populate dynamic lists
             Species = _pk.Species;
+            Console.WriteLine($"After Species=: _pk.IV_HP={_pk.IV_HP}");
+
             Form = _pk.Form;
+            Console.WriteLine($"After Form=: _pk.IV_HP={_pk.IV_HP}");
 
             // Update dynamic lists BEFORE setting their selected values
             UpdateFormList();
+            Console.WriteLine($"After UpdateFormList: _pk.IV_HP={_pk.IV_HP}");
+
             UpdateAbilityList();
+            Console.WriteLine($"After UpdateAbilityList: _pk.IV_HP={_pk.IV_HP}");
 
             // Now set the values that depend on those lists
             Ability = _pk.Ability;
+            Console.WriteLine($"After Ability=: _pk.IV_HP={_pk.IV_HP}");
 
             // Basic info
             Nickname = _pk.Nickname;
+            Console.WriteLine($"After Nickname=: _pk.IV_HP={_pk.IV_HP}");
             Level = _pk.CurrentLevel;
+            Console.WriteLine($"After Level=: _pk.IV_HP={_pk.IV_HP}");
             Nature = (int)_pk.Nature;
             HeldItem = _pk.HeldItem;
             Ball = _pk.Ball;
             Gender = _pk.Gender;
             IsShiny = _pk.IsShiny;
             IsEgg = _pk.IsEgg;
+            Console.WriteLine($"After basic info: _pk.IV_HP={_pk.IV_HP}");
 
             // Moves
             Move1 = _pk.Move1;
             Move2 = _pk.Move2;
             Move3 = _pk.Move3;
             Move4 = _pk.Move4;
+            Console.WriteLine($"After moves: _pk.IV_HP={_pk.IV_HP}");
 
             RelearnMove1 = _pk.RelearnMove1;
             RelearnMove2 = _pk.RelearnMove2;
@@ -348,14 +363,17 @@ public partial class PokemonEditorViewModel : ViewModelBase
             PpUps2 = _pk.Move2_PPUps;
             PpUps3 = _pk.Move3_PPUps;
             PpUps4 = _pk.Move4_PPUps;
+            Console.WriteLine($"After PP: _pk.IV_HP={_pk.IV_HP}");
 
             // Stats
+            Console.WriteLine($"Loading IVs from _pk: HP={_pk.IV_HP} ATK={_pk.IV_ATK} DEF={_pk.IV_DEF}");
             IvHP = _pk.IV_HP;
             IvATK = _pk.IV_ATK;
             IvDEF = _pk.IV_DEF;
             IvSPA = _pk.IV_SPA;
             IvSPD = _pk.IV_SPD;
             IvSPE = _pk.IV_SPE;
+            Console.WriteLine($"After setting: IvHP={IvHP} IvATK={IvATK} IvDEF={IvDEF}");
 
             EvHP = _pk.EV_HP;
             EvATK = _pk.EV_ATK;
@@ -397,7 +415,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
             // OT info
             OriginalTrainerName = _pk.OriginalTrainerName;
-            TrainerID = _pk.ID32;
+            TrainerID = _pk.DisplayTID;
             OriginalTrainerGender = _pk.OriginalTrainerGender;
 
             UpdateTitle();
@@ -553,6 +571,8 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     private void RecalculateStats()
     {
+        if (_isLoading) return; // Don't overwrite _pk during loading
+
         _pk.Stat_Level = (byte)Level;
         _pk.IV_HP = IvHP;
         _pk.IV_ATK = IvATK;
