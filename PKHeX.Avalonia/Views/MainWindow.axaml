@@ -35,13 +35,25 @@
                     <MenuItem Header="PKM Database" Command="{Binding OpenPKMDatabaseCommand}" />
                     <MenuItem Header="Mystery Gift Database" Command="{Binding OpenMysteryGiftDatabaseCommand}" />
                     <MenuItem Header="Block Editor" Command="{Binding OpenBlockEditorCommand}" />
+                    <MenuItem Header="Encounter Database" Command="{Binding OpenEncounterDatabaseCommand}" />
                 </MenuItem>
                 <MenuItem Header="Batch Editor" Command="{Binding OpenBatchEditorCommand}" />
+                <MenuItem Header="Box Manipulation" Command="{Binding OpenBoxManipCommand}" />
+                <MenuItem Header="Save Editors">
+                    <MenuItem Header="Daycare" Command="{Binding OpenDaycareCommand}" />
+                    <MenuItem Header="Records" Command="{Binding OpenRecordsCommand}" />
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="_Options">
-                <MenuItem Header="Language" IsEnabled="False" />
-                <MenuItem Header="Undo" InputGesture="Ctrl+U" IsEnabled="False" />
-                <MenuItem Header="Redo" InputGesture="Ctrl+Y" IsEnabled="False" />
+                <MenuItem Header="Language" ItemsSource="{Binding LanguageService.AvailableLanguages}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <MenuItem Header="{Binding Name}" Command="{Binding $parent[views:MainWindow].((vm:MainWindowViewModel)DataContext).ChangeLanguageCommand}" CommandParameter="{Binding Code}" />
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
+                </MenuItem>
+                <MenuItem Header="Undo" Command="{Binding UndoCommand}" InputGesture="Ctrl+Z" />
+                <MenuItem Header="Redo" Command="{Binding RedoCommand}" InputGesture="Ctrl+Y" />
                 <Separator />
                 <MenuItem Header="Settings" Command="{Binding OpenSettingsCommand}" />
                 <MenuItem Header="About PKHeX" Command="{Binding OpenAboutCommand}" />

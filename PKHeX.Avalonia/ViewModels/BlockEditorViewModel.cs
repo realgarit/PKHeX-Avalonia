@@ -188,7 +188,7 @@ public class BlockViewModel
     {
         if (_sc != null) return _sc.Data.ToArray();
         if (_bi != null) return _savData.Span.Slice(_bi.Offset, _bi.Length).ToArray();
-        return null;
+        return [];
     }
 
     public void SetData(byte[] data)

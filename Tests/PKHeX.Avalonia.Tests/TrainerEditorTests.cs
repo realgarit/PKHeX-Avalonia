@@ -65,6 +65,7 @@ public class TrainerEditorTests
         var startProp = sav.GetType().GetProperty("SecondsToStart");
         var fameProp = sav.GetType().GetProperty("SecondsToFame");
         Assert.NotNull(startProp);
+        Assert.NotNull(fameProp);
         
         // Initial state
         startProp.SetValue(sav, 1000u);
@@ -99,6 +100,8 @@ public class TrainerEditorTests
         var yProp = sav.GetType().GetProperty("Y");
         var zProp = sav.GetType().GetProperty("Z");
         Assert.NotNull(xProp);
+        Assert.NotNull(yProp);
+        Assert.NotNull(zProp);
         
         // Initial state
         xProp.SetValue(sav, 100);
@@ -141,6 +144,9 @@ public class TrainerEditorTests
         var xProp = sav.GetType().GetProperty("X");
         var yProp = sav.GetType().GetProperty("Y");
         var zProp = sav.GetType().GetProperty("Z");
+        Assert.NotNull(xProp);
+        Assert.NotNull(yProp);
+        Assert.NotNull(zProp);
         
         xProp.SetValue(sav, 100);
         yProp.SetValue(sav, 200);

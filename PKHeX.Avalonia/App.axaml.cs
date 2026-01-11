@@ -51,6 +51,8 @@ public partial class App : Application
         services.AddSingleton<ISpriteRenderer, AvaloniaSpriteRenderer>();
         services.AddSingleton<ISlotService, SlotService>();
         services.AddSingleton<IClipboardService, ClipboardService>();
+        services.AddSingleton<UndoRedoService>();
+        services.AddSingleton<LanguageService>();
 
         // ViewModels (Transient - created fresh each time)
         services.AddTransient<MainWindowViewModel>();

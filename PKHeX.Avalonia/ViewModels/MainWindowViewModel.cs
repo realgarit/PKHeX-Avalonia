@@ -16,6 +16,8 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly ISlotService _slotService;
     private readonly IClipboardService _clipboardService;
     private readonly AppSettings _settings;
+    private readonly UndoRedoService _undoRedo;
+    private readonly LanguageService _languageService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSave))]
@@ -26,6 +28,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(ImportShowdownCommand))]
     [NotifyCanExecuteChangedFor(nameof(ExportShowdownCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPKMDatabaseCommand))]
+    [NotifyCanExecuteChangedFor(nameof(UndoCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RedoCommand))]
     private SaveFile? _currentSave;
 
     [ObservableProperty]
@@ -53,10 +57,14 @@ public partial class MainWindowViewModel : ViewModelBase
     private BatchEditorViewModel? _batchEditor;
 
     public bool HasSave => CurrentSave is not null;
+    public bool CanUndo => _undoRedo.CanUndo;
+    public bool CanRedo => _undoRedo.CanRedo;
 
     public string WindowTitle => CurrentSave is not null
         ? $"PKHeX Avalonia - {CurrentSave.Version}"
         : "PKHeX Avalonia";
+
+    public LanguageService LanguageService => _languageService;
 
     public MainWindowViewModel(
         ISaveFileService saveFileService,
@@ -64,7 +72,9 @@ public partial class MainWindowViewModel : ViewModelBase
         ISpriteRenderer spriteRenderer,
         ISlotService slotService,
         IClipboardService clipboardService,
-        AppSettings settings)
+        AppSettings settings,
+        UndoRedoService undoRedo,
+        LanguageService languageService)
     {
         _saveFileService = saveFileService;
         _dialogService = dialogService;
@@ -72,12 +82,22 @@ public partial class MainWindowViewModel : ViewModelBase
         _slotService = slotService;
         _clipboardService = clipboardService;
         _settings = settings;
+        _undoRedo = undoRedo;
+        _languageService = languageService;
 
         _saveFileService.SaveFileChanged += OnSaveFileChanged;
         _slotService.ViewRequested += OnViewRequested;
         _slotService.SetRequested += OnSetRequested;
         _slotService.DeleteRequested += OnDeleteRequested;
         _slotService.MoveRequested += OnMoveRequested;
+        
+        _undoRedo.PropertyChanged += (_, _) =>
+        {
+            UndoCommand.NotifyCanExecuteChanged();
+            RedoCommand.NotifyCanExecuteChanged();
+        };
+        _undoRedo.UndoPerformed += OnUndoRedoPerformed;
+        _undoRedo.RedoPerformed += OnUndoRedoPerformed;
     }
 
     [ObservableProperty]
@@ -89,6 +109,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (sav is not null)
         {
             _spriteRenderer.Initialize(sav);
+            _undoRedo.Initialize(sav);
             
             // Initialize PKHeX Core data filters for the current save
             GameInfo.FilteredSources = new FilteredGameDataSource(sav, GameInfo.Sources);
@@ -479,6 +500,79 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var view = new Views.AboutView();
         await _dialogService.ShowDialogAsync(view, "About PKHeX");
+    }
+
+    [RelayCommand(CanExecute = nameof(CanUndo))]
+    private void Undo()
+    {
+        _undoRedo.Undo();
+    }
+
+    [RelayCommand(CanExecute = nameof(CanRedo))]
+    private void Redo()
+    {
+        _undoRedo.Redo();
+    }
+
+    private void OnUndoRedoPerformed(ISlotInfo info)
+    {
+        // Refresh the appropriate viewer based on slot type
+        if (info is SlotInfoBox)
+            BoxViewer?.RefreshCurrentBox();
+        else if (info is SlotInfoParty)
+            PartyViewer?.RefreshParty();
+    }
+
+    [RelayCommand]
+    private void ChangeLanguage(string languageCode)
+    {
+        _languageService.SetLanguage(languageCode);
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenBoxManipAsync()
+    {
+        if (CurrentSave is null) return;
+        
+        var vm = new BoxManipViewModel(CurrentSave, _dialogService, () =>
+        {
+            BoxViewer?.RefreshCurrentBox();
+        });
+        var view = new Views.BoxManipView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Box Manipulation");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenEncounterDatabaseAsync()
+    {
+        if (CurrentSave is null) return;
+        
+        var vm = new EncounterDatabaseViewModel(CurrentSave, _dialogService, pk =>
+        {
+            CurrentPokemonEditor?.LoadPKM(pk);
+        });
+        var view = new Views.EncounterDatabaseView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Encounter Database");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenDaycareAsync()
+    {
+        if (CurrentSave is null) return;
+        
+        var vm = new DaycareEditorViewModel(CurrentSave, _spriteRenderer);
+        var view = new Views.DaycareEditorView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Daycare");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenRecordsAsync()
+    {
+        if (CurrentSave is null) return;
+        
+        var vm = new RecordsEditorViewModel(CurrentSave);
+        var view = new Views.RecordsEditorView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Game Records");
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]

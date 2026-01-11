@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.EncounterDatabaseView"
+             x:DataType="vm:EncounterDatabaseViewModel"
+             Width="650" Height="500">
+    <DockPanel Margin="16">
+        <TextBlock DockPanel.Dock="Top" Text="Encounter Database" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
+
+        <!-- Search Controls -->
+        <Border DockPanel.Dock="Top" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12" Margin="0,0,0,12">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock Text="Species" FontWeight="SemiBold" FontSize="12" />
+                    <ComboBox ItemsSource="{Binding SpeciesList}"
+                              SelectedValue="{Binding SelectedSpecies}"
+                              SelectedValueBinding="{Binding Value}"
+                              DisplayMemberBinding="{Binding Text}"
+                              MaxDropDownHeight="300" />
+                </StackPanel>
+                <Button Grid.Column="1" Content="Search" Command="{Binding SearchCommand}" Margin="12,0,0,0" Padding="16,8" VerticalAlignment="Bottom" Classes="accent" />
+            </Grid>
+        </Border>
+
+        <!-- Loading Indicator -->
+        <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" IsVisible="{Binding IsSearching}" Height="4" Margin="0,0,0,8" />
+
+        <!-- Results Grid -->
+        <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="4">
+            <DataGrid ItemsSource="{Binding Results}"
+                      SelectedItem="{Binding SelectedResult}"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      CanUserSortColumns="True"
+                      AutoGenerateColumns="False"
+                      GridLinesVisibility="Horizontal">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Species" Binding="{Binding Species}" Width="120" />
+                    <DataGridTextColumn Header="Level" Binding="{Binding Level}" Width="80" />
+                    <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="80" />
+                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="90" />
+                    <DataGridTextColumn Header="Location" Binding="{Binding Location}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Action Buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0" Spacing="8">
+            <Button Content="Load to Editor" Command="{Binding SelectEncounterCommand}" CommandParameter="{Binding SelectedResult}" Padding="12,6" />
+        </StackPanel>
+    </DockPanel>
+</UserControl>

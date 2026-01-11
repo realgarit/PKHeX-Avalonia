@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.RecordsEditorView"
+             x:DataType="vm:RecordsEditorViewModel"
+             Width="500" Height="500">
+    <DockPanel Margin="16">
+        <TextBlock DockPanel.Dock="Top" Text="Game Records" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
+
+        <!-- No Records Message -->
+        <TextBlock IsVisible="{Binding !HasRecords}" Text="This save file does not support Records editing." 
+                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                   FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+        <!-- Records Content -->
+        <DockPanel IsVisible="{Binding HasRecords}">
+            <!-- Search Bar -->
+            <Border DockPanel.Dock="Top" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="8" Margin="0,0,0,12">
+                <TextBox Text="{Binding SearchText}" Watermark="Search records..." />
+            </Border>
+
+            <!-- Records List -->
+            <DataGrid ItemsSource="{Binding FilteredRecords}"
+                      IsReadOnly="False"
+                      SelectionMode="Single"
+                      CanUserSortColumns="True"
+                      AutoGenerateColumns="False"
+                      GridLinesVisibility="Horizontal">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Record" Binding="{Binding Name}" Width="*" IsReadOnly="True" />
+                    <DataGridTemplateColumn Header="Value" Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="vm:RecordItemViewModel">
+                                <NumericUpDown Value="{Binding Value}" Minimum="0" Maximum="999999999" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </DockPanel>
+</UserControl>

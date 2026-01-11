@@ -30,7 +30,9 @@ public class ShowdownIntegrationTests
             _spriteRendererMock.Object,
             _slotServiceMock.Object,
             _clipboardServiceMock.Object,
-            new AppSettings()
+            new AppSettings(),
+            new UndoRedoService(),
+            new LanguageService()
         );
         
         // Simulate loading a save
