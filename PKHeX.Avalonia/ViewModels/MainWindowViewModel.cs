@@ -569,10 +569,20 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task OpenRecordsAsync()
     {
         if (CurrentSave is null) return;
-        
+
         var vm = new RecordsEditorViewModel(CurrentSave);
         var view = new Views.RecordsEditorView { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Game Records");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenHallOfFameAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new HallOfFameEditorViewModel(CurrentSave, _spriteRenderer);
+        var view = new Views.HallOfFameEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Hall of Fame");
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]

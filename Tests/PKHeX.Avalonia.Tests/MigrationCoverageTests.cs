@@ -101,8 +101,10 @@ public class MigrationCoverageTests
         };
         reportLines.AddRange(missingFeatures.Select(f => $"[MISSING] {f}"));
 
-        // Generate a physical report file for the agent to read easily
-        var reportPath = Path.Combine(repoRoot, "Tests", "PKHeX.Avalonia.Tests", "migration_gap_report.txt");
+        // Generate a physical report file in TestResults directory
+        var outputDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestResults");
+        Directory.CreateDirectory(outputDir);
+        var reportPath = Path.Combine(outputDir, "migration_gap_report.txt");
         File.WriteAllLines(reportPath, reportLines);
 
         // FAIL the test if there are gaps, to drive the "Loop"
