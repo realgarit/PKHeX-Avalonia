@@ -29,6 +29,8 @@ dotnet run --project PKHeX.Avalonia/PKHeX.Avalonia.csproj
 
 ## Screenshots
 *Work in progress — the UI is changing fast.*
+<img width="1566" height="934" alt="image" src="https://github.com/user-attachments/assets/29135e2b-a95f-42ce-81fa-2fad679b660e" />
+<img width="1566" height="934" alt="image" src="https://github.com/user-attachments/assets/fd494c90-58ac-4ea1-b607-367128fc34be" />
 
 ## Credits
 This fork is built on the incredible work of the [PKHeX team](https://github.com/kwsch/PKHeX).
