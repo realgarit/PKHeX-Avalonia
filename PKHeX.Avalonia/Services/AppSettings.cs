@@ -37,10 +37,6 @@ public partial class AppSettings : ObservableObject, IProgramSettings
 
     // Additional Avalonia-specific settings could go here
     
-    // Serialization Context
-    [JsonSerializable(typeof(AppSettings))]
-    private partial class AppSettingsContext : JsonSerializerContext;
-
     public static AppSettings Load()
     {
         if (!File.Exists(ConfigPath))

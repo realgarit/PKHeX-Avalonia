@@ -1,0 +1,87 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             xmlns:converters="using:PKHeX.Avalonia.Converters"
+             x:Class="PKHeX.Avalonia.Views.MysteryGiftDatabaseView"
+             x:DataType="vm:MysteryGiftDatabaseViewModel"
+             Width="900" Height="600">
+    <Grid ColumnDefinitions="250,*">
+        <!-- Sidebar: Filters -->
+        <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="16">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="Gift Filters" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                
+                <StackPanel DockPanel.Dock="Bottom" Spacing="8">
+                    <Button Content="Refresh Database" Command="{Binding SearchDatabaseCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Theme="{StaticResource AccentButtonTheme}"/>
+                    <Button Content="Scan Folder..." Command="{Binding LoadFolderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                </StackPanel>
+
+                <ScrollViewer>
+                    <StackPanel Spacing="12">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Species" Opacity="0.7" FontSize="12"/>
+                            <ComboBox ItemsSource="{Binding SpeciesList}" 
+                                      SelectedValue="{Binding Species}"
+                                      SelectedValueBinding="{Binding Value}"
+                                      DisplayMemberBinding="{Binding Text}"
+                                      HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Generation" Opacity="0.7" FontSize="12"/>
+                            <ComboBox ItemsSource="{Binding GenerationList}" 
+                                      SelectedValue="{Binding Generation}"
+                                      SelectedValueBinding="{Binding Value}"
+                                      DisplayMemberBinding="{Binding Text}"
+                                      HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Gift Type" Opacity="0.7" FontSize="12"/>
+                            <CheckBox Content="Show Pokémon" IsChecked="{Binding ShowPokemon}"/>
+                            <CheckBox Content="Show Items" IsChecked="{Binding ShowItems}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <!-- Main Content: Results -->
+        <Border Grid.Column="1" Padding="16">
+            <DockPanel>
+                <Border DockPanel.Dock="Bottom" Padding="0,8,0,0" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,1,0,0">
+                    <TextBlock Text="{Binding StatusText}" Opacity="0.7" FontSize="12"/>
+                </Border>
+    
+                <DataGrid ItemsSource="{Binding Results}" 
+                          IsReadOnly="True" 
+                          AutoGenerateColumns="False"
+                          CanUserResizeColumns="True"
+                          DoubleTapped="OnDoubleTapped">
+                    <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Sprite" Width="60">
+                        <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding Sprite}" Width="40" Height="40" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Species / Item" Binding="{Binding SpeciesName}" Width="*"/>
+                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="80"/>
+                        <DataGridTextColumn Header="Lv" Binding="{Binding Level}" Width="50"/>
+                        <DataGridTextColumn Header="Card Title" Binding="{Binding CardTitle}" Width="2*"/>
+                        <DataGridTextColumn Header="Format" Binding="{Binding Format}" Width="80"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Border>
+
+        <!-- Searching Overlay -->
+        <Grid Grid.ColumnSpan="2" Background="#80000000" IsVisible="{Binding IsSearching}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
+                <ProgressBar IsIndeterminate="True" Width="200"/>
+                <TextBlock Text="Loading Mystery Gifts..." Foreground="White" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

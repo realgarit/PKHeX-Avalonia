@@ -1,0 +1,97 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.PKMDatabaseView"
+             x:DataType="vm:PKMDatabaseViewModel"
+             Width="900" Height="600">
+    <Grid ColumnDefinitions="250,*">
+        <!-- Sidebar: Filters -->
+        <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="16">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="Search Filters" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                
+                <StackPanel DockPanel.Dock="Bottom" Spacing="8">
+                    <Button Content="Search Current Save" Command="{Binding SearchSaveCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                    <Button Content="Scan Folder..." Command="{Binding LoadFolderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                </StackPanel>
+
+                <ScrollViewer>
+                    <StackPanel Spacing="12">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Species" Opacity="0.7" FontSize="12"/>
+                            <ComboBox ItemsSource="{Binding SpeciesList}" 
+                                      SelectedValue="{Binding Species}"
+                                      SelectedValueBinding="{Binding Value}"
+                                      DisplayMemberBinding="{Binding Text}"
+                                      HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Nature" Opacity="0.7" FontSize="12"/>
+                            <ComboBox ItemsSource="{Binding NatureList}" 
+                                      SelectedValue="{Binding Nature}"
+                                      SelectedValueBinding="{Binding Value}"
+                                      DisplayMemberBinding="{Binding Text}"
+                                      HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Shiny" Opacity="0.7" FontSize="12"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <RadioButton Content="Any" IsChecked="{Binding IsShiny, Converter={StaticResource ObjectNullConverter}}"/>
+                                <RadioButton Content="Yes" IsChecked="{Binding IsShiny, Converter={StaticResource ObjectTrueConverter}}"/>
+                                <RadioButton Content="No" IsChecked="{Binding IsShiny, Converter={StaticResource ObjectFalseConverter}}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Legality" Opacity="0.7" FontSize="12"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <RadioButton Content="Any" IsChecked="{Binding IsLegal, Converter={StaticResource ObjectNullConverter}}"/>
+                                <RadioButton Content="Legal" IsChecked="{Binding IsLegal, Converter={StaticResource ObjectTrueConverter}}"/>
+                                <RadioButton Content="Illegal" IsChecked="{Binding IsLegal, Converter={StaticResource ObjectFalseConverter}}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <!-- Main Content: Results -->
+        <Border Grid.Column="1" Padding="16">
+            <DockPanel>
+                <Border DockPanel.Dock="Bottom" Padding="0,8,0,0" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,1,0,0">
+                    <TextBlock Text="{Binding StatusText}" Opacity="0.7" FontSize="12"/>
+                </Border>
+    
+                <DataGrid ItemsSource="{Binding Results}" 
+                          IsReadOnly="True" 
+                          AutoGenerateColumns="False"
+                          CanUserResizeColumns="True"
+                          DoubleTapped="OnDoubleTapped">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Sprite" Width="60">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding Sprite}" Width="40" Height="40" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Species" Binding="{Binding SpeciesName}" Width="*"/>
+                        <DataGridTextColumn Header="Lv" Binding="{Binding Level}" Width="50"/>
+                        <DataGridTextColumn Header="Nature" Binding="{Binding NatureName}" Width="100"/>
+                        <DataGridTextColumn Header="Sex" Binding="{Binding Gender}" Width="50"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Border>
+
+        <!-- Searching Overlay -->
+        <Grid Grid.ColumnSpan="2" Background="#80000000" IsVisible="{Binding IsSearching}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
+                <ProgressBar IsIndeterminate="True" Width="200"/>
+                <TextBlock Text="Searching Database..." Foreground="White" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

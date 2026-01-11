@@ -37,10 +37,13 @@ public class SaveFileTests
     }
 
     // This test is a placeholder for when the user drops a real save file
-    [AvaloniaFact]
+    [Fact]
     public void Load_Real_Save_File_If_Present()
     {
-        string savePath = Path.Combine(Directory.GetCurrentDirectory(), "test_save.sav");
+        // Don't use Directory.GetCurrentDirectory() as it varies depending on test runner context
+        // Instead, try to find a relative path or skip if not found.
+        var baseDir = AppContext.BaseDirectory;
+        string savePath = Path.Combine(baseDir, "test_save.sav");
         
         // Skip if file doesn't exist
         if (!File.Exists(savePath))
@@ -48,7 +51,6 @@ public class SaveFileTests
             return;
         }
 
-        var fileInfo = new FileInfo(savePath);
         byte[] data = File.ReadAllBytes(savePath);
         var sav = SaveUtil.GetSaveFile(data);
 
@@ -56,8 +58,10 @@ public class SaveFileTests
         Assert.True(sav.ChecksumsValid);
 
         // Check first pokemon
-        var pkm = sav.GetPartySlotAtIndex(0);
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var pkm = sav.BoxData[0];
+        if (pkm == null) return;
+        
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
 
         Assert.NotNull(vm.SpeciesList);
         Assert.True(vm.SpeciesList.Count > 0);

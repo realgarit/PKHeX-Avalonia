@@ -1,3 +1,5 @@
+using System.IO;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Avalonia.Services;
@@ -23,6 +25,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(CloseFileCommand))]
     [NotifyCanExecuteChangedFor(nameof(ImportShowdownCommand))]
     [NotifyCanExecuteChangedFor(nameof(ExportShowdownCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenPKMDatabaseCommand))]
     private SaveFile? _currentSave;
 
     [ObservableProperty]
@@ -113,6 +116,7 @@ public partial class MainWindowViewModel : ViewModelBase
             EventFlagsEditor = new EventFlagsEditorViewModel(sav);
             MysteryGiftEditor = new MysteryGiftEditorViewModel(sav, _dialogService);
             BatchEditor = new BatchEditorViewModel(sav, _dialogService);
+            BatchEditor.BatchEditCompleted += OnBatchEditCompleted;
         }
         else
         {
@@ -261,6 +265,37 @@ public partial class MainWindowViewModel : ViewModelBase
         
         await _clipboardService.SetTextAsync(text);
     }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenPKMDatabaseAsync()
+    {
+        if (CurrentSave is null) return;
+        
+        var vm = new PKMDatabaseViewModel(CurrentSave, _spriteRenderer, _dialogService);
+        vm.PokemonSelected += (pk) =>
+        {
+            CurrentPokemonEditor?.LoadPKM(pk);
+        };
+        
+        var view = new PKMDatabaseView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "PKM Database");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMysteryGiftDatabaseAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new MysteryGiftDatabaseViewModel(CurrentSave, _spriteRenderer, _dialogService);
+        vm.GiftSelected += (mg) =>
+        {
+            var pk = mg.ConvertToPKM(CurrentSave);
+            CurrentPokemonEditor?.LoadPKM(pk);
+        };
+
+        var view = new MysteryGiftDatabaseView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Mystery Gift Database");
+    }
     
     // Slot Service event handlers
     private void OnViewRequested(SlotLocation location)
@@ -400,7 +435,137 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         
         // Party slots can't be deleted in the middle - only if it's the last slot
-        // For now, just show an error
         _ = _dialogService.ShowErrorAsync("Delete", "Cannot delete party Pokémon. Move to a box first.");
+    }
+
+    private void OnBatchEditCompleted()
+    {
+        BoxViewer?.RefreshCurrentBox();
+        PartyViewer?.RefreshParty();
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenBatchEditorAsync()
+    {
+        if (CurrentSave is null) return;
+        
+        var vm = new BatchEditorViewModel(CurrentSave, _dialogService);
+        vm.BatchEditCompleted += OnBatchEditCompleted;
+        
+        var view = new Views.BatchEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Batch Editor");
+    }
+
+    [RelayCommand]
+    private async Task OpenSettingsAsync()
+    {
+        var vm = new SettingsViewModel(_settings);
+        var view = new SettingsView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Settings");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task DumpBoxesAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var path = await _dialogService.OpenFolderAsync("Select Folder to Dump Boxes");
+        if (string.IsNullOrEmpty(path)) return;
+
+        int count = 0;
+        for (int b = 0; b < CurrentSave.BoxCount; b++)
+        {
+            var boxData = CurrentSave.GetBoxData(b);
+            for (int s = 0; s < boxData.Length; s++)
+            {
+                var pk = boxData[s];
+                if (pk.Species == 0) continue;
+
+                var fileName = $"{b+1:00}_{s+1:00} - {pk.Nickname} - {pk.PID:X8}.{pk.Extension}";
+                // Replace invalid characters
+                foreach (var c in Path.GetInvalidFileNameChars())
+                    fileName = fileName.Replace(c, '_');
+
+                var filePath = Path.Combine(path, fileName);
+                File.WriteAllBytes(filePath, pk.Data);
+                count++;
+            }
+        }
+
+        await _dialogService.ShowInformationAsync("Dump Boxes", $"Successfully dumped {count} Pokémon to {path}");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task LoadBoxesAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var path = await _dialogService.OpenFolderAsync("Select Folder to Load Boxes");
+        if (string.IsNullOrEmpty(path)) return;
+
+        var extensions = EntityFileExtension.GetExtensions().Select(e => "." + e).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
+            .Where(f => extensions.Contains(Path.GetExtension(f)))
+            .ToList();
+
+        if (files.Count == 0)
+        {
+            await _dialogService.ShowInformationAsync("Load Boxes", "No supported Pokémon files found in the selected folder.");
+            return;
+        }
+
+        int loaded = 0;
+        int skipped = 0;
+        int currentBox = 0;
+        int currentSlot = 0;
+
+        foreach (var file in files)
+        {
+            try
+            {
+                var data = File.ReadAllBytes(file);
+                var pk = EntityFormat.GetFromBytes(data, CurrentSave.Context);
+                if (pk == null)
+                {
+                    skipped++;
+                    continue;
+                }
+
+                // Find next empty slot
+                bool found = false;
+                while (currentBox < CurrentSave.BoxCount)
+                {
+                    while (currentSlot < CurrentSave.BoxSlotCount)
+                    {
+                        var existing = CurrentSave.GetBoxSlotAtIndex(currentBox, currentSlot);
+                        if (existing.Species == 0)
+                        {
+                            CurrentSave.SetBoxSlotAtIndex(pk, currentBox, currentSlot);
+                            found = true;
+                            loaded++;
+                            break;
+                        }
+                        currentSlot++;
+                    }
+                    if (found) break;
+                    currentSlot = 0;
+                    currentBox++;
+                }
+
+                if (!found) break; // No more space
+            }
+            catch
+            {
+                skipped++;
+            }
+        }
+
+        BoxViewer?.RefreshCurrentBox();
+        var message = $"Successfully loaded {loaded} Pokémon.";
+        if (skipped > 0) message += $"\nSkipped {skipped} files.";
+        if (loaded < files.Count && currentBox >= CurrentSave.BoxCount) message += "\nStopped because boxes are full.";
+        
+        await _dialogService.ShowInformationAsync("Load Boxes", message);
     }
 }

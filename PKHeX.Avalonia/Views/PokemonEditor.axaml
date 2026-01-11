@@ -44,27 +44,34 @@
                     </StackPanel>
 
                     <!-- Legality Indicator -->
-                    <Border Grid.Column="2" 
+                    <Button Grid.Column="2" 
                             Width="40" Height="40"
                             Margin="0,0,8,0"
-                            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
                             CornerRadius="20"
+                            Command="{Binding ShowLegalityCommand}"
                             ToolTip.Tip="{Binding LegalityReport}">
-                        <Panel>
-                            <TextBlock Text="✔" 
-                                       FontSize="24"
-                                       Foreground="Green"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       IsVisible="{Binding IsLegal}" />
-                            <TextBlock Text="✘" 
-                                       FontSize="24"
-                                       Foreground="Red"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       IsVisible="{Binding !IsLegal}" />
-                        </Panel>
-                    </Border>
+                        <Border Width="40" Height="40"
+                                Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                                CornerRadius="20">
+                            <Panel>
+                                <TextBlock Text="✔" 
+                                           FontSize="24"
+                                           Foreground="Green"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsLegal}" />
+                                <TextBlock Text="✘" 
+                                           FontSize="24"
+                                           Foreground="Red"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding !IsLegal}" />
+                            </Panel>
+                        </Border>
+                    </Button>
 
                     <!-- Shiny Toggle -->
                     <Button Grid.Column="3"

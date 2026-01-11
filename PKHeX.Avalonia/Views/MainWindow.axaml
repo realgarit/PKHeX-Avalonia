@@ -30,19 +30,19 @@
                     <MenuItem Header="Export Set to Clipboard" Command="{Binding ExportShowdownCommand}" InputGesture="Ctrl+Shift+T" />
                 </MenuItem>
                 <MenuItem Header="Data">
-                    <MenuItem Header="Load Boxes" IsEnabled="False" />
-                    <MenuItem Header="Dump Boxes" IsEnabled="False" />
-                    <MenuItem Header="PKM Database" IsEnabled="False" />
-                    <MenuItem Header="Mystery Gift Database" IsEnabled="False" />
+                    <MenuItem Header="Load Boxes" Command="{Binding LoadBoxesCommand}" />
+                    <MenuItem Header="Dump Boxes" Command="{Binding DumpBoxesCommand}" />
+                    <MenuItem Header="PKM Database" Command="{Binding OpenPKMDatabaseCommand}" />
+                    <MenuItem Header="Mystery Gift Database" Command="{Binding OpenMysteryGiftDatabaseCommand}" />
                 </MenuItem>
-                <MenuItem Header="Batch Editor" IsEnabled="False" />
+                <MenuItem Header="Batch Editor" Command="{Binding OpenBatchEditorCommand}" />
             </MenuItem>
             <MenuItem Header="_Options">
                 <MenuItem Header="Language" IsEnabled="False" />
                 <MenuItem Header="Undo" InputGesture="Ctrl+U" IsEnabled="False" />
                 <MenuItem Header="Redo" InputGesture="Ctrl+Y" IsEnabled="False" />
                 <Separator />
-                <MenuItem Header="Settings" IsEnabled="False" />
+                <MenuItem Header="Settings" Command="{Binding OpenSettingsCommand}" />
                 <MenuItem Header="About PKHeX" IsEnabled="False" />
             </MenuItem>
         </Menu>

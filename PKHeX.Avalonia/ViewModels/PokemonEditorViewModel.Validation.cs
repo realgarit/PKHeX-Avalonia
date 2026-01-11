@@ -1,5 +1,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using PKHeX.Avalonia.Views;
 using PKHeX.Core;
 
 namespace PKHeX.Avalonia.ViewModels;
@@ -22,5 +24,13 @@ public partial class PokemonEditorViewModel
         IsLegal = la.Valid;
         LegalityReport = la.Report();
         Valid = la.Valid;
+    }
+
+    [RelayCommand]
+    private async Task ShowLegalityAsync()
+    {
+        Validate(); // Ensure report is fresh
+        var view = new LegalityView(LegalityReport);
+        await _dialogService.ShowDialogAsync(view, "Legality Analysis");
     }
 }

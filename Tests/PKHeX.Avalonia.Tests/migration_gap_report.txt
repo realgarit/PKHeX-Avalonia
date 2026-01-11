@@ -1,0 +1,5 @@
+PKM Properties: 92
+Used in WinForms: 80
+Implemented in Avalonia: 141
+MISSING FEATURES: 0
+---

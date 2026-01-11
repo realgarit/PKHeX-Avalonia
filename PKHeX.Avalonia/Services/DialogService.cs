@@ -51,6 +51,28 @@ public sealed class DialogService : IDialogService
         // Fallback to Uri path
         return file.Path.LocalPath;
     }
+    public async Task<string?> OpenFolderAsync(string title)
+    {
+        var window = GetMainWindow();
+        if (window is null) return null;
+
+        var options = new FolderPickerOpenOptions
+        {
+            Title = title,
+            AllowMultiple = false
+        };
+
+        var result = await window.StorageProvider.OpenFolderPickerAsync(options);
+        var folder = result.FirstOrDefault();
+
+        if (folder is null)
+            return null;
+
+        if (folder.TryGetLocalPath() is { } localPath)
+            return localPath;
+
+        return folder.Path.LocalPath;
+    }
 
     public async Task<string?> SaveFileAsync(string title, string? defaultFileName = null, string[]? filters = null)
     {
@@ -67,7 +89,10 @@ public sealed class DialogService : IDialogService
         return result?.Path.LocalPath;
     }
 
-    public async Task ShowErrorAsync(string title, string message)
+    public async Task ShowErrorAsync(string title, string message) => await ShowMessageBoxAsync(title, message);
+    public async Task ShowInformationAsync(string title, string message) => await ShowMessageBoxAsync(title, message);
+
+    private async Task ShowMessageBoxAsync(string title, string message)
     {
         var window = GetMainWindow();
         if (window is null) return;

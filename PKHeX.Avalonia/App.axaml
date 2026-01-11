@@ -1,8 +1,22 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="using:PKHeX.Avalonia.Converters"
              x:Class="PKHeX.Avalonia.App"
              RequestedThemeVariant="Default">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Add other resources here if needed -->
+            </ResourceDictionary.MergedDictionaries>
+            
+            <converters:ObjectNullConverter x:Key="ObjectNullConverter" />
+            <converters:ObjectTrueConverter x:Key="ObjectTrueConverter" />
+            <converters:ObjectFalseConverter x:Key="ObjectFalseConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
     </Application.Styles>
 </Application>

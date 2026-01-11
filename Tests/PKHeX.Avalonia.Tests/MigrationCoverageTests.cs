@@ -91,14 +91,19 @@ public class MigrationCoverageTests
         _output.WriteLine($"MISSING FEATURES: {missingFeatures.Count}");
         _output.WriteLine("============================");
 
-        foreach (var missing in missingFeatures.OrderBy(x => x))
+        var reportLines = new List<string>
         {
-            _output.WriteLine($"[MISSING] {missing}");
-        }
+            $"PKM Properties: {pkmProperties.Count}",
+            $"Used in WinForms: {usedInWinForms.Count}",
+            $"Implemented in Avalonia: {avaloniaProperties.Count}",
+            $"MISSING FEATURES: {missingFeatures.Count}",
+            "---"
+        };
+        reportLines.AddRange(missingFeatures.Select(f => $"[MISSING] {f}"));
 
         // Generate a physical report file for the agent to read easily
         var reportPath = Path.Combine(repoRoot, "Tests", "PKHeX.Avalonia.Tests", "migration_gap_report.txt");
-        File.WriteAllLines(reportPath, missingFeatures.Select(f => $"[MISSING] {f}"));
+        File.WriteAllLines(reportPath, reportLines);
 
         // FAIL the test if there are gaps, to drive the "Loop"
         Assert.Empty(missingFeatures);

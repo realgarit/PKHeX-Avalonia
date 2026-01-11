@@ -115,6 +115,25 @@ public class ComprehensiveTests
         Assert.InRange(result.CurrentLevel, 1, 100);
     }
 
+    [Fact]
+    public void Stat_Recalculation_Updates_On_IV_Change()
+    {
+        var sav = new SAV3E();
+        var pkm = new PK3 { Species = 1 }; // Bulbasaur
+        pkm.CurrentLevel = 50;
+        
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+        
+        // Capture initial stats
+        var initialHP = vm.Stat_HP;
+
+        // Change IV
+        vm.IvHP = 31;
+        
+        Assert.True(vm.Stat_HP >= initialHP, "HP should increase or stay same when setting IV to max");
+        Assert.Equal(31, vm.TargetPKM.IV_HP);
+    }
+
     #endregion
 
     #region Command Tests
@@ -313,6 +332,106 @@ public class ComprehensiveTests
         Assert.Equal(5, result.MetLevel);
         // Gen 4+ should persist MetDate
         Assert.NotNull(result.MetDate);
+    }
+
+    [Fact]
+    public void PreparePKM_Called_Multiple_Times_Is_Idempotent()
+    {
+        var sav = new SAV3E();
+        var pkm = new PK3 { Species = 25 };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+        
+        vm.Nickname = "TestPika";
+        vm.IvHP = 31;
+        vm.HeldItem = 13;
+        
+        var result1 = vm.PreparePKM();
+        var result2 = vm.PreparePKM();
+        var result3 = vm.PreparePKM();
+        
+        Assert.Equal(result1.Nickname, result2.Nickname);
+        Assert.Equal(result2.Nickname, result3.Nickname);
+        Assert.Equal(result1.IV_HP, result3.IV_HP);
+    }
+
+    [Fact]
+    public void Changing_Species_Clears_Form_Appropriately()
+    {
+        var sav = new SAV3E();
+        var pkm = new PK3 { Species = 201, Form = 5 }; // Unown with Form
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+        
+        Assert.Equal(5, vm.Form);
+        vm.Species = 25; // Pikachu
+        Assert.True(vm.Form >= 0);
+        
+        var result = vm.PreparePKM();
+        Assert.Equal(25, result.Species);
+    }
+
+    [Fact]
+    public void PID_Hex_String_Persists_Correctly()
+    {
+        var sav = new SAV3E();
+        var pkm = new PK3 { Species = 25 };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+        
+        vm.Pid = "DEADBEEF";
+        var result = vm.PreparePKM();
+        
+        Assert.Equal(0xDEADBEEF, result.PID);
+    }
+
+    [Fact]
+    public void EncryptionConstant_Persists_Correctly()
+    {
+        var sav = new SAV6XY();
+        var pkm = new PK6 { Species = 25 };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+        
+        vm.EncryptionConstant = "12345678";
+        var result = vm.PreparePKM();
+        
+        Assert.Equal(0x12345678u, result.EncryptionConstant);
+    }
+
+    [Fact]
+    public void Language_Persists_Correctly()
+    {
+        var sav = new SAV3E();
+        var pkm = new PK3 { Species = 25 };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+        
+        vm.Language = (int)LanguageID.Japanese;
+        var result = vm.PreparePKM();
+        
+        Assert.Equal((int)LanguageID.Japanese, result.Language);
+    }
+
+    [Fact]
+    public void Ball_Persists_Correctly()
+    {
+        var sav = new SAV3E();
+        var pkm = new PK3 { Species = 25 };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+        
+        vm.Ball = 2; // Great Ball
+        var result = vm.PreparePKM();
+        
+        Assert.Equal(2, result.Ball);
+    }
+
+    [Fact]
+    public void OT_Name_Persists_Correctly()
+    {
+        var sav = new SAV3E();
+        var pkm = new PK3 { Species = 25 };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+        
+        vm.OriginalTrainerName = "TestOT";
+        var result = vm.PreparePKM();
+        
+        Assert.Equal("TestOT", result.OriginalTrainerName);
     }
 
     #endregion

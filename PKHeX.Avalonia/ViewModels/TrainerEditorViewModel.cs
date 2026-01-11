@@ -99,6 +99,36 @@ public partial class TrainerEditorViewModel : ViewModelBase
     private PropertyInfo? _yProperty;
     private PropertyInfo? _zProperty;
 
+    // Currencies
+    [ObservableProperty] private bool _hasCoins;
+    [ObservableProperty] private uint _coins;
+
+    [ObservableProperty] private bool _hasBP;
+    [ObservableProperty] private uint _bP;
+
+    [ObservableProperty] private bool _hasWatts;
+    [ObservableProperty] private uint _watts;
+
+    [ObservableProperty] private bool _hasLP;
+    [ObservableProperty] private uint _lP;
+
+    [ObservableProperty] private bool _hasBlueberryPoints;
+    [ObservableProperty] private uint _blueberryPoints;
+
+    [ObservableProperty] private bool _hasFestaCoins;
+    [ObservableProperty] private uint _festaCoins;
+
+    [ObservableProperty] private bool _hasMeritPoints;
+    [ObservableProperty] private uint _meritPoints;
+
+    [ObservableProperty] private bool _hasPokeMiles;
+    [ObservableProperty] private uint _pokeMiles;
+
+    [ObservableProperty] private bool _hasGimmighoulCoins;
+    [ObservableProperty] private uint _gimmighoulCoins;
+
+    [ObservableProperty] private bool _anyCurrencyVisible;
+
     private void LoadFromSave()
     {
         TrainerName = _sav.OT;
@@ -118,6 +148,81 @@ public partial class TrainerEditorViewModel : ViewModelBase
         LoadBadges();
         LoadAdventureInfo();
         LoadCoordinates();
+        LoadCurrencies();
+    }
+
+    private void LoadCurrencies()
+    {
+        var type = _sav.GetType();
+
+        // BP (Multiple Gen-specific locations)
+        var bpProp = type.GetProperty("BP");
+        if (bpProp != null)
+        {
+            HasBP = true;
+            BP = Convert.ToUInt32(bpProp.GetValue(_sav));
+        }
+        else if (_sav is SAV8BS bs)
+        {
+            HasBP = true;
+            BP = bs.BattleTower.BP;
+        }
+        else if (_sav is SAV5 sav5)
+        {
+            HasBP = true;
+            BP = (uint)sav5.BattleSubway.BP;
+        }
+        else if (_sav is SAV9SV sv)
+        {
+            HasBP = true;
+            BP = (uint)sv.Blocks.GetBlockValue(SaveBlockAccessor9SV.KBlueberryPoints);
+            HasBlueberryPoints = true;
+            BlueberryPoints = BP;
+
+            HasLP = true;
+            LP = (uint)sv.Blocks.GetBlockValue(SaveBlockAccessor9SV.KLeaguePoints);
+
+            HasGimmighoulCoins = true;
+            GimmighoulCoins = sv.Items.GetItemQuantity(1985);
+        }
+
+        // Coins (Gen 1-4)
+        var coinProp = type.GetProperty("Coin");
+        if (coinProp != null)
+        {
+            HasCoins = true;
+            Coins = Convert.ToUInt32(coinProp.GetValue(_sav));
+        }
+
+        // Watts (Gen 8 SWSH)
+        if (_sav is SAV8SWSH swsh)
+        {
+            HasWatts = true;
+            Watts = swsh.MyStatus.Watt;
+        }
+
+        // Festa Coins (Gen 7)
+        if (_sav is SAV7 sav7)
+        {
+            HasFestaCoins = true;
+            FestaCoins = (uint)sav7.Festa.FestaCoins;
+        }
+
+        // Merit Points (Gen 8 LA)
+        if (_sav is SAV8LA la)
+        {
+            HasMeritPoints = true;
+            MeritPoints = (uint)la.Accessor.GetBlockValue(SaveBlockAccessor8LA.KMeritCurrent);
+        }
+
+        // Poké Miles (Gen 6)
+        if (_sav is ITrainerStatRecord statSav && _sav.Generation == 6)
+        {
+            HasPokeMiles = true;
+            PokeMiles = (uint)statSav.GetRecord(63);
+        }
+
+        AnyCurrencyVisible = HasBP || HasCoins || HasWatts || HasLP || HasBlueberryPoints || HasFestaCoins || HasMeritPoints || HasPokeMiles || HasGimmighoulCoins;
     }
 
     private void LoadCoordinates()
@@ -201,6 +306,68 @@ public partial class TrainerEditorViewModel : ViewModelBase
         SaveBadges();
         SaveAdventureInfo();
         SaveCoordinates();
+        SaveCurrencies();
+    }
+
+    private void SaveCurrencies()
+    {
+        var type = _sav.GetType();
+
+        // BP
+        var bpProp = type.GetProperty("BP");
+        if (bpProp != null && HasBP)
+        {
+            bpProp.SetValue(_sav, Convert.ChangeType(BP, bpProp.PropertyType));
+        }
+        else if (_sav is SAV8BS bs && HasBP)
+        {
+            bs.BattleTower.BP = BP;
+        }
+        else if (_sav is SAV5 sav5 && HasBP)
+        {
+            sav5.BattleSubway.BP = (ushort)BP;
+        }
+        else if (_sav is SAV9SV sv && HasBP)
+        {
+            sv.Blocks.SetBlockValue(SaveBlockAccessor9SV.KBlueberryPoints, BP);
+        }
+
+        if (_sav is SAV9SV sv9)
+        {
+            if (HasLP) sv9.Blocks.SetBlockValue(SaveBlockAccessor9SV.KLeaguePoints, LP);
+            if (HasGimmighoulCoins) sv9.Items.SetItemQuantity(1985, (int)GimmighoulCoins);
+        }
+
+        // Coins
+        var coinProp = type.GetProperty("Coin");
+        if (coinProp != null && HasCoins)
+        {
+            coinProp.SetValue(_sav, Convert.ChangeType(Coins, coinProp.PropertyType));
+        }
+
+        // Watts
+        if (_sav is SAV8SWSH swsh && HasWatts)
+        {
+            swsh.MyStatus.Watt = Watts;
+        }
+
+        // Festa Coins
+        if (_sav is SAV7 sav7 && HasFestaCoins)
+        {
+            sav7.Festa.FestaCoins = (int)FestaCoins;
+        }
+
+        // Merit Points
+        if (_sav is SAV8LA la && HasMeritPoints)
+        {
+            la.Accessor.SetBlockValue(SaveBlockAccessor8LA.KMeritCurrent, MeritPoints);
+        }
+
+        // Poké Miles
+        if (_sav is ITrainerStatRecord statSav && _sav.Generation == 6 && HasPokeMiles)
+        {
+            statSav.SetRecord(63, (int)PokeMiles);
+        }
     }
 
     private void SaveCoordinates()

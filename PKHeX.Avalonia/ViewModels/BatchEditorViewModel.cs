@@ -11,6 +11,8 @@ public partial class BatchEditorViewModel : ViewModelBase
     private readonly SaveFile _sav;
     private readonly IDialogService _dialogService;
 
+    public event Action? BatchEditCompleted;
+
     public BatchEditorViewModel(SaveFile sav, IDialogService dialogService)
     {
         _sav = sav;
@@ -127,24 +129,31 @@ public partial class BatchEditorViewModel : ViewModelBase
             var sets = StringInstructionSet.GetBatchSets(lines);
             Results = editor.GetEditorResults(sets);
 
-            // Refresh the save data (the PKMs were modified in-place)
+            // Refresh the save data to ensure changes are committed to the underlying buffer
             if (EditBoxes)
             {
-                // Write modified PKMs back to boxes
-                int boxSlotIndex = 0;
-                for (int box = 0; box < _sav.BoxCount && boxSlotIndex < pkms.Count; box++)
+                for (int box = 0; box < _sav.BoxCount; box++)
                 {
-                    for (int slot = 0; slot < _sav.BoxSlotCount && boxSlotIndex < pkms.Count; slot++)
-                    {
-                        var pk = _sav.GetBoxSlotAtIndex(box, slot);
-                        if (pk.Species != 0)
-                        {
-                            // Find the corresponding modified PKM
-                            boxSlotIndex++;
-                        }
-                    }
+                    var boxData = _sav.GetBoxData(box);
+                    // Core.BatchEditor.Execute modified the objects in `pkms`.
+                    // If GetBoxData returns references to those same objects, we are good.
+                    // If it returns copies, we need to be careful.
+                    // In most PKHeX.Core implementations, GetBoxData returns internal references or copies.
+                    // Calling SetBoxData ensures they are written back to the buffer.
+                    _sav.SetBoxData(boxData, box);
                 }
             }
+
+            if (EditParty)
+            {
+                for (int i = 0; i < _sav.PartyCount; i++)
+                {
+                    var pk = _sav.GetPartySlotAtIndex(i);
+                    _sav.SetPartySlotAtIndex(pk, i);
+                }
+            }
+
+            BatchEditCompleted?.Invoke();
         }
         catch (Exception ex)
         {

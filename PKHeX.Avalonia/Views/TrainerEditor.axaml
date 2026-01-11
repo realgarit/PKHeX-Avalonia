@@ -140,7 +140,63 @@
                     </DockPanel>
                 </StackPanel>
 
+                <!-- Currencies -->
+                <Border IsVisible="{Binding AnyCurrencyVisible}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Currencies" FontWeight="SemiBold" />
+                        <WrapPanel Orientation="Horizontal" Margin="0,0,-16,-8">
+                            <!-- BP -->
+                            <StackPanel IsVisible="{Binding HasBP}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="BP" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding BP}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                            <!-- Coins -->
+                            <StackPanel IsVisible="{Binding HasCoins}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Coins" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding Coins}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                            <!-- Watts -->
+                            <StackPanel IsVisible="{Binding HasWatts}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Watts" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding Watts}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                            <!-- LP -->
+                            <StackPanel IsVisible="{Binding HasLP}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="LP" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding LP}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                             <!-- Blueberry Points -->
+                            <StackPanel IsVisible="{Binding HasBlueberryPoints}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Blueberry Points" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding BlueberryPoints}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                            <!-- Festa Coins -->
+                            <StackPanel IsVisible="{Binding HasFestaCoins}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Festa Coins" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding FestaCoins}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                            <!-- Merit Points -->
+                            <StackPanel IsVisible="{Binding HasMeritPoints}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Merit Points" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding MeritPoints}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                            <!-- Poke Miles -->
+                            <StackPanel IsVisible="{Binding HasPokeMiles}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Poke Miles" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding PokeMiles}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                            <!-- Gimmighoul Coins -->
+                            <StackPanel IsVisible="{Binding HasGimmighoulCoins}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Gimmighoul Coins" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding GimmighoulCoins}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
                 <!-- Language -->
+
                 <StackPanel>
                     <TextBlock Text="Language" FontWeight="SemiBold" Margin="0,0,0,4" />
                     <ComboBox ItemsSource="{Binding LanguageList}"
