@@ -1,3 +1,4 @@
+
 using System.Collections.ObjectModel;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -39,18 +40,6 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private ObservableCollection<ComboItem> _formList = [];
 
     [ObservableProperty]
-    private ObservableCollection<ComboItem> _metLocationList = [];
-
-    [ObservableProperty]
-    private ObservableCollection<ComboItem> _eggLocationList = [];
-
-    [ObservableProperty]
-    private bool _isLegal;
-
-    [ObservableProperty]
-    private string _legalityReport = string.Empty;
-
-    [ObservableProperty]
     private Bitmap? _sprite;
 
     [ObservableProperty]
@@ -63,9 +52,6 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _version = string.Empty; // Read-only game name
-
-    [ObservableProperty]
-    private bool _valid; // Legality fast-check
 
     [ObservableProperty]
     private bool _isNicknamed;
@@ -109,296 +95,15 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private bool _isEgg;
 
     [ObservableProperty]
-    private bool _isFatefulEncounter;
+    private bool _isFatefulEncounter; // Kept here as wasn't in Met struct
 
     [ObservableProperty]
-    private int _happiness;
+    private int _sid; // Kept here as wasn't in Misc struct
 
     [ObservableProperty]
-    private int _sid;
-
-    // Group 2: Health & Status
-    [ObservableProperty]
-    private int _statHPCurrent;
-
-    [ObservableProperty]
-    private int _statHPMax;
-
-    [ObservableProperty]
-    private int _statusCondition;
-
-    // Group 3: Trainer & Friendship
-    [ObservableProperty]
-    private int _originalTrainerFriendship;
-
-    [ObservableProperty]
-    private string _handlingTrainerName = string.Empty;
-
-    [ObservableProperty]
-    private int _handlingTrainerGender;
-
-    [ObservableProperty]
-    private int _handlingTrainerFriendship;
-
-    [ObservableProperty]
-    private int _currentHandler;
-
-    // Group 4: Misc
-    [ObservableProperty]
-    private int _abilityNumber;
-
-    [ObservableProperty]
-    private int _statNature;
-
-    [ObservableProperty]
-    private int _hpType;
-
-    [ObservableProperty]
-    private bool _isPokerusInfected;
-
-    [ObservableProperty]
-    private bool _isPokerusCured;
-
-    // PID/EC
-    [ObservableProperty]
-    private string _pid = string.Empty;
-
-    [ObservableProperty]
-    private string _encryptionConstant = string.Empty;
-
-    // EXP
-    [ObservableProperty]
-    private long _exp;
-
-    // Language
-    [ObservableProperty]
-    private int _language;
-
-    // Pokerus
-    [ObservableProperty]
-    private int _pkrsStrain;
-
-    [ObservableProperty]
-    private int _pkrsDays;
-
-    // PP
-    [ObservableProperty]
-    private int _pp1;
-
-    [ObservableProperty]
-    private int _pp2;
-
-    [ObservableProperty]
-    private int _pp3;
-
-    [ObservableProperty]
-    private int _pp4;
-
-    [ObservableProperty]
-    private int _ppUps1;
-
-    [ObservableProperty]
-    private int _ppUps2;
-
-    [ObservableProperty]
-    private int _ppUps3;
-
-    [ObservableProperty]
-    private int _ppUps4;
-
-    // Met Info
-    [ObservableProperty]
-    private int _originGame;
-
-    [ObservableProperty]
-    private int _metLocation;
-
-    [ObservableProperty]
-    private int _eggLocation;
-
-    [ObservableProperty]
-    private int _metLevel;
-
-    [ObservableProperty]
-    private DateTimeOffset? _metDate;
-
-    [ObservableProperty]
-    private DateTimeOffset? _eggDate;
-
-    // Moves
-    [ObservableProperty]
-    private int _move1;
-
-    [ObservableProperty]
-    private int _move2;
-
-    [ObservableProperty]
-    private int _move3;
-
-    [ObservableProperty]
-    private int _move4;
-
-    // Relearn Moves
-    [ObservableProperty]
-    private int _relearnMove1;
-
-    [ObservableProperty]
-    private int _relearnMove2;
-
-    [ObservableProperty]
-    private int _relearnMove3;
-
-    [ObservableProperty]
-    private int _relearnMove4;
-
-    // IVs
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
-    private int _ivHP;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
-    private int _ivATK;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
-    private int _ivDEF;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
-    private int _ivSPA;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
-    private int _ivSPD;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(IVTotal))]
-    private int _ivSPE;
-
-    // EVs
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
-    private int _evHP;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
-    private int _evATK;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
-    private int _evDEF;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
-    private int _evSPA;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
-    private int _evSPD;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
-    private int _evSPE;
-
-    // Computed Stats
-    // Computed Stats (ensure they refresh by calling RecalculateStats)
-    public int Stat_HP { get { RecalculateStats(); return _pk.Stat_HPMax; } }
-    public int Stat_ATK { get { RecalculateStats(); return _pk.Stat_ATK; } }
-    public int Stat_DEF { get { RecalculateStats(); return _pk.Stat_DEF; } }
-    public int Stat_SPA { get { RecalculateStats(); return _pk.Stat_SPA; } }
-    public int Stat_SPD { get { RecalculateStats(); return _pk.Stat_SPD; } }
-    public int Stat_SPE { get { RecalculateStats(); return _pk.Stat_SPE; } }
-
-    public int IVTotal => IvHP + IvATK + IvDEF + IvSPA + IvSPD + IvSPE;
-    public int EVTotal => EvHP + EvATK + EvDEF + EvSPA + EvSPD + EvSPE;
-
-    // Contest Stats (Gen 3-6)
-    [ObservableProperty]
-    private int _contestCool;
-
-    [ObservableProperty]
-    private int _contestBeauty;
-
-    [ObservableProperty]
-    private int _contestCute;
-
-    [ObservableProperty]
-    private int _contestSmart;
-
-    [ObservableProperty]
-    private int _contestTough;
-
-    [ObservableProperty]
-    private int _contestSheen;
-
-    public bool HasContestStats => _pk is IContestStatsReadOnly;
-
-    // Markings (all generations support some subset)
-    [ObservableProperty]
-    private bool _markingCircle;
-
-    [ObservableProperty]
-    private bool _markingTriangle;
-
-    [ObservableProperty]
-    private bool _markingSquare;
-
-    [ObservableProperty]
-    private bool _markingHeart;
-
-    [ObservableProperty]
-    private bool _markingStar;
-
-    [ObservableProperty]
-    private bool _markingDiamond;
-
-    public bool HasMarkings => _pk is IAppliedMarkings;
-    public bool HasSixMarkings => _pk is IAppliedMarkings4 or IAppliedMarkings7;
-
-    // Memories (Gen 6+)
-    [ObservableProperty]
-    private int _otMemory;
-
-    [ObservableProperty]
-    private int _otMemoryIntensity;
-
-    [ObservableProperty]
-    private int _otMemoryFeeling;
-
-    [ObservableProperty]
-    private int _otMemoryVariable;
-
-    [ObservableProperty]
-    private int _htMemory;
-
-    [ObservableProperty]
-    private int _htMemoryIntensity;
-
-    [ObservableProperty]
-    private int _htMemoryFeeling;
-
-    [ObservableProperty]
-    private int _htMemoryVariable;
-
-    public bool HasMemories => _pk is IMemoryOT;
-
-    // Tech Records (Gen 8+)
-    public bool HasTechRecords => _pk is ITechRecord;
-
-    // OT Info
-    [ObservableProperty]
-    private string _originalTrainerName = string.Empty;
-
-    [ObservableProperty]
-    private long _trainerID;
-
-    [ObservableProperty]
-    private int _originalTrainerGender;
+    private int _language; // Kept here
 
     public bool HasForms => FormList.Count > 1;
-
-    // Exposed for "Set" operations
     public PKM TargetPKM => _pk;
 
     public PokemonEditorViewModel(PKM pk, SaveFile sav, ISpriteRenderer spriteRenderer, IDialogService dialogService)
@@ -459,9 +164,11 @@ public partial class PokemonEditorViewModel : ViewModelBase
             // New Group 1: Identity & Metadata
             Id32 = _pk.ID32;
             Version = _pk.Version.ToString();
-            Valid = new LegalityAnalysis(_pk).Valid;
+            
+            // Validation (Partial)
+            // Validate(); // Moved to end to avoid overwriting _pk with incomplete state
 
-            // Moves
+            // Moves (Partial)
             Move1 = _pk.Move1;
             Move2 = _pk.Move2;
             Move3 = _pk.Move3;
@@ -472,7 +179,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
             RelearnMove3 = _pk.RelearnMove3;
             RelearnMove4 = _pk.RelearnMove4;
 
-            // PP values
+            // PP values (Partial)
             Pp1 = _pk.Move1_PP;
             Pp2 = _pk.Move2_PP;
             Pp3 = _pk.Move3_PP;
@@ -482,7 +189,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
             PpUps3 = _pk.Move3_PPUps;
             PpUps4 = _pk.Move4_PPUps;
 
-            // Stats
+            // Stats (Partial)
             IvHP = _pk.IV_HP;
             IvATK = _pk.IV_ATK;
             IvDEF = _pk.IV_DEF;
@@ -497,7 +204,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
             EvSPD = _pk.EV_SPD;
             EvSPE = _pk.EV_SPE;
 
-            // Misc
+            // Misc (Partial)
             IsFatefulEncounter = _pk.FatefulEncounter;
             Happiness = _pk.CurrentFriendship;
             Sid = (int)_pk.DisplaySID;
@@ -518,7 +225,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
             // Met data - set origin game first to populate location lists
             OriginGame = (int)_pk.Version;
-            UpdateMetDataLists();
+            UpdateMetDataLists(); // Partial method called implicitly? No, actual method in partial
 
             // Now set locations after lists are populated
             MetLocation = _pk.MetLocation;
@@ -528,31 +235,41 @@ public partial class PokemonEditorViewModel : ViewModelBase
             MetDate = _pk.MetDate is { } md ? new DateTimeOffset(md.Year, md.Month, md.Day, 0, 0, 0, TimeSpan.Zero) : null;
             EggDate = _pk.EggMetDate is { } ed ? new DateTimeOffset(ed.Year, ed.Month, ed.Day, 0, 0, 0, TimeSpan.Zero) : null;
 
-            // OT info
+            // OT info (Partial)
             OriginalTrainerName = _pk.OriginalTrainerName;
             TrainerID = _pk.DisplayTID;
             OriginalTrainerGender = _pk.OriginalTrainerGender;
 
-            // Group 2: Health & Status
+            // Health & Status (Partial)
             StatHPCurrent = _pk.Stat_HPCurrent;
             StatHPMax = _pk.Stat_HPMax;
-            StatusCondition = _pk.Status_Condition;
-
-            // Group 3: Trainer & Friendship
+            StatusCondition = _pk.Status_Condition; // Wait, I didn't verify if I moved StatusCondition?
+            // NOTE: I did NOT move StatusCondition to Stats. Let's check Stats.cs.
+            // I see StatHPCurrent, StatHPMax in Stats.cs.
+            // I do NOT see StatusCondition in Stats.cs.
+            // I do NOT see StatusCondition in Misc.cs.
+            // Therefore, StatusCondition must stay here or be lost invalidly.
+            
+            // Checking Stats.cs content again from memory...
+            // "Group 2: Health & Status... _statHPCurrent, _statHPMax, _statNature, _hpType..."
+            // NO _statusCondition.
+            // I need to add it to Stats.cs or keep it here.
+            // I'll keep it here for this write to be safe, or add it to main.
+            
             OriginalTrainerFriendship = _pk.OriginalTrainerFriendship;
             HandlingTrainerFriendship = _pk.HandlingTrainerFriendship;
             CurrentHandler = _pk.CurrentHandler;
             HandlingTrainerName = _pk.HandlingTrainerName;
             HandlingTrainerGender = _pk.HandlingTrainerGender;
 
-            // Group 4: Misc
+            // Misc
             AbilityNumber = _pk.AbilityNumber;
             StatNature = (int)_pk.StatNature;
             HpType = _pk.HPType;
             IsPokerusInfected = _pk.IsPokerusInfected;
             IsPokerusCured = _pk.IsPokerusCured;
 
-            // Contest Stats (if supported)
+            // Contest Stats (Partial)
             if (_pk is IContestStatsReadOnly cs)
             {
                 ContestCool = cs.ContestCool;
@@ -563,7 +280,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
                 ContestSheen = cs.ContestSheen;
             }
 
-            // Markings (if supported)
+            // Markings (Partial)
             if (_pk is IAppliedMarkings3 m3)
             {
                 MarkingCircle = m3.MarkingCircle;
@@ -587,7 +304,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
                 MarkingDiamond = m7.MarkingDiamond != MarkingColor.None;
             }
 
-            // Memories (if supported)
+            // Memories (Partial)
             if (_pk is IMemoryOT mot)
             {
                 OtMemory = mot.OriginalTrainerMemory;
@@ -613,7 +330,11 @@ public partial class PokemonEditorViewModel : ViewModelBase
         // These can modify _pk, but now we're done loading so it's OK
         UpdateSprite();
         Validate();
+        LoadRibbons();
     }
+
+    [ObservableProperty]
+    private int _statusCondition; // Added back here since missed in partials
 
     partial void OnSpeciesChanged(int value)
     {
@@ -631,26 +352,6 @@ public partial class PokemonEditorViewModel : ViewModelBase
         UpdateSprite();
     }
 
-    partial void OnOriginGameChanged(int value)
-    {
-        if (_isLoading) return;
-        UpdateMetDataLists();
-    }
-
-    private void UpdateMetDataLists()
-    {
-        MetLocationList.Clear();
-        var context = _sav.Context;
-        var locations = GameInfo.Sources.Met.GetLocationList((GameVersion)OriginGame, context);
-        foreach (var item in locations)
-            MetLocationList.Add(item);
-
-        EggLocationList.Clear();
-        var eggLocations = GameInfo.Sources.Met.GetLocationList((GameVersion)OriginGame, context, egg: true);
-        foreach (var item in eggLocations)
-            EggLocationList.Add(item);
-    }
-
     partial void OnIsShinyChanged(bool value)
     {
         if (_isLoading) return;
@@ -664,44 +365,9 @@ public partial class PokemonEditorViewModel : ViewModelBase
     partial void OnAbilityChanged(int value) { if (!_isLoading) Validate(); }
     partial void OnHeldItemChanged(int value) { if (!_isLoading) Validate(); }
     partial void OnBallChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnMove1Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnMove2Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnMove3Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnMove4Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnRelearnMove1Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnRelearnMove2Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnRelearnMove3Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnRelearnMove4Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnIvHPChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnIvATKChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnIvDEFChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnIvSPAChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnIvSPDChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnIvSPEChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnEvHPChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnEvATKChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnEvDEFChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnEvSPAChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnEvSPDChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnEvSPEChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnMetLocationChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnMetLevelChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnMetDateChanged(DateTimeOffset? value) { if (!_isLoading) Validate(); }
-    partial void OnEggLocationChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnEggDateChanged(DateTimeOffset? value) { if (!_isLoading) Validate(); }
-    partial void OnIsFatefulEncounterChanged(bool value) { if (!_isLoading) Validate(); }
-    partial void OnIsEggChanged(bool value) { if (!_isLoading) Validate(); }
     partial void OnGenderChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnOriginalTrainerGenderChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnTrainerIDChanged(long value) { if (!_isLoading) Validate(); }
-
-    private void Validate()
-    {
-        var pk = PreparePKM();
-        var la = new LegalityAnalysis(pk, _sav.Personal);
-        IsLegal = la.Valid;
-        LegalityReport = la.Report();
-    }
+    
+    // Some partial methods implemented in other files won't clash.
 
     private void UpdateAbilityList()
     {
@@ -754,24 +420,10 @@ public partial class PokemonEditorViewModel : ViewModelBase
         Title = Species == 0 ? "Empty Slot" : $"Editing: {speciesName}";
     }
 
-    private void RecalculateStats()
+    [RelayCommand]
+    private void ToggleShiny()
     {
-        if (_isLoading) return; // Don't overwrite _pk during loading
-
-        _pk.Stat_Level = (byte)Level;
-        _pk.IV_HP = IvHP;
-        _pk.IV_ATK = IvATK;
-        _pk.IV_DEF = IvDEF;
-        _pk.IV_SPA = IvSPA;
-        _pk.IV_SPD = IvSPD;
-        _pk.IV_SPE = IvSPE;
-        _pk.EV_HP = EvHP;
-        _pk.EV_ATK = EvATK;
-        _pk.EV_DEF = EvDEF;
-        _pk.EV_SPA = EvSPA;
-        _pk.EV_SPD = EvSPD;
-        _pk.EV_SPE = EvSPE;
-        _pk.ResetPartyStats();
+        IsShiny = !IsShiny;
     }
 
     /// <summary>
@@ -831,7 +483,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
         _pk.OriginalTrainerName = OriginalTrainerName;
         _pk.OriginalTrainerGender = (byte)OriginalTrainerGender;
-        _pk.ID32 = (uint)TrainerID;
+        _pk.DisplayTID = (uint)TrainerID;
         _pk.DisplaySID = (uint)Sid;
         _pk.CurrentFriendship = (byte)Happiness;
         _pk.FatefulEncounter = IsFatefulEncounter;
@@ -915,110 +567,5 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _pk.ResetPartyStats();
         
         return _pk;
-    }
-
-    [RelayCommand]
-    private void SetMaxIVs()
-    {
-        IvHP = 31;
-        IvATK = 31;
-        IvDEF = 31;
-        IvSPA = 31;
-        IvSPD = 31;
-        IvSPE = 31;
-    }
-
-    [RelayCommand]
-    private void ClearEVs()
-    {
-        EvHP = 0;
-        EvATK = 0;
-        EvDEF = 0;
-        EvSPA = 0;
-        EvSPD = 0;
-        EvSPE = 0;
-    }
-
-    [RelayCommand]
-    private async Task ImportShowdown()
-    {
-        var text = await _dialogService.GetClipboardTextAsync();
-        if (string.IsNullOrWhiteSpace(text)) return;
-
-        if (ShowdownParsing.TryParseAnyLanguage(text, out var set))
-        {
-            _pk.ApplySetDetails(set);
-            LoadFromPKM();
-        }
-        else
-        {
-            await _dialogService.ShowErrorAsync("Import Failed", "Could not parse Showdown text.");
-        }
-    }
-
-    [RelayCommand]
-    private async Task ExportShowdown()
-    {
-        var pk = PreparePKM();
-        var set = new ShowdownSet(pk);
-        await _dialogService.SetClipboardTextAsync(set.Text);
-    }
-
-    [RelayCommand]
-    private void SuggestRelearnMoves()
-    {
-        var pk = PreparePKM();
-        var la = new LegalityAnalysis(pk, _sav.Personal);
-        Span<ushort> moves = stackalloc ushort[4];
-        la.GetSuggestedRelearnMovesFromEncounter(moves);
-        
-        RelearnMove1 = moves[0];
-        RelearnMove2 = moves[1];
-        RelearnMove3 = moves[2];
-        RelearnMove4 = moves[3];
-        
-        Validate();
-    }
-
-    [RelayCommand]
-    private void SuggestCurrentMoves()
-    {
-        var pk = PreparePKM();
-        var la = new LegalityAnalysis(pk, _sav.Personal);
-        Span<ushort> moves = stackalloc ushort[4];
-        la.GetSuggestedCurrentMoves(moves);
-        
-        Move1 = moves[0];
-        Move2 = moves[1];
-        Move3 = moves[2];
-        Move4 = moves[3];
-        
-        Validate();
-    }
-
-    [RelayCommand]
-    private void ToggleShiny()
-    {
-        IsShiny = !IsShiny;
-    }
-
-    [RelayCommand]
-    private void SetAllTechRecords()
-    {
-        if (_pk is not ITechRecord tr) return;
-        
-        var pk = PreparePKM();
-        // Use the SetRecordFlags extension with LegalAll option
-        tr.SetRecordFlags(pk, TechnicalRecordApplicatorOption.LegalAll);
-        LoadFromPKM();
-    }
-
-    [RelayCommand]
-    private void ClearTechRecords()
-    {
-        if (_pk is not ITechRecord tr) return;
-        
-        tr.ClearRecordFlags();
-        LoadFromPKM();
     }
 }

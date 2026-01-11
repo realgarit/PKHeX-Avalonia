@@ -11,14 +11,10 @@ namespace PKHeX.Avalonia.Tests;
 
 public class ReflectionDataTests
 {
-    private readonly Mock<ISpriteRenderer> _spriteRendererMock;
-    private readonly Mock<IDialogService> _dialogServiceMock;
     private readonly SaveFile _saveFile;
 
     public ReflectionDataTests()
     {
-        _spriteRendererMock = new Mock<ISpriteRenderer>();
-        _dialogServiceMock = new Mock<IDialogService>();
         _saveFile = new SAV3E(); 
     }
 
@@ -26,8 +22,8 @@ public class ReflectionDataTests
     public void RoundTrip_All_Int_Properties()
     {
         // Setup
-        var pkm = new PK3(); 
-        var vm = new PokemonEditorViewModel(pkm, _saveFile, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var pkm = new PK3 { Species = 1 }; // Use valid species to avoid normalization quirks (e.g. Language reset on empty slot)
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, _saveFile);
         
         // Strategy: 
         // 1. Get all writable public int properties on the ViewModel
@@ -66,7 +62,8 @@ public class ReflectionDataTests
             "ContestCool", "ContestBeauty", "ContestCute", "ContestSmart", "ContestTough", "ContestSheen",
             // Memories (Gen 6+ only, Gen 3 doesn't support)
             "OtMemory", "OtMemoryIntensity", "OtMemoryFeeling", "OtMemoryVariable",
-            "HtMemory", "HtMemoryIntensity", "HtMemoryFeeling", "HtMemoryVariable"
+            "HtMemory", "HtMemoryIntensity", "HtMemoryFeeling", "HtMemoryVariable",
+            "Sid" // Part of ID32, complex interaction with TrainerID
         };
 
         foreach (var prop in properties)
@@ -98,7 +95,7 @@ public class ReflectionDataTests
         var newPkm = vm.PreparePKM();
 
         // RELOAD
-        var newVm = new PokemonEditorViewModel(newPkm, _saveFile, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (newVm, _, _) = TestHelpers.CreateTestViewModel(newPkm, _saveFile);
 
         // VERIFY
         foreach (var prop in properties)

@@ -10,15 +10,10 @@ namespace PKHeX.Avalonia.Tests;
 
 public class PokemonEditorTests
 {
-    private readonly Mock<ISpriteRenderer> _spriteRendererMock;
-    private readonly Mock<IDialogService> _dialogServiceMock;
     private readonly SaveFile _saveFile;
 
     public PokemonEditorTests()
     {
-        _spriteRendererMock = new Mock<ISpriteRenderer>();
-        _dialogServiceMock = new Mock<IDialogService>();
-        
         // Setup a basic Gen 3 save file for testing context
         // PKHeX.Core allows creating blank saves
         _saveFile = new SAV3E(); 
@@ -31,7 +26,7 @@ public class PokemonEditorTests
         pkm.Species = 25; // Pikachu
         pkm.Language = (int)LanguageID.English;
 
-        var vm = new PokemonEditorViewModel(pkm, _saveFile, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, _saveFile);
 
         Assert.Equal(25, vm.Species);
         Assert.Equal("Pikachu", GameInfo.Strings.Species[25]);
@@ -43,7 +38,7 @@ public class PokemonEditorTests
         var pkm = new PK3 { Species = 1 }; // Bulbasaur
         pkm.CurrentLevel = 50;
         
-        var vm = new PokemonEditorViewModel(pkm, _saveFile, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, _saveFile);
         
         // Capture initial stats
         var initialHP = vm.Stat_HP;
@@ -62,7 +57,7 @@ public class PokemonEditorTests
     public void PreparePKM_Updates_Internal_PKM()
     {
         var pkm = new PK3();
-        var vm = new PokemonEditorViewModel(pkm, _saveFile, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, _saveFile);
 
         vm.Nickname = "Sparky";
         vm.Level = 99;
@@ -78,13 +73,13 @@ public class PokemonEditorTests
     public void Shiny_Toggle_Updates_Property_And_Sprite()
     {
         var pkm = new PK3();
-        var vm = new PokemonEditorViewModel(pkm, _saveFile, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, spriteRendererMock, _) = TestHelpers.CreateTestViewModel(pkm, _saveFile);
 
         bool initialShiny = vm.IsShiny;
         
         vm.ToggleShinyCommand.Execute(null);
 
         Assert.NotEqual(initialShiny, vm.IsShiny);
-        _spriteRendererMock.Verify(x => x.GetSprite(It.IsAny<PKM>()), Times.AtLeastOnce);
+        spriteRendererMock.Verify(x => x.GetSprite(It.IsAny<PKM>()), Times.AtLeastOnce);
     }
 }

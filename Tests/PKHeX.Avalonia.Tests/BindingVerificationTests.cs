@@ -54,6 +54,12 @@ public class BindingVerificationTests
             if (bindingPath.StartsWith("!") || bindingPath == "Value" || bindingPath == "Text")
                 continue;
             
+            // Skip DataTemplate bindings (these bind to item ViewModels, not the main ViewModel)
+            // RibbonItemViewModel properties used in Ribbons tab ItemTemplate
+            var dataTemplateBindings = new[] { "DisplayName", "HasRibbon", "IsBooleanRibbon", "MaxCount", "RibbonCount" };
+            if (dataTemplateBindings.Contains(bindingPath))
+                continue;
+            
             // Check if property exists in ViewModel
             if (!vmProperties.Contains(bindingPath))
             {

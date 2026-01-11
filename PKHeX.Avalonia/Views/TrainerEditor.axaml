@@ -64,6 +64,66 @@
                     </StackPanel>
                 </Grid>
 
+                <!-- Badges -->
+                <Border IsVisible="{Binding HasBadges}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Badges" FontWeight="SemiBold" />
+                        <ItemsControl ItemsSource="{Binding Badges}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsObtained}" 
+                                              Content="{Binding DisplayName}"
+                                              Margin="0,0,16,8" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Adventure Info -->
+                <Border IsVisible="{Binding HasAdventureInfo}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Adventure Info" FontWeight="SemiBold" />
+                        <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,4,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Start Timestamp:" Opacity="0.7" FontSize="11" />
+                            <NumericUpDown Grid.Row="2" Grid.Column="0" 
+                                           Value="{Binding SecondsToStart}" 
+                                           Minimum="0" 
+                                           FormatString="0" />
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Fame Timestamp:" Opacity="0.7" FontSize="11" />
+                            <NumericUpDown Grid.Row="2" Grid.Column="2" 
+                                           Value="{Binding SecondsToFame}" 
+                                           Minimum="0" 
+                                           FormatString="0" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Map Coordinates -->
+                <Border IsVisible="{Binding HasCoordinates}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Map Coordinates" FontWeight="SemiBold" />
+                        <Grid ColumnDefinitions="*,8,*,8,*" RowDefinitions="Auto,4,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="X" Opacity="0.7" FontSize="11" />
+                            <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding X}" FormatString="0.0" />
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Y" Opacity="0.7" FontSize="11" />
+                            <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Y}" FormatString="0.0" />
+
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Z" Opacity="0.7" FontSize="11" />
+                            <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding Z}" FormatString="0.0" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
                 <!-- Money -->
                 <StackPanel>
                     <TextBlock Text="Money" FontWeight="SemiBold" Margin="0,0,0,4" />

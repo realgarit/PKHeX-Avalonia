@@ -12,21 +12,12 @@ namespace PKHeX.Avalonia.Tests;
 /// </summary>
 public class PreparePKMStressTests
 {
-    private readonly Mock<ISpriteRenderer> _spriteRendererMock = new();
-    private readonly Mock<IDialogService> _dialogServiceMock = new();
-    private readonly ITestOutputHelper _output;
-
-    public PreparePKMStressTests(ITestOutputHelper output)
-    {
-        _output = output;
-    }
-
     [Fact]
     public void PreparePKM_Called_Multiple_Times_Is_Idempotent()
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.Nickname = "TestPika";
         vm.IvHP = 31;
@@ -55,7 +46,7 @@ public class PreparePKMStressTests
         };
         original.Nickname = "Original";
         
-        var vm = new PokemonEditorViewModel(original, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(original, sav);
         
         // Don't change anything
         var result = vm.PreparePKM();
@@ -71,7 +62,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 201, Form = 5 }; // Unown with Form
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         Assert.Equal(5, vm.Form);
         
@@ -90,7 +81,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         // Set to shiny and verify
         vm.IsShiny = true;
@@ -106,7 +97,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.Move1 = 85;  // Thunderbolt
         vm.Move2 = 86;  // Thunder Wave  
@@ -126,7 +117,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.IvHP = 10;
         vm.IvATK = 15;
@@ -150,7 +141,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.EvHP = 50;
         vm.EvATK = 100;
@@ -174,7 +165,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.Nickname = "";
         var result = vm.PreparePKM();
@@ -188,7 +179,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         // Try setting special characters
         vm.Nickname = "Test123!@#";
@@ -203,7 +194,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.Pid = "DEADBEEF";
         var result = vm.PreparePKM();
@@ -217,7 +208,7 @@ public class PreparePKMStressTests
         // Gen 3 doesn't have EC - use Gen 6+ for this test
         var sav = new SAV6XY();
         var pkm = new PK6 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.EncryptionConstant = "12345678";
         var result = vm.PreparePKM();
@@ -230,7 +221,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.Language = (int)LanguageID.Japanese;
         var result = vm.PreparePKM();
@@ -243,7 +234,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.Ball = 2; // Great Ball
         var result = vm.PreparePKM();
@@ -256,7 +247,7 @@ public class PreparePKMStressTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         // Gen 3 OT name is max 7 characters
         vm.OriginalTrainerName = "TestOT";

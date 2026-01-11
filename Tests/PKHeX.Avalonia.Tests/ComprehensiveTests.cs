@@ -11,8 +11,8 @@ namespace PKHeX.Avalonia.Tests;
 /// </summary>
 public class ComprehensiveTests
 {
-    private readonly Mock<ISpriteRenderer> _spriteRendererMock = new();
-    private readonly Mock<IDialogService> _dialogServiceMock = new();
+    // private readonly Mock<ISpriteRenderer> _spriteRendererMock = new(); // Removed
+    // private readonly Mock<IDialogService> _dialogServiceMock = new(); // Removed
 
     #region Edge Case Tests
 
@@ -22,7 +22,7 @@ public class ComprehensiveTests
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 0 };
         
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         Assert.Equal(0, vm.Species);
         Assert.Equal("Empty Slot", vm.Title);
@@ -33,7 +33,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         // Set IV above max (should be clamped or handled)
         vm.IvHP = 999; // Way above 31
@@ -48,7 +48,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         // Set EV above max (should be clamped or handled)
         vm.EvHP = 999; // Way above 252
@@ -63,7 +63,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         // This should not throw
         vm.Nickname = null!;
@@ -77,7 +77,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         // Set invalid hex string
         vm.Pid = "ZZZZZZZZ"; // Invalid hex
@@ -92,7 +92,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.Level = 0; // Invalid but should not crash
         var result = vm.PreparePKM();
@@ -106,7 +106,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.Level = 255; // Over max
         var result = vm.PreparePKM();
@@ -124,7 +124,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.SetMaxIVsCommand.Execute(null);
         
@@ -142,7 +142,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25, EV_HP = 100, EV_ATK = 100 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         Assert.True(vm.EVTotal > 0); // Pre-condition
         
@@ -162,7 +162,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         bool initialState = vm.IsShiny;
         
@@ -183,7 +183,7 @@ public class ComprehensiveTests
         var sav = new SAV4Pt();
         var pkm = new PK4 { Species = 393 }; // Piplup
         
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         Assert.Equal(393, vm.Species);
     }
@@ -194,7 +194,7 @@ public class ComprehensiveTests
         var sav = new SAV5B2W2();
         var pkm = new PK5 { Species = 495 }; // Snivy
         
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         Assert.Equal(495, vm.Species);
     }
@@ -205,7 +205,7 @@ public class ComprehensiveTests
         var sav = new SAV6XY();
         var pkm = new PK6 { Species = 650 }; // Chespin
         
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         Assert.Equal(650, vm.Species);
     }
@@ -216,7 +216,7 @@ public class ComprehensiveTests
         var sav = new SAV7SM();
         var pkm = new PK7 { Species = 722 }; // Rowlet
         
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         Assert.Equal(722, vm.Species);
     }
@@ -227,7 +227,7 @@ public class ComprehensiveTests
         var sav = new SAV8SWSH();
         var pkm = new PK8 { Species = 810 }; // Grookey
         
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         Assert.Equal(810, vm.Species);
     }
@@ -238,7 +238,7 @@ public class ComprehensiveTests
         var sav = new SAV9SV();
         var pkm = new PK9 { Species = 906 }; // Sprigatito
         
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         Assert.Equal(906, vm.Species);
     }
@@ -252,7 +252,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         // Set various fields
         vm.Species = 1;
@@ -285,7 +285,7 @@ public class ComprehensiveTests
     {
         var sav = new SAV3E();
         var pkm = new PK3 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.Move1 = 33; // Tackle
         vm.Pp1 = 35;
@@ -303,7 +303,7 @@ public class ComprehensiveTests
         // Gen 3 doesn't store MetDate - use Gen 4+ for this test
         var sav = new SAV4Pt();
         var pkm = new PK4 { Species = 25 };
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.MetLevel = 5;
         vm.MetDate = new DateTimeOffset(2024, 6, 15, 0, 0, 0, TimeSpan.Zero);
@@ -338,11 +338,12 @@ public class ComprehensiveTests
         pkm.PID = 12345;
         pkm.OriginalTrainerTrash[0] = 0x41; // 'A'
         
-        var vm = new PokemonEditorViewModel(pkm, sav, _spriteRendererMock.Object, _dialogServiceMock.Object);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         // Just checking it doesn't crash - legality is complex
         Assert.NotNull(vm.LegalityReport);
     }
+
 
     #endregion
 }
