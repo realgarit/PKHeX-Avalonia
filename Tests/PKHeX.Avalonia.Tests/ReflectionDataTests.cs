@@ -61,7 +61,12 @@ public class ReflectionDataTests
             "StatHPCurrent", "StatHPMax", "Valid", "Version", "StatNature", "HpType",
             "IsPokerusInfected", "IsPokerusCured", "AbilityNumber", "Id32", "IsNicknamed",
             "StatusCondition", "HandlingTrainerName", "HandlingTrainerGender", 
-            "HandlingTrainerFriendship", "CurrentHandler", "OriginalTrainerFriendship"
+            "HandlingTrainerFriendship", "CurrentHandler", "OriginalTrainerFriendship",
+            // Contest Stats (Gen 3 has these but test needs specific PKM setup)
+            "ContestCool", "ContestBeauty", "ContestCute", "ContestSmart", "ContestTough", "ContestSheen",
+            // Memories (Gen 6+ only, Gen 3 doesn't support)
+            "OtMemory", "OtMemoryIntensity", "OtMemoryFeeling", "OtMemoryVariable",
+            "HtMemory", "HtMemoryIntensity", "HtMemoryFeeling", "HtMemoryVariable"
         };
 
         foreach (var prop in properties)

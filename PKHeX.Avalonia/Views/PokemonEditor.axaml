@@ -435,6 +435,16 @@
                                           DisplayMemberBinding="{Binding Text}"
                                           HorizontalAlignment="Stretch" Margin="0,0,0,4" />
                             </StackPanel>
+
+                            <!-- Tech Records (Gen 8+) -->
+                            <StackPanel IsVisible="{Binding HasTechRecords}" Spacing="8">
+                                <Separator />
+                                <TextBlock Text="Tech Records (TMs/TRs)" FontWeight="SemiBold" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button Content="Set All Legal" Command="{Binding SetAllTechRecordsCommand}" />
+                                    <Button Content="Clear All" Command="{Binding ClearTechRecordsCommand}" />
+                                </StackPanel>
+                            </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
@@ -497,6 +507,120 @@
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="PKRS Days" FontWeight="SemiBold" Margin="0,0,0,4" />
                                     <NumericUpDown Value="{Binding PkrsDays}" Minimum="0" Maximum="15" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Markings -->
+                            <StackPanel IsVisible="{Binding HasMarkings}" Spacing="8">
+                                <Separator />
+                                <TextBlock Text="Markings" FontWeight="SemiBold" />
+                                <WrapPanel Orientation="Horizontal">
+                                    <CheckBox Content="●" IsChecked="{Binding MarkingCircle}" Margin="0,0,8,0" ToolTip.Tip="Circle" FontSize="16" />
+                                    <CheckBox Content="▲" IsChecked="{Binding MarkingTriangle}" Margin="0,0,8,0" ToolTip.Tip="Triangle" FontSize="16" />
+                                    <CheckBox Content="■" IsChecked="{Binding MarkingSquare}" Margin="0,0,8,0" ToolTip.Tip="Square" FontSize="16" />
+                                    <CheckBox Content="♥" IsChecked="{Binding MarkingHeart}" Margin="0,0,8,0" ToolTip.Tip="Heart" FontSize="16" />
+                                    <CheckBox Content="★" IsChecked="{Binding MarkingStar}" Margin="0,0,8,0" ToolTip.Tip="Star" FontSize="16" IsVisible="{Binding HasSixMarkings}" />
+                                    <CheckBox Content="◆" IsChecked="{Binding MarkingDiamond}" Margin="0,0,8,0" ToolTip.Tip="Diamond" FontSize="16" IsVisible="{Binding HasSixMarkings}" />
+                                </WrapPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- Contest Tab (Gen 3-6) -->
+                <TabItem Header="Contest" IsVisible="{Binding HasContestStats}">
+                    <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Contest Stats" FontWeight="Bold" FontSize="16" />
+                            
+                            <!-- Cool & Beauty -->
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Cool" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding ContestCool}" Minimum="0" Maximum="255" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Beauty" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding ContestBeauty}" Minimum="0" Maximum="255" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Cute & Smart -->
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Cute" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding ContestCute}" Minimum="0" Maximum="255" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Smart" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding ContestSmart}" Minimum="0" Maximum="255" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Tough & Sheen -->
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Tough" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding ContestTough}" Minimum="0" Maximum="255" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Sheen" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding ContestSheen}" Minimum="0" Maximum="255" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- Memory Tab (Gen 6+) -->
+                <TabItem Header="Memory" IsVisible="{Binding HasMemories}">
+                    <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Spacing="12">
+                            <!-- OT Memory -->
+                            <TextBlock Text="Original Trainer Memory" FontWeight="Bold" FontSize="14" />
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Memory" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding OtMemory}" Minimum="0" Maximum="255" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Intensity" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding OtMemoryIntensity}" Minimum="0" Maximum="7" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Feeling" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding OtMemoryFeeling}" Minimum="0" Maximum="24" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Variable" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding OtMemoryVariable}" Minimum="0" Maximum="65535" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Separator Margin="0,8" />
+
+                            <!-- HT Memory -->
+                            <TextBlock Text="Handling Trainer Memory" FontWeight="Bold" FontSize="14" />
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Memory" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding HtMemory}" Minimum="0" Maximum="255" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Intensity" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding HtMemoryIntensity}" Minimum="0" Maximum="7" FormatString="0" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Feeling" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding HtMemoryFeeling}" Minimum="0" Maximum="24" FormatString="0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Variable" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding HtMemoryVariable}" Minimum="0" Maximum="65535" FormatString="0" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>

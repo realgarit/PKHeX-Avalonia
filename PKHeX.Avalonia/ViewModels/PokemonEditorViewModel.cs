@@ -313,6 +313,79 @@ public partial class PokemonEditorViewModel : ViewModelBase
     public int IVTotal => IvHP + IvATK + IvDEF + IvSPA + IvSPD + IvSPE;
     public int EVTotal => EvHP + EvATK + EvDEF + EvSPA + EvSPD + EvSPE;
 
+    // Contest Stats (Gen 3-6)
+    [ObservableProperty]
+    private int _contestCool;
+
+    [ObservableProperty]
+    private int _contestBeauty;
+
+    [ObservableProperty]
+    private int _contestCute;
+
+    [ObservableProperty]
+    private int _contestSmart;
+
+    [ObservableProperty]
+    private int _contestTough;
+
+    [ObservableProperty]
+    private int _contestSheen;
+
+    public bool HasContestStats => _pk is IContestStatsReadOnly;
+
+    // Markings (all generations support some subset)
+    [ObservableProperty]
+    private bool _markingCircle;
+
+    [ObservableProperty]
+    private bool _markingTriangle;
+
+    [ObservableProperty]
+    private bool _markingSquare;
+
+    [ObservableProperty]
+    private bool _markingHeart;
+
+    [ObservableProperty]
+    private bool _markingStar;
+
+    [ObservableProperty]
+    private bool _markingDiamond;
+
+    public bool HasMarkings => _pk is IAppliedMarkings;
+    public bool HasSixMarkings => _pk is IAppliedMarkings4 or IAppliedMarkings7;
+
+    // Memories (Gen 6+)
+    [ObservableProperty]
+    private int _otMemory;
+
+    [ObservableProperty]
+    private int _otMemoryIntensity;
+
+    [ObservableProperty]
+    private int _otMemoryFeeling;
+
+    [ObservableProperty]
+    private int _otMemoryVariable;
+
+    [ObservableProperty]
+    private int _htMemory;
+
+    [ObservableProperty]
+    private int _htMemoryIntensity;
+
+    [ObservableProperty]
+    private int _htMemoryFeeling;
+
+    [ObservableProperty]
+    private int _htMemoryVariable;
+
+    public bool HasMemories => _pk is IMemoryOT;
+
+    // Tech Records (Gen 8+)
+    public bool HasTechRecords => _pk is ITechRecord;
+
     // OT Info
     [ObservableProperty]
     private string _originalTrainerName = string.Empty;
@@ -478,6 +551,57 @@ public partial class PokemonEditorViewModel : ViewModelBase
             HpType = _pk.HPType;
             IsPokerusInfected = _pk.IsPokerusInfected;
             IsPokerusCured = _pk.IsPokerusCured;
+
+            // Contest Stats (if supported)
+            if (_pk is IContestStatsReadOnly cs)
+            {
+                ContestCool = cs.ContestCool;
+                ContestBeauty = cs.ContestBeauty;
+                ContestCute = cs.ContestCute;
+                ContestSmart = cs.ContestSmart;
+                ContestTough = cs.ContestTough;
+                ContestSheen = cs.ContestSheen;
+            }
+
+            // Markings (if supported)
+            if (_pk is IAppliedMarkings3 m3)
+            {
+                MarkingCircle = m3.MarkingCircle;
+                MarkingTriangle = m3.MarkingTriangle;
+                MarkingSquare = m3.MarkingSquare;
+                MarkingHeart = m3.MarkingHeart;
+            }
+            if (_pk is IAppliedMarkings4 m4)
+            {
+                MarkingStar = m4.MarkingStar;
+                MarkingDiamond = m4.MarkingDiamond;
+            }
+            else if (_pk is IAppliedMarkings7 m7)
+            {
+                // For Gen 7+, convert color to boolean (any color = marked)
+                MarkingCircle = m7.MarkingCircle != MarkingColor.None;
+                MarkingTriangle = m7.MarkingTriangle != MarkingColor.None;
+                MarkingSquare = m7.MarkingSquare != MarkingColor.None;
+                MarkingHeart = m7.MarkingHeart != MarkingColor.None;
+                MarkingStar = m7.MarkingStar != MarkingColor.None;
+                MarkingDiamond = m7.MarkingDiamond != MarkingColor.None;
+            }
+
+            // Memories (if supported)
+            if (_pk is IMemoryOT mot)
+            {
+                OtMemory = mot.OriginalTrainerMemory;
+                OtMemoryIntensity = mot.OriginalTrainerMemoryIntensity;
+                OtMemoryFeeling = mot.OriginalTrainerMemoryFeeling;
+                OtMemoryVariable = mot.OriginalTrainerMemoryVariable;
+            }
+            if (_pk is IMemoryHT mht)
+            {
+                HtMemory = mht.HandlingTrainerMemory;
+                HtMemoryIntensity = mht.HandlingTrainerMemoryIntensity;
+                HtMemoryFeeling = mht.HandlingTrainerMemoryFeeling;
+                HtMemoryVariable = mht.HandlingTrainerMemoryVariable;
+            }
 
             UpdateTitle();
         }
@@ -736,6 +860,57 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _pk.MetDate = MetDate is { } md ? new DateOnly(md.Year, md.Month, md.Day) : null;
         _pk.EggMetDate = EggDate is { } ed ? new DateOnly(ed.Year, ed.Month, ed.Day) : null;
 
+        // Contest Stats (if supported)
+        if (_pk is IContestStats cs)
+        {
+            cs.ContestCool = (byte)ContestCool;
+            cs.ContestBeauty = (byte)ContestBeauty;
+            cs.ContestCute = (byte)ContestCute;
+            cs.ContestSmart = (byte)ContestSmart;
+            cs.ContestTough = (byte)ContestTough;
+            cs.ContestSheen = (byte)ContestSheen;
+        }
+
+        // Markings (if supported)
+        if (_pk is IAppliedMarkings3 m3)
+        {
+            m3.MarkingCircle = MarkingCircle;
+            m3.MarkingTriangle = MarkingTriangle;
+            m3.MarkingSquare = MarkingSquare;
+            m3.MarkingHeart = MarkingHeart;
+        }
+        if (_pk is IAppliedMarkings4 m4)
+        {
+            m4.MarkingStar = MarkingStar;
+            m4.MarkingDiamond = MarkingDiamond;
+        }
+        else if (_pk is IAppliedMarkings7 m7)
+        {
+            // For Gen 7+, set Blue color if marked, None if not
+            m7.MarkingCircle = MarkingCircle ? MarkingColor.Blue : MarkingColor.None;
+            m7.MarkingTriangle = MarkingTriangle ? MarkingColor.Blue : MarkingColor.None;
+            m7.MarkingSquare = MarkingSquare ? MarkingColor.Blue : MarkingColor.None;
+            m7.MarkingHeart = MarkingHeart ? MarkingColor.Blue : MarkingColor.None;
+            m7.MarkingStar = MarkingStar ? MarkingColor.Blue : MarkingColor.None;
+            m7.MarkingDiamond = MarkingDiamond ? MarkingColor.Blue : MarkingColor.None;
+        }
+
+        // Memories (if supported)
+        if (_pk is IMemoryOT mot)
+        {
+            mot.OriginalTrainerMemory = (byte)OtMemory;
+            mot.OriginalTrainerMemoryIntensity = (byte)OtMemoryIntensity;
+            mot.OriginalTrainerMemoryFeeling = (byte)OtMemoryFeeling;
+            mot.OriginalTrainerMemoryVariable = (ushort)OtMemoryVariable;
+        }
+        if (_pk is IMemoryHT mht)
+        {
+            mht.HandlingTrainerMemory = (byte)HtMemory;
+            mht.HandlingTrainerMemoryIntensity = (byte)HtMemoryIntensity;
+            mht.HandlingTrainerMemoryFeeling = (byte)HtMemoryFeeling;
+            mht.HandlingTrainerMemoryVariable = (ushort)HtMemoryVariable;
+        }
+
         // Recalculate stats
         _pk.ResetPartyStats();
         
@@ -825,5 +1000,25 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private void ToggleShiny()
     {
         IsShiny = !IsShiny;
+    }
+
+    [RelayCommand]
+    private void SetAllTechRecords()
+    {
+        if (_pk is not ITechRecord tr) return;
+        
+        var pk = PreparePKM();
+        // Use the SetRecordFlags extension with LegalAll option
+        tr.SetRecordFlags(pk, TechnicalRecordApplicatorOption.LegalAll);
+        LoadFromPKM();
+    }
+
+    [RelayCommand]
+    private void ClearTechRecords()
+    {
+        if (_pk is not ITechRecord tr) return;
+        
+        tr.ClearRecordFlags();
+        LoadFromPKM();
     }
 }
