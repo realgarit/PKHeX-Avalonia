@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="PKHeX.Avalonia.Views.AboutView"
+             Width="400" Height="250">
+    <Border Padding="24" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="PKHeX"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center" />
+            <TextBlock Text="Avalonia Edition"
+                       FontSize="16"
+                       Opacity="0.7"
+                       HorizontalAlignment="Center" />
+            
+            <Separator />
+            
+            <StackPanel Spacing="4">
+                <TextBlock Text="Core: PKHeX.Core 26.01.11"
+                           HorizontalAlignment="Center"
+                           FontSize="12" />
+                <TextBlock Text="UI: Avalonia UI 11.2.3"
+                           HorizontalAlignment="Center"
+                           FontSize="12" />
+            </StackPanel>
+
+            <TextBlock Text="Created by PKHeX Contributors"
+                       FontSize="12"
+                       HorizontalAlignment="Center"
+                       Margin="0,8,0,0" />
+            
+            <Button Content="Close"
+                    Click="OnCloseClick"
+                    HorizontalAlignment="Center"
+                    Classes="accent"
+                    Margin="0,8,0,0" />
+        </StackPanel>
+    </Border>
+</UserControl>

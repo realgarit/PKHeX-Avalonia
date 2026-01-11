@@ -34,6 +34,7 @@
                     <MenuItem Header="Dump Boxes" Command="{Binding DumpBoxesCommand}" />
                     <MenuItem Header="PKM Database" Command="{Binding OpenPKMDatabaseCommand}" />
                     <MenuItem Header="Mystery Gift Database" Command="{Binding OpenMysteryGiftDatabaseCommand}" />
+                    <MenuItem Header="Block Editor" Command="{Binding OpenBlockEditorCommand}" />
                 </MenuItem>
                 <MenuItem Header="Batch Editor" Command="{Binding OpenBatchEditorCommand}" />
             </MenuItem>
@@ -43,7 +44,7 @@
                 <MenuItem Header="Redo" InputGesture="Ctrl+Y" IsEnabled="False" />
                 <Separator />
                 <MenuItem Header="Settings" Command="{Binding OpenSettingsCommand}" />
-                <MenuItem Header="About PKHeX" IsEnabled="False" />
+                <MenuItem Header="About PKHeX" Command="{Binding OpenAboutCommand}" />
             </MenuItem>
         </Menu>
 

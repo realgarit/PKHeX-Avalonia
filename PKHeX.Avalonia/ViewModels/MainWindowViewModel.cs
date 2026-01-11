@@ -456,12 +456,29 @@ public partial class MainWindowViewModel : ViewModelBase
         await _dialogService.ShowDialogAsync(view, "Batch Editor");
     }
 
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenBlockEditorAsync()
+    {
+        if (CurrentSave is null) return;
+        
+        var vm = new BlockEditorViewModel(CurrentSave, _dialogService);
+        var view = new Views.BlockEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Block Editor");
+    }
+
     [RelayCommand]
     private async Task OpenSettingsAsync()
     {
         var vm = new SettingsViewModel(_settings);
         var view = new SettingsView { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Settings");
+    }
+
+    [RelayCommand]
+    private async Task OpenAboutAsync()
+    {
+        var view = new Views.AboutView();
+        await _dialogService.ShowDialogAsync(view, "About PKHeX");
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
