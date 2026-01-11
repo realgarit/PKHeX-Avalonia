@@ -1,0 +1,121 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.MysteryGiftEditor"
+             x:DataType="vm:MysteryGiftEditorViewModel">
+
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <Panel>
+            <!-- Not supported message -->
+            <StackPanel VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        IsVisible="{Binding !IsSupported}">
+                <TextBlock Text="Mystery Gifts not available"
+                           FontSize="18"
+                           HorizontalAlignment="Center"
+                           Opacity="0.7" />
+                <TextBlock Text="This save type does not support mystery gift storage."
+                           HorizontalAlignment="Center"
+                           Opacity="0.5"
+                           Margin="0,8,0,0" />
+            </StackPanel>
+
+            <!-- Main editor -->
+            <DockPanel IsVisible="{Binding IsSupported}">
+                <!-- Header -->
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                    <TextBlock Text="Mystery Gifts" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding GiftCount, StringFormat='({0} slots)'}"
+                               VerticalAlignment="Center"
+                               Opacity="0.6"
+                               Margin="8,0,0,0" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                        <Button Content="Reset" Command="{Binding ResetCommand}" Padding="12,6" />
+                        <Button Content="Apply" Command="{Binding SaveCommand}" Classes="accent" Padding="12,6" />
+                    </StackPanel>
+                </DockPanel>
+
+                <!-- Content -->
+                <Grid ColumnDefinitions="*,16,300">
+                    <!-- Gift List -->
+                    <Border Grid.Column="0"
+                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            CornerRadius="4">
+                        <ScrollViewer>
+                            <ItemsControl ItemsSource="{Binding Gifts}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="vm:MysteryGiftSlotViewModel">
+                                        <Button Command="{Binding $parent[ItemsControl].((vm:MysteryGiftEditorViewModel)DataContext).SelectGiftCommand}"
+                                                CommandParameter="{Binding}"
+                                                Background="Transparent"
+                                                Padding="12,8"
+                                                HorizontalContentAlignment="Left"
+                                                HorizontalAlignment="Stretch">
+                                            <Grid ColumnDefinitions="Auto,*">
+                                                <!-- Empty/Filled indicator -->
+                                                <Panel Grid.Column="0" Width="10" Height="10" Margin="0,0,12,0" VerticalAlignment="Center">
+                                                    <Ellipse Fill="Gray" IsVisible="{Binding IsEmpty}" />
+                                                    <Ellipse Fill="LimeGreen" IsVisible="{Binding !IsEmpty}" />
+                                                </Panel>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock Text="{Binding Title}"
+                                                               FontWeight="SemiBold" />
+                                                    <TextBlock Text="{Binding Species}"
+                                                               Opacity="0.7"
+                                                               FontSize="12"
+                                                               IsVisible="{Binding !IsEmpty}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Selected Gift Details -->
+                    <Border Grid.Column="2"
+                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            CornerRadius="4"
+                            Padding="16">
+                        <StackPanel Spacing="16" DataContext="{Binding SelectedGift}">
+                            <TextBlock Text="Selected Gift"
+                                       FontWeight="SemiBold"
+                                       FontSize="16" />
+
+                            <!-- Gift Info -->
+                            <StackPanel Spacing="8" IsVisible="{Binding !IsEmpty}">
+                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding Species}" />
+                                <TextBlock Text="{Binding Summary}" Opacity="0.7" />
+                            </StackPanel>
+
+                            <TextBlock Text="(Empty slot)"
+                                       Opacity="0.5"
+                                       IsVisible="{Binding IsEmpty}" />
+
+                            <!-- Actions -->
+                            <StackPanel Spacing="8" Margin="0,16,0,0">
+                                <Button Content="Import..."
+                                        Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).ImportGiftCommand}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center" />
+                                <Button Content="Export..."
+                                        Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).ExportGiftCommand}"
+                                        IsEnabled="{Binding !IsEmpty}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center" />
+                                <Button Content="Delete"
+                                        Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).DeleteGiftCommand}"
+                                        IsEnabled="{Binding !IsEmpty}"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Center" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </DockPanel>
+        </Panel>
+    </Border>
+</UserControl>

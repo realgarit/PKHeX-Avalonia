@@ -1,0 +1,141 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.TrainerEditor"
+             x:DataType="vm:TrainerEditorViewModel">
+
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="16" MaxWidth="400">
+                <!-- Header -->
+                <TextBlock Text="Trainer Info"
+                           FontSize="20"
+                           FontWeight="SemiBold" />
+
+                <!-- Game Info (Read-only) -->
+                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Game Info" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,4,Auto,4,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Game:" Opacity="0.7" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GameVersion}" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Generation:" Opacity="0.7" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Generation}" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Save Type:" Opacity="0.7" />
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SaveType}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Trainer Name and Gender -->
+                <Grid ColumnDefinitions="*,16,120">
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Trainer Name" FontWeight="SemiBold" Margin="0,0,0,4" />
+                        <TextBox Text="{Binding TrainerName}" MaxLength="12" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Gender" FontWeight="SemiBold" Margin="0,0,0,4" />
+                        <ComboBox ItemsSource="{Binding GenderList}"
+                                  SelectedValue="{Binding Gender}"
+                                  SelectedValueBinding="{Binding Value}"
+                                  DisplayMemberBinding="{Binding Text}"
+                                  HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- TID / SID -->
+                <Grid ColumnDefinitions="*,16,*">
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="TID" FontWeight="SemiBold" Margin="0,0,0,4" />
+                        <NumericUpDown Value="{Binding Tid16}"
+                                       Minimum="0"
+                                       Maximum="65535"
+                                       FormatString="00000" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="SID" FontWeight="SemiBold" Margin="0,0,0,4" />
+                        <NumericUpDown Value="{Binding Sid16}"
+                                       Minimum="0"
+                                       Maximum="65535"
+                                       FormatString="00000" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Money -->
+                <StackPanel>
+                    <TextBlock Text="Money" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right"
+                                Content="Max"
+                                Command="{Binding MaxMoney_ClickCommand}"
+                                Margin="8,0,0,0"
+                                Padding="12,6" />
+                        <NumericUpDown Value="{Binding Money}"
+                                       Minimum="0"
+                                       Maximum="{Binding MaxMoney}"
+                                       FormatString="N0" />
+                    </DockPanel>
+                </StackPanel>
+
+                <!-- Language -->
+                <StackPanel>
+                    <TextBlock Text="Language" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <ComboBox ItemsSource="{Binding LanguageList}"
+                              SelectedValue="{Binding Language}"
+                              SelectedValueBinding="{Binding Value}"
+                              DisplayMemberBinding="{Binding Text}"
+                              HorizontalAlignment="Stretch" />
+                </StackPanel>
+
+                <!-- Play Time -->
+                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Play Time" FontWeight="SemiBold" />
+                        <Grid ColumnDefinitions="*,8,*,8,*">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Hours" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding PlayedHours}"
+                                               Minimum="0"
+                                               Maximum="9999"
+                                               FormatString="0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Minutes" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding PlayedMinutes}"
+                                               Minimum="0"
+                                               Maximum="59"
+                                               FormatString="00" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Seconds" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding PlayedSeconds}"
+                                               Minimum="0"
+                                               Maximum="59"
+                                               FormatString="00" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Action Buttons -->
+                <Grid ColumnDefinitions="*,8,*" Margin="0,8,0,0">
+                    <Button Grid.Column="0"
+                            Content="Reset"
+                            Command="{Binding ResetCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center" />
+                    <Button Grid.Column="2"
+                            Content="Apply Changes"
+                            Command="{Binding SaveCommand}"
+                            Classes="accent"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center" />
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+</UserControl>

@@ -99,13 +99,58 @@
                         <views:PartyViewer DataContext="{Binding PartyViewer}" />
                     </TabItem>
                     <TabItem Header="Trainer">
-                        <views:TrainerEditorPlaceholder />
+                        <ContentControl Content="{Binding TrainerEditor}">
+                            <ContentControl.ContentTemplate>
+                                <DataTemplate DataType="vm:TrainerEditorViewModel">
+                                    <views:TrainerEditor />
+                                </DataTemplate>
+                            </ContentControl.ContentTemplate>
+                        </ContentControl>
                     </TabItem>
                     <TabItem Header="Inventory">
-                        <views:InventoryPlaceholder />
+                        <ContentControl Content="{Binding InventoryEditor}">
+                            <ContentControl.ContentTemplate>
+                                <DataTemplate DataType="vm:InventoryEditorViewModel">
+                                    <views:InventoryEditor />
+                                </DataTemplate>
+                            </ContentControl.ContentTemplate>
+                        </ContentControl>
                     </TabItem>
-                    <TabItem Header="Misc">
-                        <views:MiscEditorPlaceholder />
+                    <TabItem Header="Pokédex">
+                        <ContentControl Content="{Binding PokedexEditor}">
+                            <ContentControl.ContentTemplate>
+                                <DataTemplate DataType="vm:PokedexEditorViewModel">
+                                    <views:PokedexEditor />
+                                </DataTemplate>
+                            </ContentControl.ContentTemplate>
+                        </ContentControl>
+                    </TabItem>
+                    <TabItem Header="Events">
+                        <ContentControl Content="{Binding EventFlagsEditor}">
+                            <ContentControl.ContentTemplate>
+                                <DataTemplate DataType="vm:EventFlagsEditorViewModel">
+                                    <views:EventFlagsEditor />
+                                </DataTemplate>
+                            </ContentControl.ContentTemplate>
+                        </ContentControl>
+                    </TabItem>
+                    <TabItem Header="Gifts">
+                        <ContentControl Content="{Binding MysteryGiftEditor}">
+                            <ContentControl.ContentTemplate>
+                                <DataTemplate DataType="vm:MysteryGiftEditorViewModel">
+                                    <views:MysteryGiftEditor />
+                                </DataTemplate>
+                            </ContentControl.ContentTemplate>
+                        </ContentControl>
+                    </TabItem>
+                    <TabItem Header="Batch">
+                        <ContentControl Content="{Binding BatchEditor}">
+                            <ContentControl.ContentTemplate>
+                                <DataTemplate DataType="vm:BatchEditorViewModel">
+                                    <views:BatchEditor />
+                                </DataTemplate>
+                            </ContentControl.ContentTemplate>
+                        </ContentControl>
                     </TabItem>
                 </TabControl>
             </Grid>

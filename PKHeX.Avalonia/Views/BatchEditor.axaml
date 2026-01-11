@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.BatchEditor"
+             x:DataType="vm:BatchEditorViewModel">
+
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <DockPanel>
+            <!-- Header -->
+            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                <TextBlock Text="Batch Editor" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <Button Content="Run Batch"
+                        Command="{Binding RunBatchCommand}"
+                        Classes="accent"
+                        HorizontalAlignment="Right"
+                        Padding="16,8" />
+            </DockPanel>
+
+            <!-- Target Selection -->
+            <Border DockPanel.Dock="Top"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    CornerRadius="4"
+                    Padding="12"
+                    Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal" Spacing="24">
+                    <TextBlock Text="Edit:" VerticalAlignment="Center" FontWeight="SemiBold" />
+                    <CheckBox IsChecked="{Binding EditBoxes}" Content="Boxes" />
+                    <CheckBox IsChecked="{Binding EditParty}" Content="Party" />
+                </StackPanel>
+            </Border>
+
+            <!-- Quick Actions -->
+            <Border DockPanel.Dock="Top"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    CornerRadius="4"
+                    Padding="12"
+                    Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Quick Actions" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <WrapPanel>
+                        <Button Content="Max IVs" Command="{Binding SetMaxIVsCommand}" Margin="0,0,8,4" Padding="8,4" />
+                        <Button Content="Max EVs" Command="{Binding SetMaxEVsCommand}" Margin="0,0,8,4" Padding="8,4" />
+                        <Button Content="Make Shiny" Command="{Binding SetShinyCommand}" Margin="0,0,8,4" Padding="8,4" />
+                        <Button Content="Heal All" Command="{Binding HealAllCommand}" Margin="0,0,8,4" Padding="8,4" />
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Instruction Builder -->
+            <Border DockPanel.Dock="Top"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    CornerRadius="4"
+                    Padding="12"
+                    Margin="0,0,0,12">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Instruction Builder" FontWeight="SemiBold" />
+                    <Grid ColumnDefinitions="*,80,*,Auto,Auto">
+                        <AutoCompleteBox Grid.Column="0"
+                                         Text="{Binding SelectedProperty}"
+                                         ItemsSource="{Binding PropertySuggestions}"
+                                         FilterMode="Contains"
+                                         Watermark="Property..." />
+                        <ComboBox Grid.Column="1"
+                                  ItemsSource="{Binding Operators}"
+                                  SelectedItem="{Binding SelectedOperator}"
+                                  Margin="8,0" />
+                        <TextBox Grid.Column="2"
+                                 Text="{Binding SelectedValue}"
+                                 Watermark="Value..." />
+                        <Button Grid.Column="3"
+                                Content="+ Filter"
+                                Command="{Binding AddFilterCommand}"
+                                Margin="8,0,0,0"
+                                Padding="8,4" />
+                        <Button Grid.Column="4"
+                                Content="+ Modify"
+                                Command="{Binding AddInstructionCommand}"
+                                Margin="8,0,0,0"
+                                Padding="8,4" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Results -->
+            <Border DockPanel.Dock="Bottom"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    CornerRadius="4"
+                    Padding="12"
+                    Margin="0,12,0,0"
+                    Height="80">
+                <StackPanel>
+                    <TextBlock Text="Results" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <TextBox Text="{Binding Results}"
+                             IsReadOnly="True"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <!-- Instructions Text Area -->
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,4">
+                    <TextBlock Text="Instructions" FontWeight="SemiBold" />
+                    <Button Content="Clear"
+                            Command="{Binding ClearInstructionsCommand}"
+                            HorizontalAlignment="Right"
+                            Padding="8,2" />
+                </DockPanel>
+                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4">
+                    <TextBox Text="{Binding Instructions}"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             FontFamily="Consolas, Monaco, monospace"
+                             Watermark="Enter batch instructions here...&#x0a;Example:&#x0a;=Species=25&#x0a;.Shiny=Star" />
+                </Border>
+            </DockPanel>
+        </DockPanel>
+    </Border>
+</UserControl>

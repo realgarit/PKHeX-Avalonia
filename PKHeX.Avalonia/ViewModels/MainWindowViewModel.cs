@@ -27,6 +27,24 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private PartyViewerViewModel? _partyViewer;
 
+    [ObservableProperty]
+    private TrainerEditorViewModel? _trainerEditor;
+
+    [ObservableProperty]
+    private InventoryEditorViewModel? _inventoryEditor;
+
+    [ObservableProperty]
+    private PokedexEditorViewModel? _pokedexEditor;
+
+    [ObservableProperty]
+    private EventFlagsEditorViewModel? _eventFlagsEditor;
+
+    [ObservableProperty]
+    private MysteryGiftEditorViewModel? _mysteryGiftEditor;
+
+    [ObservableProperty]
+    private BatchEditorViewModel? _batchEditor;
+
     public bool HasSave => CurrentSave is not null;
 
     public string WindowTitle => CurrentSave is not null
@@ -80,6 +98,13 @@ public partial class MainWindowViewModel : ViewModelBase
             partyViewer.ViewSlotRequested += OnPartyViewSlot;
             partyViewer.SetSlotRequested += OnPartySetSlot;
             PartyViewer = partyViewer;
+
+            TrainerEditor = new TrainerEditorViewModel(sav);
+            InventoryEditor = new InventoryEditorViewModel(sav);
+            PokedexEditor = new PokedexEditorViewModel(sav);
+            EventFlagsEditor = new EventFlagsEditorViewModel(sav);
+            MysteryGiftEditor = new MysteryGiftEditorViewModel(sav, _dialogService);
+            BatchEditor = new BatchEditorViewModel(sav, _dialogService);
         }
         else
         {
@@ -101,6 +126,13 @@ public partial class MainWindowViewModel : ViewModelBase
                 PartyViewer.SetSlotRequested -= OnPartySetSlot;
             }
             PartyViewer = null;
+
+            TrainerEditor = null;
+            InventoryEditor = null;
+            PokedexEditor = null;
+            EventFlagsEditor = null;
+            MysteryGiftEditor = null;
+            BatchEditor = null;
         }
     }
 
@@ -244,7 +276,6 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         
         var pk = CurrentSave.GetBoxSlotAtIndex(box, slot);
-        Console.WriteLine($"GetBoxSlotAtIndex({box}, {slot}): Species={pk.Species}, IV_HP={pk.IV_HP}, Level={pk.CurrentLevel}, OT={pk.OriginalTrainerName}");
         if (pk.Species == 0)
             return;
 
