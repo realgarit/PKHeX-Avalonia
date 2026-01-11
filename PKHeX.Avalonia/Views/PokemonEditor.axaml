@@ -3,13 +3,14 @@
              xmlns:vm="using:PKHeX.Avalonia.ViewModels"
              x:Class="PKHeX.Avalonia.Views.PokemonEditor"
              x:DataType="vm:PokemonEditorViewModel"
-             Width="400" MinHeight="480">
+             MinHeight="480">
 
     <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
         <DockPanel>
             <!-- Header with sprite and title -->
             <Border DockPanel.Dock="Top" Margin="0,0,0,16">
-                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto">
+                <!-- Header: Sprite | Title/Stats | Legality | Shiny -->
+                <Grid ColumnDefinitions="Auto,*,48,48">
                     <!-- Sprite -->
                     <Border Grid.Column="0"
                             Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
@@ -65,28 +66,8 @@
                         </Panel>
                     </Border>
 
-                    <!-- Showdown Export -->
-                    <Button Grid.Column="3"
-                            Command="{Binding ExportShowdownCommand}"
-                            ToolTip.Tip="Export Showdown to Clipboard"
-                            Width="40" Height="40"
-                            Margin="0,0,8,0"
-                            Padding="0">
-                        <TextBlock Text="📤" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Button>
-
-                    <!-- Showdown Import -->
-                    <Button Grid.Column="4"
-                            Command="{Binding ImportShowdownCommand}"
-                            ToolTip.Tip="Import Showdown from Clipboard"
-                            Width="40" Height="40"
-                            Margin="0,0,8,0"
-                            Padding="0">
-                        <TextBlock Text="📥" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Button>
-
                     <!-- Shiny Toggle -->
-                    <Button Grid.Column="5"
+                    <Button Grid.Column="3"
                             Command="{Binding ToggleShinyCommand}"
                             ToolTip.Tip="Toggle Shiny"
                             Width="40" Height="40"
@@ -109,11 +90,11 @@
 
 
 
-            <!-- Tab Control -->
-            <TabControl Margin="0,0,0,0">
+            <!-- Tab Control (Left Placement) -->
+            <TabControl Margin="0,0,0,0" TabStripPlacement="Left">
                 <!-- Main Tab -->
                 <TabItem Header="Main">
-                    <ScrollViewer Padding="8">
+                    <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="12">
                             <!-- Species -->
                             <StackPanel>
@@ -221,7 +202,7 @@
 
                 <!-- Stats Tab -->
                 <TabItem Header="Stats">
-                    <ScrollViewer Padding="4">
+                    <ScrollViewer Padding="4" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="8">
                             <!-- IVs Section -->
                             <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
@@ -316,7 +297,7 @@
 
                 <!-- Met Tab -->
                 <TabItem Header="Met">
-                    <ScrollViewer Padding="8">
+                    <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="12">
                             <!-- Origin Game -->
                             <StackPanel>
@@ -339,7 +320,7 @@
                             </StackPanel>
 
                             <!-- Met Level and Date Row -->
-                            <Grid ColumnDefinitions="*,16,*">
+                            <Grid ColumnDefinitions="Auto,16,*">
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Met Level" FontWeight="SemiBold" Margin="0,0,0,4" />
                                     <NumericUpDown Value="{Binding MetLevel}" Minimum="0" Maximum="100" FormatString="0" />
@@ -373,7 +354,7 @@
 
                 <!-- Moves Tab -->
                 <TabItem Header="Moves">
-                    <ScrollViewer Padding="8">
+                    <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="12">
                             <DockPanel>
                                 <TextBlock Text="Current Moves" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
@@ -458,7 +439,7 @@
 
                 <!-- OT/Misc Tab -->
                 <TabItem Header="OT/Misc">
-                    <ScrollViewer Padding="8">
+                    <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="12">
                             <StackPanel>
                                 <TextBlock Text="Original Trainer" FontWeight="SemiBold" Margin="0,0,0,4" />

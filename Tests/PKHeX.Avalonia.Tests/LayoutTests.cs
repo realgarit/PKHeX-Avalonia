@@ -39,23 +39,39 @@ public class LayoutTests
         var vm = new PokemonEditorViewModel(pkm, _saveFile, _spriteRendererMock.Object, _dialogServiceMock.Object);
         var view = new PokemonEditor { DataContext = vm };
 
-        // Create a window to host the view (use 420px to match MainWindow left column)
+        // Create a window to host the view (use 700px to match MainWindow left column)
         var window = new Window
         {
             Content = view,
-            Width = 420,
+            Width = 700,
             Height = 600
         };
         window.Show();
 
-        // 3. Force Layout Pass
+        // 3. Force Layout for initial state
         Dispatcher.UIThread.RunJobs();
-        view.Measure(new Size(400, 600));
-        view.Arrange(new Rect(0, 0, 400, 600));
-        Dispatcher.UIThread.RunJobs();
+        
+        // Find TabControl to cycle through tabs
+        // We look for any TabControl since we know there is only one in the view
+        var tabControl = view.GetVisualDescendants().OfType<TabControl>().FirstOrDefault();
+        
+        // Verify we found it
+        Assert.NotNull(tabControl);
 
-        // 4. Inspect Visual Tree
-        VerifyBounds(view, view.Bounds);
+        // Iterate through each tab to check for overflow in all views
+        foreach (var item in tabControl.Items)
+        {
+            tabControl.SelectedItem = item;
+            
+            // Force layout update for the new tab
+            Dispatcher.UIThread.RunJobs();
+            view.Measure(new Size(680, 600)); // Use 680 to match window/column width
+            view.Arrange(new Rect(0, 0, 680, 600));
+            Dispatcher.UIThread.RunJobs();
+
+            // Verify bounds for this tab's content
+            VerifyBounds(view, view.Bounds);
+        }
     }
 
     private void VerifyBounds(Visual visual, Rect rootBounds)
@@ -72,9 +88,8 @@ public class LayoutTests
             if (child is Visual vChild)
             {
                 // Skip internal Avalonia containers that often report weird bounds (e.g. DatePicker internal Viewbox)
-                // Also skip TextBlocks since TextTrimming handles overflow at render time, not measure time
                 var typeName = vChild.GetType().Name;
-                if (typeName.Contains("Viewbox") || typeName == "TextBlock")
+                if (typeName.Contains("Viewbox"))
                     continue;
 
                 // Check if child fits in parent horizontally

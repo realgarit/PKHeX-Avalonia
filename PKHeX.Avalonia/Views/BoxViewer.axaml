@@ -41,9 +41,7 @@
                            FontSize="16" />
             </DockPanel>
 
-            <TextBlock Text="{Binding CurrentBox, StringFormat='Box {0}'}"
-                       Opacity="0.6"
-                       HorizontalAlignment="Center" />
+
 
             <!-- Box Grid (6 columns x 5 rows = 30 slots) -->
             <ItemsControl ItemsSource="{Binding Slots}" x:Name="SlotGrid">
@@ -106,15 +104,7 @@
                                        Width="68" Height="56"
                                        IsVisible="{Binding !IsEmpty}" />
 
-                                <!-- Shiny indicator -->
-                                <Ellipse Width="10" Height="10"
-                                         Fill="Gold"
-                                         Stroke="White"
-                                         StrokeThickness="1"
-                                         HorizontalAlignment="Left"
-                                         VerticalAlignment="Top"
-                                         Margin="2"
-                                         IsVisible="{Binding IsShiny}" />
+
                             </Panel>
                         </Button>
                     </DataTemplate>

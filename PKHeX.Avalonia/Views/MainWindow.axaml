@@ -73,9 +73,9 @@
 
             <!-- Save Loaded State: WinForms-style layout -->
             <!-- Left: PKMEditor (persistent side panel) | Right: SAVEditor (tabs with Box/Party/Trainer/etc) -->
-            <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="420,*">
+            <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="700,*">
                 
-            <!-- Left Panel: PKM Editor (420px to accommodate content) -->
+            <!-- Left Panel: PKM Editor (700px) -->
             <Border Grid.Column="0" 
                     BorderThickness="0,0,1,0" 
                     BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}">

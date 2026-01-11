@@ -17,8 +17,13 @@
         <StackPanel Spacing="8">
             <TextBlock Text="Party" FontWeight="SemiBold" FontSize="16" />
             
-            <!-- Party slots (vertical list) -->
+            <!-- Party slots (2 columns x 3 rows) -->
             <ItemsControl ItemsSource="{Binding Slots}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2" Rows="3" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:PartySlotData">
                         <Button PointerPressed="OnSlotPointerPressed"
@@ -30,11 +35,14 @@
                                 DoubleTapped="OnSlotDoubleTapped"
                                 Tag="{Binding}"
                                 Background="Transparent"
-                                Padding="8"
-                                Margin="0,2"
-                                BorderThickness="2"
-                                HorizontalContentAlignment="Stretch"
+                                Padding="4"
+                                Margin="2"
+                                BorderThickness="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                HorizontalContentAlignment="Left"
                                 Classes.selected="{Binding IsSelected}">
+                            <!-- Context Menu -->
                             <Button.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="View (Ctrl+Click)"
@@ -51,9 +59,11 @@
                                               IsEnabled="{Binding !IsEmpty}" />
                                 </ContextMenu>
                             </Button.ContextMenu>
+                            
                             <Button.Styles>
                                 <Style Selector="Button">
                                     <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
+                                    <Setter Property="CornerRadius" Value="4" />
                                 </Style>
                                 <Style Selector="Button.selected">
                                     <Setter Property="BorderBrush" Value="{DynamicResource SystemAccentColor}" />
@@ -61,46 +71,28 @@
                                 </Style>
                             </Button.Styles>
                             
-                            <Grid ColumnDefinitions="Auto,*,Auto">
-                                <!-- Sprite -->
-                                <Image Grid.Column="0" 
-                                       Source="{Binding Sprite}" 
-                                       Width="68" Height="56"
-                                       IsVisible="{Binding !IsEmpty}" />
-                                
-                                <Border Grid.Column="0"
-                                        Width="68" Height="56"
-                                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-                                        CornerRadius="4"
-                                        IsVisible="{Binding IsEmpty}" />
+                            <!-- Compact Card Content -->
+                            <Grid ColumnDefinitions="Auto,*">
+                                <!-- Sprite (Smaller) -->
+                                <Panel Grid.Column="0" Width="60" Height="50">
+                                    <Image Source="{Binding Sprite}" IsVisible="{Binding !IsEmpty}" />
+                                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                                            CornerRadius="4" IsVisible="{Binding IsEmpty}" />
+
+                                </Panel>
                                 
                                 <!-- Info -->
-                                <StackPanel Grid.Column="1" 
-                                            VerticalAlignment="Center" 
-                                            Margin="12,0,0,0"
-                                            IsVisible="{Binding !IsEmpty}">
-                                    <TextBlock Text="{Binding Nickname}" FontWeight="SemiBold" />
-                                    <TextBlock Text="{Binding SpeciesName}" Opacity="0.7" FontSize="12" />
-                                </StackPanel>
-                                
-                                <TextBlock Grid.Column="1"
-                                           Text="Empty"
-                                           VerticalAlignment="Center"
-                                           Margin="12,0,0,0"
-                                           Opacity="0.5"
-                                           IsVisible="{Binding IsEmpty}" />
-                                
-                                <!-- Level and shiny indicator -->
-                                <StackPanel Grid.Column="2" 
-                                            VerticalAlignment="Center"
-                                            IsVisible="{Binding !IsEmpty}">
-                                    <TextBlock Text="{Binding Level, StringFormat='Lv. {0}'}" 
-                                               HorizontalAlignment="Right" />
-                                    <TextBlock Text="★" 
-                                               Foreground="Gold" 
-                                               FontSize="16"
-                                               HorizontalAlignment="Right"
-                                               IsVisible="{Binding IsShiny}" />
+                                <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                                    <!-- Name -->
+                                    <TextBlock Text="{Binding Nickname}" FontWeight="SemiBold" FontSize="13"
+                                               IsVisible="{Binding !IsEmpty}" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="Empty" Opacity="0.5" IsVisible="{Binding IsEmpty}" />
+                                    
+                                    <!-- Details row -->
+                                    <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="{Binding !IsEmpty}">
+                                        <TextBlock Text="{Binding Level, StringFormat='Lv.{0}'}" Opacity="0.7" FontSize="11" />
+                                        <TextBlock Text="{Binding SpeciesName}" Opacity="0.5" FontSize="11" TextTrimming="CharacterEllipsis" MaxWidth="70" />
+                                    </StackPanel>
                                 </StackPanel>
                             </Grid>
                         </Button>
