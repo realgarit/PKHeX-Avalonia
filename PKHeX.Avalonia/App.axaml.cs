@@ -24,7 +24,8 @@ public partial class App : Application
         Services = services.BuildServiceProvider();
 
         // Initialize PKHeX Core
-        Core.GameInfo.CurrentLanguage = "en";
+        // GameInfo is initialized via AppSettings in ConfigureServices
+
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -39,11 +40,17 @@ public partial class App : Application
 
     private static void ConfigureServices(IServiceCollection services)
     {
+        // Initialize Config
+        var config = AppSettings.Load();
+        config.InitializeCore();
+        services.AddSingleton(config);
+
         // Services (Singleton - shared state)
         services.AddSingleton<ISaveFileService, SaveFileService>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<ISpriteRenderer, AvaloniaSpriteRenderer>();
         services.AddSingleton<ISlotService, SlotService>();
+        services.AddSingleton<IClipboardService, ClipboardService>();
 
         // ViewModels (Transient - created fresh each time)
         services.AddTransient<MainWindowViewModel>();

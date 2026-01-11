@@ -12,6 +12,8 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IDialogService _dialogService;
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly ISlotService _slotService;
+    private readonly IClipboardService _clipboardService;
+    private readonly AppSettings _settings;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSave))]
@@ -19,6 +21,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(SaveFileCommand))]
     [NotifyCanExecuteChangedFor(nameof(SaveFileAsCommand))]
     [NotifyCanExecuteChangedFor(nameof(CloseFileCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ImportShowdownCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ExportShowdownCommand))]
     private SaveFile? _currentSave;
 
     [ObservableProperty]
@@ -55,12 +59,16 @@ public partial class MainWindowViewModel : ViewModelBase
         ISaveFileService saveFileService,
         IDialogService dialogService,
         ISpriteRenderer spriteRenderer,
-        ISlotService slotService)
+        ISlotService slotService,
+        IClipboardService clipboardService,
+        AppSettings settings)
     {
         _saveFileService = saveFileService;
         _dialogService = dialogService;
         _spriteRenderer = spriteRenderer;
         _slotService = slotService;
+        _clipboardService = clipboardService;
+        _settings = settings;
 
         _saveFileService.SaveFileChanged += OnSaveFileChanged;
         _slotService.ViewRequested += OnViewRequested;
@@ -201,6 +209,57 @@ public partial class MainWindowViewModel : ViewModelBase
     private void CloseFile()
     {
         _saveFileService.CloseSave();
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task ImportShowdownAsync()
+    {
+        if (CurrentSave is null || CurrentPokemonEditor is null) return;
+
+        var text = await _clipboardService.GetTextAsync();
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            await _dialogService.ShowErrorAsync("Import Failed", "Clipboard is empty.");
+            return;
+        }
+
+        var set = new ShowdownSet(text);
+        if (set.Species <= 0)
+        {
+            await _dialogService.ShowErrorAsync("Import Failed", "Invalid Showdown set text.");
+            return;
+        }
+
+        // Logic adapted from WinForms ShowdownSet implementation
+        // Create blank PKM of current context
+        var pk = CurrentSave.BlankPKM;
+        pk.ApplySetDetails(set);
+        
+        // Ensure Nature matches StatNature for Gen 8+ (identity nature should match import unless otherwise specified)
+        if (pk.Format >= 8)
+            pk.Nature = pk.StatNature;
+
+        // Auto-legalize somewhat
+        pk.SetPIDGender(pk.Gender);
+        
+        // Load into editor
+        CurrentPokemonEditor.LoadPKM(pk);
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task ExportShowdownAsync()
+    {
+        if (CurrentPokemonEditor is null) return;
+        
+        // Prepare current state
+        var pk = CurrentPokemonEditor.PreparePKM();
+        if (pk.Species == 0) return;
+
+        // Convert to Showdown format
+        var set = new ShowdownSet(pk);
+        var text = set.Text;
+        
+        await _clipboardService.SetTextAsync(text);
     }
     
     // Slot Service event handlers

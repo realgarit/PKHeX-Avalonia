@@ -1,5 +1,6 @@
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Avalonia.Headless.XUnit;
@@ -13,7 +14,9 @@ public class ProbeMapCoordinates
     [AvaloniaFact]
     public void Inspect_Coordinates()
     {
-        using var writer = new System.IO.StreamWriter("/Users/realgar/Git/PKHeX-Avalonia/probe_coords.txt");
+        var outputDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestResults");
+        Directory.CreateDirectory(outputDir);
+        using var writer = new System.IO.StreamWriter(Path.Combine(outputDir, "probe_coords.txt"));
         
         var types = new Type[] { typeof(SAV3E), typeof(SAV4), typeof(SAV5), typeof(SAV7), typeof(SAV8SWSH), typeof(SAV9SV) };
 

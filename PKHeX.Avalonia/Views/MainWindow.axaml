@@ -26,8 +26,8 @@
             </MenuItem>
             <MenuItem Header="_Tools">
                 <MenuItem Header="Showdown">
-                    <MenuItem Header="Import Set from Clipboard" InputGesture="Ctrl+T" IsEnabled="False" />
-                    <MenuItem Header="Export Set to Clipboard" InputGesture="Ctrl+Shift+T" IsEnabled="False" />
+                    <MenuItem Header="Import Set from Clipboard" Command="{Binding ImportShowdownCommand}" InputGesture="Ctrl+T" />
+                    <MenuItem Header="Export Set to Clipboard" Command="{Binding ExportShowdownCommand}" InputGesture="Ctrl+Shift+T" />
                 </MenuItem>
                 <MenuItem Header="Data">
                     <MenuItem Header="Load Boxes" IsEnabled="False" />

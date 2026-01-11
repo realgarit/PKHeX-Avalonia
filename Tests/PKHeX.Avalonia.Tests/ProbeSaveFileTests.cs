@@ -1,5 +1,6 @@
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Avalonia.Headless.XUnit;
@@ -16,7 +17,9 @@ public class ProbeSaveFileTests
         var sav = new SAV3E(); // Using Gen 3 Emerald save as baseline
         var props = typeof(SaveFile).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         
-        using var writer = new System.IO.StreamWriter("/Users/realgar/Git/PKHeX-Avalonia/probe_output.txt");
+        var outputDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestResults");
+        Directory.CreateDirectory(outputDir);
+        using var writer = new System.IO.StreamWriter(Path.Combine(outputDir, "probe_output.txt"));
         writer.WriteLine("--- SAVEFILE PROPERTIES ---");
         foreach (var p in props.OrderBy(x => x.Name))
         {
