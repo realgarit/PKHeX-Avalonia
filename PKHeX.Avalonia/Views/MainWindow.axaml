@@ -73,12 +73,13 @@
 
             <!-- Save Loaded State: WinForms-style layout -->
             <!-- Left: PKMEditor (persistent side panel) | Right: SAVEditor (tabs with Box/Party/Trainer/etc) -->
-            <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="400,*">
+            <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="420,*">
                 
-                <!-- Left Panel: PKM Editor -->
-                <Border Grid.Column="0" 
-                        BorderThickness="0,0,1,0" 
-                        BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}">
+            <!-- Left Panel: PKM Editor (420px to accommodate content) -->
+            <Border Grid.Column="0" 
+                    BorderThickness="0,0,1,0" 
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <ContentControl Content="{Binding CurrentPokemonEditor}">
                         <ContentControl.ContentTemplate>
                             <DataTemplate DataType="vm:PokemonEditorViewModel">
@@ -86,7 +87,8 @@
                             </DataTemplate>
                         </ContentControl.ContentTemplate>
                     </ContentControl>
-                </Border>
+                </ScrollViewer>
+            </Border>
                 
                 <!-- Right Panel: SAV Editor (Box, Party, Trainer, etc.) -->
                 <TabControl Grid.Column="1" Margin="0">

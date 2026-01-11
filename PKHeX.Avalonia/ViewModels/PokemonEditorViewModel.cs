@@ -62,6 +62,18 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private int _species;
 
     [ObservableProperty]
+    private string _version = string.Empty; // Read-only game name
+
+    [ObservableProperty]
+    private bool _valid; // Legality fast-check
+
+    [ObservableProperty]
+    private bool _isNicknamed;
+
+    [ObservableProperty]
+    private uint _id32;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Sprite))]
     private int _form;
 
@@ -104,6 +116,48 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     [ObservableProperty]
     private int _sid;
+
+    // Group 2: Health & Status
+    [ObservableProperty]
+    private int _statHPCurrent;
+
+    [ObservableProperty]
+    private int _statHPMax;
+
+    [ObservableProperty]
+    private int _statusCondition;
+
+    // Group 3: Trainer & Friendship
+    [ObservableProperty]
+    private int _originalTrainerFriendship;
+
+    [ObservableProperty]
+    private string _handlingTrainerName = string.Empty;
+
+    [ObservableProperty]
+    private int _handlingTrainerGender;
+
+    [ObservableProperty]
+    private int _handlingTrainerFriendship;
+
+    [ObservableProperty]
+    private int _currentHandler;
+
+    // Group 4: Misc
+    [ObservableProperty]
+    private int _abilityNumber;
+
+    [ObservableProperty]
+    private int _statNature;
+
+    [ObservableProperty]
+    private int _hpType;
+
+    [ObservableProperty]
+    private bool _isPokerusInfected;
+
+    [ObservableProperty]
+    private bool _isPokerusCured;
 
     // PID/EC
     [ObservableProperty]
@@ -320,6 +374,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
             // Basic info
             Nickname = _pk.Nickname;
+            IsNicknamed = _pk.IsNicknamed;
             Level = _pk.CurrentLevel;
             Nature = (int)_pk.Nature;
             HeldItem = _pk.HeldItem;
@@ -327,6 +382,11 @@ public partial class PokemonEditorViewModel : ViewModelBase
             Gender = _pk.Gender;
             IsShiny = _pk.IsShiny;
             IsEgg = _pk.IsEgg;
+
+            // New Group 1: Identity & Metadata
+            Id32 = _pk.ID32;
+            Version = _pk.Version.ToString();
+            Valid = new LegalityAnalysis(_pk).Valid;
 
             // Moves
             Move1 = _pk.Move1;
@@ -399,6 +459,25 @@ public partial class PokemonEditorViewModel : ViewModelBase
             OriginalTrainerName = _pk.OriginalTrainerName;
             TrainerID = _pk.DisplayTID;
             OriginalTrainerGender = _pk.OriginalTrainerGender;
+
+            // Group 2: Health & Status
+            StatHPCurrent = _pk.Stat_HPCurrent;
+            StatHPMax = _pk.Stat_HPMax;
+            StatusCondition = _pk.Status_Condition;
+
+            // Group 3: Trainer & Friendship
+            OriginalTrainerFriendship = _pk.OriginalTrainerFriendship;
+            HandlingTrainerFriendship = _pk.HandlingTrainerFriendship;
+            CurrentHandler = _pk.CurrentHandler;
+            HandlingTrainerName = _pk.HandlingTrainerName;
+            HandlingTrainerGender = _pk.HandlingTrainerGender;
+
+            // Group 4: Misc
+            AbilityNumber = _pk.AbilityNumber;
+            StatNature = (int)_pk.StatNature;
+            HpType = _pk.HPType;
+            IsPokerusInfected = _pk.IsPokerusInfected;
+            IsPokerusCured = _pk.IsPokerusCured;
 
             UpdateTitle();
         }
