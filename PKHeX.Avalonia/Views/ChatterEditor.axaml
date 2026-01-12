@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.ChatterEditor"
+             x:DataType="vm:ChatterEditorViewModel">
+
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <Panel>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
+                <TextBlock Text="Chatter not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
+                <TextBlock Text="This feature is only available for Diamond/Pearl/Platinum/HeartGold/SoulSilver and Black/White/Black 2/White 2." HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" TextWrapping="Wrap" MaxWidth="400" />
+            </StackPanel>
+
+            <DockPanel IsVisible="{Binding IsSupported}">
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                    <TextBlock Text="Chatot Chatter Editor" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <Button Content="Refresh" Command="{Binding RefreshCommand}" HorizontalAlignment="Right" Padding="12,6" />
+                </DockPanel>
+
+                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="Chatot's Chatter move uses a recorded sound to determine the confusion chance in battle." TextWrapping="Wrap" Opacity="0.8" />
+
+                        <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,8,Auto,8,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Initialized:" VerticalAlignment="Center" />
+                            <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding Initialized}" Content="Recording has been made" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Confusion Chance:" VerticalAlignment="Center" />
+                            <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding ConfusionChance, StringFormat='{}{0}%'}" VerticalAlignment="Center" FontWeight="SemiBold" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Has Recording:" VerticalAlignment="Center" />
+                            <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding HasRecording}" VerticalAlignment="Center" />
+                        </Grid>
+
+                        <Button Content="Clear Recording" Command="{Binding ClearRecordingCommand}" HorizontalAlignment="Left" Padding="12,6" />
+
+                        <TextBlock Text="Note: Import/Export of PCM recordings requires file dialogs which can be added if needed." FontSize="11" Opacity="0.6" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </DockPanel>
+        </Panel>
+    </Border>
+</UserControl>

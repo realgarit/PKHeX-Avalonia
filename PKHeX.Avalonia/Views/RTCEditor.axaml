@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.RTCEditor"
+             x:DataType="vm:RTCEditorViewModel">
+
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <Panel>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
+                <TextBlock Text="RTC not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
+                <TextBlock Text="This feature is only available for Ruby/Sapphire/Emerald." HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
+            </StackPanel>
+
+            <DockPanel IsVisible="{Binding IsSupported}">
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                    <TextBlock Text="Real Time Clock Editor (Gen 3)" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                        <Button Content="Save" Command="{Binding SaveCommand}" Padding="12,6" Classes="accent" />
+                        <Button Content="Refresh" Command="{Binding RefreshCommand}" Padding="12,6" />
+                    </StackPanel>
+                </DockPanel>
+
+                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                    <StackPanel Spacing="16">
+                        <!-- Initial Clock -->
+                        <StackPanel>
+                            <TextBlock Text="Initial Clock" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
+                            <Grid ColumnDefinitions="Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto">
+                                <TextBlock Grid.Column="0" Text="Day:" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Column="2" Value="{Binding InitialDay}" Minimum="0" Maximum="65535" Width="80" />
+
+                                <TextBlock Grid.Column="4" Text="Hour:" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Column="6" Value="{Binding InitialHour}" Minimum="0" Maximum="23" Width="60" />
+
+                                <TextBlock Grid.Column="8" Text="Min:" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Column="10" Value="{Binding InitialMinute}" Minimum="0" Maximum="59" Width="60" />
+
+                                <TextBlock Grid.Column="12" Text="Sec:" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Column="14" Value="{Binding InitialSecond}" Minimum="0" Maximum="59" Width="60" />
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Elapsed Clock -->
+                        <StackPanel>
+                            <TextBlock Text="Elapsed Clock" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
+                            <Grid ColumnDefinitions="Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto">
+                                <TextBlock Grid.Column="0" Text="Day:" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Column="2" Value="{Binding ElapsedDay}" Minimum="0" Maximum="65535" Width="80" />
+
+                                <TextBlock Grid.Column="4" Text="Hour:" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Column="6" Value="{Binding ElapsedHour}" Minimum="0" Maximum="23" Width="60" />
+
+                                <TextBlock Grid.Column="8" Text="Min:" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Column="10" Value="{Binding ElapsedMinute}" Minimum="0" Maximum="59" Width="60" />
+
+                                <TextBlock Grid.Column="12" Text="Sec:" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Column="14" Value="{Binding ElapsedSecond}" Minimum="0" Maximum="59" Width="60" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button Content="Reset All" Command="{Binding ResetCommand}" Padding="12,6" />
+                            <Button Content="Berry Glitch Fix" Command="{Binding BerryFixCommand}" Padding="12,6" ToolTip.Tip="Advances elapsed days to fix the berry glitch in Ruby/Sapphire" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </DockPanel>
+        </Panel>
+    </Border>
+</UserControl>

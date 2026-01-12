@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.OPowerEditor"
+             x:DataType="vm:OPowerEditorViewModel">
+
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <Panel>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
+                <TextBlock Text="O-Powers not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
+                <TextBlock Text="This feature is only available for X/Y and Omega Ruby/Alpha Sapphire." HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
+            </StackPanel>
+
+            <DockPanel IsVisible="{Binding IsSupported}">
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                    <TextBlock Text="O-Power Editor" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                        <Button Content="Unlock All" Command="{Binding UnlockAllCommand}" Padding="12,6" />
+                        <Button Content="Clear All" Command="{Binding ClearAllCommand}" Padding="12,6" />
+                    </StackPanel>
+                </DockPanel>
+
+                <!-- Points -->
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,12">
+                    <TextBlock Text="Points:" VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding Points}" Minimum="0" Maximum="255" Width="100" />
+                </StackPanel>
+
+                <Grid ColumnDefinitions="*,16,*">
+                    <!-- Field Powers -->
+                    <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Field Powers" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,12" />
+                            <ItemsControl ItemsSource="{Binding FieldPowers}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="vm:OPowerFieldViewModel">
+                                        <Grid ColumnDefinitions="120,Auto,8,Auto" Margin="0,4">
+                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                            <NumericUpDown Grid.Column="1" Value="{Binding Level1}" Minimum="0" Maximum="5" Width="70" />
+                                            <NumericUpDown Grid.Column="3" Value="{Binding Level2}" Minimum="0" Maximum="5" Width="70" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Battle Powers -->
+                    <Border Grid.Column="2" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Battle Powers" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,12" />
+                            <ItemsControl ItemsSource="{Binding BattlePowers}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="vm:OPowerBattleViewModel">
+                                        <Grid ColumnDefinitions="120,Auto,8,Auto" Margin="0,4">
+                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                            <NumericUpDown Grid.Column="1" Value="{Binding Level1}" Minimum="0" Maximum="5" Width="70" />
+                                            <NumericUpDown Grid.Column="3" Value="{Binding Level2}" Minimum="0" Maximum="5" Width="70" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </DockPanel>
+        </Panel>
+    </Border>
+</UserControl>

@@ -42,6 +42,39 @@
                 <MenuItem Header="Save Editors">
                     <MenuItem Header="Daycare" Command="{Binding OpenDaycareCommand}" />
                     <MenuItem Header="Records" Command="{Binding OpenRecordsCommand}" />
+                    <MenuItem Header="Hall of Fame" Command="{Binding OpenHallOfFameCommand}" />
+                    <Separator />
+                    <MenuItem Header="Gen 3">
+                        <MenuItem Header="Roamer" Command="{Binding OpenRoamerCommand}" />
+                        <MenuItem Header="Secret Base" Command="{Binding OpenSecretBaseCommand}" />
+                        <MenuItem Header="RTC (Clock)" Command="{Binding OpenRTCCommand}" />
+                    </MenuItem>
+                    <MenuItem Header="Gen 4">
+                        <MenuItem Header="Apricorns (HGSS)" Command="{Binding OpenApricornCommand}" />
+                        <MenuItem Header="Honey Trees (DPPt)" Command="{Binding OpenHoneyTreeCommand}" />
+                        <MenuItem Header="Underground (DPPt)" Command="{Binding OpenUndergroundCommand}" />
+                        <MenuItem Header="Chatter" Command="{Binding OpenChatterCommand}" />
+                    </MenuItem>
+                    <MenuItem Header="Gen 5">
+                        <MenuItem Header="Chatter" Command="{Binding OpenChatterCommand}" />
+                    </MenuItem>
+                    <MenuItem Header="Gen 6">
+                        <MenuItem Header="O-Powers" Command="{Binding OpenOPowerCommand}" />
+                        <MenuItem Header="Super Training" Command="{Binding OpenSuperTrainingCommand}" />
+                        <MenuItem Header="Poké Puffs (XY)" Command="{Binding OpenPokepuffCommand}" />
+                        <MenuItem Header="Pokéblocks (ORAS)" Command="{Binding OpenPokeBlockCommand}" />
+                    </MenuItem>
+                    <MenuItem Header="Gen 7">
+                        <MenuItem Header="Poké Beans" Command="{Binding OpenPokebeanCommand}" />
+                        <MenuItem Header="Festival Plaza" Command="{Binding OpenFestivalPlazaCommand}" />
+                        <MenuItem Header="Zygarde Cells" Command="{Binding OpenZygardeCellCommand}" />
+                    </MenuItem>
+                    <MenuItem Header="Gen 8">
+                        <MenuItem Header="Max Raids (SWSH)" Command="{Binding OpenRaidEditorCommand}" />
+                    </MenuItem>
+                    <MenuItem Header="Gen 9">
+                        <MenuItem Header="Tera Raids (SV)" Command="{Binding OpenRaid9Command}" />
+                    </MenuItem>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Options">

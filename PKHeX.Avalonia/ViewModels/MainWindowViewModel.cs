@@ -586,6 +586,166 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenSecretBaseAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new SecretBaseEditorViewModel(CurrentSave, _spriteRenderer);
+        var view = new Views.SecretBaseEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Secret Base Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenPokebeanAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new PokebeanEditorViewModel(CurrentSave);
+        var view = new Views.PokebeanEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Poké Bean Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenFestivalPlazaAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new FestivalPlazaEditorViewModel(CurrentSave);
+        var view = new Views.FestivalPlazaEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Festival Plaza Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenRaidEditorAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new RaidEditorViewModel(CurrentSave);
+        var view = new Views.RaidEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Raid Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenSuperTrainingAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new SuperTrainingEditorViewModel(CurrentSave);
+        var view = new Views.SuperTrainingEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Super Training Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenApricornAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new ApricornEditorViewModel(CurrentSave);
+        var view = new Views.ApricornEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Apricorn Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenHoneyTreeAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new HoneyTreeEditorViewModel(CurrentSave);
+        var view = new Views.HoneyTreeEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Honey Tree Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenUndergroundAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new UndergroundEditorViewModel(CurrentSave);
+        var view = new Views.UndergroundEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Underground Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenRoamerAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new RoamerEditorViewModel(CurrentSave);
+        var view = new Views.RoamerEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Roamer Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenOPowerAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new OPowerEditorViewModel(CurrentSave);
+        var view = new Views.OPowerEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "O-Power Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenZygardeCellAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new ZygardeCellEditorViewModel(CurrentSave);
+        var view = new Views.ZygardeCellEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Zygarde Cell Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenRaid9Async()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new Raid9EditorViewModel(CurrentSave);
+        var view = new Views.Raid9Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Tera Raid Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenPokepuffAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new PokepuffEditorViewModel(CurrentSave);
+        var view = new Views.PokepuffEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Poké Puff Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenPokeBlockAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new PokeBlockEditorViewModel(CurrentSave);
+        var view = new Views.PokeBlockEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Pokéblock Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenChatterAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new ChatterEditorViewModel(CurrentSave);
+        var view = new Views.ChatterEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Chatter Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenRTCAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new RTCEditorViewModel(CurrentSave);
+        var view = new Views.RTCEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "RTC Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task DumpBoxesAsync()
     {
         if (CurrentSave is null) return;
