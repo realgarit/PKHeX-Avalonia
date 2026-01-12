@@ -63,6 +63,7 @@
                         <MenuItem Header="Super Training" Command="{Binding OpenSuperTrainingCommand}" />
                         <MenuItem Header="Poké Puffs (XY)" Command="{Binding OpenPokepuffCommand}" />
                         <MenuItem Header="Pokéblocks (ORAS)" Command="{Binding OpenPokeBlockCommand}" />
+                        <MenuItem Header="Berry Field" Command="{Binding OpenBerryFieldCommand}" />
                     </MenuItem>
                     <MenuItem Header="Gen 7">
                         <MenuItem Header="Poké Beans" Command="{Binding OpenPokebeanCommand}" />
@@ -71,6 +72,8 @@
                     </MenuItem>
                     <MenuItem Header="Gen 8">
                         <MenuItem Header="Max Raids (SWSH)" Command="{Binding OpenRaidEditorCommand}" />
+                        <MenuItem Header="Fashion (SWSH)" Command="{Binding OpenFashionCommand}" />
+                        <MenuItem Header="Trainer Card (SWSH)" Command="{Binding OpenTrainerCard8Command}" />
                     </MenuItem>
                     <MenuItem Header="Gen 9">
                         <MenuItem Header="Tera Raids (SV)" Command="{Binding OpenRaid9Command}" />

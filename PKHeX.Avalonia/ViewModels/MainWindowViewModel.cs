@@ -726,6 +726,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenBerryFieldAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new BerryFieldEditorViewModel(CurrentSave);
+        var view = new Views.BerryFieldEditorView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Berry Field Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenChatterAsync()
     {
         if (CurrentSave is null) return;
@@ -743,6 +753,26 @@ public partial class MainWindowViewModel : ViewModelBase
         var vm = new RTCEditorViewModel(CurrentSave);
         var view = new Views.RTCEditor { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "RTC Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenFashionAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new FashionEditorViewModel(CurrentSave);
+        var view = new Views.FashionEditorView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Fashion Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenTrainerCard8Async()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new TrainerCard8EditorViewModel(CurrentSave);
+        var view = new Views.TrainerCard8EditorView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Trainer Card Editor");
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]

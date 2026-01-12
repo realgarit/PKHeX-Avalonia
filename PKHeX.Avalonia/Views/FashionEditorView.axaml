@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.FashionEditorView"
+             x:DataType="vm:FashionEditorViewModel"
+             Width="450" Height="400">
+    <DockPanel Margin="16">
+        <TextBlock DockPanel.Dock="Top" Text="Fashion Unlocks" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,8" />
+        <TextBlock DockPanel.Dock="Top" Text="{Binding GameInfo}" FontSize="12" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Margin="0,0,0,12" />
+
+        <!-- Not Supported Message -->
+        <TextBlock IsVisible="{Binding !IsSupported}" Text="This save file does not support Fashion editing." 
+                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                   FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+        <!-- Fashion Content -->
+        <DockPanel IsVisible="{Binding IsSupported}">
+            <!-- Action Buttons -->
+            <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="0,12,0,0">
+                <Button Content="Unlock All" Command="{Binding UnlockAllCommand}" Margin="4" Padding="12,6" />
+                <Button Content="Unlock All Legal" Command="{Binding UnlockAllLegalCommand}" Margin="4" Padding="12,6" />
+                <Button Content="Reset to Default" Command="{Binding ResetCommand}" Margin="4" Padding="12,6" />
+                <Button Content="Clear All" Command="{Binding ClearCommand}" Margin="4" Padding="12,6" />
+            </WrapPanel>
+
+            <!-- Regions List -->
+            <ItemsControl ItemsSource="{Binding Regions}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="vm:FashionRegionViewModel">
+                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12" Margin="0,0,0,8">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding Summary}" FontSize="12" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </DockPanel>
+    </DockPanel>
+</UserControl>
