@@ -48,15 +48,20 @@
                         <MenuItem Header="Roamer" Command="{Binding OpenRoamerCommand}" />
                         <MenuItem Header="Secret Base" Command="{Binding OpenSecretBaseCommand}" />
                         <MenuItem Header="RTC (Clock)" Command="{Binding OpenRTCCommand}" />
+                        <MenuItem Header="Pokéblock Case (RSE)" Command="{Binding OpenPokeBlock3CaseCommand}" />
+                        <MenuItem Header="Hall of Fame" Command="{Binding OpenHallOfFame3Command}" />
                     </MenuItem>
                     <MenuItem Header="Gen 4">
                         <MenuItem Header="Apricorns (HGSS)" Command="{Binding OpenApricornCommand}" />
                         <MenuItem Header="Honey Trees (DPPt)" Command="{Binding OpenHoneyTreeCommand}" />
                         <MenuItem Header="Underground (DPPt)" Command="{Binding OpenUndergroundCommand}" />
                         <MenuItem Header="Chatter" Command="{Binding OpenChatterCommand}" />
+                        <MenuItem Header="Poffin Case (DPPt)" Command="{Binding OpenPoffinCaseCommand}" />
+                        <MenuItem Header="Pokétch (DPPt)" Command="{Binding OpenPoketchCommand}" />
                     </MenuItem>
                     <MenuItem Header="Gen 5">
                         <MenuItem Header="Chatter" Command="{Binding OpenChatterCommand}" />
+                        <MenuItem Header="Medal Rally (B2W2)" Command="{Binding OpenMedalCommand}" />
                     </MenuItem>
                     <MenuItem Header="Gen 6">
                         <MenuItem Header="O-Powers" Command="{Binding OpenOPowerCommand}" />

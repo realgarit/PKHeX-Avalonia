@@ -756,6 +756,56 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMedalAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new MedalEditorViewModel(CurrentSave);
+        var view = new Views.MedalEditorView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Medal Rally Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenPoffinCaseAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new PoffinCaseEditorViewModel(CurrentSave);
+        var view = new Views.PoffinCaseEditorView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Poffin Case Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenPoketchAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new PoketchEditorViewModel(CurrentSave);
+        var view = new Views.PoketchEditorView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Pokétch Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenPokeBlock3CaseAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new PokeBlock3CaseEditorViewModel(CurrentSave);
+        var view = new Views.PokeBlock3CaseEditorView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Pokéblock Case Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenHallOfFame3Async()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new HallOfFame3EditorViewModel(CurrentSave);
+        var view = new Views.HallOfFame3EditorView { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Hall of Fame (Gen 3)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenFashionAsync()
     {
         if (CurrentSave is null) return;
