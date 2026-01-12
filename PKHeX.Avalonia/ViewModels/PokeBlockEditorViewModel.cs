@@ -8,7 +8,7 @@ namespace PKHeX.Avalonia.ViewModels;
 public partial class PokeBlockEditorViewModel : ViewModelBase
 {
     private readonly SaveFile _sav;
-    private readonly ContestInfo6? _contest;
+    private readonly Contest6? _contest;
 
     private static readonly string[] BlockNames =
     [

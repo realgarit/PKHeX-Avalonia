@@ -39,8 +39,7 @@ public partial class PokepuffEditorViewModel : ViewModelBase
         for (int i = 0; i < puffData.Length; i++)
         {
             var puffValue = puffData[i];
-            var name = puffValue < puffNames.Length ? puffNames[puffValue] : $"Unknown ({puffValue})";
-            Puffs.Add(new PokepuffSlotViewModel(i, puffValue, name, puffNames, SetPuff));
+            Puffs.Add(new PokepuffSlotViewModel(i, puffValue, puffNames, SetPuff));
         }
     }
 
@@ -55,14 +54,14 @@ public partial class PokepuffEditorViewModel : ViewModelBase
     [RelayCommand]
     private void GiveAll()
     {
-        _puff?.MaxCheat(varied: true);
+        _puff?.MaxCheat(special: true);
         LoadData();
     }
 
     [RelayCommand]
     private void GiveBest()
     {
-        _puff?.MaxCheat(varied: false);
+        _puff?.MaxCheat(special: false);
         LoadData();
     }
 
@@ -89,11 +88,10 @@ public partial class PokepuffSlotViewModel : ViewModelBase
     private readonly Action<int, byte> _onChanged;
     private readonly string[] _puffNames;
 
-    public PokepuffSlotViewModel(int index, byte value, string name, string[] puffNames, Action<int, byte> onChanged)
+    public PokepuffSlotViewModel(int index, byte value, string[] puffNames, Action<int, byte> onChanged)
     {
         Index = index;
         _value = value;
-        Name = name;
         _puffNames = puffNames;
         _onChanged = onChanged;
     }
