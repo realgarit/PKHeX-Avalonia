@@ -1,0 +1,132 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.PokedexLAEditor"
+             x:DataType="vm:PokedexLAEditorViewModel">
+
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <DockPanel>
+            <!-- Header -->
+            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                <TextBlock Text="Pokédex Editor (Legends: Arceus)" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                    <Button Content="Report All" Command="{Binding ReportAllCommand}" />
+                    <Button Content="Save All" Command="{Binding SaveCommand}" />
+                </StackPanel>
+            </DockPanel>
+
+            <Grid ColumnDefinitions="250,16,*">
+                <!-- Species List -->
+                <DockPanel Grid.Column="0">
+                    <TextBox DockPanel.Dock="Top" Text="{Binding SearchText}" Watermark="Search..." Margin="0,0,0,8" />
+                    <ListBox ItemsSource="{Binding SpeciesList}"
+                             SelectedItem="{Binding SelectedSpecies}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="vm:LASpeciesEntryViewModel">
+                                <TextBlock Text="{Binding DisplayName}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+
+                <!-- Detailed View -->
+                <ScrollViewer Grid.Column="2" DataContext="{Binding SelectedSpecies}">
+                    <StackPanel Spacing="16">
+                        <!-- Summary & Forms -->
+                        <Grid ColumnDefinitions="*,16,*">
+                            <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="12" CornerRadius="4">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="Species Info" FontWeight="SemiBold" />
+                                    <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,Auto,Auto">
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Research Level (Reported):" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding ReportedResearchLevel}" FontWeight="Bold" />
+                                        
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Research Level (Unreported):" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding UnreportedResearchLevel}" FontWeight="Bold" Foreground="Green" />
+                                        
+                                        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="12" Margin="0,8,0,0">
+                                            <CheckBox Content="Complete" IsChecked="{Binding IsComplete}" IsEnabled="False" />
+                                            <CheckBox Content="Perfect" IsChecked="{Binding IsPerfect}" IsEnabled="False" />
+                                            <CheckBox Content="Solitude" IsChecked="{Binding IsSolitudeComplete}" />
+                                        </StackPanel>
+                                    </Grid>
+                                    <Button Content="Report Current Species" Command="{Binding ReportSpeciesCommand}" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="12" CornerRadius="4">
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="Forms" FontWeight="SemiBold" />
+                                    <ListBox ItemsSource="{Binding Forms}" SelectedItem="{Binding SelectedForm}" Height="120">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate DataType="vm:LAFormEntryViewModel">
+                                                <TextBlock Text="{Binding Name}" />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Flags -->
+                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="12" CornerRadius="4" DataContext="{Binding SelectedForm}">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Flags (Current Form)" FontWeight="SemiBold" />
+                                <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Seen in Wild" FontWeight="SemiBold" />
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Obtained" FontWeight="SemiBold" />
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Caught in Wild" FontWeight="SemiBold" />
+                                    
+                                    <CheckBox Grid.Row="1" Grid.Column="0" Content="Flag 1" IsChecked="{Binding Seen0}" />
+                                    <CheckBox Grid.Row="2" Grid.Column="0" Content="Flag 2" IsChecked="{Binding Seen1}" />
+                                    <CheckBox Grid.Row="3" Grid.Column="0" Content="Flag 3" IsChecked="{Binding Seen2}" />
+                                    <CheckBox Grid.Row="4" Grid.Column="0" Content="Flag 4" IsChecked="{Binding Seen3}" />
+                                    <CheckBox Grid.Row="5" Grid.Column="0" Content="Flag 5" IsChecked="{Binding Seen4}" />
+                                    <CheckBox Grid.Row="6" Grid.Column="0" Content="Flag 6" IsChecked="{Binding Seen5}" />
+                                    <CheckBox Grid.Row="7" Grid.Column="0" Content="Flag 7" IsChecked="{Binding Seen6}" />
+                                    <CheckBox Grid.Row="8" Grid.Column="0" Content="Flag 8" IsChecked="{Binding Seen7}" />
+
+                                    <CheckBox Grid.Row="1" Grid.Column="1" Content="Flag 1" IsChecked="{Binding Obtained0}" />
+                                    <CheckBox Grid.Row="2" Grid.Column="1" Content="Flag 2" IsChecked="{Binding Obtained1}" />
+                                    <CheckBox Grid.Row="3" Grid.Column="1" Content="Flag 3" IsChecked="{Binding Obtained2}" />
+                                    <CheckBox Grid.Row="4" Grid.Column="1" Content="Flag 4" IsChecked="{Binding Obtained3}" />
+                                    <CheckBox Grid.Row="5" Grid.Column="1" Content="Flag 5" IsChecked="{Binding Obtained4}" />
+                                    <CheckBox Grid.Row="6" Grid.Column="1" Content="Flag 6" IsChecked="{Binding Obtained5}" />
+                                    <CheckBox Grid.Row="7" Grid.Column="1" Content="Flag 7" IsChecked="{Binding Obtained6}" />
+                                    <CheckBox Grid.Row="8" Grid.Column="1" Content="Flag 8" IsChecked="{Binding Obtained7}" />
+
+                                    <CheckBox Grid.Row="1" Grid.Column="2" Content="Flag 1" IsChecked="{Binding Caught0}" />
+                                    <CheckBox Grid.Row="2" Grid.Column="2" Content="Flag 2" IsChecked="{Binding Caught1}" />
+                                    <CheckBox Grid.Row="3" Grid.Column="2" Content="Flag 3" IsChecked="{Binding Caught2}" />
+                                    <CheckBox Grid.Row="4" Grid.Column="2" Content="Flag 4" IsChecked="{Binding Caught3}" />
+                                    <CheckBox Grid.Row="5" Grid.Column="2" Content="Flag 5" IsChecked="{Binding Caught4}" />
+                                    <CheckBox Grid.Row="6" Grid.Column="2" Content="Flag 6" IsChecked="{Binding Caught5}" />
+                                    <CheckBox Grid.Row="7" Grid.Column="2" Content="Flag 7" IsChecked="{Binding Caught6}" />
+                                    <CheckBox Grid.Row="8" Grid.Column="2" Content="Flag 8" IsChecked="{Binding Caught7}" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Research Tasks -->
+                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="12" CornerRadius="4">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Research Tasks" FontWeight="SemiBold" />
+                                <ItemsControl ItemsSource="{Binding Tasks}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="vm:LAResearchTaskViewModel">
+                                            <Grid ColumnDefinitions="*,100" Margin="0,0,0,8">
+                                                <TextBlock Text="{Binding Description}" VerticalAlignment="Center" TextWrapping="Wrap" />
+                                                <NumericUpDown Grid.Column="1" Value="{Binding CurrentValue}" Minimum="0" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </DockPanel>
+    </Border>
+
+</UserControl>

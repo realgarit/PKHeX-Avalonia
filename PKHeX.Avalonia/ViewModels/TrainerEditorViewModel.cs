@@ -127,6 +127,27 @@ public partial class TrainerEditorViewModel : ViewModelBase
     [ObservableProperty] private bool _hasGimmighoulCoins;
     [ObservableProperty] private uint _gimmighoulCoins;
 
+    [ObservableProperty] private bool _hasRoyalePoints;
+    [ObservableProperty] private uint _royalePoints;
+
+    [ObservableProperty] private bool _hasRoyalePointsInfinite;
+    [ObservableProperty] private uint _royalePointsInfinite;
+
+    [ObservableProperty] private bool _hasHyperspacePoints;
+    [ObservableProperty] private uint _hyperspacePoints;
+
+    [ObservableProperty] private bool _hasStreetName;
+    [ObservableProperty] private string _streetName = string.Empty;
+
+    [ObservableProperty] private bool _hasMeritEarned;
+    [ObservableProperty] private uint _meritEarned;
+
+    [ObservableProperty] private bool _hasExpeditionRank;
+    [ObservableProperty] private uint _expeditionRank;
+
+    [ObservableProperty] private bool _hasSatchelUpgrades;
+    [ObservableProperty] private uint _satchelUpgrades;
+
     [ObservableProperty] private bool _anyCurrencyVisible;
 
     private void LoadFromSave()
@@ -213,6 +234,15 @@ public partial class TrainerEditorViewModel : ViewModelBase
         {
             HasMeritPoints = true;
             MeritPoints = (uint)la.Accessor.GetBlockValue(SaveBlockAccessor8LA.KMeritCurrent);
+
+            HasMeritEarned = true;
+            MeritEarned = (uint)la.Accessor.GetBlockValue(SaveBlockAccessor8LA.KMeritEarnedTotal);
+
+            HasExpeditionRank = true;
+            ExpeditionRank = (uint)la.Accessor.GetBlockValue(SaveBlockAccessor8LA.KExpeditionTeamRank);
+
+            HasSatchelUpgrades = true;
+            SatchelUpgrades = (uint)la.Accessor.GetBlockValue(SaveBlockAccessor8LA.KSatchelUpgrades);
         }
 
         // Poké Miles (Gen 6)
@@ -222,7 +252,23 @@ public partial class TrainerEditorViewModel : ViewModelBase
             PokeMiles = (uint)statSav.GetRecord(63);
         }
 
-        AnyCurrencyVisible = HasBP || HasCoins || HasWatts || HasLP || HasBlueberryPoints || HasFestaCoins || HasMeritPoints || HasPokeMiles || HasGimmighoulCoins;
+        // PLZA (SAV9ZA)
+        if (_sav is SAV9ZA za)
+        {
+            HasRoyalePoints = true;
+            RoyalePoints = za.TicketPointsRoyale;
+
+            HasRoyalePointsInfinite = true;
+            RoyalePointsInfinite = za.TicketPointsRoyaleInfinite;
+
+            HasHyperspacePoints = true;
+            HyperspacePoints = za.Accessor.GetBlockValue<uint>(SaveBlockAccessor9ZA.KHyperspaceSurveyPoints);
+
+            HasStreetName = true;
+            StreetName = za.StreetName;
+        }
+
+        AnyCurrencyVisible = HasBP || HasCoins || HasWatts || HasLP || HasBlueberryPoints || HasFestaCoins || HasMeritPoints || HasPokeMiles || HasGimmighoulCoins || HasRoyalePoints || HasRoyalePointsInfinite || HasHyperspacePoints;
     }
 
     private void LoadCoordinates()
@@ -361,12 +407,24 @@ public partial class TrainerEditorViewModel : ViewModelBase
         if (_sav is SAV8LA la && HasMeritPoints)
         {
             la.Accessor.SetBlockValue(SaveBlockAccessor8LA.KMeritCurrent, MeritPoints);
+            la.Accessor.SetBlockValue(SaveBlockAccessor8LA.KMeritEarnedTotal, MeritEarned);
+            la.Accessor.SetBlockValue(SaveBlockAccessor8LA.KExpeditionTeamRank, ExpeditionRank);
+            la.Accessor.SetBlockValue(SaveBlockAccessor8LA.KSatchelUpgrades, SatchelUpgrades);
         }
 
         // Poké Miles
         if (_sav is ITrainerStatRecord statSav && _sav.Generation == 6 && HasPokeMiles)
         {
             statSav.SetRecord(63, (int)PokeMiles);
+        }
+
+        // PLZA
+        if (_sav is SAV9ZA za && HasRoyalePoints)
+        {
+            za.TicketPointsRoyale = RoyalePoints;
+            za.TicketPointsRoyaleInfinite = RoyalePointsInfinite;
+            za.Accessor.SetBlockValue(SaveBlockAccessor9ZA.KHyperspaceSurveyPoints, HyperspacePoints);
+            za.StreetName = StreetName;
         }
     }
 

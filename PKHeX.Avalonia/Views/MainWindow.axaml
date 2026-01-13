@@ -70,6 +70,7 @@
                     <Separator />
                     <MenuItem Header="PokeGear (HGSS)" Command="{Binding OpenPokeGear4Command}" />
                     <MenuItem Header="Geonet (DPPt)" Command="{Binding OpenGeonet4Command}" />
+                    <MenuItem Header="Battle Pass Editor (PBR)" Command="{Binding OpenBattlePassCommand}" />
                     <MenuItem Header="Pokédex" Command="{Binding OpenPokedexCommand}" />
                 </MenuItem>
                 <MenuItem Header="Gen 5">
@@ -111,6 +112,7 @@
                     <MenuItem Header="Tera Raids (SV)" Command="{Binding OpenRaid9Command}" />
                         <MenuItem Header="7-Star Raids (SV)" Command="{Binding OpenRaidSevenStar9Command}" />
                         <MenuItem Header="Fashion (SV/ZA)" Command="{Binding OpenFashion9Command}" />
+                        <MenuItem Header="Donut Editor (PLZA)" Command="{Binding OpenDonutCommand}" />
                     </MenuItem>
                 </MenuItem>
             </MenuItem>

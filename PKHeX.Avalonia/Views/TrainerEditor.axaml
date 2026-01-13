@@ -191,9 +191,52 @@
                                 <TextBlock Text="Gimmighoul Coins" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
                                 <NumericUpDown Value="{Binding GimmighoulCoins}" Minimum="0" FormatString="0" />
                             </StackPanel>
+                            <!-- Royale Points -->
+                            <StackPanel IsVisible="{Binding HasRoyalePoints}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Royale Points" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding RoyalePoints}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                            <!-- Royale Points (Infinite) -->
+                            <StackPanel IsVisible="{Binding HasRoyalePointsInfinite}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Royale Points (∞)" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding RoyalePointsInfinite}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                            <!-- Hyperspace Points -->
+                            <StackPanel IsVisible="{Binding HasHyperspacePoints}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Hyperspace Survey" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding HyperspacePoints}" Minimum="0" FormatString="0" />
+                            </StackPanel>
                         </WrapPanel>
                     </StackPanel>
                 </Border>
+
+                <!-- PLA / PLZA Info -->
+                <Border IsVisible="{Binding HasExpeditionRank}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Rank &amp; Upgrades" FontWeight="SemiBold" />
+                        <WrapPanel Orientation="Horizontal" Margin="0,0,-16,-8">
+                            <StackPanel Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Team Rank" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding ExpeditionRank}" Minimum="0" Maximum="10" FormatString="0" />
+                            </StackPanel>
+                            <StackPanel Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Satchel Upgrades" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding SatchelUpgrades}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                            <StackPanel IsVisible="{Binding HasMeritEarned}" Width="110" Margin="0,0,16,8">
+                                <TextBlock Text="Total Merit" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
+                                <NumericUpDown Value="{Binding MeritEarned}" Minimum="0" FormatString="0" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- PLZA Street Name -->
+                <StackPanel IsVisible="{Binding HasStreetName}">
+                    <TextBlock Text="Street Name" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <TextBox Text="{Binding StreetName}" MaxLength="18" />
+                </StackPanel>
 
                 <!-- Language -->
 

@@ -752,6 +752,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenDonutAsync()
+    {
+        if (CurrentSave is not SAV9ZA) return;
+
+        var vm = new DonutEditorViewModel(CurrentSave);
+        var view = new Views.DonutEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Donut Editor (PLZA)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenDLC5Async()
     {
         if (CurrentSave is not SAV5 sav) return;
@@ -773,10 +783,28 @@ public partial class MainWindowViewModel : ViewModelBase
              return;
         }
 
+        if (CurrentSave is SAV8LA savLA)
+        {
+             var vmLA = new PokedexLAEditorViewModel(savLA);
+             var viewLA = new Views.PokedexLAEditor { DataContext = vmLA };
+             await _dialogService.ShowDialogAsync(viewLA, "Pokédex Editor (PLA)");
+             return;
+        }
+
         // Default to Simple editor for earlier gens (or unsupported modern gens for now)
         var vm = new PokedexSimpleEditorViewModel(CurrentSave);
         var view = new Views.PokedexSimpleEditor { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Pokédex Editor (Simple)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenBattlePassAsync()
+    {
+        if (CurrentSave is not SAV4BR) return;
+
+        var vm = new BattlePassEditorViewModel(CurrentSave);
+        var view = new Views.BattlePassEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Battle Pass Editor (PBR)");
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
