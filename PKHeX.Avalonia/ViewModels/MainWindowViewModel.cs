@@ -776,6 +776,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenLink6Async()
+    {
+        if (CurrentSave is not SAV6) return;
+
+        var vm = new Link6EditorViewModel(CurrentSave, _dialogService);
+        var view = new Views.Link6Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Pokémon Link Editor (Gen 6)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenPokepuffAsync()
     {
         if (CurrentSave is null) return;

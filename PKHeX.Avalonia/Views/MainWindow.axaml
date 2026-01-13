@@ -81,7 +81,8 @@
                         <MenuItem Header="Super Training" Command="{Binding OpenSuperTrainingCommand}" />
                         <MenuItem Header="Poké Puffs (XY)" Command="{Binding OpenPokepuffCommand}" />
                         <MenuItem Header="Pokéblocks (ORAS)" Command="{Binding OpenPokeBlockCommand}" />
-                        <MenuItem Header="Berry Field" Command="{Binding OpenBerryFieldCommand}" />
+                        <MenuItem Header="Berries (XY/ORAS)" Command="{Binding OpenBerryFieldCommand}" />
+                        <MenuItem Header="Pokémon Link (XY/ORAS)" Command="{Binding OpenLink6Command}" />
                         <MenuItem Header="Roamer (XY)" Command="{Binding OpenRoamer6Command}" />
                     </MenuItem>
                     <MenuItem Header="Gen 7">
