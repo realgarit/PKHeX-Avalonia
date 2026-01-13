@@ -54,9 +54,9 @@
                         <MenuItem Header="Misc (GS Ball)" Command="{Binding OpenMisc2Command}" />
                     </MenuItem>
                     <MenuItem Header="Gen 3">
-                        <MenuItem Header="Roamer" Command="{Binding OpenRoamerCommand}" />
+                        <MenuItem Header="Roamer" Command="{Binding OpenRoamer3Command}" />
                         <MenuItem Header="Secret Base" Command="{Binding OpenSecretBaseCommand}" />
-                        <MenuItem Header="RTC (Clock)" Command="{Binding OpenRTCCommand}" />
+                        <MenuItem Header="RTC (Clock)" Command="{Binding OpenRTC3Command}" />
                         <MenuItem Header="Pokéblock Case (RSE)" Command="{Binding OpenPokeBlock3CaseCommand}" />
                         <MenuItem Header="Hall of Fame" Command="{Binding OpenHallOfFame3Command}" />
                     </MenuItem>
@@ -83,6 +83,8 @@
                         <MenuItem Header="Poké Beans" Command="{Binding OpenPokebeanCommand}" />
                         <MenuItem Header="Festival Plaza" Command="{Binding OpenFestivalPlazaCommand}" />
                         <MenuItem Header="Zygarde Cells" Command="{Binding OpenZygardeCellCommand}" />
+                        <Separator />
+                        <MenuItem Header="Capture Records (LGPE)" Command="{Binding OpenCapture7GGCommand}" />
                     </MenuItem>
                     <MenuItem Header="Gen 8">
                         <MenuItem Header="Max Raids (SWSH)" Command="{Binding OpenRaidEditorCommand}" />

@@ -1,0 +1,89 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.RTC3Editor"
+             x:DataType="vm:RTC3EditorViewModel">
+
+    <Design.DataContext>
+        <vm:RTC3EditorViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*,Auto" Margin="15">
+        <StackPanel Spacing="15">
+            <TextBlock Text="Gen 3 Real Time Clock Editor" FontWeight="Bold" FontSize="18"/>
+
+            <!-- Initial Clock -->
+            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    CornerRadius="4"
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Initial Clock" FontWeight="Bold"/>
+                    <TextBlock Text="The time when the game was first started." Opacity="0.7"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="15">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Day"/>
+                            <NumericUpDown Value="{Binding InitialDay}" Minimum="0" Maximum="65535" Width="90"/>
+                        </StackPanel>
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Hour"/>
+                            <NumericUpDown Value="{Binding InitialHour}" Minimum="0" Maximum="23" Width="70"/>
+                        </StackPanel>
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Minute"/>
+                            <NumericUpDown Value="{Binding InitialMinute}" Minimum="0" Maximum="59" Width="70"/>
+                        </StackPanel>
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Second"/>
+                            <NumericUpDown Value="{Binding InitialSecond}" Minimum="0" Maximum="59" Width="70"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Elapsed Clock -->
+            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    CornerRadius="4"
+                    Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Elapsed Clock" FontWeight="Bold"/>
+                    <TextBlock Text="The time that has passed since the game was started." Opacity="0.7"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="15">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Day"/>
+                            <NumericUpDown Value="{Binding ElapsedDay}" Minimum="0" Maximum="65535" Width="90"/>
+                        </StackPanel>
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Hour"/>
+                            <NumericUpDown Value="{Binding ElapsedHour}" Minimum="0" Maximum="23" Width="70"/>
+                        </StackPanel>
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Minute"/>
+                            <NumericUpDown Value="{Binding ElapsedMinute}" Minimum="0" Maximum="59" Width="70"/>
+                        </StackPanel>
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Second"/>
+                            <NumericUpDown Value="{Binding ElapsedSecond}" Minimum="0" Maximum="59" Width="70"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Actions -->
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Content="Reset All" Command="{Binding ResetCommand}" ToolTip.Tip="Reset both clocks to zero"/>
+                <Button Content="Berry Glitch Fix" Command="{Binding BerryFixCommand}" ToolTip.Tip="Set elapsed days to fix the Ruby/Sapphire berry glitch"/>
+            </StackPanel>
+
+            <TextBlock TextWrapping="Wrap" Opacity="0.6" FontSize="12">
+                <Run Text="Note: The Berry Glitch was a bug in Ruby/Sapphire where berries would stop growing after about a year. Setting elapsed days to 2+ years fixes this."/>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Bottom Buttons -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
+            <Button Content="Save" Command="{Binding SaveCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

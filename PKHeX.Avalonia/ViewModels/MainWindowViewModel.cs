@@ -886,6 +886,36 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenRoamer3Async()
+    {
+        if (CurrentSave is not SAV3 sav3) return;
+
+        var vm = new Roamer3EditorViewModel(sav3);
+        var view = new Views.Roamer3Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Roamer Editor (Gen 3)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenRTC3Async()
+    {
+        if (CurrentSave is not IGen3Hoenn) return;
+
+        var vm = new RTC3EditorViewModel(CurrentSave);
+        var view = new Views.RTC3Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "RTC Editor (Gen 3)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenCapture7GGAsync()
+    {
+        if (CurrentSave is not SAV7b sav7b) return;
+
+        var vm = new Capture7GGEditorViewModel(sav7b);
+        var view = new Views.Capture7GGEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Capture Records (Let's Go)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task DumpBoxesAsync()
     {
         if (CurrentSave is null) return;

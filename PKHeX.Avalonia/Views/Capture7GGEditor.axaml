@@ -1,0 +1,109 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.Capture7GGEditor"
+             x:DataType="vm:Capture7GGEditorViewModel">
+
+    <Design.DataContext>
+        <vm:Capture7GGEditorViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*,Auto" Margin="10">
+        <Grid ColumnDefinitions="200,*">
+            <!-- Left Panel - Species List -->
+            <Grid RowDefinitions="Auto,*">
+                <TextBlock Text="Species" FontWeight="Bold" Margin="0,0,0,5"/>
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding Entries}"
+                         SelectedItem="{Binding SelectedEntry}"
+                         Margin="0,0,10,0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="vm:CaptureEntryViewModel">
+                            <TextBlock Text="{Binding DisplayText}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+
+            <!-- Right Panel - Capture Details -->
+            <Border Grid.Column="1"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="15">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Capture Records" FontWeight="Bold" FontSize="16"/>
+
+                    <!-- Species Selector -->
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Species:"/>
+                        <ComboBox ItemsSource="{Binding SpeciesList}"
+                                  SelectedIndex="{Binding SelectedSpeciesIndex}"
+                                  MinWidth="200">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Text}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Per-Species Counts -->
+                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            CornerRadius="4"
+                            Padding="10">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Species Counts" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Captured:" VerticalAlignment="Center"/>
+                                <NumericUpDown Grid.Row="0" Grid.Column="1"
+                                               Value="{Binding CapturedCount}"
+                                               Minimum="0" Maximum="999999"
+                                               Width="150" HorizontalAlignment="Left"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Transferred:" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                                <NumericUpDown Grid.Row="1" Grid.Column="1"
+                                               Value="{Binding TransferredCount}"
+                                               Minimum="0" Maximum="999999"
+                                               Width="150" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Total Counts -->
+                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            CornerRadius="4"
+                            Padding="10">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Total Counts" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Total Captured:" VerticalAlignment="Center"/>
+                                <NumericUpDown Grid.Row="0" Grid.Column="1"
+                                               Value="{Binding TotalCaptured}"
+                                               Minimum="0" Maximum="999999999"
+                                               Width="150" HorizontalAlignment="Left"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Total Transferred:" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                                <NumericUpDown Grid.Row="1" Grid.Column="1"
+                                               Value="{Binding TotalTransferred}"
+                                               Minimum="0" Maximum="999999999"
+                                               Width="150" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Actions -->
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Set All to Current" Command="{Binding SetAllCapturedCommand}" ToolTip.Tip="Set all species to current captured/transferred values"/>
+                        <Button Content="Sum Totals" Command="{Binding SumTotalsCommand}" ToolTip.Tip="Calculate totals from individual species counts"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Bottom Buttons -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
+            <Button Content="Save" Command="{Binding SaveCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
