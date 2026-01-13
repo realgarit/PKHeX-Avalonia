@@ -43,7 +43,16 @@
                     <MenuItem Header="Daycare" Command="{Binding OpenDaycareCommand}" />
                     <MenuItem Header="Records" Command="{Binding OpenRecordsCommand}" />
                     <MenuItem Header="Hall of Fame" Command="{Binding OpenHallOfFameCommand}" />
+                    <MenuItem Header="Mail Box" Command="{Binding OpenMailBoxCommand}" />
                     <Separator />
+                    <MenuItem Header="Gen 1">
+                        <MenuItem Header="Event Reset" Command="{Binding OpenEventReset1Command}" />
+                        <MenuItem Header="Hall of Fame" Command="{Binding OpenHallOfFame1Command}" />
+                    </MenuItem>
+                    <MenuItem Header="Gen 2">
+                        <MenuItem Header="Event Flags" Command="{Binding OpenEventFlags2Command}" />
+                        <MenuItem Header="Misc (GS Ball)" Command="{Binding OpenMisc2Command}" />
+                    </MenuItem>
                     <MenuItem Header="Gen 3">
                         <MenuItem Header="Roamer" Command="{Binding OpenRoamerCommand}" />
                         <MenuItem Header="Secret Base" Command="{Binding OpenSecretBaseCommand}" />
@@ -79,6 +88,8 @@
                         <MenuItem Header="Max Raids (SWSH)" Command="{Binding OpenRaidEditorCommand}" />
                         <MenuItem Header="Fashion (SWSH)" Command="{Binding OpenFashionCommand}" />
                         <MenuItem Header="Trainer Card (SWSH)" Command="{Binding OpenTrainerCard8Command}" />
+                        <Separator />
+                        <MenuItem Header="Misc (BDSP)" Command="{Binding OpenMisc8bCommand}" />
                     </MenuItem>
                     <MenuItem Header="Gen 9">
                         <MenuItem Header="Tera Raids (SV)" Command="{Binding OpenRaid9Command}" />

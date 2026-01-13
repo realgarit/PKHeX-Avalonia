@@ -826,6 +826,66 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMailBoxAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new MailBoxEditorViewModel(CurrentSave);
+        var view = new Views.MailBoxEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Mail Box Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenEventFlags2Async()
+    {
+        if (CurrentSave is not SAV2 sav2) return;
+
+        var vm = new EventFlags2EditorViewModel(sav2);
+        var view = new Views.EventFlags2Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Event Flags (Gen 2)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMisc2Async()
+    {
+        if (CurrentSave is not SAV2 sav2) return;
+
+        var vm = new Misc2EditorViewModel(sav2);
+        var view = new Views.Misc2Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Misc Editor (Gen 2)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMisc8bAsync()
+    {
+        if (CurrentSave is not SAV8BS sav8b) return;
+
+        var vm = new Misc8bEditorViewModel(sav8b);
+        var view = new Views.Misc8bEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Misc Editor (BDSP)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenEventReset1Async()
+    {
+        if (CurrentSave is not SAV1 sav1) return;
+
+        var vm = new EventReset1EditorViewModel(sav1);
+        var view = new Views.EventReset1Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Event Reset (Gen 1)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenHallOfFame1Async()
+    {
+        if (CurrentSave is not SAV1 sav1) return;
+
+        var vm = new HallOfFame1EditorViewModel(sav1);
+        var view = new Views.HallOfFame1Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Hall of Fame (Gen 1)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task DumpBoxesAsync()
     {
         if (CurrentSave is null) return;

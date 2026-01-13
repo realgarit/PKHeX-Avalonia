@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.HallOfFame1Editor"
+             x:DataType="vm:HallOfFame1EditorViewModel">
+
+    <Design.DataContext>
+        <vm:HallOfFame1EditorViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*,Auto" Margin="10">
+        <Grid ColumnDefinitions="180,*">
+            <!-- Left Panel - Team List -->
+            <Grid RowDefinitions="Auto,*,Auto">
+                <TextBlock Text="Hall of Fame Teams" FontWeight="Bold" Margin="0,0,0,5"/>
+
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding Teams}"
+                         SelectedItem="{Binding SelectedTeam}"
+                         Margin="0,0,10,0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="vm:HallOfFameTeam1ViewModel">
+                            <TextBlock Text="{Binding DisplayText}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel Grid.Row="2" Spacing="5" Margin="0,10,10,0">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <TextBlock Text="Clears:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <NumericUpDown Grid.Column="1" Value="{Binding ClearCount}" Minimum="0" Maximum="255"/>
+                    </Grid>
+                    <Button Content="Register Party" Command="{Binding SetPartyCommand}" HorizontalAlignment="Stretch"/>
+                    <Button Content="Clear All" Command="{Binding ClearAllCommand}" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Right Panel - Team Details -->
+            <Border Grid.Column="1"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="10">
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <!-- Slot Selector -->
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Team Member" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Slot:" VerticalAlignment="Center"/>
+                            <NumericUpDown Value="{Binding SelectedSlotIndex}"
+                                           Minimum="0" Maximum="5"
+                                           FormatString="0"
+                                           Width="80"/>
+                            <TextBlock Text="(0-5)" VerticalAlignment="Center" Opacity="0.6"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Slot Editor -->
+                    <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,Auto,*" Margin="0,15,0,0">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="Species:"/>
+                            <ComboBox ItemsSource="{Binding SpeciesList}"
+                                      SelectedIndex="{Binding SelectedSpeciesIndex}"
+                                      MinWidth="200">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Text}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Spacing="5" Margin="0,10,0,0">
+                            <TextBlock Text="Level:"/>
+                            <NumericUpDown Value="{Binding Level}" Minimum="1" Maximum="100" Width="100" HorizontalAlignment="Left"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Spacing="5" Margin="0,10,0,0">
+                            <TextBlock Text="Nickname:"/>
+                            <TextBox Text="{Binding Nickname}" MaxWidth="200" HorizontalAlignment="Left"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="10" Margin="0,15,0,0">
+                            <Button Content="Apply Changes" Command="{Binding ApplySlotChangesCommand}"/>
+                            <Button Content="Clear Slot" Command="{Binding ClearSlotCommand}"/>
+                            <Button Content="Delete Team" Command="{Binding DeleteTeamCommand}"/>
+                        </StackPanel>
+
+                        <!-- Team Summary -->
+                        <Border Grid.Row="4"
+                                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                                CornerRadius="4"
+                                Padding="10"
+                                Margin="0,15,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Team Summary" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock Text="{Binding TeamSummary}" FontFamily="Consolas" FontSize="12"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Bottom Buttons -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
+            <Button Content="Save" Command="{Binding SaveCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
