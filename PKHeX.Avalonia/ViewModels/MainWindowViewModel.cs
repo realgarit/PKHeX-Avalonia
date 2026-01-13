@@ -736,6 +736,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenRaidSevenStar9Async()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new RaidSevenStar9EditorViewModel(CurrentSave);
+        var view = new Views.RaidSevenStar9Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "7-Star Tera Raid Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenPokepuffAsync()
     {
         if (CurrentSave is null) return;
@@ -963,6 +973,16 @@ public partial class MainWindowViewModel : ViewModelBase
         var vm = new Capture7GGEditorViewModel(sav7b);
         var view = new Views.Capture7GGEditor { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Capture Records (Let's Go)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenHallOfFame7Async()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new HallOfFame7EditorViewModel(CurrentSave);
+        var view = new Views.HallOfFame7Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Hall of Fame (SM/USUM)");
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]

@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.HallOfFame7Editor"
+             x:DataType="vm:HallOfFame7EditorViewModel">
+
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <Panel>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
+                <TextBlock Text="Hall of Fame not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
+                <TextBlock Text="This feature is only available for Sun/Moon/Ultra Sun/Ultra Moon." 
+                           HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
+            </StackPanel>
+
+            <DockPanel IsVisible="{Binding IsSupported}">
+                <TextBlock DockPanel.Dock="Top" Text="Hall of Fame (SM/USUM)" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,16" />
+
+                <ScrollViewer>
+                    <StackPanel Spacing="16">
+                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="First Clear Team" FontWeight="Bold" FontSize="14" />
+                                <ItemsControl ItemsSource="{Binding FirstEntries}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="vm:HallOfFameEntry7">
+                                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4">
+                                                <TextBlock Text="{Binding Label}" Width="50" VerticalAlignment="Center" />
+                                                <ComboBox ItemsSource="{Binding SpeciesOptions}" 
+                                                          SelectedValue="{Binding SelectedSpecies}"
+                                                          SelectedValueBinding="{Binding Value}"
+                                                          DisplayMemberBinding="{Binding Text}"
+                                                          Width="200" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Current Team" FontWeight="Bold" FontSize="14" />
+                                <ItemsControl ItemsSource="{Binding CurrentEntries}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="vm:HallOfFameEntry7">
+                                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4">
+                                                <TextBlock Text="{Binding Label}" Width="50" VerticalAlignment="Center" />
+                                                <ComboBox ItemsSource="{Binding SpeciesOptions}" 
+                                                          SelectedValue="{Binding SelectedSpecies}"
+                                                          SelectedValueBinding="{Binding Value}"
+                                                          DisplayMemberBinding="{Binding Text}"
+                                                          Width="200" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16"
+                                IsVisible="{Binding HasStarterEc}">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="USUM Only" FontWeight="Bold" FontSize="14" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="Starter EC:" VerticalAlignment="Center" />
+                                    <TextBox Text="{Binding StarterEc}" Width="120" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </Panel>
+    </Border>
+</UserControl>

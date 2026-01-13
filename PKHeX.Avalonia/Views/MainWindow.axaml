@@ -90,6 +90,7 @@
                         <MenuItem Header="Zygarde Cells" Command="{Binding OpenZygardeCellCommand}" />
                         <Separator />
                         <MenuItem Header="Capture Records (LGPE)" Command="{Binding OpenCapture7GGCommand}" />
+                        <MenuItem Header="Hall of Fame (SM/USUM)" Command="{Binding OpenHallOfFame7Command}" />
                     </MenuItem>
                     <MenuItem Header="Gen 8">
                         <MenuItem Header="Max Raids (SWSH)" Command="{Binding OpenRaidEditorCommand}" />
@@ -100,6 +101,7 @@
                     </MenuItem>
                     <MenuItem Header="Gen 9">
                         <MenuItem Header="Tera Raids (SV)" Command="{Binding OpenRaid9Command}" />
+                        <MenuItem Header="7-Star Raids (SV)" Command="{Binding OpenRaidSevenStar9Command}" />
                     </MenuItem>
                 </MenuItem>
             </MenuItem>
