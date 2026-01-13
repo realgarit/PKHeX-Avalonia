@@ -746,6 +746,36 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenUnderground8bAsync()
+    {
+        if (CurrentSave is not SAV8BS) return;
+
+        var vm = new Underground8bEditorViewModel(CurrentSave);
+        var view = new Views.Underground8bEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Underground Editor (BDSP)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenSealStickers8bAsync()
+    {
+        if (CurrentSave is not SAV8BS) return;
+
+        var vm = new SealStickers8bEditorViewModel(CurrentSave);
+        var view = new Views.SealStickers8bEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Seal Stickers Editor (BDSP)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenPoffin8bAsync()
+    {
+        if (CurrentSave is not SAV8BS) return;
+
+        var vm = new Poffin8bEditorViewModel(CurrentSave);
+        var view = new Views.Poffin8bEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Poffin Editor (BDSP)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenPokepuffAsync()
     {
         if (CurrentSave is null) return;
