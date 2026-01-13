@@ -59,7 +59,9 @@
                         <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="5" Margin="5" Width="150">
                             <StackPanel>
                                 <TextBlock Text="{Binding Index, StringFormat='Slot {0}'}" FontWeight="Bold" />
-                                <TextBlock Text="{Binding SpeciesName}" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding Nickname}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding SpeciesName}" FontSize="12" Opacity="0.7" />
+                                <TextBlock Text="{Binding Level, StringFormat='Level {0}'}" FontSize="12" />
                             </StackPanel>
                         </Border>
                     </DataTemplate>

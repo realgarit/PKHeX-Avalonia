@@ -158,10 +158,14 @@ public partial class LinkPokemonViewModel : ViewModelBase
         Index = index;
         _entity = entity;
         SpeciesName = GetSpeciesName(entity.Species, speciesNames);
+        Nickname = entity.Nickname;
+        Level = entity.Level;
     }
 
     public int Index { get; }
     public string SpeciesName { get; }
+    public string Nickname { get; }
+    public int Level { get; }
 
     private static string GetSpeciesName(ushort species, System.Collections.Generic.IReadOnlyList<string> speciesNames)
     {

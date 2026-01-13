@@ -85,7 +85,8 @@
                     <MenuItem Header="O-Powers" Command="{Binding OpenOPowerCommand}" />
                     <MenuItem Header="Super Training" Command="{Binding OpenSuperTrainingCommand}" />
                     <MenuItem Header="Roamer" Command="{Binding OpenRoamer6Command}" />
-                    <MenuItem Header="Link Battle Records" Command="{Binding OpenLink6Command}" />
+                    <MenuItem Header="Pokémon Link" Command="{Binding OpenLink6Command}" />
+                    <MenuItem Header="Secret Base Editor" Command="{Binding OpenSecretBase6Command}" />
                 </MenuItem>
                 <MenuItem Header="Gen 7">
                     <MenuItem Header="Pokédex" Command="{Binding OpenPokedexCommand}" />

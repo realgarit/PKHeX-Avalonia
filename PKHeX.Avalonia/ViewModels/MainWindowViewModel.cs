@@ -848,6 +848,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenSecretBase6Async()
+    {
+        if (CurrentSave is not SAV6AO) return;
+
+        var vm = new SecretBase6EditorViewModel(CurrentSave);
+        var view = new Views.SecretBase6Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Secret Base Editor (ORAS)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenPokepuffAsync()
     {
         if (CurrentSave is null) return;

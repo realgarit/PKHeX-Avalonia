@@ -262,7 +262,7 @@ public partial class TrainerEditorViewModel : ViewModelBase
             RoyalePointsInfinite = za.TicketPointsRoyaleInfinite;
 
             HasHyperspacePoints = true;
-            HyperspacePoints = za.Accessor.GetBlockValue<uint>(SaveBlockAccessor9ZA.KHyperspaceSurveyPoints);
+            HyperspacePoints = za.HyperspaceSurveyPoints;
 
             HasStreetName = true;
             StreetName = za.StreetName;
@@ -423,7 +423,7 @@ public partial class TrainerEditorViewModel : ViewModelBase
         {
             za.TicketPointsRoyale = RoyalePoints;
             za.TicketPointsRoyaleInfinite = RoyalePointsInfinite;
-            za.Accessor.SetBlockValue(SaveBlockAccessor9ZA.KHyperspaceSurveyPoints, HyperspacePoints);
+            za.HyperspaceSurveyPoints = HyperspacePoints;
             za.StreetName = StreetName;
         }
     }
