@@ -808,6 +808,14 @@ public partial class MainWindowViewModel : ViewModelBase
              return;
         }
 
+        if (CurrentSave is SAV4 sav4 && CurrentSave is not SAV4BR)
+        {
+             var vm4 = new Pokedex4EditorViewModel(sav4);
+             var view4 = new Views.Pokedex4Editor { DataContext = vm4 };
+             await _dialogService.ShowDialogAsync(view4, "Pokédex Editor (Gen 4)");
+             return;
+        }
+
         // Default to Simple editor for earlier gens (or unsupported modern gens for now)
         var vm = new PokedexSimpleEditorViewModel(CurrentSave);
         var view = new Views.PokedexSimpleEditor { DataContext = vm };
