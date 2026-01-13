@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PKHeX.Avalonia.Views.Fashion9Editor"
+             x:DataType="vm:Fashion9EditorViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="CanUserResizeColumns" Value="True" />
+            <Setter Property="CanUserSortColumns" Value="False" />
+            <Setter Property="GridLinesVisibility" Value="All" />
+        </Style>
+    </UserControl.Styles>
+
+    <UserControl.DataTemplates>
+        <!-- Template for SV Fashion Blocks -->
+        <DataTemplate DataType="vm:FashionBlock9ViewModel">
+            <DataGrid ItemsSource="{Binding Items}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+                    <DataGridCheckBoxColumn Header="New" Binding="{Binding IsNew}" Width="Auto" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DataTemplate>
+
+        <!-- Template for ZA Fashion Blocks -->
+        <DataTemplate DataType="vm:FashionBlock9aViewModel">
+            <DataGrid ItemsSource="{Binding Items}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+                    <DataGridCheckBoxColumn Header="New" Binding="{Binding IsNew}" Width="Auto" />
+                    <DataGridCheckBoxColumn Header="Shop New" Binding="{Binding IsNewShop}" Width="Auto" />
+                    <DataGridCheckBoxColumn Header="Group New" Binding="{Binding IsNewGroup}" Width="Auto" />
+                    <DataGridCheckBoxColumn Header="Equipped" Binding="{Binding IsEquipped}" Width="Auto" />
+                    <DataGridCheckBoxColumn Header="Owned" Binding="{Binding IsOwned}" Width="Auto" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DataTemplate>
+
+        <!-- Template for ZA Hair Blocks -->
+        <DataTemplate DataType="vm:HairMakeBlockViewModel">
+            <DataGrid ItemsSource="{Binding Items}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+                    <DataGridCheckBoxColumn Header="New" Binding="{Binding IsNew}" Width="Auto" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="10">
+             <Button Content="Unlock All (ZA)" Command="{Binding UnlocksCommand}" CommandParameter="All" />
+             <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" />
+        </StackPanel>
+
+        <TabControl ItemsSource="{Binding Tabs}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" Margin="5,0"/>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+        </TabControl>
+    </DockPanel>
+</UserControl>

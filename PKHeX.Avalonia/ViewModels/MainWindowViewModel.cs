@@ -746,6 +746,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenFashion9Async()
+    {
+        if (CurrentSave is not SAV9SV && CurrentSave is not SAV9ZA) return;
+
+        var vm = new Fashion9EditorViewModel(CurrentSave);
+        var view = new Views.Fashion9Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Fashion Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenUnderground8bAsync()
     {
         if (CurrentSave is not SAV8BS) return;

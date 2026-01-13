@@ -106,6 +106,7 @@
                     <MenuItem Header="Gen 9">
                         <MenuItem Header="Tera Raids (SV)" Command="{Binding OpenRaid9Command}" />
                         <MenuItem Header="7-Star Raids (SV)" Command="{Binding OpenRaidSevenStar9Command}" />
+                        <MenuItem Header="Fashion (SV/ZA)" Command="{Binding OpenFashion9Command}" />
                     </MenuItem>
                 </MenuItem>
             </MenuItem>
