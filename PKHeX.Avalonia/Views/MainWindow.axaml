@@ -74,6 +74,7 @@
                     <MenuItem Header="Gen 5">
                         <MenuItem Header="Chatter" Command="{Binding OpenChatterCommand}" />
                         <MenuItem Header="Medal Rally (B2W2)" Command="{Binding OpenMedalCommand}" />
+                        <MenuItem Header="Unity Tower (BW/B2W2)" Command="{Binding OpenUnityTower5Command}" />
                     </MenuItem>
                     <MenuItem Header="Gen 6">
                         <MenuItem Header="O-Powers" Command="{Binding OpenOPowerCommand}" />
@@ -81,6 +82,7 @@
                         <MenuItem Header="Poké Puffs (XY)" Command="{Binding OpenPokepuffCommand}" />
                         <MenuItem Header="Pokéblocks (ORAS)" Command="{Binding OpenPokeBlockCommand}" />
                         <MenuItem Header="Berry Field" Command="{Binding OpenBerryFieldCommand}" />
+                        <MenuItem Header="Roamer (XY)" Command="{Binding OpenRoamer6Command}" />
                     </MenuItem>
                     <MenuItem Header="Gen 7">
                         <MenuItem Header="Poké Beans" Command="{Binding OpenPokebeanCommand}" />

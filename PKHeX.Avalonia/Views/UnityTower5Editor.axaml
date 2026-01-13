@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.UnityTower5Editor"
+             x:DataType="vm:UnityTower5EditorViewModel">
+
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <Panel>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
+                <TextBlock Text="Unity Tower not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
+                <TextBlock Text="This feature is only available for Black/White/Black 2/White 2." 
+                           HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" TextWrapping="Wrap" />
+            </StackPanel>
+
+            <DockPanel IsVisible="{Binding IsSupported}">
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+                    <TextBlock Text="Unity Tower Editor" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                </DockPanel>
+
+                <StackPanel Spacing="16">
+                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Globe &amp; Tower Management" FontWeight="Bold" FontSize="14" />
+                            <TextBlock Text="The Unity Tower displays floors from countries you've connected with via WiFi. Set locations to populate your globe and unlock tower floors."
+                                       TextWrapping="Wrap" Opacity="0.7" />
+                            
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                                <Button Content="Set All Locations" Command="{Binding SetAllLocationsCommand}" Padding="16,8" />
+                                <Button Content="Set Legal Locations Only" Command="{Binding SetAllLegalLocationsCommand}" Padding="16,8" />
+                                <Button Content="Clear All" Command="{Binding ClearAllLocationsCommand}" Padding="16,8" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Options" FontWeight="Bold" FontSize="14" />
+                            <CheckBox IsChecked="{Binding GlobalFlag}" Content="Global Flag (allow globe to pan outside Japan in JP games)" />
+                            <CheckBox IsChecked="{Binding UnityTowerFlag}" Content="Unity Tower Flag (enable Unity Tower access)" />
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="Note: Changes are applied when the save file is saved." Opacity="0.5" FontStyle="Italic" />
+                </StackPanel>
+            </DockPanel>
+        </Panel>
+    </Border>
+</UserControl>

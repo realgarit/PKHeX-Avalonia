@@ -766,6 +766,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenRoamer6Async()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new Roamer6EditorViewModel(CurrentSave);
+        var view = new Views.Roamer6Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Roamer Editor (XY)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenChatterAsync()
     {
         if (CurrentSave is null) return;
@@ -793,6 +803,16 @@ public partial class MainWindowViewModel : ViewModelBase
         var vm = new MedalEditorViewModel(CurrentSave);
         var view = new Views.MedalEditorView { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Medal Rally Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenUnityTower5Async()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new UnityTower5EditorViewModel(CurrentSave);
+        var view = new Views.UnityTower5Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Unity Tower Editor");
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
