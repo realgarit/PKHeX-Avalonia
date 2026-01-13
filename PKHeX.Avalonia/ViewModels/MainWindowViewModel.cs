@@ -646,6 +646,36 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenPokeGear4Async()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new PokeGear4EditorViewModel(CurrentSave);
+        var view = new Views.PokeGear4Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "PokéGear Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenGeonet4Async()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new Geonet4EditorViewModel(CurrentSave);
+        var view = new Views.Geonet4Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Geonet Globe Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenBoxLayoutAsync()
+    {
+        if (CurrentSave is null) return;
+
+        var vm = new BoxLayoutEditorViewModel(CurrentSave);
+        var view = new Views.BoxLayoutEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Box Layout Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenHoneyTreeAsync()
     {
         if (CurrentSave is null) return;

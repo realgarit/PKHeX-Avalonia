@@ -44,6 +44,7 @@
                     <MenuItem Header="Records" Command="{Binding OpenRecordsCommand}" />
                     <MenuItem Header="Hall of Fame" Command="{Binding OpenHallOfFameCommand}" />
                     <MenuItem Header="Mail Box" Command="{Binding OpenMailBoxCommand}" />
+                    <MenuItem Header="Box Layout" Command="{Binding OpenBoxLayoutCommand}" />
                     <Separator />
                     <MenuItem Header="Gen 1">
                         <MenuItem Header="Event Reset" Command="{Binding OpenEventReset1Command}" />
@@ -62,6 +63,8 @@
                     </MenuItem>
                     <MenuItem Header="Gen 4">
                         <MenuItem Header="Apricorns (HGSS)" Command="{Binding OpenApricornCommand}" />
+                        <MenuItem Header="PokéGear Phone (HGSS)" Command="{Binding OpenPokeGear4Command}" />
+                        <MenuItem Header="Geonet Globe (DPPt)" Command="{Binding OpenGeonet4Command}" />
                         <MenuItem Header="Honey Trees (DPPt)" Command="{Binding OpenHoneyTreeCommand}" />
                         <MenuItem Header="Underground (DPPt)" Command="{Binding OpenUndergroundCommand}" />
                         <MenuItem Header="Chatter" Command="{Binding OpenChatterCommand}" />

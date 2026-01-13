@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.PokeGear4Editor"
+             x:DataType="vm:PokeGear4EditorViewModel">
+
+    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+        <Panel>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
+                <TextBlock Text="PokéGear not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
+                <TextBlock Text="This feature is only available for HeartGold/SoulSilver." HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
+            </StackPanel>
+
+            <DockPanel IsVisible="{Binding IsSupported}">
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                    <TextBlock Text="PokéGear Phone Contacts" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                        <Button Content="Unlock All" Command="{Binding UnlockAllCommand}" Padding="12,6" />
+                        <Button Content="Unlock (No Trainers)" Command="{Binding UnlockAllNoTrainersCommand}" Padding="12,6" />
+                        <Button Content="Clear All" Command="{Binding ClearAllCommand}" Padding="12,6" />
+                    </StackPanel>
+                </DockPanel>
+
+                <ScrollViewer>
+                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                        <ItemsControl ItemsSource="{Binding Callers}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="vm:PokeGearCallerViewModel">
+                                    <Border Margin="4" Padding="8,4" CornerRadius="4" 
+                                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                                            MinWidth="150">
+                                        <CheckBox IsChecked="{Binding IsUnlocked}" Content="{Binding Name}" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </ScrollViewer>
+            </DockPanel>
+        </Panel>
+    </Border>
+</UserControl>

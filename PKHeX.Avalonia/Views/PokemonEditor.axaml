@@ -610,18 +610,6 @@
                             </Border>
 
                             <!-- HT Memory -->
-                            <TextBlock Text="Handling Trainer Memory" FontWeight="Bold" FontSize="14" />
-                            <Grid ColumnDefinitions="*,16,*">
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Memory" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                    <NumericUpDown Value="{Binding HtMemory}" Minimum="0" Maximum="255" FormatString="0" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Intensity" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                    <NumericUpDown Value="{Binding HtMemoryIntensity}" Minimum="0" Maximum="7" FormatString="0" />
-                                </StackPanel>
-                            </Grid>
-                            <!-- HT Memory -->
                             <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
                                     CornerRadius="4" Padding="12">
                                 <StackPanel Spacing="12">

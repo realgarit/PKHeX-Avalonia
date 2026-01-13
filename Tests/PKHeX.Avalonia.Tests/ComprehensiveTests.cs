@@ -1,3 +1,5 @@
+using System.IO;
+using Avalonia.Headless.XUnit;
 using Moq;
 using PKHeX.Avalonia.Services;
 using PKHeX.Avalonia.ViewModels;
@@ -463,6 +465,115 @@ public class ComprehensiveTests
         Assert.NotNull(vm.LegalityReport);
     }
 
+
+    #endregion
+
+    #region Reflection Round-Trip Tests
+
+    [AvaloniaFact]
+    public void RoundTrip_All_Int_Properties()
+    {
+        var sav = new SAV3E();
+        var pkm = new PK3 { Species = 1 }; // Use valid species to avoid normalization quirks
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+        
+        var properties = typeof(PokemonEditorViewModel)
+            .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+            .Where(p => p.PropertyType == typeof(int) && p.CanWrite && p.CanRead)
+            .ToList();
+
+        var exclusions = new HashSet<string> 
+        { 
+            "SelectedTab", "Stat_HP", "Stat_ATK", "Stat_DEF", "Stat_SPA", "Stat_SPD", "Stat_SPE",
+            "Species", "Form", "Ability", "Level", "TargetPKM", "Nature", "Gender",
+            "EggLocation", "MetLocation", "MetLevel", "OriginalTrainerGender", "Ball",
+            "RelearnMove1", "RelearnMove2", "RelearnMove3", "RelearnMove4",
+            "StatHPCurrent", "StatHPMax", "Valid", "Version", "StatNature", "HpType",
+            "IsPokerusInfected", "IsPokerusCured", "AbilityNumber", "Id32", "IsNicknamed",
+            "StatusCondition", "HandlingTrainerName", "HandlingTrainerGender", 
+            "HandlingTrainerFriendship", "CurrentHandler", "OriginalTrainerFriendship",
+            "ContestCool", "ContestBeauty", "ContestCute", "ContestSmart", "ContestTough", "ContestSheen",
+            "OtMemory", "OtMemoryIntensity", "OtMemoryFeeling", "OtMemoryVariable",
+            "HtMemory", "HtMemoryIntensity", "HtMemoryFeeling", "HtMemoryVariable",
+            "Sid"
+        };
+
+        foreach (var prop in properties)
+        {
+            if (exclusions.Contains(prop.Name)) continue;
+
+            int testValue = 1;
+            if (prop.Name.StartsWith("Iv")) testValue = 31;
+            if (prop.Name.StartsWith("Ev")) testValue = 252;
+            if (prop.Name.Contains("PpUps")) testValue = 3;
+            if (prop.Name.Contains("Friendship") || prop.Name.Contains("Happiness")) testValue = 200;
+            if (prop.Name.Contains("Sid") || prop.Name.Contains("TrainerID")) testValue = 12345;
+            if (prop.Name.Contains("Move") && !prop.Name.Contains("Pp")) testValue = 33;
+
+            try { prop.SetValue(vm, testValue); }
+            catch { Assert.Fail($"Failed to set property {prop.Name}"); }
+        }
+
+        var newPkm = vm.PreparePKM();
+        var (newVm, _, _) = TestHelpers.CreateTestViewModel(newPkm, sav);
+
+        foreach (var prop in properties)
+        {
+            if (exclusions.Contains(prop.Name)) continue;
+
+            int testValue = 1;
+            if (prop.Name.StartsWith("Iv")) testValue = 31;
+            if (prop.Name.StartsWith("Ev")) testValue = 252;
+            if (prop.Name.Contains("PpUps")) testValue = 3;
+            if (prop.Name.Contains("Friendship") || prop.Name.Contains("Happiness")) testValue = 200;
+            if (prop.Name.Contains("Sid") || prop.Name.Contains("TrainerID")) testValue = 12345;
+            if (prop.Name.Contains("Move") && !prop.Name.Contains("Pp")) testValue = 33;
+
+            var actual = (int)prop.GetValue(newVm)!;
+            Assert.True(actual == testValue, 
+                $"Property {prop.Name} failed round-trip. Expected {testValue}, got {actual}");
+        }
+    }
+
+    #endregion
+
+    #region SaveFile Tests
+
+    [Fact]
+    public void Can_Load_Gen3_Variables()
+    {
+        var sav = new SAV3E();
+        sav.TID16 = 12345;
+        sav.OT = "ASH";
+
+        var pkm = sav.GetPartySlotAtIndex(0);
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+
+        Assert.Equal(sav.Context, vm.TargetPKM.Context);
+    }
+
+    [Fact]
+    public void Load_Real_Save_File_If_Present()
+    {
+        var baseDir = AppContext.BaseDirectory;
+        string savePath = Path.Combine(baseDir, "test_save.sav");
+        
+        if (!File.Exists(savePath)) return;
+
+        byte[] data = File.ReadAllBytes(savePath);
+        var sav = SaveUtil.GetSaveFile(data);
+
+        Assert.NotNull(sav);
+        Assert.True(sav.ChecksumsValid);
+
+        var pkm = sav.BoxData[0];
+        if (pkm == null) return;
+        
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+
+        Assert.NotNull(vm.SpeciesList);
+        Assert.True(vm.SpeciesList.Count > 0);
+    }
 
     #endregion
 }
