@@ -26,40 +26,60 @@
                     <NumericUpDown Value="{Binding Points}" Minimum="0" Maximum="255" Width="100" />
                 </StackPanel>
 
-                <Grid ColumnDefinitions="*,16,*">
+                <Grid ColumnDefinitions="*,16,*,16,200">
                     <!-- Field Powers -->
-                    <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                    <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
                         <DockPanel>
-                            <TextBlock DockPanel.Dock="Top" Text="Field Powers" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,12" />
-                            <ItemsControl ItemsSource="{Binding FieldPowers}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="vm:OPowerFieldViewModel">
-                                        <Grid ColumnDefinitions="120,Auto,8,Auto" Margin="0,4">
-                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
-                                            <NumericUpDown Grid.Column="1" Value="{Binding Level1}" Minimum="0" Maximum="5" Width="70" />
-                                            <NumericUpDown Grid.Column="3" Value="{Binding Level2}" Minimum="0" Maximum="5" Width="70" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            <TextBlock DockPanel.Dock="Top" Text="Field Powers" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
+                            <ScrollViewer>
+                                <ItemsControl ItemsSource="{Binding FieldPowers}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="vm:OPowerFieldViewModel">
+                                            <Grid ColumnDefinitions="*,60,4,60" Margin="0,2">
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="12"/>
+                                                <NumericUpDown Grid.Column="1" Value="{Binding Level1}" Minimum="0" Maximum="5" Width="55" Height="28" Padding="4" FontSize="12"/>
+                                                <NumericUpDown Grid.Column="3" Value="{Binding Level2}" Minimum="0" Maximum="5" Width="55" Height="28" Padding="4" FontSize="12"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
                         </DockPanel>
                     </Border>
 
                     <!-- Battle Powers -->
-                    <Border Grid.Column="2" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                    <Border Grid.Column="2" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
                         <DockPanel>
-                            <TextBlock DockPanel.Dock="Top" Text="Battle Powers" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,12" />
-                            <ItemsControl ItemsSource="{Binding BattlePowers}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="vm:OPowerBattleViewModel">
-                                        <Grid ColumnDefinitions="120,Auto,8,Auto" Margin="0,4">
-                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
-                                            <NumericUpDown Grid.Column="1" Value="{Binding Level1}" Minimum="0" Maximum="5" Width="70" />
-                                            <NumericUpDown Grid.Column="3" Value="{Binding Level2}" Minimum="0" Maximum="5" Width="70" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            <TextBlock DockPanel.Dock="Top" Text="Battle Powers" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
+                            <ScrollViewer>
+                                <ItemsControl ItemsSource="{Binding BattlePowers}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="vm:OPowerBattleViewModel">
+                                            <Grid ColumnDefinitions="*,60,4,60" Margin="0,2">
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="12"/>
+                                                <NumericUpDown Grid.Column="1" Value="{Binding Level1}" Minimum="0" Maximum="5" Width="55" Height="28" Padding="4" FontSize="12"/>
+                                                <NumericUpDown Grid.Column="3" Value="{Binding Level2}" Minimum="0" Maximum="5" Width="55" Height="28" Padding="4" FontSize="12"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Unlocks -->
+                    <Border Grid.Column="4" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Unlocks" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
+                            <ScrollViewer>
+                                <ItemsControl ItemsSource="{Binding Unlocks}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="vm:OPowerUnlockViewModel">
+                                            <CheckBox IsChecked="{Binding IsUnlocked}" Content="{Binding Name}" Margin="0,1" FontSize="11"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
                         </DockPanel>
                     </Border>
                 </Grid>

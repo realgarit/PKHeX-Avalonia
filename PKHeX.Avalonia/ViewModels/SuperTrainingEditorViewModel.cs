@@ -1,4 +1,6 @@
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
@@ -7,200 +9,171 @@ namespace PKHeX.Avalonia.ViewModels;
 
 public partial class SuperTrainingEditorViewModel : ViewModelBase
 {
-    private readonly SaveFile _sav;
-    private readonly SuperTrainBlock? _stb;
+    private readonly SAV6 _sav;
+    private readonly SuperTrainBlock _block;
 
     public SuperTrainingEditorViewModel(SaveFile sav)
     {
-        _sav = sav;
+        _sav = (SAV6)sav;
+        _block = ((ISaveBlock6Main)_sav).SuperTrain;
+        IsSupported = true;
 
-        if (sav is SAV6 sav6 && sav6 is ISaveBlock6Main main)
-        {
-            _stb = main.SuperTrain;
-            IsSupported = true;
-            LoadData();
-        }
+        LoadBags();
+        LoadRecords();
+        LoadStages();
     }
 
     public bool IsSupported { get; }
 
-    [ObservableProperty]
-    private ObservableCollection<TrainingBagViewModel> _bags = [];
+    // Bags
+    public ObservableCollection<TrainingBagViewModel> Bags { get; } = [];
+    public string[] BagNames { get; } = GameInfo.Strings.trainingbags;
 
-    [ObservableProperty]
-    private ObservableCollection<TrainingStageViewModel> _stages = [];
+    // Stages
+    public ObservableCollection<SuperTrainStageViewModel> Stages { get; } = [];
 
+    // Records
+    public ObservableCollection<SuperTrainRecordViewModel> Records { get; } = [];
+    
     [ObservableProperty]
-    private TrainingStageViewModel? _selectedStage;
+    private SuperTrainRecordViewModel? _selectedRecord;
 
-    private void LoadData()
+    public void LoadBags()
     {
-        if (_stb is null) return;
-
-        // Load training bags
         Bags.Clear();
-        var bagNames = GameInfo.Strings.trainingbags;
         for (int i = 0; i < 12; i++)
         {
-            var bagIndex = _stb.GetBag(i);
-            Bags.Add(new TrainingBagViewModel(i, bagIndex, bagNames, SetBag));
+            Bags.Add(new TrainingBagViewModel(i, _block.GetBag(i), _block));
         }
+    }
 
-        // Load training stages
+    public void LoadStages()
+    {
         Stages.Clear();
-        var stageNames = GameInfo.Strings.trainingstage;
-        for (int i = 0; i < 32; i++)
+        string[] stages = GameInfo.Strings.trainingstage;
+        for (int i = 0; i < 48; i++)
         {
-            var holder1 = _stb.GetHolder1(i);
-            var holder2 = _stb.GetHolder2(i);
-            var time1 = _stb.GetTime1(i);
-            var time2 = _stb.GetTime2(i);
-
-            Stages.Add(new TrainingStageViewModel(
-                i,
-                i < stageNames.Length ? stageNames[i] : $"Stage {i + 1}",
-                holder1, holder2,
-                time1, time2,
-                (idx, h1, h2, t1, t2) => SetStageRecord(idx, h1, h2, t1, t2)
-            ));
+            if (i >= stages.Length) break;
+            Stages.Add(new SuperTrainStageViewModel(i, stages[i], _block.GetIsRegimenUnlocked(i), _block));
         }
-
-        if (Stages.Count > 0)
-            SelectedStage = Stages[0];
     }
 
-    private void SetBag(int index, byte value)
+    public void LoadRecords()
     {
-        _stb?.SetBag(index, value);
-    }
-
-    private void SetStageRecord(int index, SuperTrainingSpeciesRecord h1, SuperTrainingSpeciesRecord h2, float t1, float t2)
-    {
-        if (_stb is null) return;
-        _stb.SetTime1(index, t1);
-        _stb.SetTime2(index, t2);
+        Records.Clear();
+        string[] stages = GameInfo.Strings.trainingstage;
+        for (int i = 0; i < 48; i++)
+        {
+            if (i >= stages.Length) break;
+            Records.Add(new SuperTrainRecordViewModel(i, stages[i], _block));
+        }
+        if (Records.Count > 0)
+            SelectedRecord = Records[0];
     }
 
     [RelayCommand]
-    private void Refresh()
+    private void UnlockAll()
     {
-        LoadData();
+        _block.UnlockAllStages(true);
+        LoadStages();
+    }
+
+    [RelayCommand]
+    private void Save()
+    {
+        // Many properties are updated via partial methods in sub-ViewModels
+        _sav.State.Edited = true;
     }
 }
 
 public partial class TrainingBagViewModel : ViewModelBase
 {
-    private readonly System.Action<int, byte> _onChanged;
-    private readonly string[] _bagNames;
+    private readonly int _index;
+    private readonly SuperTrainBlock _block;
 
-    public TrainingBagViewModel(int index, byte bagType, string[] bagNames, System.Action<int, byte> onChanged)
+    public TrainingBagViewModel(int index, byte bag, SuperTrainBlock block)
     {
-        Index = index;
-        _bagType = bagType;
-        _bagNames = bagNames;
-        _onChanged = onChanged;
+        _index = index;
+        _bagId = bag;
+        _block = block;
     }
 
-    public int Index { get; }
-    public string SlotLabel => $"Slot {Index + 1}";
+    public string SlotName => (_index + 1).ToString();
 
     [ObservableProperty]
-    private byte _bagType;
+    private byte _bagId;
 
-    partial void OnBagTypeChanged(byte value)
-    {
-        _onChanged(Index, value);
-        OnPropertyChanged(nameof(BagName));
-    }
-
-    public string BagName => BagType < _bagNames.Length && !string.IsNullOrEmpty(_bagNames[BagType])
-        ? _bagNames[BagType]
-        : "---";
+    partial void OnBagIdChanged(byte value) => _block.SetBag(_index, value);
 }
 
-public partial class TrainingStageViewModel : ViewModelBase
+public partial class SuperTrainStageViewModel : ViewModelBase
 {
-    private readonly System.Action<int, SuperTrainingSpeciesRecord, SuperTrainingSpeciesRecord, float, float> _onChanged;
-    private readonly SuperTrainingSpeciesRecord _holder1;
-    private readonly SuperTrainingSpeciesRecord _holder2;
+    private readonly int _index;
+    private readonly SuperTrainBlock _block;
 
-    public TrainingStageViewModel(
-        int index,
-        string name,
-        SuperTrainingSpeciesRecord holder1,
-        SuperTrainingSpeciesRecord holder2,
-        float time1,
-        float time2,
-        System.Action<int, SuperTrainingSpeciesRecord, SuperTrainingSpeciesRecord, float, float> onChanged)
+    public SuperTrainStageViewModel(int index, string name, bool isUnlocked, SuperTrainBlock block)
     {
-        Index = index;
+        _index = index;
         Name = name;
-        _holder1 = holder1;
-        _holder2 = holder2;
-        _time1 = time1;
-        _time2 = time2;
-        _onChanged = onChanged;
-
-        _species1 = holder1.Species;
-        _species2 = holder2.Species;
+        _isUnlocked = isUnlocked;
+        _block = block;
     }
 
-    public int Index { get; }
     public string Name { get; }
-    public string DisplayName => $"{Index + 1:00} - {Name}";
 
     [ObservableProperty]
-    private ushort _species1;
+    private bool _isUnlocked;
 
-    partial void OnSpecies1Changed(ushort value)
+    partial void OnIsUnlockedChanged(bool value) => _block.SetIsRegimenUnlocked(_index, value);
+}
+
+public partial class SuperTrainRecordViewModel : ViewModelBase
+{
+    private readonly int _index;
+    private readonly SuperTrainBlock _block;
+
+    public SuperTrainRecordViewModel(int index, string name, SuperTrainBlock block)
     {
-        _holder1.Species = value;
-        OnPropertyChanged(nameof(Species1Name));
-        NotifyChanged();
+        _index = index;
+        Name = name;
+        _block = block;
+
+        _time1 = block.GetTime1(index);
+        _time2 = block.GetTime2(index);
+        
+        var h1 = block.GetHolder1(index);
+        _species1 = h1.Species;
+        _form1 = h1.Form;
+        _gender1 = h1.Gender;
+
+        var h2 = block.GetHolder2(index);
+        _species2 = h2.Species;
+        _form2 = h2.Form;
+        _gender2 = h2.Gender;
     }
 
-    [ObservableProperty]
-    private ushort _species2;
+    public string Name { get; }
 
-    partial void OnSpecies2Changed(ushort value)
-    {
-        _holder2.Species = value;
-        OnPropertyChanged(nameof(Species2Name));
-        NotifyChanged();
-    }
+    // Record 1
+    [ObservableProperty] private float _time1;
+    [ObservableProperty] private ushort _species1;
+    [ObservableProperty] private byte _form1;
+    [ObservableProperty] private byte _gender1;
 
-    [ObservableProperty]
-    private float _time1;
+    // Record 2
+    [ObservableProperty] private float _time2;
+    [ObservableProperty] private ushort _species2;
+    [ObservableProperty] private byte _form2;
+    [ObservableProperty] private byte _gender2;
 
-    partial void OnTime1Changed(float value) => NotifyChanged();
+    partial void OnTime1Changed(float value) => _block.SetTime1(_index, value);
+    partial void OnTime2Changed(float value) => _block.SetTime2(_index, value);
 
-    [ObservableProperty]
-    private float _time2;
+    partial void OnSpecies1Changed(ushort value) { var h = _block.GetHolder1(_index); h.Species = value; }
+    partial void OnForm1Changed(byte value) { var h = _block.GetHolder1(_index); h.Form = value; }
+    partial void OnGender1Changed(byte value) { var h = _block.GetHolder1(_index); h.Gender = value; }
 
-    partial void OnTime2Changed(float value) => NotifyChanged();
-
-    public string Species1Name
-    {
-        get
-        {
-            if (Species1 == 0) return "(None)";
-            var names = GameInfo.Strings.Species;
-            return Species1 < names.Count ? names[Species1] : $"Species #{Species1}";
-        }
-    }
-
-    public string Species2Name
-    {
-        get
-        {
-            if (Species2 == 0) return "(None)";
-            var names = GameInfo.Strings.Species;
-            return Species2 < names.Count ? names[Species2] : $"Species #{Species2}";
-        }
-    }
-
-    private void NotifyChanged()
-    {
-        _onChanged(Index, _holder1, _holder2, Time1, Time2);
-    }
+    partial void OnSpecies2Changed(ushort value) { var h = _block.GetHolder2(_index); h.Species = value; }
+    partial void OnForm2Changed(byte value) { var h = _block.GetHolder2(_index); h.Form = value; }
+    partial void OnGender2Changed(byte value) { var h = _block.GetHolder2(_index); h.Gender = value; }
 }

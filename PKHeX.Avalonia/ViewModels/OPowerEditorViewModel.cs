@@ -1,4 +1,6 @@
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
@@ -39,6 +41,9 @@ public partial class OPowerEditorViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<OPowerBattleViewModel> _battlePowers = [];
 
+    [ObservableProperty]
+    private ObservableCollection<OPowerUnlockViewModel> _unlocks = [];
+
     private void LoadData()
     {
         if (_block is null) return;
@@ -61,6 +66,16 @@ public partial class OPowerEditorViewModel : ViewModelBase
         {
             var type = (OPower6BattleType)i;
             BattlePowers.Add(new OPowerBattleViewModel(battleNames[i], type, _block));
+        }
+
+        // Unlocks
+        Unlocks.Clear();
+        var unlockNames = Enum.GetNames<OPower6Index>();
+        for (int i = 0; i < (int)OPower6Index.Count; i++)
+        {
+            var idx = (OPower6Index)i;
+            var isUnlocked = _block.GetState(idx) == OPowerFlagState.Unlocked;
+            Unlocks.Add(new OPowerUnlockViewModel(unlockNames[i], idx, isUnlocked, _block));
         }
     }
 
@@ -133,4 +148,28 @@ public partial class OPowerBattleViewModel : ViewModelBase
     private byte _level2;
 
     partial void OnLevel2Changed(byte value) => _block.SetLevel2(_type, value);
+}
+
+public partial class OPowerUnlockViewModel : ViewModelBase
+{
+    private readonly OPower6Index _idx;
+    private readonly OPower6 _block;
+
+    public OPowerUnlockViewModel(string name, OPower6Index idx, bool isUnlocked, OPower6 block)
+    {
+        Name = name;
+        _idx = idx;
+        _isUnlocked = isUnlocked;
+        _block = block;
+    }
+
+    public string Name { get; }
+
+    [ObservableProperty]
+    private bool _isUnlocked;
+
+    partial void OnIsUnlockedChanged(bool value)
+    {
+        _block.SetState(_idx, value ? OPowerFlagState.Unlocked : OPowerFlagState.Locked);
+    }
 }
