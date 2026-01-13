@@ -1,0 +1,139 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="PKHeX.Avalonia.Views.Pokedex6Editor"
+             x:DataType="vm:Pokedex6EditorViewModel">
+
+    <Grid ColumnDefinitions="250, *">
+        <!-- Species List -->
+        <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,1,0">
+            <DockPanel>
+                <TextBox DockPanel.Dock="Top" Text="{Binding SearchText}" Watermark="Search Species..." Margin="5" />
+                <ListBox ItemsSource="{Binding FilteredSpecies}" SelectedItem="{Binding SelectedSpecies}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="{Binding Value, StringFormat={}{0:000}}" Foreground="Gray" />
+                                <TextBlock Text="{Binding Text}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <!-- Detail View -->
+        <ScrollViewer Grid.Column="1">
+            <StackPanel Spacing="10" Margin="10">
+                <!-- Global Settings -->
+                <StackPanel IsVisible="{Binding SelectedSpecies, Converter={x:Static ObjectConverters.IsNotNull}}">
+                     <TextBlock Text="Global Settings" FontWeight="Bold" Margin="0,0,0,5"/>
+                     <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <Grid ColumnDefinitions="Auto, Auto, *, Auto">
+                            <StackPanel Orientation="Horizontal" Spacing="10" Grid.Column="0">
+                                <TextBlock Text="Spinda PID:" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding Spinda, StringFormat={}{0:X8}}" Width="100" FontFamily="Monospace" />
+                            </StackPanel>
+                            
+                            <CheckBox Grid.Column="1" Content="National Dex Unlocked" IsChecked="{Binding NationalDexUnlocked}" Margin="20,0,0,0"/>
+                            <CheckBox Grid.Column="2" Content="National Dex Mode" IsChecked="{Binding NationalDexMode}" Margin="20,0,0,0"/>
+                        </Grid>
+                     </Border>
+                </StackPanel>
+
+                <!-- Entry Details -->
+                <Grid RowDefinitions="Auto, Auto" IsVisible="{Binding SelectedSpecies, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    
+                    <!-- Main Flags -->
+                    <StackPanel>
+                        <TextBlock Text="Entry Flags" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                            <StackPanel Spacing="10">
+                                <CheckBox Content="Caught" IsChecked="{Binding Caught}" FontWeight="Bold"/>
+                                
+                                <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto" RowDefinitions="Auto, Auto, Auto" Margin="0,10,0,0">
+                                    <TextBlock Text="Seen" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Displayed" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
+
+                                    <TextBlock Text="Male" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Margin="10"/>
+                                    <TextBlock Text="Female" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" Margin="10"/>
+                                    <TextBlock Text="Shiny Male" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" Margin="10"/>
+                                    <TextBlock Text="Shiny Female" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" Margin="10"/>
+
+                                    <!-- Seen Checkboxes -->
+                                    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding SeenMale}" IsEnabled="{Binding CanBeMale}" HorizontalAlignment="Center"/>
+                                    <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding SeenFemale}" IsEnabled="{Binding CanBeFemale}" HorizontalAlignment="Center"/>
+                                    <CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding SeenShinyMale}" IsEnabled="{Binding CanBeMale}" HorizontalAlignment="Center"/>
+                                    <CheckBox Grid.Row="1" Grid.Column="4" IsChecked="{Binding SeenShinyFemale}" IsEnabled="{Binding CanBeFemale}" HorizontalAlignment="Center"/>
+
+                                    <!-- Displayed Checkboxes -->
+                                    <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding DisplayedMale}" IsEnabled="{Binding CanBeMale}" HorizontalAlignment="Center"/>
+                                    <CheckBox Grid.Row="2" Grid.Column="2" IsChecked="{Binding DisplayedFemale}" IsEnabled="{Binding CanBeFemale}" HorizontalAlignment="Center"/>
+                                    <CheckBox Grid.Row="2" Grid.Column="3" IsChecked="{Binding DisplayedShinyMale}" IsEnabled="{Binding CanBeMale}" HorizontalAlignment="Center"/>
+                                    <CheckBox Grid.Row="2" Grid.Column="4" IsChecked="{Binding DisplayedShinyFemale}" IsEnabled="{Binding CanBeFemale}" HorizontalAlignment="Center"/>
+                                </Grid>
+                                
+                                <!-- Languages -->
+                                <TextBlock Text="Languages" FontWeight="Bold" Margin="0,10,0,5"/>
+                                <WrapPanel Orientation="Horizontal">
+                                    <CheckBox Content="Japanese" IsChecked="{Binding LangJapanese}" Margin="0,0,10,0" />
+                                    <CheckBox Content="English" IsChecked="{Binding LangEnglish}" Margin="0,0,10,0" />
+                                    <CheckBox Content="French" IsChecked="{Binding LangFrench}" Margin="0,0,10,0" />
+                                    <CheckBox Content="Italian" IsChecked="{Binding LangItalian}" Margin="0,0,10,0" />
+                                    <CheckBox Content="German" IsChecked="{Binding LangGerman}" Margin="0,0,10,0" />
+                                    <CheckBox Content="Spanish" IsChecked="{Binding LangSpanish}" Margin="0,0,10,0" />
+                                    <CheckBox Content="Korean" IsChecked="{Binding LangKorean}" Margin="0,0,10,0" />
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    
+                    <!-- Version Specifics -->
+                    <StackPanel Grid.Row="1" Spacing="10" Margin="0,10,0,0">
+                         <!-- XY Foreign -->
+                        <StackPanel IsVisible="{Binding HasForeign}">
+                             <TextBlock Text="XY Settings" FontWeight="Bold" Margin="0,0,0,5"/>
+                             <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                                 <CheckBox Content="Foreign Owned (Gen 3/4/5 Origin)" IsChecked="{Binding Foreign}" />
+                             </Border>
+                        </StackPanel>
+                        
+                        <!-- ORAS Counts -->
+                        <StackPanel IsVisible="{Binding IsORAS}">
+                            <TextBlock Text="DexNav Counts (ORAS)" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                                <Grid ColumnDefinitions="Auto, *, Auto, *">
+                                    <TextBlock Text="Seen Count:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <NumericUpDown Value="{Binding SeenCount}" Minimum="0" Maximum="65535" Grid.Column="1" Margin="0,0,20,0"/>
+                                    
+                                    <TextBlock Text="Obtained Count:" VerticalAlignment="Center" Grid.Column="2" Margin="0,0,10,0"/>
+                                    <NumericUpDown Value="{Binding ObtainedCount}" Minimum="0" Maximum="65535" Grid.Column="3"/>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Forms -->
+                <StackPanel IsVisible="{Binding Forms.Count}">
+                    <TextBlock Text="Forms" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <DataGrid ItemsSource="{Binding Forms}" CanUserResizeColumns="True" CanUserSortColumns="False" AutoGenerateColumns="False" Height="200">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Form Name" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
+                                <DataGridCheckBoxColumn Header="Seen" Binding="{Binding Seen}" Width="60" />
+                                <DataGridCheckBoxColumn Header="Seen Shiny" Binding="{Binding SeenShiny}" Width="80" />
+                                <DataGridCheckBoxColumn Header="Displayed" Binding="{Binding Displayed}" Width="70" />
+                                <DataGridCheckBoxColumn Header="Disp Shiny" Binding="{Binding DisplayedShiny}" Width="80" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

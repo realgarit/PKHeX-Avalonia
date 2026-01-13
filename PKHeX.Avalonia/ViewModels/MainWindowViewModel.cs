@@ -800,6 +800,14 @@ public partial class MainWindowViewModel : ViewModelBase
              return;
         }
 
+        if (CurrentSave is SAV6 sav6)
+        {
+             var vm6 = new Pokedex6EditorViewModel(sav6);
+             var view6 = new Views.Pokedex6Editor { DataContext = vm6 };
+             await _dialogService.ShowDialogAsync(view6, "Pokédex Editor (Gen 6)");
+             return;
+        }
+
         // Default to Simple editor for earlier gens (or unsupported modern gens for now)
         var vm = new PokedexSimpleEditorViewModel(CurrentSave);
         var view = new Views.PokedexSimpleEditor { DataContext = vm };
