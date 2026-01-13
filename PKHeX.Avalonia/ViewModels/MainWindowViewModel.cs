@@ -771,6 +771,15 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenEntralinkAsync()
+    {
+        if (CurrentSave is not SAV5 sav) return;
+        var vm = new EntralinkEditorViewModel(sav);
+        var view = new Views.EntralinkEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Entralink Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenPokedexAsync()
     {
         if (CurrentSave is null) return;

@@ -1,0 +1,146 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PKHeX.Avalonia.Views.EntralinkEditor"
+             x:DataType="vm:EntralinkEditorViewModel">
+    
+    <TabControl Margin="5">
+        <TabItem Header="General">
+            <ScrollViewer>
+                <StackPanel Spacing="10" Margin="10">
+                    <TextBlock Text="Entralink Levels" FontWeight="Bold" />
+                    <Grid ColumnDefinitions="Auto, *, Auto, *" RowDefinitions="Auto">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="White Forest:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding WhiteLevel}" Minimum="0" Maximum="65535" />
+                        
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Black City:" VerticalAlignment="Center" Margin="20,0,10,0"/>
+                        <NumericUpDown Grid.Row="0" Grid.Column="3" Value="{Binding BlackLevel}" Minimum="0" Maximum="65535" />
+                    </Grid>
+
+                    <StackPanel IsVisible="{Binding IsB2W2}" Spacing="10">
+                        <Separator />
+                        <TextBlock Text="Pass Powers (B2W2)" FontWeight="Bold" />
+                        <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto" Margin="5">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Power 1:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                            <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding PassPowers}" SelectedValue="{Binding PassPower1}" SelectedValueBinding="{Binding Value}" HorizontalAlignment="Stretch" DisplayMemberBinding="{Binding Text}" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Power 2:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                            <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding PassPowers}" SelectedValue="{Binding PassPower2}" SelectedValueBinding="{Binding Value}" HorizontalAlignment="Stretch" DisplayMemberBinding="{Binding Text}" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Power 3:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                            <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding PassPowers}" SelectedValue="{Binding PassPower3}" SelectedValueBinding="{Binding Value}" HorizontalAlignment="Stretch" DisplayMemberBinding="{Binding Text}" />
+                        </Grid>
+
+                        <Separator />
+                        <TextBlock Text="Funfest Missions" FontWeight="Bold" />
+                        <Grid ColumnDefinitions="Auto, *, Auto, *" RowDefinitions="Auto, Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Hosted:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                            <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding FestaHosted}" Minimum="0" Maximum="65535" />
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Participated:" VerticalAlignment="Center" Margin="20,5,10,5"/>
+                            <NumericUpDown Grid.Row="0" Grid.Column="3" Value="{Binding FestaParticipated}" Minimum="0" Maximum="65535" />
+                            
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Completed:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding FestaCompleted}" Minimum="0" Maximum="65535" />
+                            
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Top Score:" VerticalAlignment="Center" Margin="20,5,10,5"/>
+                            <NumericUpDown Grid.Row="1" Grid.Column="3" Value="{Binding FestaScore}" Minimum="0" Maximum="65535" />
+                        </Grid>
+                        <Button Content="Unlock All Missions" Command="{Binding UnlockAllMissionsCommand}" HorizontalAlignment="Left" />
+                    </StackPanel>
+                    
+                    <Separator />
+                    <TextBlock Text="Entree Forest Unlocks" FontWeight="Bold" />
+                    <Grid ColumnDefinitions="Auto, *, Auto, *" RowDefinitions="Auto">
+                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Unlocked Areas (0-6):" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                         <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding UnlockedAreas}" Minimum="0" Maximum="6" />
+                         <CheckBox Grid.Row="0" Grid.Column="2" Content="Unlock Area 9" IsChecked="{Binding Unlock9thArea}" Margin="20,0,0,0" />
+                    </Grid>
+                    <Button Content="Unlock All Areas" Command="{Binding UnlockAllAreasCmdCommand}" HorizontalAlignment="Left" />
+
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <TabItem Header="Entree Forest">
+            <Grid ColumnDefinitions="250, *">
+                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,1,0" Margin="0,0,10,0">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Text="Areas" FontWeight="Bold" Margin="5"/>
+                        <ListBox ItemsSource="{Binding Areas}" SelectedItem="{Binding SelectedArea}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DockPanel>
+                </Border>
+                
+                <Grid Grid.Column="1" RowDefinitions="*, Auto" IsVisible="{Binding SelectedArea, Converter={x:Static ObjectConverters.IsNotNull}}">
+                     <DataGrid ItemsSource="{Binding SelectedArea.Slots}" AutoGenerateColumns="False" CanUserResizeColumns="True" CanUserSortColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Pos" Binding="{Binding SlotPosition}" IsReadOnly="True" />
+                            <DataGridCheckBoxColumn Header="Inv" Binding="{Binding Invisible}" />
+                            
+                            <DataGridTemplateColumn Header="Species" Width="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox ItemsSource="{Binding $parent[UserControl].((vm:EntralinkEditorViewModel)DataContext).SpeciesList}" 
+                                                  SelectedValue="{Binding Species}" 
+                                                  SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}"
+                                                  HorizontalAlignment="Stretch" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="Move" Width="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox ItemsSource="{Binding $parent[UserControl].((vm:EntralinkEditorViewModel)DataContext).MoveList}" 
+                                                  SelectedValue="{Binding Move}" 
+                                                  SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}" 
+                                                  HorizontalAlignment="Stretch" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            
+                            <DataGridTemplateColumn Header="Gender" Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox ItemsSource="{Binding $parent[UserControl].((vm:EntralinkEditorViewModel)DataContext).GenderList}"
+                                                  SelectedValue="{Binding Gender}"
+                                                  SelectedValueBinding="{Binding Value}" 
+                                                  DisplayMemberBinding="{Binding Text}"
+                                                  HorizontalAlignment="Stretch" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="Form" Width="60">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <NumericUpDown Value="{Binding Form}" Minimum="0" Maximum="31" ShowButtonSpinner="False" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            
+                            <DataGridTemplateColumn Header="Anim" Width="60">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <NumericUpDown Value="{Binding Animation}" Minimum="0" Maximum="7" ShowButtonSpinner="False" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                     </DataGrid>
+                </Grid>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</UserControl>
