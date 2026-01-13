@@ -62,50 +62,53 @@
                         <MenuItem Header="Hall of Fame" Command="{Binding OpenHallOfFame3Command}" />
                     </MenuItem>
                     <MenuItem Header="Gen 4">
-                        <MenuItem Header="Apricorns (HGSS)" Command="{Binding OpenApricornCommand}" />
-                        <MenuItem Header="PokéGear Phone (HGSS)" Command="{Binding OpenPokeGear4Command}" />
-                        <MenuItem Header="Geonet Globe (DPPt)" Command="{Binding OpenGeonet4Command}" />
-                        <MenuItem Header="Honey Trees (DPPt)" Command="{Binding OpenHoneyTreeCommand}" />
-                        <MenuItem Header="Underground (DPPt)" Command="{Binding OpenUndergroundCommand}" />
-                        <MenuItem Header="Chatter" Command="{Binding OpenChatterCommand}" />
-                        <MenuItem Header="Poffin Case (DPPt)" Command="{Binding OpenPoffinCaseCommand}" />
-                        <MenuItem Header="Pokétch (DPPt)" Command="{Binding OpenPoketchCommand}" />
-                    </MenuItem>
-                    <MenuItem Header="Gen 5">
-                        <MenuItem Header="Chatter" Command="{Binding OpenChatterCommand}" />
-                        <MenuItem Header="Medal Rally (B2W2)" Command="{Binding OpenMedalCommand}" />
-                        <MenuItem Header="Unity Tower (BW/B2W2)" Command="{Binding OpenUnityTower5Command}" />
-                        <MenuItem Header="DLC - C-Gear/PWT/Musical" Command="{Binding OpenDLC5Command}" />
-                    </MenuItem>
-                    <MenuItem Header="Gen 6">
-                        <MenuItem Header="O-Powers" Command="{Binding OpenOPowerCommand}" />
-                        <MenuItem Header="Super Training" Command="{Binding OpenSuperTrainingCommand}" />
-                        <MenuItem Header="Poké Puffs (XY)" Command="{Binding OpenPokepuffCommand}" />
-                        <MenuItem Header="Pokéblocks (ORAS)" Command="{Binding OpenPokeBlockCommand}" />
-                        <MenuItem Header="Berries (XY/ORAS)" Command="{Binding OpenBerryFieldCommand}" />
-                        <MenuItem Header="Pokémon Link (XY/ORAS)" Command="{Binding OpenLink6Command}" />
-                        <MenuItem Header="Roamer (XY)" Command="{Binding OpenRoamer6Command}" />
-                    </MenuItem>
-                    <MenuItem Header="Gen 7">
-                        <MenuItem Header="Poké Beans" Command="{Binding OpenPokebeanCommand}" />
-                        <MenuItem Header="Festival Plaza" Command="{Binding OpenFestivalPlazaCommand}" />
-                        <MenuItem Header="Zygarde Cells" Command="{Binding OpenZygardeCellCommand}" />
-                        <Separator />
-                        <MenuItem Header="Capture Records (LGPE)" Command="{Binding OpenCapture7GGCommand}" />
-                        <MenuItem Header="Hall of Fame (SM/USUM)" Command="{Binding OpenHallOfFame7Command}" />
-                    </MenuItem>
-                    <MenuItem Header="Gen 8">
-                        <MenuItem Header="Max Raids (SWSH)" Command="{Binding OpenRaidEditorCommand}" />
-                        <MenuItem Header="Fashion (SWSH)" Command="{Binding OpenFashionCommand}" />
-                        <MenuItem Header="Trainer Card (SWSH)" Command="{Binding OpenTrainerCard8Command}" />
-                        <Separator />
-                        <MenuItem Header="Misc (BDSP)" Command="{Binding OpenMisc8bCommand}" />
-                        <MenuItem Header="Underground (BDSP)" Command="{Binding OpenUnderground8bCommand}" />
-                        <MenuItem Header="Seal Stickers (BDSP)" Command="{Binding OpenSealStickers8bCommand}" />
-                        <MenuItem Header="Poffins (BDSP)" Command="{Binding OpenPoffin8bCommand}" />
-                    </MenuItem>
-                    <MenuItem Header="Gen 9">
-                        <MenuItem Header="Tera Raids (SV)" Command="{Binding OpenRaid9Command}" />
+                    <MenuItem Header="Poffins (DPPt)" Command="{Binding OpenPoffinCaseCommand}" />
+                    <MenuItem Header="Pokétch (DPPt)" Command="{Binding OpenPoketchCommand}" />
+                    <MenuItem Header="Block Layout" Command="{Binding OpenBoxLayoutCommand}" />
+                    <MenuItem Header="Honey Trees" Command="{Binding OpenHoneyTreeCommand}" />
+                    <MenuItem Header="Roamer" Command="{Binding OpenRoamerCommand}" />
+                    <Separator />
+                    <MenuItem Header="PokeGear (HGSS)" Command="{Binding OpenPokeGear4Command}" />
+                    <MenuItem Header="Geonet (DPPt)" Command="{Binding OpenGeonet4Command}" />
+                    <MenuItem Header="Pokédex" Command="{Binding OpenPokedexCommand}" />
+                </MenuItem>
+                <MenuItem Header="Gen 5">
+                    <MenuItem Header="Pokédex" Command="{Binding OpenPokedexCommand}" />
+                    <MenuItem Header="Chatter" Command="{Binding OpenChatterCommand}" />
+                    <MenuItem Header="Medal Rally (B2W2)" Command="{Binding OpenMedalCommand}" />
+                    <MenuItem Header="Unity Tower (BW/B2W2)" Command="{Binding OpenUnityTower5Command}" />
+                    <MenuItem Header="DLC - C-Gear/PWT/Musical" Command="{Binding OpenDLC5Command}" />
+                </MenuItem>
+                <MenuItem Header="Gen 6">
+                    <MenuItem Header="Pokédex" Command="{Binding OpenPokedexCommand}" />
+                    <MenuItem Header="O-Powers" Command="{Binding OpenOPowerCommand}" />
+                    <MenuItem Header="Super Training" Command="{Binding OpenSuperTrainingCommand}" />
+                    <MenuItem Header="Roamer" Command="{Binding OpenRoamer6Command}" />
+                    <MenuItem Header="Link Battle Records" Command="{Binding OpenLink6Command}" />
+                </MenuItem>
+                <MenuItem Header="Gen 7">
+                    <MenuItem Header="Pokédex" Command="{Binding OpenPokedexCommand}" />
+                    <MenuItem Header="Poké Beans" Command="{Binding OpenPokebeanCommand}" />
+                    <MenuItem Header="Festival Plaza" Command="{Binding OpenFestivalPlazaCommand}" />
+                    <MenuItem Header="Zygarde Cells" Command="{Binding OpenZygardeCellCommand}" />
+                    <Separator />
+                    <MenuItem Header="Capture Records (LGPE)" Command="{Binding OpenCapture7GGCommand}" />
+                    <MenuItem Header="Hall of Fame (SM/USUM)" Command="{Binding OpenHallOfFame7Command}" />
+                </MenuItem>
+                <MenuItem Header="Gen 8">
+                    <MenuItem Header="Pokédex" Command="{Binding OpenPokedexCommand}" />
+                    <MenuItem Header="Max Raids (SWSH)" Command="{Binding OpenRaidEditorCommand}" />
+                    <MenuItem Header="Fashion (SWSH)" Command="{Binding OpenFashionCommand}" />
+                    <MenuItem Header="Trainer Card (SWSH)" Command="{Binding OpenTrainerCard8Command}" />
+                    <Separator />
+                    <MenuItem Header="Misc (BDSP)" Command="{Binding OpenMisc8bCommand}" />
+                    <MenuItem Header="Underground (BDSP)" Command="{Binding OpenUnderground8bCommand}" />
+                    <MenuItem Header="Seal Stickers (BDSP)" Command="{Binding OpenSealStickers8bCommand}" />
+                    <MenuItem Header="Poffins (BDSP)" Command="{Binding OpenPoffin8bCommand}" />
+                </MenuItem>
+                <MenuItem Header="Gen 9">
+                    <MenuItem Header="Pokédex" Command="{Binding OpenPokedexCommand}" />
+                    <MenuItem Header="Tera Raids (SV)" Command="{Binding OpenRaid9Command}" />
                         <MenuItem Header="7-Star Raids (SV)" Command="{Binding OpenRaidSevenStar9Command}" />
                         <MenuItem Header="Fashion (SV/ZA)" Command="{Binding OpenFashion9Command}" />
                     </MenuItem>
@@ -192,15 +195,6 @@
                             <ContentControl.ContentTemplate>
                                 <DataTemplate DataType="vm:InventoryEditorViewModel">
                                     <views:InventoryEditor />
-                                </DataTemplate>
-                            </ContentControl.ContentTemplate>
-                        </ContentControl>
-                    </TabItem>
-                    <TabItem Header="Pokédex">
-                        <ContentControl Content="{Binding PokedexEditor}">
-                            <ContentControl.ContentTemplate>
-                                <DataTemplate DataType="vm:PokedexEditorViewModel">
-                                    <views:PokedexEditor />
                                 </DataTemplate>
                             </ContentControl.ContentTemplate>
                         </ContentControl>

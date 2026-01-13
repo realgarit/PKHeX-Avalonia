@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace PKHeX.Avalonia.Views;
 
-public partial class PokedexEditor : UserControl
+public partial class PokedexGen9Editor : UserControl
 {
-    public PokedexEditor()
+    public PokedexGen9Editor()
     {
         InitializeComponent();
     }

@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="500"
+             x:Class="PKHeX.Avalonia.Views.PokedexGen9Editor"
+             x:DataType="vm:PokedexGen9EditorViewModel">
+    
+    <Grid ColumnDefinitions="250,*" Margin="10">
+        <!-- Left: Species List -->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*" Margin="0,0,10,0">
+            <TextBox Grid.Row="0" Text="{Binding SearchText}" Watermark="Search Species..." Margin="0,0,0,5"/>
+            <ListBox Grid.Row="1" ItemsSource="{Binding FilteredSpeciesList}" SelectedItem="{Binding SelectedSpecies}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Text}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        
+        <!-- Right: Details -->
+        <ScrollViewer Grid.Column="1">
+            <StackPanel Spacing="15">
+                <TextBlock Text="Seen Flags" FontWeight="Bold"/>
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <CheckBox Content="Male" IsChecked="{Binding IsSeenMale}"/>
+                    <CheckBox Content="Female" IsChecked="{Binding IsSeenFemale}"/>
+                    <CheckBox Content="Genderless" IsChecked="{Binding IsSeenGenderless}"/>
+                    <CheckBox Content="Shiny" IsChecked="{Binding IsSeenShiny}"/>
+                </StackPanel>
+                
+                <TextBlock Text="Display Settings" FontWeight="Bold"/>
+                <Grid ColumnDefinitions="Auto, Auto" RowDefinitions="Auto, Auto, Auto, Auto" HorizontalAlignment="Left" >
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Gender:" VerticalAlignment="Center" Margin="0,0,10,5"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" SelectedIndex="{Binding DisplayGender}" Width="150" Margin="0,0,0,5">
+                         <ComboBoxItem>Male</ComboBoxItem>
+                         <ComboBoxItem>Female</ComboBoxItem>
+                         <ComboBoxItem>Genderless</ComboBoxItem>
+                    </ComboBox>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Form:" VerticalAlignment="Center" Margin="0,0,10,5"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Forms}" SelectedIndex="{Binding DisplayForm}" Width="150" Margin="0,0,0,5"/>
+
+                    <CheckBox Grid.Row="2" Grid.Column="1" Content="Shiny Display" IsChecked="{Binding DisplayShiny}"/>
+                    <CheckBox Grid.Row="3" Grid.Column="1" Content="New?" IsChecked="{Binding IsNew}"/>
+                </Grid>
+                
+                <TextBlock Text="Languages" FontWeight="Bold"/>
+                <WrapPanel>
+                     <CheckBox Content="JPN" IsChecked="{Binding LangJPN}" Margin="5"/>
+                     <CheckBox Content="ENG" IsChecked="{Binding LangENG}" Margin="5"/>
+                     <CheckBox Content="FRE" IsChecked="{Binding LangFRE}" Margin="5"/>
+                     <CheckBox Content="ITA" IsChecked="{Binding LangITA}" Margin="5"/>
+                     <CheckBox Content="GER" IsChecked="{Binding LangGER}" Margin="5"/>
+                     <CheckBox Content="SPA" IsChecked="{Binding LangSPA}" Margin="5"/>
+                     <CheckBox Content="KOR" IsChecked="{Binding LangKOR}" Margin="5"/>
+                     <CheckBox Content="CHS" IsChecked="{Binding LangCHS}" Margin="5"/>
+                     <CheckBox Content="CHT" IsChecked="{Binding LangCHT}" Margin="5"/>
+                </WrapPanel>
+                
+                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,20,0,0">
+                     <Button Content="Seen All (This)" Command="{Binding SeenAllCommand}"/>
+                     <Button Content="Save Entry" Command="{Binding SaveCurrentCommand}" Classes="accent"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

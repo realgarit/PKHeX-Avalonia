@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+             x:Class="PKHeX.Avalonia.Views.PokedexSimpleEditor"
+             x:DataType="vm:PokedexSimpleEditorViewModel">
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="10">
+        <!-- Controls -->
+        <StackPanel Grid.Row="0" Spacing="10" Margin="0,0,0,10">
+            <TextBox Text="{Binding SearchText}" Watermark="Search Species..." />
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Content="Seen All" Command="{Binding SeenAllCommand}" />
+                <Button Content="Seen None" Command="{Binding SeenNoneCommand}" />
+                <Button Content="Caught All" Command="{Binding CaughtAllCommand}" />
+                <Button Content="Caught None" Command="{Binding CaughtNoneCommand}" />
+            </StackPanel>
+        </StackPanel>
+
+        <!-- List -->
+        <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredEntries}" AutoGenerateColumns="False" CanUserResizeColumns="True" CanUserSortColumns="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Species}" Width="Auto" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
+                <DataGridCheckBoxColumn Header="Seen" Binding="{Binding IsSeen}" Width="Auto" />
+                <DataGridCheckBoxColumn Header="Caught" Binding="{Binding IsCaught}" Width="Auto" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Footer -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
+            <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" />
+        </StackPanel>
+    </Grid>
+</UserControl>

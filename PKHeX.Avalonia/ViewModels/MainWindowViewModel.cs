@@ -44,8 +44,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private InventoryEditorViewModel? _inventoryEditor;
 
-    [ObservableProperty]
-    private PokedexEditorViewModel? _pokedexEditor;
 
     [ObservableProperty]
     private EventFlagsEditorViewModel? _eventFlagsEditor;
@@ -133,7 +131,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
             TrainerEditor = new TrainerEditorViewModel(sav);
             InventoryEditor = new InventoryEditorViewModel(sav);
-            PokedexEditor = new PokedexEditorViewModel(sav);
             EventFlagsEditor = new EventFlagsEditorViewModel(sav);
             MysteryGiftEditor = new MysteryGiftEditorViewModel(sav, _dialogService);
             BatchEditor = new BatchEditorViewModel(sav, _dialogService);
@@ -162,7 +159,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
             TrainerEditor = null;
             InventoryEditor = null;
-            PokedexEditor = null;
             EventFlagsEditor = null;
             MysteryGiftEditor = null;
             BatchEditor = null;
@@ -762,6 +758,25 @@ public partial class MainWindowViewModel : ViewModelBase
         var vm = new DLC5EditorViewModel(sav, _dialogService);
         var view = new Views.DLC5Editor { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "DLC Editor (Gen 5)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenPokedexAsync()
+    {
+        if (CurrentSave is null) return;
+
+        if (CurrentSave is SAV9SV sav9)
+        {
+             var vm9 = new PokedexGen9EditorViewModel(sav9);
+             var view9 = new Views.PokedexGen9Editor { DataContext = vm9 };
+             await _dialogService.ShowDialogAsync(view9, "Pokédex Editor (Gen 9 SV)");
+             return;
+        }
+
+        // Default to Simple editor for earlier gens (or unsupported modern gens for now)
+        var vm = new PokedexSimpleEditorViewModel(CurrentSave);
+        var view = new Views.PokedexSimpleEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Pokédex Editor (Simple)");
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
