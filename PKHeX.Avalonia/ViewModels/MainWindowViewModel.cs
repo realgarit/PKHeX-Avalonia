@@ -756,6 +756,15 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenDLC5Async()
+    {
+        if (CurrentSave is not SAV5 sav) return;
+        var vm = new DLC5EditorViewModel(sav, _dialogService);
+        var view = new Views.DLC5Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "DLC Editor (Gen 5)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenUnderground8bAsync()
     {
         if (CurrentSave is not SAV8BS) return;

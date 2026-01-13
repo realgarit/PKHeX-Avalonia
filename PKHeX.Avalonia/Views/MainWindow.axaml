@@ -75,6 +75,7 @@
                         <MenuItem Header="Chatter" Command="{Binding OpenChatterCommand}" />
                         <MenuItem Header="Medal Rally (B2W2)" Command="{Binding OpenMedalCommand}" />
                         <MenuItem Header="Unity Tower (BW/B2W2)" Command="{Binding OpenUnityTower5Command}" />
+                        <MenuItem Header="DLC - C-Gear/PWT/Musical" Command="{Binding OpenDLC5Command}" />
                     </MenuItem>
                     <MenuItem Header="Gen 6">
                         <MenuItem Header="O-Powers" Command="{Binding OpenOPowerCommand}" />

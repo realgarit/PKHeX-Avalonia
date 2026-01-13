@@ -1,0 +1,100 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="700"
+             x:Class="PKHeX.Avalonia.Views.DLC5Editor"
+             x:DataType="vm:DLC5EditorViewModel">
+
+    <TabControl Margin="10">
+        <!-- C-Gear Skin -->
+        <TabItem Header="C-Gear">
+            <StackPanel Spacing="10" Margin="10">
+                <TextBlock Text="C-Gear Skin Background" FontWeight="Bold"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="Import .cgb / .png" Command="{Binding ImportCGearCommand}"/>
+                    <Button Content="Export .cgb" Command="{Binding ExportCGearCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+
+        <!-- Musical -->
+        <TabItem Header="Musical">
+            <StackPanel Spacing="10" Margin="10">
+                <TextBlock Text="Musical Download Data" FontWeight="Bold"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="Import Musical" Command="{Binding ImportMusicalCommand}"/>
+                    <Button Content="Export Musical" Command="{Binding ExportMusicalCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+
+        <!-- Pokedex Skin -->
+        <TabItem Header="Dex Skin">
+            <StackPanel Spacing="10" Margin="10">
+                <TextBlock Text="Pokédex Skin" FontWeight="Bold"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="Import Skin" Command="{Binding ImportPokedexSkinCommand}"/>
+                    <Button Content="Export Skin" Command="{Binding ExportPokedexSkinCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+
+        <!-- PWT (B2W2) -->
+        <TabItem Header="PWT" IsVisible="{Binding IsB2W2}">
+            <StackPanel Spacing="10" Margin="10">
+                <TextBlock Text="Pokemon World Tournament (Download)" FontWeight="Bold"/>
+                <ComboBox ItemsSource="{Binding PWTItems}" SelectedIndex="{Binding PWTIndex}" Width="250"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="Import PWT" Command="{Binding ImportPWTCommand}"/>
+                    <Button Content="Export PWT" Command="{Binding ExportPWTCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+
+        <!-- Pokestar (B2W2) -->
+        <TabItem Header="Pokestar" IsVisible="{Binding IsB2W2}">
+            <StackPanel Spacing="10" Margin="10">
+                <TextBlock Text="Pokestar Studios Movie" FontWeight="Bold"/>
+                <ComboBox ItemsSource="{Binding PokestarItems}" SelectedIndex="{Binding PokestarIndex}" Width="250"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="Import Movie" Command="{Binding ImportPokestarCommand}"/>
+                    <Button Content="Export Movie" Command="{Binding ExportPokestarCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+
+        <!-- Battle Video -->
+        <TabItem Header="Battle Video">
+            <StackPanel Spacing="10" Margin="10">
+                <TextBlock Text="Battle Videos" FontWeight="Bold"/>
+                <ComboBox ItemsSource="{Binding BattleVideoItems}" SelectedIndex="{Binding BattleVideoIndex}" Width="250"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="Import Video" Command="{Binding ImportBattleVideoCommand}"/>
+                    <Button Content="Export Video" Command="{Binding ExportBattleVideoCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+
+        <!-- Memory Link -->
+        <TabItem Header="Memory Link">
+            <StackPanel Spacing="10" Margin="10">
+                <TextBlock Text="Memory Link Data" FontWeight="Bold"/>
+                <StackPanel Orientation="Vertical" Spacing="10">
+                     <TextBlock Text="Link 1"/>
+                     <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Import Link 1" Command="{Binding ImportMemoryLink1Command}"/>
+                        <Button Content="Export Link 1" Command="{Binding ExportMemoryLink1Command}"/>
+                     </StackPanel>
+                     
+                     <TextBlock Text="Link 2"/>
+                     <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Import Link 2" Command="{Binding ImportMemoryLink2Command}"/>
+                        <Button Content="Export Link 2" Command="{Binding ExportMemoryLink2Command}"/>
+                     </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</UserControl>
