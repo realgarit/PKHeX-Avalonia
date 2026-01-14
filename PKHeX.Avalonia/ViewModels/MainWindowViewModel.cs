@@ -800,11 +800,27 @@ public partial class MainWindowViewModel : ViewModelBase
              return;
         }
 
+        if (CurrentSave is SAV7 sav7 && CurrentSave is not SAV7b)
+        {
+             var vm7 = new Pokedex7EditorViewModel(sav7);
+             var view7 = new Views.Pokedex7Editor { DataContext = vm7 };
+             await _dialogService.ShowDialogAsync(view7, "Pokédex Editor (Gen 7)");
+             return;
+        }
+
         if (CurrentSave is SAV6 sav6)
         {
              var vm6 = new Pokedex6EditorViewModel(sav6);
              var view6 = new Views.Pokedex6Editor { DataContext = vm6 };
              await _dialogService.ShowDialogAsync(view6, "Pokédex Editor (Gen 6)");
+             return;
+        }
+
+        if (CurrentSave is SAV5 sav5)
+        {
+             var vm5 = new Pokedex5EditorViewModel(sav5);
+             var view5 = new Views.Pokedex5Editor { DataContext = vm5 };
+             await _dialogService.ShowDialogAsync(view5, "Pokédex Editor (Gen 5)");
              return;
         }
 
