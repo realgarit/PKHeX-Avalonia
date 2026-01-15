@@ -1,0 +1,101 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:PKHeX.Avalonia.ViewModels"
+             xmlns:core="clr-namespace:PKHeX.Core;assembly=PKHeX.Core"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+             x:Class="PKHeX.Avalonia.Views.Pokedex7bEditor"
+             x:DataType="vm:Pokedex7bEditorViewModel">
+    
+    <Grid ColumnDefinitions="280, *" Margin="10">
+        <!-- Entry List -->
+        <Grid Grid.Column="0" RowDefinitions="Auto, *">
+            <TextBox Text="{Binding SearchText}" Watermark="Search Species/Form..." Margin="0,0,0,10"/>
+            <ListBox Grid.Row="1" ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="core:ComboItem">
+                        <TextBlock Text="{Binding Text}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        
+        <!-- Details -->
+        <ScrollViewer Grid.Column="1" Margin="10,0,0,0">
+            <StackPanel Spacing="10">
+                <Button Content="Save Entry" Command="{Binding SaveCommand}" Width="120" HorizontalAlignment="Left"/>
+                
+                <!-- Entry Flags -->
+                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Entry Flags" FontWeight="Bold"/>
+                        <CheckBox Content="Caught" IsChecked="{Binding Caught}" IsEnabled="{Binding IsCaughtEnabled}"/>
+                        
+                        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto">
+                            <!-- Seen -->
+                            <StackPanel Grid.Column="0" Spacing="5">
+                                <TextBlock Text="Seen" FontWeight="SemiBold"/>
+                                <CheckBox Content="Male" IsChecked="{Binding SeenMale}" IsEnabled="{Binding CanBeMale}"/>
+                                <CheckBox Content="Female" IsChecked="{Binding SeenFemale}" IsEnabled="{Binding CanBeFemale}"/>
+                                <CheckBox Content="Male Shiny" IsChecked="{Binding SeenMaleShiny}" IsEnabled="{Binding CanBeMale}"/>
+                                <CheckBox Content="Female Shiny" IsChecked="{Binding SeenFemaleShiny}" IsEnabled="{Binding CanBeFemale}"/>
+                            </StackPanel>
+                            
+                            <!-- Displayed -->
+                            <StackPanel Grid.Column="1" Spacing="5">
+                                <TextBlock Text="Displayed" FontWeight="SemiBold"/>
+                                <CheckBox Content="Male" IsChecked="{Binding DisplayedMale}" IsEnabled="{Binding CanBeMale}"/>
+                                <CheckBox Content="Female" IsChecked="{Binding DisplayedFemale}" IsEnabled="{Binding CanBeFemale}"/>
+                                <CheckBox Content="Male Shiny" IsChecked="{Binding DisplayedMaleShiny}" IsEnabled="{Binding CanBeMale}"/>
+                                <CheckBox Content="Female Shiny" IsChecked="{Binding DisplayedFemaleShiny}" IsEnabled="{Binding CanBeFemale}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Size Data -->
+                <Border IsVisible="{Binding HasSizeData}" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Size Records" FontWeight="Bold"/>
+                        <Grid ColumnDefinitions="Auto, 80, 100, Auto, 80, 100" RowDefinitions="Auto, Auto">
+                            <Label Grid.Row="0" Grid.Column="0" Content="Min Height:" VerticalAlignment="Center"/>
+                            <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding MinHeight}" Minimum="0" Maximum="255" Margin="5,0"/>
+                            <CheckBox Grid.Row="0" Grid.Column="2" Content="Flag" IsChecked="{Binding MinHeightFlag}"/>
+
+                            <Label Grid.Row="0" Grid.Column="3" Content="Max Height:" VerticalAlignment="Center"/>
+                            <NumericUpDown Grid.Row="0" Grid.Column="4" Value="{Binding MaxHeight}" Minimum="0" Maximum="255" Margin="5,0"/>
+                            <CheckBox Grid.Row="0" Grid.Column="5" Content="Flag" IsChecked="{Binding MaxHeightFlag}"/>
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Min Weight:" VerticalAlignment="Center"/>
+                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MinWeight}" Minimum="0" Maximum="255" Margin="5,0"/>
+                            <CheckBox Grid.Row="1" Grid.Column="2" Content="Flag" IsChecked="{Binding MinWeightFlag}"/>
+
+                            <Label Grid.Row="1" Grid.Column="3" Content="Max Weight:" VerticalAlignment="Center"/>
+                            <NumericUpDown Grid.Row="1" Grid.Column="4" Value="{Binding MaxWeight}" Minimum="0" Maximum="255" Margin="5,0"/>
+                            <CheckBox Grid.Row="1" Grid.Column="5" Content="Flag" IsChecked="{Binding MaxWeightFlag}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Languages -->
+                <Border IsVisible="{Binding HasLanguages}" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Languages" FontWeight="Bold"/>
+                        <WrapPanel Orientation="Horizontal">
+                            <CheckBox Content="Japanese" IsChecked="{Binding LangJPN}" Margin="0,0,10,0"/>
+                            <CheckBox Content="English" IsChecked="{Binding LangENG}" Margin="0,0,10,0"/>
+                            <CheckBox Content="French" IsChecked="{Binding LangFRA}" Margin="0,0,10,0"/>
+                            <CheckBox Content="German" IsChecked="{Binding LangGER}" Margin="0,0,10,0"/>
+                            <CheckBox Content="Italian" IsChecked="{Binding LangITA}" Margin="0,0,10,0"/>
+                            <CheckBox Content="Spanish" IsChecked="{Binding LangSPA}" Margin="0,0,10,0"/>
+                            <CheckBox Content="Korean" IsChecked="{Binding LangKOR}" Margin="0,0,10,0"/>
+                            <CheckBox Content="Chinese (T)" IsChecked="{Binding LangCHT}" Margin="0,0,10,0"/>
+                            <CheckBox Content="Chinese (S)" IsChecked="{Binding LangCHS}"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

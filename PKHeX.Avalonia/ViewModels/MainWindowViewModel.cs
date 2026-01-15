@@ -800,6 +800,14 @@ public partial class MainWindowViewModel : ViewModelBase
              return;
         }
 
+        if (CurrentSave is SAV8BS sav8b)
+        {
+             var vm8b = new Pokedex8bEditorViewModel(sav8b);
+             var view8b = new Views.Pokedex8bEditor { DataContext = vm8b };
+             await _dialogService.ShowDialogAsync(view8b, "Pokédex Editor (Gen 8 BDSP)");
+             return;
+        }
+
         if (CurrentSave is SAV8LA savLA)
         {
              var vmLA = new PokedexLAEditorViewModel(savLA);
@@ -808,7 +816,15 @@ public partial class MainWindowViewModel : ViewModelBase
              return;
         }
 
-        if (CurrentSave is SAV7 sav7 && CurrentSave is not SAV7b)
+        if (CurrentSave is SAV7b sav7b)
+        {
+             var vm7b = new Pokedex7bEditorViewModel(sav7b);
+             var view7b = new Views.Pokedex7bEditor { DataContext = vm7b };
+             await _dialogService.ShowDialogAsync(view7b, "Pokédex Editor (Let's Go)");
+             return;
+        }
+
+        if (CurrentSave is SAV7 sav7)
         {
              var vm7 = new Pokedex7EditorViewModel(sav7);
              var view7 = new Views.Pokedex7Editor { DataContext = vm7 };

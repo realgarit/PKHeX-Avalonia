@@ -1,0 +1,115 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             xmlns:core="clr-namespace:PKHeX.Core;assembly=PKHeX.Core"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="PKHeX.Avalonia.Views.Pokedex8bEditor"
+             x:DataType="vm:Pokedex8bEditorViewModel">
+    
+    <Grid ColumnDefinitions="250,*" RowDefinitions="*,Auto">
+        <!-- Species List -->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*">
+            <TextBox Grid.Row="0" Text="{Binding SearchText}" Watermark="Search..." Margin="0,0,0,5"/>
+            <ListBox Grid.Row="1" ItemsSource="{Binding FilteredSpecies}" SelectedItem="{Binding SelectedSpecies}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="core:ComboItem">
+                        <TextBlock Text="{Binding Text}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        
+        <!-- Editor Area -->
+        <ScrollViewer Grid.Column="1" Grid.Row="0" Margin="10,0,0,0">
+            <StackPanel Spacing="10">
+                <!-- Global Settings -->
+                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Global" FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal" Spacing="20">
+                            <CheckBox IsChecked="{Binding HasRegionalDex}" Content="Regional Dex Unlocked"/>
+                            <CheckBox IsChecked="{Binding HasNationalDex}" Content="National Dex Unlocked"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Current Entry -->
+                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Current Species" FontWeight="Bold"/>
+                        
+                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+                            <Label Grid.Row="0" Grid.Column="0" Content="State:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding States}" SelectedIndex="{Binding State}" HorizontalAlignment="Stretch"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+                            <StackPanel Grid.Row="0" Grid.Column="0" Spacing="5">
+                                <TextBlock Text="Gender Flags" FontWeight="Bold" FontSize="12"/>
+                                <CheckBox IsChecked="{Binding SeenMale}" Content="Male" IsEnabled="{Binding CanBeMale}"/>
+                                <CheckBox IsChecked="{Binding SeenFemale}" Content="Female" IsEnabled="{Binding CanBeFemale}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Spacing="5">
+                                <TextBlock Text="Shiny Flags" FontWeight="Bold" FontSize="12"/>
+                                <CheckBox IsChecked="{Binding SeenShinyMale}" Content="Shiny Male" IsEnabled="{Binding CanBeMale}"/>
+                                <CheckBox IsChecked="{Binding SeenShinyFemale}" Content="Shiny Female" IsEnabled="{Binding CanBeFemale}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Languages -->
+                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Languages" FontWeight="Bold"/>
+                        <WrapPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding LangJapanese}" Content="JPN" Margin="0,0,10,0"/>
+                            <CheckBox IsChecked="{Binding LangEnglish}" Content="ENG" Margin="0,0,10,0"/>
+                            <CheckBox IsChecked="{Binding LangFrench}" Content="FRE" Margin="0,0,10,0"/>
+                            <CheckBox IsChecked="{Binding LangItalian}" Content="ITA" Margin="0,0,10,0"/>
+                            <CheckBox IsChecked="{Binding LangGerman}" Content="GER" Margin="0,0,10,0"/>
+                            <CheckBox IsChecked="{Binding LangSpanish}" Content="SPA" Margin="0,0,10,0"/>
+                            <CheckBox IsChecked="{Binding LangKorean}" Content="KOR" Margin="0,0,10,0"/>
+                            <CheckBox IsChecked="{Binding LangChineseS}" Content="CHS" Margin="0,0,10,0"/>
+                            <CheckBox IsChecked="{Binding LangChineseT}" Content="CHT" Margin="0,0,10,0"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Forms -->
+                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="Forms" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <Grid ColumnDefinitions="*,80,80" Margin="0,0,0,5">
+                            <TextBlock Grid.Column="0" Text="Form" FontWeight="Bold"/>
+                            <TextBlock Grid.Column="1" Text="Seen" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Text="Shiny" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </Grid>
+                        <ItemsControl ItemsSource="{Binding Forms}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:Pokedex8bFormViewModel">
+                                    <Grid ColumnDefinitions="*,80,80" Margin="0,2">
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                        <CheckBox Grid.Column="1" IsChecked="{Binding Seen}" HorizontalAlignment="Center"/>
+                                        <CheckBox Grid.Column="2" IsChecked="{Binding SeenShiny}" HorizontalAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Actions -->
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="0,10,0,0" HorizontalAlignment="Right">
+            <Button Command="{Binding ModifyAllCommand}" CommandParameter="SeenNone" Content="Seen None"/>
+            <Button Command="{Binding ModifyAllCommand}" CommandParameter="CaughtNone" Content="Caught None"/>
+            <Button Command="{Binding SeenAllCommand}" Content="Seen All"/>
+            <Button Command="{Binding CaughtAllCommand}" Content="Caught All"/>
+            <Button Command="{Binding CompleteDexCommand}" Content="Complete Dex"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

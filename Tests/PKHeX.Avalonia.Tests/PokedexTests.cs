@@ -215,4 +215,56 @@ public class PokedexTests
         Assert.True(entry.GetIsGenderSeen(0));
         Assert.True(entry.GetLanguageFlag((int)LanguageID.English));
     }
+
+    [Fact]
+    public void Pokedex8b_LoadAndSave_VerifyFlags()
+    {
+        // Arrange
+        var sav = new SAV8BS();
+        var zukan = sav.Zukan;
+        ushort turtwig = 387;
+
+        // Act
+        var vm = new Pokedex8bEditorViewModel(sav);
+        var item = vm.FilteredSpecies.FirstOrDefault(x => x.Value == turtwig);
+        Assert.NotNull(item);
+        vm.SelectedSpecies = item;
+
+        vm.State = 3; // Caught
+        vm.SeenMale = true;
+        vm.LangEnglish = true;
+        vm.SaveCurrent();
+
+        // Assert
+        Assert.Equal(ZukanState8b.Caught, zukan.GetState(turtwig));
+        zukan.GetGenderFlags(turtwig, out bool m, out _, out _, out _);
+        Assert.True(m);
+        Assert.True(zukan.GetLanguageFlag(turtwig, (int)LanguageID.English));
+    }
+
+    [Fact]
+    public void Pokedex7b_LoadAndSave_VerifyFlags()
+    {
+        // Arrange
+        var sav = new SAV7b();
+        var zukan = sav.Zukan;
+        ushort pikachu = 25;
+
+        // Act
+        var vm = new Pokedex7bEditorViewModel(sav);
+        var item = vm.Entries.FirstOrDefault(x => x.Text.Contains("Pikachu"));
+        Assert.NotNull(item);
+        vm.SelectedEntry = item;
+
+        vm.Caught = true;
+        vm.MinHeight = 100;
+        vm.MinHeightFlag = true;
+        vm.SaveCommand.Execute(null);
+
+        // Assert
+        Assert.True(zukan.GetCaught(pikachu));
+        zukan.GetSizeData(DexSizeType.MinHeight, 24, out byte h, out _, out bool f);
+        Assert.Equal(100, h);
+        Assert.True(f);
+    }
 }
