@@ -44,6 +44,7 @@ local.properties
 *.user
 *.sln.docstates
 *.vs
+.vscode/
 
 # Build results
 
@@ -232,9 +233,3 @@ pingme.txt
 #################
 
 *.userprefs
-
-#################
-## Anthropic
-#################
-.claude/
-CLAUDE.md
