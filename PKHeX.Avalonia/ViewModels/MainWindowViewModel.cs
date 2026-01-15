@@ -792,6 +792,14 @@ public partial class MainWindowViewModel : ViewModelBase
              return;
         }
 
+        if (CurrentSave is SAV8SWSH sav8swsh)
+        {
+             var vm8 = new Pokedex8EditorViewModel(sav8swsh);
+             var view8 = new Views.Pokedex8Editor { DataContext = vm8 };
+             await _dialogService.ShowDialogAsync(view8, "Pokédex Editor (Gen 8 SwSh)");
+             return;
+        }
+
         if (CurrentSave is SAV8LA savLA)
         {
              var vmLA = new PokedexLAEditorViewModel(savLA);
