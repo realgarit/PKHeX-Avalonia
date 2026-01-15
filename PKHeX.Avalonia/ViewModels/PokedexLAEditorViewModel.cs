@@ -155,6 +155,9 @@ public partial class LASpeciesEntryViewModel : ViewModelBase
             var tasks = PokedexConstants8a.ResearchTasks[DexIndex - 1];
             for (int i = 0; i < tasks.Length; i++)
             {
+                if (!tasks[i].Task.CanSetCurrentValue())
+                    continue;
+
                 Tasks.Add(new LAResearchTaskViewModel(_species, i, tasks[i], _dex));
             }
         }
