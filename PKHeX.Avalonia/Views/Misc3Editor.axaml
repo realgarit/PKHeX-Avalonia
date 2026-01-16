@@ -1,0 +1,226 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             xmlns:views="using:PKHeX.Avalonia.Views"
+             x:Class="PKHeX.Avalonia.Views.Misc3Editor"
+             x:DataType="vm:Misc3EditorViewModel">
+
+    <Design.DataContext>
+        <vm:Misc3EditorViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+        <!-- Bottom Buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
+            <Button Content="Save" Command="{Binding SaveCommand}" />
+        </StackPanel>
+
+        <!-- Main Content with TabControl -->
+        <TabControl>
+            <!-- Main Tab: Records, Coins, BP -->
+            <TabItem Header="Main">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <!-- Records Section -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Records" FontWeight="Bold" FontSize="14" />
+                                <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Record:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <ComboBox Grid.Row="0" Grid.Column="1" 
+                                              ItemsSource="{Binding RecordList}" 
+                                              SelectedItem="{Binding SelectedRecord}"
+                                              DisplayMemberBinding="{Binding Text}"
+                                              MinWidth="200" />
+                                    
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Value:" VerticalAlignment="Center" Margin="0,10,10,0" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="1" 
+                                                   Value="{Binding RecordValue}" 
+                                                   Minimum="0" Maximum="4294967295" 
+                                                   Margin="0,10,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Coins & BP Section -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Currency" FontWeight="Bold" FontSize="14" />
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Coins:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="0" Grid.Column="1" 
+                                                   Value="{Binding Coins}" 
+                                                   Minimum="0" Maximum="9999" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="BP:" VerticalAlignment="Center" Margin="0,10,10,0" 
+                                               IsVisible="{Binding IsBpVisible}" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="1" 
+                                                   Value="{Binding Bp}" 
+                                                   Minimum="0" Maximum="9999" 
+                                                   IsVisible="{Binding IsBpVisible}"
+                                                   Margin="0,10,0,0" />
+
+                                    <!-- FRLG Rival Name -->
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Rival Name:" VerticalAlignment="Center" Margin="0,10,10,0"
+                                               IsVisible="{Binding IsFrlg}" />
+                                    <TextBox Grid.Row="2" Grid.Column="1" 
+                                             Text="{Binding RivalName}" 
+                                             MaxLength="7"
+                                             IsVisible="{Binding IsFrlg}"
+                                             Margin="0,10,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Joyful Minigames Tab -->
+            <TabItem Header="Joyful" IsVisible="{Binding IsJoyfulVisible}">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <!-- Jump Minigame -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Pokémon Jump" FontWeight="Bold" FontSize="14" />
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Jumps in Row:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="0" Grid.Column="1" 
+                                                   Value="{Binding JoyfulJumpInRow}" 
+                                                   Minimum="0" Maximum="9999" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="High Score:" VerticalAlignment="Center" Margin="0,5,10,0" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="1" 
+                                                   Value="{Binding JoyfulJumpScore}" 
+                                                   Minimum="0" Maximum="99999" 
+                                                   Margin="0,5,0,0" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="5-In-Row:" VerticalAlignment="Center" Margin="0,5,10,0" />
+                                    <NumericUpDown Grid.Row="2" Grid.Column="1" 
+                                                   Value="{Binding JoyfulJump5InRow}" 
+                                                   Minimum="0" Maximum="9999" 
+                                                   Margin="0,5,0,0" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Max Players:" VerticalAlignment="Center" Margin="0,5,10,0" />
+                                    <NumericUpDown Grid.Row="3" Grid.Column="1" 
+                                                   Value="{Binding JoyfulJumpMaxPlayers}" 
+                                                   Minimum="0" Maximum="9999" 
+                                                   Margin="0,5,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Berry Minigame -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Dodrio Berry Picking" FontWeight="Bold" FontSize="14" />
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Berries in Row:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="0" Grid.Column="1" 
+                                                   Value="{Binding JoyfulBerriesInRow}" 
+                                                   Minimum="0" Maximum="9999" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="High Score:" VerticalAlignment="Center" Margin="0,5,10,0" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="1" 
+                                                   Value="{Binding JoyfulBerriesScore}" 
+                                                   Minimum="0" Maximum="99999" 
+                                                   Margin="0,5,0,0" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="5-In-Row:" VerticalAlignment="Center" Margin="0,5,10,0" />
+                                    <NumericUpDown Grid.Row="2" Grid.Column="1" 
+                                                   Value="{Binding JoyfulBerries5InRow}" 
+                                                   Minimum="0" Maximum="9999" 
+                                                   Margin="0,5,0,0" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Berry Powder:" VerticalAlignment="Center" Margin="0,5,10,0" />
+                                    <NumericUpDown Grid.Row="3" Grid.Column="1" 
+                                                   Value="{Binding BerryPowder}" 
+                                                   Minimum="0" Maximum="99999" 
+                                                   Margin="0,5,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Battle Frontier Tab (Emerald only) -->
+            <TabItem Header="Battle Frontier" IsVisible="{Binding IsBattleFrontierVisible}">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <!-- Frontier Pass -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Frontier Pass" FontWeight="Bold" FontSize="14" />
+                                <CheckBox Content="Frontier Pass Activated" IsChecked="{Binding FrontierPassActivated}" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Symbols -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="Symbols" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
+                                    <Button Content="Give All Gold" Command="{Binding GiveAllSymbolsCommand}" FontSize="11" Padding="8,4" />
+                                    <Button Content="Clear All" Command="{Binding ClearAllSymbolsCommand}" FontSize="11" Padding="8,4" />
+                                </StackPanel>
+                                
+                                <ItemsControl ItemsSource="{Binding FrontierSymbols}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:FrontierSymbolViewModel">
+                                            <Border Margin="0,2" Padding="5" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3">
+                                                <Grid ColumnDefinitions="*,Auto,Auto">
+                                                    <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding StatusText}" Width="60" VerticalAlignment="Center" 
+                                                               Foreground="{Binding Status, Converter={x:Static views:Misc3EditorConverters.SymbolColorConverter}}" />
+                                                    <Button Grid.Column="2" Content="Cycle" Command="{Binding CycleStatusCommand}" 
+                                                            FontSize="10" Padding="6,2" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Ferry Tab (Emerald only) -->
+            <TabItem Header="Ferry" IsVisible="{Binding IsFerryVisible}">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <!-- Reach Destinations -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="Ferry Destinations" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
+                                    <Button Content="Unlock All" Command="{Binding UnlockAllFerryDestinationsCommand}" FontSize="11" Padding="8,4" />
+                                </StackPanel>
+                                
+                                <CheckBox Content="Mew Catchable (Faraway Island)" IsChecked="{Binding MewCatchable}" />
+                                
+                                <TextBlock Text="Can Reach:" FontWeight="SemiBold" Margin="0,10,0,5" />
+                                <WrapPanel>
+                                    <CheckBox Content="Southern Island" IsChecked="{Binding ReachSouthernIsland}" Margin="0,0,15,5" />
+                                    <CheckBox Content="Birth Island" IsChecked="{Binding ReachBirthIsland}" Margin="0,0,15,5" />
+                                    <CheckBox Content="Faraway Island" IsChecked="{Binding ReachFarawayIsland}" Margin="0,0,15,5" />
+                                    <CheckBox Content="Navel Rock" IsChecked="{Binding ReachNavelRock}" Margin="0,0,15,5" />
+                                    <CheckBox Content="Battle Frontier" IsChecked="{Binding ReachBattleFrontier}" Margin="0,0,15,5" />
+                                </WrapPanel>
+
+                                <TextBlock Text="Initial Visit Complete:" FontWeight="SemiBold" Margin="0,10,0,5" />
+                                <WrapPanel>
+                                    <CheckBox Content="Southern Island" IsChecked="{Binding InitialSouthernIsland}" Margin="0,0,15,5" />
+                                    <CheckBox Content="Birth Island" IsChecked="{Binding InitialBirthIsland}" Margin="0,0,15,5" />
+                                    <CheckBox Content="Faraway Island" IsChecked="{Binding InitialFarawayIsland}" Margin="0,0,15,5" />
+                                    <CheckBox Content="Navel Rock" IsChecked="{Binding InitialNavelRock}" Margin="0,0,15,5" />
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</UserControl>
