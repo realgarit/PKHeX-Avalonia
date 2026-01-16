@@ -1103,6 +1103,16 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMisc4Async()
+    {
+        if (CurrentSave is not SAV4 sav4) return;
+
+        var vm = new Misc4EditorViewModel(sav4);
+        var view = new Views.Misc4Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Misc Editor (Gen 4)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenMisc8bAsync()
     {
         if (CurrentSave is not SAV8BS sav8b) return;

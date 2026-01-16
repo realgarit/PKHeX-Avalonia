@@ -1,0 +1,181 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.Misc4Editor"
+             x:DataType="vm:Misc4EditorViewModel">
+
+    <Design.DataContext>
+        <vm:Misc4EditorViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+        <!-- Bottom Buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
+            <Button Content="Save" Command="{Binding SaveCommand}" />
+        </StackPanel>
+
+        <!-- Main Content with TabControl -->
+        <TabControl>
+            <!-- Main Tab -->
+            <TabItem Header="Main">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <!-- Currency Section -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Currency" FontWeight="Bold" FontSize="14" />
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Coins:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="0" Grid.Column="1" 
+                                                   Value="{Binding Coins}" 
+                                                   Minimum="0" Maximum="50000" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="BP:" VerticalAlignment="Center" Margin="0,5,10,0" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="1" 
+                                                   Value="{Binding Bp}" 
+                                                   Minimum="0" Maximum="9999" 
+                                                   Margin="0,5,0,0" />
+
+                                    <!-- Sinnoh Underground Flags -->
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="UG Flags:" VerticalAlignment="Center" Margin="0,5,10,0"
+                                               IsVisible="{Binding IsSinnoh}" />
+                                    <NumericUpDown Grid.Row="2" Grid.Column="1" 
+                                                   Value="{Binding UndergroundFlags}" 
+                                                   Minimum="0" Maximum="999999" 
+                                                   IsVisible="{Binding IsSinnoh}"
+                                                   Margin="0,5,0,0" />
+
+                                    <!-- HGSS Pokéathlon Points -->
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Pokéathlon Pts:" VerticalAlignment="Center" Margin="0,5,10,0"
+                                               IsVisible="{Binding IsHGSS}" />
+                                    <NumericUpDown Grid.Row="3" Grid.Column="1" 
+                                                   Value="{Binding PokeathlonPoints}" 
+                                                   Minimum="0" Maximum="99999" 
+                                                   IsVisible="{Binding IsHGSS}"
+                                                   Margin="0,5,0,0" />
+
+                                    <!-- HGSS Map Upgrade -->
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Map State:" VerticalAlignment="Center" Margin="0,5,10,0"
+                                               IsVisible="{Binding IsHGSS}" />
+                                    <ComboBox Grid.Row="4" Grid.Column="1" 
+                                              ItemsSource="{Binding MapStates}"
+                                              SelectedIndex="{Binding MapUnlockState}"
+                                              IsVisible="{Binding IsHGSS}"
+                                              Margin="0,5,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Fly Destinations -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="Fly Destinations" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
+                                    <Button Content="Unlock All" Command="{Binding UnlockAllFlyDestinationsCommand}" FontSize="11" Padding="8,4" />
+                                </StackPanel>
+                                <ScrollViewer MaxHeight="200">
+                                    <ItemsControl ItemsSource="{Binding FlyDestinations}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:FlyDestinationViewModel">
+                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsUnlocked}" 
+                                                          Margin="0,2,15,2" MinWidth="120" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Walker Tab (HGSS only) -->
+            <TabItem Header="Walker" IsVisible="{Binding IsWalkerVisible}">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <!-- Stats -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Pokéwalker Stats" FontWeight="Bold" FontSize="14" />
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Watts:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="0" Grid.Column="1" 
+                                                   Value="{Binding WalkerWatts}" 
+                                                   Minimum="0" Maximum="9999999" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Steps:" VerticalAlignment="Center" Margin="0,5,10,0" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="1" 
+                                                   Value="{Binding WalkerSteps}" 
+                                                   Minimum="0" Maximum="9999999" 
+                                                   Margin="0,5,0,0" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Courses -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="Courses" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
+                                    <Button Content="Unlock All" Command="{Binding UnlockAllWalkerCoursesCommand}" FontSize="11" Padding="8,4" />
+                                </StackPanel>
+                                <ItemsControl ItemsSource="{Binding WalkerCourses}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:WalkerCourseViewModel">
+                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsUnlocked}" 
+                                                      Margin="0,2,15,2" MinWidth="150" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Battle Frontier Tab (Pt/HGSS only) -->
+            <TabItem Header="Battle Frontier" IsVisible="{Binding IsBattleFrontierVisible}">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <!-- Prints -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="Frontier Prints" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
+                                    <Button Content="Give All Gold" Command="{Binding GiveAllPrintsCommand}" FontSize="11" Padding="8,4" />
+                                    <Button Content="Clear All" Command="{Binding ClearAllPrintsCommand}" FontSize="11" Padding="8,4" />
+                                </StackPanel>
+                                
+                                <ItemsControl ItemsSource="{Binding FrontierPrints}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:FrontierPrintViewModel">
+                                            <Border Margin="0,2" Padding="8" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3">
+                                                <Grid ColumnDefinitions="*,Auto,Auto">
+                                                    <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding StatusText}" Width="100" VerticalAlignment="Center" 
+                                                               Margin="10,0" />
+                                                    <Button Grid.Column="2" Content="Cycle" Command="{Binding CycleStatusCommand}" 
+                                                            FontSize="10" Padding="8,4" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</UserControl>
