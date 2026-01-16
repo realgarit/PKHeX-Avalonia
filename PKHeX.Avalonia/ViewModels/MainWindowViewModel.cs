@@ -711,6 +711,8 @@ public partial class MainWindowViewModel : ViewModelBase
         await _dialogService.ShowDialogAsync(view, "O-Power Editor");
     }
 
+
+
     [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenZygardeCellAsync()
     {
@@ -925,9 +927,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenPokepuffAsync()
     {
-        if (CurrentSave is null) return;
+        if (CurrentSave is not ISaveBlock6Main sav6) return;
 
-        var vm = new PokepuffEditorViewModel(CurrentSave);
+        var vm = new PokepuffEditorViewModel(sav6);
         var view = new Views.PokepuffEditor { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Poké Puff Editor");
     }
@@ -955,9 +957,9 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenRoamer6Async()
     {
-        if (CurrentSave is null) return;
+        if (CurrentSave is not SAV6XY sav6xy) return;
 
-        var vm = new Roamer6EditorViewModel(CurrentSave);
+        var vm = new Roamer6EditorViewModel(sav6xy);
         var view = new Views.Roamer6Editor { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Roamer Editor (XY)");
     }

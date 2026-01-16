@@ -4,41 +4,39 @@
              x:Class="PKHeX.Avalonia.Views.Roamer6Editor"
              x:DataType="vm:Roamer6EditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
-        <Panel>
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Roamer not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
-                <TextBlock Text="This feature is only available for Pokémon X/Y." 
-                           HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
-            </StackPanel>
+    <Design.DataContext>
+        <vm:Roamer6EditorViewModel />
+    </Design.DataContext>
 
-            <DockPanel IsVisible="{Binding IsSupported}">
-                <TextBlock DockPanel.Dock="Top" Text="Roamer Editor (XY)" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,16" />
+    <DockPanel Margin="10">
+        <!-- Bottom Buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
+            <Button Content="Save" Command="{Binding SaveCommand}" />
+        </StackPanel>
 
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
-                    <StackPanel Spacing="16">
-                        <TextBlock Text="The legendary bird that roams Kalos after completing the Elite Four." 
-                                   TextWrapping="Wrap" Opacity="0.7" />
+        <!-- Use a ScrollViewer for content -->
+        <ScrollViewer>
+            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" 
+                    HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" Margin="10">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Species:" VerticalAlignment="Center" Margin="0,0,10,10" />
+                    <ComboBox Grid.Row="0" Grid.Column="1" 
+                              ItemsSource="{Binding SpeciesList}" 
+                              SelectedIndex="{Binding SelectedSpeciesIndex}" 
+                              Margin="0,0,0,10" MinWidth="150" />
 
-                        <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto,Auto">
-                            <TextBlock Text="Species:" VerticalAlignment="Center" />
-                            <ComboBox Grid.Column="1" ItemsSource="{Binding SpeciesOptions}" 
-                                      SelectedIndex="{Binding SelectedSpeciesIndex}" Width="200" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="State:" VerticalAlignment="Center" Margin="0,0,10,10" />
+                    <ComboBox Grid.Row="1" Grid.Column="1" 
+                              ItemsSource="{Binding RoamStates}" 
+                              SelectedIndex="{Binding RoamStateIndex}" 
+                              Margin="0,0,0,10" MinWidth="150" />
 
-                            <TextBlock Grid.Row="1" Text="Times Encountered:" VerticalAlignment="Center" Margin="0,12,0,0" />
-                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding TimesEncountered}" 
-                                           Minimum="0" Maximum="65535" Width="150" Margin="0,12,0,0" />
-
-                            <TextBlock Grid.Row="2" Text="Status:" VerticalAlignment="Center" Margin="0,12,0,0" />
-                            <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding StatusOptions}" 
-                                      SelectedIndex="{Binding SelectedStatusIndex}" Width="200" Margin="0,12,0,0" />
-                        </Grid>
-
-                        <TextBlock Text="Note: Bird species is determined by starter choice if not already encountered." 
-                                   Opacity="0.5" FontStyle="Italic" FontSize="12" Margin="0,8,0,0" />
-                    </StackPanel>
-                </Border>
-            </DockPanel>
-        </Panel>
-    </Border>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Encountered:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                    <NumericUpDown Grid.Row="2" Grid.Column="1" 
+                                   Value="{Binding TimesEncountered}" 
+                                   Minimum="0" Maximum="255" />
+                </Grid>
+            </Border>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>

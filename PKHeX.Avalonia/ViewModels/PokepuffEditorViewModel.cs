@@ -1,112 +1,99 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
 
 namespace PKHeX.Avalonia.ViewModels;
 
+/// <summary>
+/// Editor for Gen 6 Poké Puffs.
+/// </summary>
 public partial class PokepuffEditorViewModel : ViewModelBase
 {
-    private readonly SaveFile _sav;
-    private readonly Puff6? _puff;
-
-    public PokepuffEditorViewModel(SaveFile sav)
+    private readonly ISaveBlock6Main _sav;
+    
+    public PokepuffEditorViewModel(ISaveBlock6Main sav)
     {
         _sav = sav;
-
-        if (sav is ISaveBlock6Main main)
-        {
-            _puff = main.Puff;
-            IsSupported = true;
-            LoadData();
-        }
+        LoadPuffs();
     }
-
-    public bool IsSupported { get; }
 
     [ObservableProperty]
     private ObservableCollection<PokepuffSlotViewModel> _puffs = [];
 
-    private void LoadData()
+    public string[] PuffList { get; } = GameInfo.Strings.puffs;
+
+    private void LoadPuffs()
     {
-        if (_puff is null) return;
-
+        var currentPuffs = _sav.Puff.GetPuffs();
         Puffs.Clear();
-        var puffData = _puff.GetPuffs();
-        var puffNames = GameInfo.Strings.puffs;
-
-        for (int i = 0; i < puffData.Length; i++)
+        for (int i = 0; i < currentPuffs.Length; i++)
         {
-            var puffValue = puffData[i];
-            Puffs.Add(new PokepuffSlotViewModel(i, puffValue, puffNames, SetPuff));
+            Puffs.Add(new PokepuffSlotViewModel(i, currentPuffs[i]));
         }
     }
 
-    private void SetPuff(int index, byte value)
+    private void SavePuffs()
     {
-        if (_puff is null) return;
-        var puffs = _puff.GetPuffs();
-        puffs[index] = value;
-        _puff.SetPuffs(puffs);
+        var puffData = new byte[Puffs.Count];
+        for (int i = 0; i < Puffs.Count; i++)
+        {
+            puffData[i] = (byte)Puffs[i].PuffIndex;
+        }
+        _sav.Puff.SetPuffs(puffData);
+        _sav.Puff.PuffCount = puffData.Length;
     }
 
     [RelayCommand]
-    private void GiveAll()
+    private void Save()
     {
-        _puff?.MaxCheat(special: true);
-        LoadData();
+        SavePuffs();
     }
 
     [RelayCommand]
-    private void GiveBest()
+    private void GiveAllBest()
     {
-        _puff?.MaxCheat(special: false);
-        LoadData();
+        _sav.Puff.MaxCheat(true); // Best puffs
+        LoadPuffs();
     }
 
     [RelayCommand]
-    private void ClearAll()
+    private void GiveAllVaried()
     {
-        _puff?.Reset();
-        LoadData();
+        _sav.Puff.MaxCheat(false); // Varied puffs
+        LoadPuffs();
+    }
+
+    [RelayCommand]
+    private void RemoveAll()
+    {
+        _sav.Puff.Reset();
+        LoadPuffs();
     }
 
     [RelayCommand]
     private void Sort()
     {
-        _puff?.Sort(reverse: false);
-        LoadData();
+        // Must save current state first to sort correctly
+        SavePuffs(); 
+        _sav.Puff.Sort(false); // Default sort
+        LoadPuffs();
     }
-
-    [RelayCommand]
-    private void Refresh() => LoadData();
 }
 
-public partial class PokepuffSlotViewModel : ViewModelBase
+public partial class PokepuffSlotViewModel : ObservableObject
 {
-    private readonly Action<int, byte> _onChanged;
-    private readonly string[] _puffNames;
-
-    public PokepuffSlotViewModel(int index, byte value, string[] puffNames, Action<int, byte> onChanged)
+    public PokepuffSlotViewModel(int slotIndex, int puffIndex)
     {
-        Index = index;
-        _value = value;
-        _puffNames = puffNames;
-        _onChanged = onChanged;
+        SlotIndex = slotIndex;
+        PuffIndex = puffIndex;
     }
 
-    public int Index { get; }
-    public string SlotLabel => $"Slot {Index + 1}";
+    public int SlotIndex { get; }
+    public int DisplayIndex => SlotIndex + 1;
 
     [ObservableProperty]
-    private byte _value;
-
-    partial void OnValueChanged(byte value)
-    {
-        _onChanged(Index, value);
-        OnPropertyChanged(nameof(Name));
-    }
-
-    public string Name => Value < _puffNames.Length ? _puffNames[Value] : $"Unknown ({Value})";
+    private int _puffIndex;
 }

@@ -1,87 +1,68 @@
-using System.Collections.ObjectModel;
+using System;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
 
 namespace PKHeX.Avalonia.ViewModels;
 
+/// <summary>
+/// Editor for Gen 6 Roaming Pokémon (Articuno, Zapdos, Moltres).
+/// </summary>
 public partial class Roamer6EditorViewModel : ViewModelBase
 {
-    private readonly SAV6XY? _sav6xy;
-    private readonly Roamer6? _roamer;
+    private readonly SAV6XY _sav;
+    private readonly Roamer6 _roamer;
+    private const int SpeciesOffset = 144; // Articuno is 144
+    private const int StarterChoiceIndex = 48; // Offset in EventWork to find starter choice if roamer not set
 
-    private const int SpeciesOffset = 144; // Articuno = 144, Zapdos = 145, Moltres = 146
-
-    public Roamer6EditorViewModel(SaveFile sav)
+    public Roamer6EditorViewModel(SAV6XY sav)
     {
-        _sav6xy = sav as SAV6XY;
-        IsSupported = _sav6xy?.Encount?.Roamer is not null;
+        _sav = sav;
+        _roamer = sav.Encount.Roamer;
 
-        if (_sav6xy is not null)
-            _roamer = _sav6xy.Encount.Roamer;
-
-        // Build species list for the legendary birds
-        var speciesNames = GameInfo.Strings.specieslist;
-        SpeciesOptions.Add(speciesNames[(int)Species.Articuno]);
-        SpeciesOptions.Add(speciesNames[(int)Species.Zapdos]);
-        SpeciesOptions.Add(speciesNames[(int)Species.Moltres]);
-
-        // Build roam status list
-        StatusOptions.Add("Inactive");
-        StatusOptions.Add("Roaming");
-        StatusOptions.Add("Stationary");
-        StatusOptions.Add("Defeated");
-        StatusOptions.Add("Captured");
-
-        if (_roamer is not null)
-        {
-            _selectedSpeciesIndex = _roamer.Species == 0 
-                ? GetInitialIndex() 
-                : _roamer.Species - SpeciesOffset;
-            _timesEncountered = (int)_roamer.TimesEncountered;
-            _selectedStatusIndex = (int)_roamer.RoamStatus;
-        }
+        LoadRoamer();
     }
-
-    private int GetInitialIndex()
-    {
-        // If species not set, use starter choice to derive bird type
-        if (_sav6xy?.EventWork is not null)
-            return _sav6xy.EventWork.GetWork(48); // StarterChoiceIndex
-        return 0;
-    }
-
-    public bool IsSupported { get; }
-
-    [ObservableProperty]
-    private ObservableCollection<string> _speciesOptions = [];
-
-    [ObservableProperty]
-    private ObservableCollection<string> _statusOptions = [];
 
     [ObservableProperty]
     private int _selectedSpeciesIndex;
 
     [ObservableProperty]
-    private int _timesEncountered;
+    private int _roamStateIndex;
 
     [ObservableProperty]
-    private int _selectedStatusIndex;
+    private uint _timesEncountered;
 
-    partial void OnSelectedSpeciesIndexChanged(int value)
+    public string[] SpeciesList { get; } =
+    [
+        GameInfo.Strings.Species[144], // Articuno
+        GameInfo.Strings.Species[145], // Zapdos
+        GameInfo.Strings.Species[146]  // Moltres
+    ];
+
+    public string[] RoamStates { get; } = ["Inactive", "Roaming", "Stationary", "Defeated", "Captured"];
+
+    private void LoadRoamer()
     {
-        if (_roamer is not null)
-            _roamer.Species = (ushort)(SpeciesOffset + value);
+        SelectedSpeciesIndex = GetInitialIndex();
+        RoamStateIndex = Math.Min((int)_roamer.RoamStatus, RoamStates.Length - 1);
+        TimesEncountered = _roamer.TimesEncountered;
     }
 
-    partial void OnTimesEncounteredChanged(int value)
+    private int GetInitialIndex()
     {
-        if (_roamer is not null)
-            _roamer.TimesEncountered = (uint)value;
+        if (_roamer.Species != 0)
+            return Math.Max(0, _roamer.Species - SpeciesOffset);
+        
+        // Roamer Species is not set if the player hasn't beaten the league so derive the species from the starter choice
+        var starterChoice = _sav.EventWork.GetWork(StarterChoiceIndex);
+        return Math.Clamp((int)starterChoice, 0, 2);
     }
 
-    partial void OnSelectedStatusIndexChanged(int value)
+    [RelayCommand]
+    private void Save()
     {
-        if (_roamer is not null)
-            _roamer.RoamStatus = (Roamer6State)value;
+        _roamer.Species = (ushort)(SpeciesOffset + SelectedSpeciesIndex);
+        _roamer.RoamStatus = (Roamer6State)RoamStateIndex;
+        _roamer.TimesEncountered = TimesEncountered;
     }
 }

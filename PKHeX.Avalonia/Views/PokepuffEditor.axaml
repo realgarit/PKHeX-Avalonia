@@ -4,51 +4,49 @@
              x:Class="PKHeX.Avalonia.Views.PokepuffEditor"
              x:DataType="vm:PokepuffEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
-        <Panel>
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Poké Puffs not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
-                <TextBlock Text="This feature is only available for X/Y and Omega Ruby/Alpha Sapphire." HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
+    <Design.DataContext>
+        <vm:PokepuffEditorViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+        <!-- Bottom Buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
+            <Button Content="Save" Command="{Binding SaveCommand}" />
+        </StackPanel>
+
+        <!-- Use a ScrollViewer for content -->
+        <ScrollViewer>
+            <StackPanel Spacing="10">
+                <!-- Toolbar -->
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="Give All (Best)" Command="{Binding GiveAllBestCommand}" />
+                    <Button Content="Give All (Varied)" Command="{Binding GiveAllVariedCommand}" />
+                    <Button Content="Remove All" Command="{Binding RemoveAllCommand}" />
+                    <Button Content="Sort" Command="{Binding SortCommand}" />
+                </StackPanel>
+                
+                <!-- Puffs Grid -->
+                <ItemsControl ItemsSource="{Binding Puffs}">
+                     <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:PokepuffSlotViewModel">
+                            <Border Margin="2" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="4" Width="180">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <TextBlock Grid.Column="0" Text="{Binding DisplayIndex, StringFormat='{}{0}: '}" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                    <ComboBox Grid.Column="1" 
+                                              ItemsSource="{Binding $parent[UserControl].((vm:PokepuffEditorViewModel)DataContext).PuffList}"
+                                              SelectedIndex="{Binding PuffIndex}" 
+                                              HorizontalAlignment="Stretch" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
-
-            <DockPanel IsVisible="{Binding IsSupported}">
-                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Poké Puff Editor" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                        <Button Content="Give All" Command="{Binding GiveAllCommand}" Padding="12,6" />
-                        <Button Content="Give Best" Command="{Binding GiveBestCommand}" Padding="12,6" />
-                        <Button Content="Sort" Command="{Binding SortCommand}" Padding="12,6" />
-                        <Button Content="Clear" Command="{Binding ClearAllCommand}" Padding="12,6" />
-                    </StackPanel>
-                </DockPanel>
-
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
-                    <ScrollViewer>
-                        <ItemsControl ItemsSource="{Binding Puffs}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="vm:PokepuffSlotViewModel">
-                                    <Border Margin="4" Padding="8" CornerRadius="4"
-                                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                                            Width="180">
-                                        <Grid ColumnDefinitions="Auto,8,*">
-                                            <TextBlock Text="{Binding SlotLabel}" VerticalAlignment="Center" FontWeight="SemiBold" Width="50" />
-                                            <StackPanel Grid.Column="2">
-                                                <NumericUpDown Value="{Binding Value}" Minimum="0" Maximum="255" Width="80" />
-                                                <TextBlock Text="{Binding Name}" FontSize="10" Opacity="0.7" TextTrimming="CharacterEllipsis" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </Border>
-            </DockPanel>
-        </Panel>
-    </Border>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>
