@@ -1125,6 +1125,36 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMisc7Async()
+    {
+        if (CurrentSave is not SAV7 sav7) return;
+
+        var vm = new Misc7EditorViewModel(sav7);
+        var view = new Views.Misc7Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Misc Editor (Gen 7)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMisc8Async()
+    {
+        if (CurrentSave is not SAV8SWSH sav8) return;
+
+        var vm = new Misc8EditorViewModel(sav8);
+        var view = new Views.Misc8Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Misc Editor (SWSH)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMisc9Async()
+    {
+        if (CurrentSave is not SAV9SV sav9) return;
+
+        var vm = new Misc9EditorViewModel(sav9);
+        var view = new Views.Misc9Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Misc Editor (SV)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenMisc8bAsync()
     {
         if (CurrentSave is not SAV8BS sav8b) return;

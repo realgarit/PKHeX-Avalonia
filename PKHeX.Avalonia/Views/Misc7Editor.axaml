@@ -1,0 +1,203 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.Misc7Editor"
+             x:DataType="vm:Misc7EditorViewModel">
+
+    <Design.DataContext>
+        <vm:Misc7EditorViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+        <!-- Bottom Buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
+            <Button Content="Save" Command="{Binding SaveCommand}" />
+        </StackPanel>
+
+        <!-- Main Content with TabControl -->
+        <TabControl>
+            <!-- Battle Tree Tab -->
+            <TabItem Header="Battle Tree">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <!-- Unlock Flags -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="Super Mode Unlocks" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
+                                    <Button Content="Unlock All" Command="{Binding UnlockAllBattleTreeModesCommand}" FontSize="11" Padding="8,4" />
+                                </StackPanel>
+                                <WrapPanel>
+                                    <CheckBox Content="Super Single" IsChecked="{Binding SuperSingleUnlocked}" Margin="0,2,15,2" />
+                                    <CheckBox Content="Super Double" IsChecked="{Binding SuperDoubleUnlocked}" Margin="0,2,15,2" />
+                                    <CheckBox Content="Super Multi" IsChecked="{Binding SuperMultiUnlocked}" Margin="0,2,15,2" />
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Regular Mode -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Regular Mode" FontWeight="Bold" FontSize="14" />
+                                <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Current" FontWeight="SemiBold" Margin="5" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Max" FontWeight="SemiBold" Margin="5" HorizontalAlignment="Center" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Single:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SingleCurrentStreak}" Minimum="0" Maximum="9999" Margin="5" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding SingleMaxStreak}" Minimum="0" Maximum="9999" Margin="5" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Double:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding DoubleCurrentStreak}" Minimum="0" Maximum="9999" Margin="5" />
+                                    <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding DoubleMaxStreak}" Minimum="0" Maximum="9999" Margin="5" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Multi:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding MultiCurrentStreak}" Minimum="0" Maximum="9999" Margin="5" />
+                                    <NumericUpDown Grid.Row="3" Grid.Column="2" Value="{Binding MultiMaxStreak}" Minimum="0" Maximum="9999" Margin="5" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Super Mode -->
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Super Mode" FontWeight="Bold" FontSize="14" />
+                                <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Current" FontWeight="SemiBold" Margin="5" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Max" FontWeight="SemiBold" Margin="5" HorizontalAlignment="Center" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Single:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SuperSingleCurrentStreak}" Minimum="0" Maximum="9999" Margin="5" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding SuperSingleMaxStreak}" Minimum="0" Maximum="9999" Margin="5" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Double:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding SuperDoubleCurrentStreak}" Minimum="0" Maximum="9999" Margin="5" />
+                                    <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding SuperDoubleMaxStreak}" Minimum="0" Maximum="9999" Margin="5" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Multi:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding SuperMultiCurrentStreak}" Minimum="0" Maximum="9999" Margin="5" />
+                                    <NumericUpDown Grid.Row="3" Grid.Column="2" Value="{Binding SuperMultiMaxStreak}" Minimum="0" Maximum="9999" Margin="5" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Poké Finder Tab -->
+            <TabItem Header="Poké Finder">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="Poké Finder Stats" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
+                                    <Button Content="Max All" Command="{Binding MaxPokeFinderCommand}" FontSize="11" Padding="8,4" />
+                                </StackPanel>
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Snaps Taken:" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                    <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding SnapCount}" Minimum="0" Maximum="999999" Margin="0,0,0,5" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Total Thumbs Up:" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding ThumbsTotal}" Minimum="0" Maximum="9999999" Margin="0,0,0,5" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Thumbs Record:" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                    <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding ThumbsRecord}" Minimum="0" Maximum="9999999" Margin="0,0,0,5" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Camera Version:" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                    <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding CameraVersions}" SelectedIndex="{Binding CameraVersion}" Margin="0,0,0,5" />
+
+                                    <CheckBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Gyro Enabled" IsChecked="{Binding GyroEnabled}" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Stamps Tab -->
+            <TabItem Header="Stamps">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="Stamps" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
+                                    <Button Content="Unlock All" Command="{Binding UnlockAllStampsCommand}" FontSize="11" Padding="8,4" />
+                                </StackPanel>
+                                <ItemsControl ItemsSource="{Binding Stamps}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:StampViewModel">
+                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsObtained}" 
+                                                      Margin="0,2,15,2" MinWidth="150" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Fly Destinations Tab -->
+            <TabItem Header="Fly Destinations">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="Fly Destinations" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
+                                    <Button Content="Unlock All" Command="{Binding UnlockAllFlyDestinationsCommand}" FontSize="11" Padding="8,4" />
+                                </StackPanel>
+                                <ItemsControl ItemsSource="{Binding FlyDestinations}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:FlyDestination7ViewModel">
+                                            <CheckBox Content="{Binding Name}" IsChecked="{Binding IsUnlocked}" 
+                                                      Margin="0,2,15,2" MinWidth="180" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Ultra Tab (USUM only) -->
+            <TabItem Header="Ultra" IsVisible="{Binding IsUSUM}">
+                <ScrollViewer>
+                    <StackPanel Spacing="15" Margin="10">
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Mantine Surf High Scores" FontWeight="Bold" FontSize="14" />
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Course 1:" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                    <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding MantineSurf0}" Minimum="0" Maximum="999999" Margin="0,0,0,5" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Course 2:" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                    <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MantineSurf1}" Minimum="0" Maximum="999999" Margin="0,0,0,5" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Course 3:" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                    <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding MantineSurf2}" Minimum="0" Maximum="999999" Margin="0,0,0,5" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Course 4:" VerticalAlignment="Center" Margin="0,0,10,5" />
+                                    <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding MantineSurf3}" Minimum="0" Maximum="999999" Margin="0,0,0,5" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</UserControl>
