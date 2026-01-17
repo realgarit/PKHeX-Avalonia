@@ -34,12 +34,12 @@
                             <ItemsControl ItemsSource="{Binding Stages}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Vertical" Height="400" />
+                                        <WrapPanel Orientation="Vertical" MinHeight="400" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="vm:SuperTrainStageViewModel">
-                                        <CheckBox IsChecked="{Binding IsUnlocked}" Content="{Binding Name}" Margin="4,2" Width="200" />
+                                        <CheckBox IsChecked="{Binding IsUnlocked}" Content="{Binding Name}" Margin="4,2" MinWidth="180" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

@@ -34,6 +34,11 @@ public class LayoutTests
         var pkm = new PK3();
         var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, _saveFile);
         var view = new PokemonEditor { DataContext = vm };
+        
+        // Stress Test Data
+        vm.Nickname = "ChristopherMaximumLongName";
+        vm.OriginalTrainerName = "ChristopherMaximumLongName";
+
 
         // Create a window to host the view (use 700px to match MainWindow left column)
         var window = new Window
@@ -72,9 +77,30 @@ public class LayoutTests
 
 
     [AvaloniaFact]
+    public void Verify_RTC3Editor_Layout()
+    {
+        // Must use a Gen 3 save for RTC3Editor
+        var pkm = new PK3();
+        var sav = new SAV3E(new byte[0x20000]); // Initialize with full buffer
+        var vm = new RTC3EditorViewModel(sav);
+        var view = new RTC3Editor { DataContext = vm };
+        ForceLayout(view);
+        LayoutValidator.Validate(view);
+    }
+
+    [AvaloniaFact]
     public void Verify_TrainerEditor_Layout()
     {
         var vm = new TrainerEditorViewModel(_saveFile);
+        // Stress Test Data
+        vm.TrainerName = "ChristopherMaximumLongName";
+        vm.Money = 9999999;
+        vm.Tid16 = 65535;
+        vm.Sid16 = 65535;
+        vm.PlayedHours = 999;
+        vm.PlayedMinutes = 59;
+        vm.PlayedSeconds = 59;
+        
         var view = new TrainerEditor { DataContext = vm };
         ForceLayout(view);
         LayoutValidator.Validate(view);
@@ -84,6 +110,7 @@ public class LayoutTests
     public void Verify_InventoryEditor_Layout()
     {
         var vm = new InventoryEditorViewModel(_saveFile);
+        // TODO: Populate inventory with max items if possible, but requires complex mocking
         var view = new InventoryEditor { DataContext = vm };
         ForceLayout(view);
         LayoutValidator.Validate(view);

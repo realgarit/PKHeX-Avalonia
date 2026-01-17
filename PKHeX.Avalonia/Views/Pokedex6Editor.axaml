@@ -35,7 +35,7 @@
                         <Grid ColumnDefinitions="Auto, Auto, *, Auto">
                             <StackPanel Orientation="Horizontal" Spacing="10" Grid.Column="0">
                                 <TextBlock Text="Spinda PID:" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding Spinda, StringFormat={}{0:X8}}" Width="100" FontFamily="Monospace" />
+                                <TextBox Text="{Binding Spinda, StringFormat={}{0:X8}}" MinWidth="100" FontFamily="Monospace" />
                             </StackPanel>
                             
                             <CheckBox Grid.Column="1" Content="National Dex Unlocked" IsChecked="{Binding NationalDexUnlocked}" Margin="20,0,0,0"/>

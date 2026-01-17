@@ -24,7 +24,7 @@
         <!-- Details -->
         <ScrollViewer Grid.Column="1" Margin="10,0,0,0">
             <StackPanel Spacing="10">
-                <Button Content="Save Entry" Command="{Binding SaveCommand}" Width="120" HorizontalAlignment="Left"/>
+                <Button Content="Save Entry" Command="{Binding SaveCommand}" MinWidth="100" HorizontalAlignment="Left"/>
                 
                 <!-- Global Settings -->
                 <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
@@ -35,7 +35,7 @@
                             <CheckBox Grid.Column="1" Content="National Dex Mode" IsChecked="{Binding NationalDexMode}" IsEnabled="{Binding NationalDexUnlocked}"/>
                             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="5">
                                 <TextBlock Text="Spinda PID:" VerticalAlignment="Center"/>
-                                <TextBox Text="{Binding SpindaPID}" Width="100"/>
+                                <TextBox Text="{Binding SpindaPID}" MinWidth="100"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>

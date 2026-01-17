@@ -21,7 +21,7 @@
         <!-- Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
             <Button Content="&lt;" Command="{Binding PreviousGroupCommand}"/>
-            <ComboBox ItemsSource="{Binding GroupNames}" SelectedIndex="{Binding CurrentGroupIndex}" Width="200" MaxDropDownHeight="400"/>
+            <ComboBox ItemsSource="{Binding GroupNames}" SelectedIndex="{Binding CurrentGroupIndex}" MinWidth="180" MaxDropDownHeight="400"/>
             <Button Content="&gt;" Command="{Binding NextGroupCommand}"/>
         </StackPanel>
 
@@ -35,7 +35,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="models:SlotData">
-                        <Button Margin="2" Padding="4" Width="80" Height="100"
+                        <Button Margin="2" Padding="4" MinWidth="80" MinHeight="100"
                                 Command="{Binding $parent[UserControl].((vm:GroupViewerViewModel)DataContext).ViewSlotCommand}"
                                 CommandParameter="{Binding}">
                             <Grid RowDefinitions="*, Auto, Auto">

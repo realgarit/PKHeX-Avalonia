@@ -38,13 +38,15 @@
                 <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Play Time" FontWeight="Bold" FontSize="14" />
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <NumericUpDown Value="{Binding PlayedHours}" Minimum="0" Maximum="999" Width="80" />
-                            <TextBlock Text=":" VerticalAlignment="Center" />
-                            <NumericUpDown Value="{Binding PlayedMinutes}" Minimum="0" Maximum="59" Width="60" />
-                            <TextBlock Text=":" VerticalAlignment="Center" />
-                            <NumericUpDown Value="{Binding PlayedSeconds}" Minimum="0" Maximum="59" Width="60" />
-                        </StackPanel>
+                        <Grid ColumnDefinitions="*,10,*,10,*" RowDefinitions="Auto,4,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Hours" Opacity="0.8" FontSize="12"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Minutes" Opacity="0.8" FontSize="12"/>
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Seconds" Opacity="0.8" FontSize="12"/>
+                            
+                            <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding PlayedHours}" Minimum="0" Maximum="999" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                            <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding PlayedMinutes}" Minimum="0" Maximum="59" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                            <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding PlayedSeconds}" Minimum="0" Maximum="59" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                        </Grid>
                     </StackPanel>
                 </Border>
             </StackPanel>

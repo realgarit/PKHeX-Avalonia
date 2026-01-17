@@ -254,28 +254,15 @@
                         CornerRadius="4" Padding="12">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Play Time" FontWeight="SemiBold" />
-                        <Grid ColumnDefinitions="*,8,*,8,*">
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Hours" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding PlayedHours}"
-                                               Minimum="0"
-                                               Maximum="9999"
-                                               FormatString="0" />
-                            </StackPanel>
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Minutes" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding PlayedMinutes}"
-                                               Minimum="0"
-                                               Maximum="59"
-                                               FormatString="00" />
-                            </StackPanel>
-                            <StackPanel Grid.Column="4">
-                                <TextBlock Text="Seconds" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding PlayedSeconds}"
-                                               Minimum="0"
-                                               Maximum="59"
-                                               FormatString="00" />
-                            </StackPanel>
+                        <Grid ColumnDefinitions="*,8,*,8,*" RowDefinitions="Auto,4,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Hours" FontSize="11" Opacity="0.7"/>
+                            <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding PlayedHours}" Minimum="0" Maximum="9999" FormatString="0" HorizontalAlignment="Stretch"/>
+                            
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Minutes" FontSize="11" Opacity="0.7"/>
+                            <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding PlayedMinutes}" Minimum="0" Maximum="59" FormatString="00" HorizontalAlignment="Stretch"/>
+                            
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Seconds" FontSize="11" Opacity="0.7"/>
+                            <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding PlayedSeconds}" Minimum="0" Maximum="59" FormatString="00" HorizontalAlignment="Stretch"/>
                         </Grid>
                     </StackPanel>
                 </Border>

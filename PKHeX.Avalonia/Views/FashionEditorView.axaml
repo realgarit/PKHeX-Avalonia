@@ -3,7 +3,7 @@
              xmlns:vm="using:PKHeX.Avalonia.ViewModels"
              x:Class="PKHeX.Avalonia.Views.FashionEditorView"
              x:DataType="vm:FashionEditorViewModel"
-             Width="450" Height="400">
+             MinWidth="450" MinHeight="400">
     <DockPanel Margin="16">
         <TextBlock DockPanel.Dock="Top" Text="Fashion Unlocks" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,8" />
         <TextBlock DockPanel.Dock="Top" Text="{Binding GameInfo}" FontSize="12" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Margin="0,0,0,12" />

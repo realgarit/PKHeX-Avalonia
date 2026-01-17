@@ -23,14 +23,14 @@
                                 <ItemsControl ItemsSource="{Binding FirstEntries}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="vm:HallOfFameEntry7">
-                                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4">
-                                                <TextBlock Text="{Binding Label}" Width="50" VerticalAlignment="Center" />
-                                                <ComboBox ItemsSource="{Binding SpeciesOptions}" 
+                                            <Grid ColumnDefinitions="60,10,*" Margin="0,4">
+                                                <TextBlock Grid.Column="0" Text="{Binding Label}" VerticalAlignment="Center" />
+                                                <ComboBox Grid.Column="2" ItemsSource="{Binding SpeciesOptions}" 
                                                           SelectedValue="{Binding SelectedSpecies}"
                                                           SelectedValueBinding="{Binding Value}"
                                                           DisplayMemberBinding="{Binding Text}"
-                                                          Width="200" />
-                                            </StackPanel>
+                                                          HorizontalAlignment="Stretch" />
+                                            </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -43,14 +43,14 @@
                                 <ItemsControl ItemsSource="{Binding CurrentEntries}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="vm:HallOfFameEntry7">
-                                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4">
-                                                <TextBlock Text="{Binding Label}" Width="50" VerticalAlignment="Center" />
-                                                <ComboBox ItemsSource="{Binding SpeciesOptions}" 
+                                            <Grid ColumnDefinitions="60,10,*" Margin="0,4">
+                                                <TextBlock Grid.Column="0" Text="{Binding Label}" VerticalAlignment="Center" />
+                                                <ComboBox Grid.Column="2" ItemsSource="{Binding SpeciesOptions}" 
                                                           SelectedValue="{Binding SelectedSpecies}"
                                                           SelectedValueBinding="{Binding Value}"
                                                           DisplayMemberBinding="{Binding Text}"
-                                                          Width="200" />
-                                            </StackPanel>
+                                                          HorizontalAlignment="Stretch" />
+                                            </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -61,10 +61,10 @@
                                 IsVisible="{Binding HasStarterEc}">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="USUM Only" FontWeight="Bold" FontSize="14" />
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Text="Starter EC:" VerticalAlignment="Center" />
-                                    <TextBox Text="{Binding StarterEc}" Width="120" />
-                                </StackPanel>
+                                <Grid ColumnDefinitions="Auto,10,*" Margin="0,4">
+                                    <TextBlock Grid.Column="0" Text="Starter EC:" VerticalAlignment="Center" />
+                                    <TextBox Grid.Column="2" Text="{Binding StarterEc}" MinWidth="100" HorizontalAlignment="Stretch" />
+                                </Grid>
                             </StackPanel>
                         </Border>
                     </StackPanel>

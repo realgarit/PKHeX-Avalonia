@@ -20,24 +20,19 @@
                     <TextBlock Text="Initial Clock" FontWeight="Bold"/>
                     <TextBlock Text="The time when the game was first started." Opacity="0.7"/>
 
-                    <StackPanel Orientation="Horizontal" Spacing="15">
-                        <StackPanel Spacing="3">
-                            <TextBlock Text="Day"/>
-                            <NumericUpDown Value="{Binding InitialDay}" Minimum="0" Maximum="65535" Width="90"/>
-                        </StackPanel>
-                        <StackPanel Spacing="3">
-                            <TextBlock Text="Hour"/>
-                            <NumericUpDown Value="{Binding InitialHour}" Minimum="0" Maximum="23" Width="70"/>
-                        </StackPanel>
-                        <StackPanel Spacing="3">
-                            <TextBlock Text="Minute"/>
-                            <NumericUpDown Value="{Binding InitialMinute}" Minimum="0" Maximum="59" Width="70"/>
-                        </StackPanel>
-                        <StackPanel Spacing="3">
-                            <TextBlock Text="Second"/>
-                            <NumericUpDown Value="{Binding InitialSecond}" Minimum="0" Maximum="59" Width="70"/>
-                        </StackPanel>
-                    </StackPanel>
+                    <Grid ColumnDefinitions="*,10,*,10,*,10,*" RowDefinitions="Auto,4,Auto">
+                        <!-- Labels -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Day" Opacity="0.8" FontSize="12"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Hour" Opacity="0.8" FontSize="12"/>
+                        <TextBlock Grid.Row="0" Grid.Column="4" Text="Minute" Opacity="0.8" FontSize="12"/>
+                        <TextBlock Grid.Row="0" Grid.Column="6" Text="Second" Opacity="0.8" FontSize="12"/>
+
+                        <!-- Inputs -->
+                        <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding InitialDay}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                        <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding InitialHour}" Minimum="0" Maximum="23" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                        <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding InitialMinute}" Minimum="0" Maximum="59" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                        <NumericUpDown Grid.Row="2" Grid.Column="6" Value="{Binding InitialSecond}" Minimum="0" Maximum="59" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                    </Grid>
                 </StackPanel>
             </Border>
 
@@ -49,24 +44,19 @@
                     <TextBlock Text="Elapsed Clock" FontWeight="Bold"/>
                     <TextBlock Text="The time that has passed since the game was started." Opacity="0.7"/>
 
-                    <StackPanel Orientation="Horizontal" Spacing="15">
-                        <StackPanel Spacing="3">
-                            <TextBlock Text="Day"/>
-                            <NumericUpDown Value="{Binding ElapsedDay}" Minimum="0" Maximum="65535" Width="90"/>
-                        </StackPanel>
-                        <StackPanel Spacing="3">
-                            <TextBlock Text="Hour"/>
-                            <NumericUpDown Value="{Binding ElapsedHour}" Minimum="0" Maximum="23" Width="70"/>
-                        </StackPanel>
-                        <StackPanel Spacing="3">
-                            <TextBlock Text="Minute"/>
-                            <NumericUpDown Value="{Binding ElapsedMinute}" Minimum="0" Maximum="59" Width="70"/>
-                        </StackPanel>
-                        <StackPanel Spacing="3">
-                            <TextBlock Text="Second"/>
-                            <NumericUpDown Value="{Binding ElapsedSecond}" Minimum="0" Maximum="59" Width="70"/>
-                        </StackPanel>
-                    </StackPanel>
+                    <Grid ColumnDefinitions="*,10,*,10,*,10,*" RowDefinitions="Auto,4,Auto">
+                        <!-- Labels -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Day" Opacity="0.8" FontSize="12"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Hour" Opacity="0.8" FontSize="12"/>
+                        <TextBlock Grid.Row="0" Grid.Column="4" Text="Minute" Opacity="0.8" FontSize="12"/>
+                        <TextBlock Grid.Row="0" Grid.Column="6" Text="Second" Opacity="0.8" FontSize="12"/>
+
+                        <!-- Inputs -->
+                        <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding ElapsedDay}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                        <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding ElapsedHour}" Minimum="0" Maximum="23" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                        <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding ElapsedMinute}" Minimum="0" Maximum="59" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                        <NumericUpDown Grid.Row="2" Grid.Column="6" Value="{Binding ElapsedSecond}" Minimum="0" Maximum="59" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                    </Grid>
                 </StackPanel>
             </Border>
 

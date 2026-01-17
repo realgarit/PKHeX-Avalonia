@@ -58,11 +58,11 @@
                             </Grid>
                             <Grid ColumnDefinitions="100,*">
                                 <TextBlock Grid.Column="0" Text="TID:" VerticalAlignment="Center"/>
-                                <NumericUpDown Grid.Column="1" Value="{Binding AuthorTid}" Minimum="0" Maximum="65535" MaxWidth="120" HorizontalAlignment="Left"/>
+                                <NumericUpDown Grid.Column="1" Value="{Binding AuthorTid}" Minimum="0" Maximum="65535" MinWidth="100" HorizontalAlignment="Stretch"/>
                             </Grid>
                             <Grid ColumnDefinitions="100,*" IsVisible="{Binding ShowSid}">
                                 <TextBlock Grid.Column="0" Text="SID:" VerticalAlignment="Center"/>
-                                <NumericUpDown Grid.Column="1" Value="{Binding AuthorSid}" Minimum="0" Maximum="65535" MaxWidth="120" HorizontalAlignment="Left"/>
+                                <NumericUpDown Grid.Column="1" Value="{Binding AuthorSid}" Minimum="0" Maximum="65535" MinWidth="100" HorizontalAlignment="Stretch"/>
                             </Grid>
                             <Grid ColumnDefinitions="100,*">
                                 <TextBlock Grid.Column="0" Text="Language:" VerticalAlignment="Center"/>
@@ -127,23 +127,19 @@
                         <StackPanel Spacing="5" IsVisible="{Binding ShowMessageNud}">
                             <TextBlock Text="Message Words" FontWeight="Bold" FontSize="14"/>
 
-                            <StackPanel Spacing="5">
-                                <StackPanel Orientation="Horizontal" Spacing="5">
-                                    <NumericUpDown Value="{Binding Message00}" Minimum="0" Maximum="65535" Width="100"/>
-                                    <NumericUpDown Value="{Binding Message01}" Minimum="0" Maximum="65535" Width="100"/>
-                                    <NumericUpDown Value="{Binding Message02}" Minimum="0" Maximum="65535" Width="100"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Spacing="5">
-                                    <NumericUpDown Value="{Binding Message10}" Minimum="0" Maximum="65535" Width="100"/>
-                                    <NumericUpDown Value="{Binding Message11}" Minimum="0" Maximum="65535" Width="100"/>
-                                    <NumericUpDown Value="{Binding Message12}" Minimum="0" Maximum="65535" Width="100"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Spacing="5">
-                                    <NumericUpDown Value="{Binding Message20}" Minimum="0" Maximum="65535" Width="100"/>
-                                    <NumericUpDown Value="{Binding Message21}" Minimum="0" Maximum="65535" Width="100"/>
-                                    <NumericUpDown Value="{Binding Message22}" Minimum="0" Maximum="65535" Width="100"/>
-                                </StackPanel>
-                            </StackPanel>
+                            <Grid ColumnDefinitions="*,10,*,10,*" RowDefinitions="Auto,8,Auto,8,Auto">
+                                <NumericUpDown Grid.Row="0" Grid.Column="0" Value="{Binding Message00}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="0" Grid.Column="2" Value="{Binding Message01}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="0" Grid.Column="4" Value="{Binding Message02}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                
+                                <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding Message10}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Message11}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding Message12}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                
+                                <NumericUpDown Grid.Row="4" Grid.Column="0" Value="{Binding Message20}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding Message21}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="4" Grid.Column="4" Value="{Binding Message22}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                            </Grid>
                         </StackPanel>
 
                         <Separator Margin="0,5"/>

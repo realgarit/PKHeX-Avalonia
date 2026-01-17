@@ -24,7 +24,7 @@
         <!-- Details -->
         <ScrollViewer Grid.Column="1" Margin="10,0,0,0">
             <StackPanel Spacing="10">
-                <Button Content="Save Entry" Command="{Binding SaveCommand}" Width="120" HorizontalAlignment="Left"/>
+                <Button Content="Save Entry" Command="{Binding SaveCommand}" MinWidth="100" HorizontalAlignment="Left"/>
                 
                 <!-- Entry Flags -->
                 <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">

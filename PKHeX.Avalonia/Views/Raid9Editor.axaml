@@ -27,11 +27,11 @@
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="16" Margin="0,0,0,12" IsVisible="{Binding HasSeeds}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <TextBlock Text="Current Seed:" VerticalAlignment="Center" />
-                        <TextBox Text="{Binding CurrentSeedHex}" MaxLength="16" Width="150" />
+                        <TextBox Text="{Binding CurrentSeedHex}" MaxLength="16" MinWidth="130" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <TextBlock Text="Tomorrow Seed:" VerticalAlignment="Center" />
-                        <TextBox Text="{Binding TomorrowSeedHex}" MaxLength="16" Width="150" />
+                        <TextBox Text="{Binding TomorrowSeedHex}" MaxLength="16" MinWidth="130" />
                     </StackPanel>
                 </StackPanel>
 

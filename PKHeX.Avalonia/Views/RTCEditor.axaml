@@ -23,38 +23,36 @@
                 <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
                     <StackPanel Spacing="16">
                         <!-- Initial Clock -->
-                        <StackPanel>
-                            <TextBlock Text="Initial Clock" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
-                            <Grid ColumnDefinitions="Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto">
-                                <TextBlock Grid.Column="0" Text="Day:" VerticalAlignment="Center" />
-                                <NumericUpDown Grid.Column="2" Value="{Binding InitialDay}" Minimum="0" Maximum="65535" Width="80" />
+                        <!-- Initial Clock -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Initial Clock" FontWeight="SemiBold" FontSize="14"/>
+                            <Grid ColumnDefinitions="*,10,*,10,*,10,*" RowDefinitions="Auto,4,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Day" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Hour" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="4" Text="Minute" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="6" Text="Second" Opacity="0.8" FontSize="12"/>
 
-                                <TextBlock Grid.Column="4" Text="Hour:" VerticalAlignment="Center" />
-                                <NumericUpDown Grid.Column="6" Value="{Binding InitialHour}" Minimum="0" Maximum="23" Width="60" />
-
-                                <TextBlock Grid.Column="8" Text="Min:" VerticalAlignment="Center" />
-                                <NumericUpDown Grid.Column="10" Value="{Binding InitialMinute}" Minimum="0" Maximum="59" Width="60" />
-
-                                <TextBlock Grid.Column="12" Text="Sec:" VerticalAlignment="Center" />
-                                <NumericUpDown Grid.Column="14" Value="{Binding InitialSecond}" Minimum="0" Maximum="59" Width="60" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding InitialDay}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding InitialHour}" Minimum="0" Maximum="23" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding InitialMinute}" Minimum="0" Maximum="59" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="2" Grid.Column="6" Value="{Binding InitialSecond}" Minimum="0" Maximum="59" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
                             </Grid>
                         </StackPanel>
 
                         <!-- Elapsed Clock -->
-                        <StackPanel>
-                            <TextBlock Text="Elapsed Clock" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
-                            <Grid ColumnDefinitions="Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto,16,Auto,8,Auto">
-                                <TextBlock Grid.Column="0" Text="Day:" VerticalAlignment="Center" />
-                                <NumericUpDown Grid.Column="2" Value="{Binding ElapsedDay}" Minimum="0" Maximum="65535" Width="80" />
+                        <!-- Elapsed Clock -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Elapsed Clock" FontWeight="SemiBold" FontSize="14"/>
+                            <Grid ColumnDefinitions="*,10,*,10,*,10,*" RowDefinitions="Auto,4,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Day" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Hour" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="4" Text="Minute" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="6" Text="Second" Opacity="0.8" FontSize="12"/>
 
-                                <TextBlock Grid.Column="4" Text="Hour:" VerticalAlignment="Center" />
-                                <NumericUpDown Grid.Column="6" Value="{Binding ElapsedHour}" Minimum="0" Maximum="23" Width="60" />
-
-                                <TextBlock Grid.Column="8" Text="Min:" VerticalAlignment="Center" />
-                                <NumericUpDown Grid.Column="10" Value="{Binding ElapsedMinute}" Minimum="0" Maximum="59" Width="60" />
-
-                                <TextBlock Grid.Column="12" Text="Sec:" VerticalAlignment="Center" />
-                                <NumericUpDown Grid.Column="14" Value="{Binding ElapsedSecond}" Minimum="0" Maximum="59" Width="60" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding ElapsedDay}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding ElapsedHour}" Minimum="0" Maximum="23" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding ElapsedMinute}" Minimum="0" Maximum="59" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
+                                <NumericUpDown Grid.Row="2" Grid.Column="6" Value="{Binding ElapsedSecond}" Minimum="0" Maximum="59" HorizontalAlignment="Stretch" ShowButtonSpinner="False"/>
                             </Grid>
                         </StackPanel>
 

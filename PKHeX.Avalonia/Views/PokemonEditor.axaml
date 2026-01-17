@@ -355,64 +355,64 @@
                                     <!-- Move 1 (Top Left) -->
                                     <Border Margin="0,0,4,4" Padding="8" CornerRadius="4" 
                                             Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                                        <Grid ColumnDefinitions="*,50,50" RowDefinitions="Auto,Auto">
+                                        <Grid ColumnDefinitions="*,8,Auto,4,Auto" RowDefinitions="Auto,Auto">
                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Move 1" FontSize="10" Opacity="0.6" Margin="0,0,0,2"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
                                             
                                             <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MoveList}"
                                                       SelectedValue="{Binding Move1}" SelectedValueBinding="{Binding Value}"
-                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" Margin="0,0,4,0"/>
-                                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Pp1}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" Margin="0,0,4,0"/>
-                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding PpUps1}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
+                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding Pp1}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
+                                            <NumericUpDown Grid.Row="1" Grid.Column="4" Value="{Binding PpUps1}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
                                         </Grid>
                                     </Border>
 
                                     <!-- Move 2 (Top Right) -->
                                     <Border Margin="4,0,0,4" Padding="8" CornerRadius="4"
                                             Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                                        <Grid ColumnDefinitions="*,50,50" RowDefinitions="Auto,Auto">
+                                        <Grid ColumnDefinitions="*,8,Auto,4,Auto" RowDefinitions="Auto,Auto">
                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Move 2" FontSize="10" Opacity="0.6" Margin="0,0,0,2"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
 
                                             <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MoveList}"
                                                       SelectedValue="{Binding Move2}" SelectedValueBinding="{Binding Value}"
-                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" Margin="0,0,4,0"/>
-                                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Pp2}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" Margin="0,0,4,0"/>
-                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding PpUps2}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
+                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding Pp2}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
+                                            <NumericUpDown Grid.Row="1" Grid.Column="4" Value="{Binding PpUps2}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
                                         </Grid>
                                     </Border>
 
                                     <!-- Move 3 (Bottom Left) -->
                                     <Border Margin="0,4,4,0" Padding="8" CornerRadius="4"
                                             Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                                        <Grid ColumnDefinitions="*,50,50" RowDefinitions="Auto,Auto">
+                                        <Grid ColumnDefinitions="*,8,Auto,4,Auto" RowDefinitions="Auto,Auto">
                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Move 3" FontSize="10" Opacity="0.6" Margin="0,0,0,2"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
 
                                             <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MoveList}"
                                                       SelectedValue="{Binding Move3}" SelectedValueBinding="{Binding Value}"
-                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" Margin="0,0,4,0"/>
-                                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Pp3}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" Margin="0,0,4,0"/>
-                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding PpUps3}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
+                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding Pp3}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
+                                            <NumericUpDown Grid.Row="1" Grid.Column="4" Value="{Binding PpUps3}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
                                         </Grid>
                                     </Border>
 
                                     <!-- Move 4 (Bottom Right) -->
                                     <Border Margin="4,4,0,0" Padding="8" CornerRadius="4"
                                             Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                                        <Grid ColumnDefinitions="*,50,50" RowDefinitions="Auto,Auto">
+                                        <Grid ColumnDefinitions="*,8,Auto,4,Auto" RowDefinitions="Auto,Auto">
                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Move 4" FontSize="10" Opacity="0.6" Margin="0,0,0,2"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
 
                                             <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MoveList}"
                                                       SelectedValue="{Binding Move4}" SelectedValueBinding="{Binding Value}"
-                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" Margin="0,0,4,0"/>
-                                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Pp4}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" Margin="0,0,4,0"/>
-                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding PpUps4}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
+                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding Pp4}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
+                                            <NumericUpDown Grid.Row="1" Grid.Column="4" Value="{Binding PpUps4}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
                                         </Grid>
                                     </Border>
                                 </UniformGrid>
@@ -677,7 +677,7 @@
                                                                        Minimum="0" 
                                                                        Maximum="{Binding MaxCount}" 
                                                                        FormatString="0"
-                                                                       Width="50"
+                                                                       MinWidth="50"
                                                                        ShowButtonSpinner="False" 
                                                                        Padding="2" />
                                                     </StackPanel>

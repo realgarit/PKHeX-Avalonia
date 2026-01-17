@@ -3,7 +3,7 @@
              xmlns:vm="using:PKHeX.Avalonia.ViewModels"
              x:Class="PKHeX.Avalonia.Views.BerryFieldEditorView"
              x:DataType="vm:BerryFieldEditorViewModel"
-             Width="600" Height="500">
+             MinWidth="600" MinHeight="500">
     <DockPanel Margin="16">
         <TextBlock DockPanel.Dock="Top" Text="Berry Field" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,8" />
         <TextBlock DockPanel.Dock="Top" Text="{Binding GameInfo}" FontSize="12" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" Margin="0,0,0,12" />

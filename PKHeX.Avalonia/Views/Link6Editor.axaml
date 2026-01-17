@@ -24,10 +24,10 @@
             
             <Grid ColumnDefinitions="Auto, Auto, Auto, Auto" RowDefinitions="Auto, Auto">
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Battle Points:" VerticalAlignment="Center" Margin="0,0,10,0" />
-                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding BattlePoints}" Minimum="0" Maximum="65535" Width="120" Margin="0,0,20,0" />
+                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding BattlePoints}" Minimum="0" Maximum="65535" MinWidth="100" Margin="0,0,20,0" />
                 
                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Poké Miles:" VerticalAlignment="Center" Margin="0,0,10,0" />
-                <NumericUpDown Grid.Row="0" Grid.Column="3" Value="{Binding PokeMiles}" Minimum="0" Maximum="65535" Width="120" />
+                <NumericUpDown Grid.Row="0" Grid.Column="3" Value="{Binding PokeMiles}" Minimum="0" Maximum="65535" MinWidth="100" />
             </Grid>
 
             <Separator />
@@ -56,7 +56,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="5" Margin="5" Width="150">
+                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="5" Margin="5" MinWidth="150">
                             <StackPanel>
                                 <TextBlock Text="{Binding Index, StringFormat='Slot {0}'}" FontWeight="Bold" />
                                 <TextBlock Text="{Binding Nickname}" FontWeight="SemiBold" />

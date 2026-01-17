@@ -34,14 +34,14 @@
                 <TextBlock Text="Display Settings" FontWeight="Bold"/>
                 <Grid ColumnDefinitions="Auto, Auto" RowDefinitions="Auto, Auto, Auto, Auto" HorizontalAlignment="Left" >
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Gender:" VerticalAlignment="Center" Margin="0,0,10,5"/>
-                    <ComboBox Grid.Row="0" Grid.Column="1" SelectedIndex="{Binding DisplayGender}" Width="150" Margin="0,0,0,5">
+                    <ComboBox Grid.Row="0" Grid.Column="1" SelectedIndex="{Binding DisplayGender}" MinWidth="150" Margin="0,0,0,5">
                          <ComboBoxItem>Male</ComboBoxItem>
                          <ComboBoxItem>Female</ComboBoxItem>
                          <ComboBoxItem>Genderless</ComboBoxItem>
                     </ComboBox>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Form:" VerticalAlignment="Center" Margin="0,0,10,5"/>
-                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Forms}" SelectedIndex="{Binding DisplayForm}" Width="150" Margin="0,0,0,5"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Forms}" SelectedIndex="{Binding DisplayForm}" MinWidth="150" Margin="0,0,0,5"/>
 
                     <CheckBox Grid.Row="2" Grid.Column="1" Content="Shiny Display" IsChecked="{Binding DisplayShiny}"/>
                     <CheckBox Grid.Row="3" Grid.Column="1" Content="New?" IsChecked="{Binding IsNew}"/>

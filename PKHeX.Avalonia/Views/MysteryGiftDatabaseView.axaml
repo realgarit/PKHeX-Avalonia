@@ -4,7 +4,7 @@
              xmlns:converters="using:PKHeX.Avalonia.Converters"
              x:Class="PKHeX.Avalonia.Views.MysteryGiftDatabaseView"
              x:DataType="vm:MysteryGiftDatabaseViewModel"
-             Width="900" Height="600">
+             MinWidth="900" MinHeight="600">
     <Grid ColumnDefinitions="250,*">
         <!-- Sidebar: Filters -->
         <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="16">

@@ -46,7 +46,7 @@
                         <NumericUpDown Value="{Binding SelectedFlagIndex}"
                                        Minimum="0"
                                        Maximum="{Binding FlagCount}"
-                                       Width="120"
+                                       MinWidth="100"
                                        FormatString="0" />
                         <CheckBox IsChecked="{Binding SelectedFlagValue}"
                                   Content="Set"
@@ -61,7 +61,7 @@
                     <Separator Margin="8,0" />
                     <TextBox Text="{Binding SearchText}"
                              Watermark="Search by index..."
-                             Width="200" />
+                             MinWidth="200" />
                 </StackPanel>
 
                 <!-- Flags List -->
