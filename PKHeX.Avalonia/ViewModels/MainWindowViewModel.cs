@@ -1471,4 +1471,20 @@ public partial class MainWindowViewModel : ViewModelBase
         var view = new Views.BoxExporter { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Box Exporter");
     }
+
+    [RelayCommand]
+    private async Task OpenSettingsAsync()
+    {
+        var vm = new SettingsViewModel(_settings);
+        
+        vm.CloseRequested += () => {
+              // Settings saved. Logic handled in VM.
+              // Maybe MainWindow needs to refresh anything?
+              // _settings changes often propagate via events if setup, or next access.
+        };
+
+        var view = new Views.SettingsWindow { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Settings");
+    }
 }
+

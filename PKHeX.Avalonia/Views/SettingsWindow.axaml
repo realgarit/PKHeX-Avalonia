@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="400"
+             x:Class="PKHeX.Avalonia.Views.SettingsWindow"
+             x:DataType="vm:SettingsViewModel">
+
+    <Grid RowDefinitions="*, Auto" Margin="10">
+        <TabControl Grid.Row="0">
+            <!-- General / Startup -->
+            <TabItem Header="General">
+                <StackPanel Spacing="10" Margin="10">
+                    <TextBlock Text="Display Language"/>
+                    <ComboBox ItemsSource="{Binding LanguageOptions}" SelectedItem="{Binding DisplayLanguage}" HorizontalAlignment="Stretch"/>
+
+                    <TextBlock Text="Default Save Version"/>
+                    <ComboBox ItemsSource="{Binding GameVersions}" SelectedItem="{Binding DefaultSaveVersion}" HorizontalAlignment="Stretch"/>
+
+                    <TextBlock Text="Startup Load Mode"/>
+                    <ComboBox ItemsSource="{Binding LoadModes}" SelectedItem="{Binding AutoLoadMode}" HorizontalAlignment="Stretch"/>
+                    
+                    <CheckBox Content="Force HaX Mode on Launch" IsChecked="{Binding ForceHaX}"/>
+                    <CheckBox Content="Show Changelog on Update" IsChecked="{Binding ShowChangelog}"/>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Backup -->
+            <TabItem Header="Backup">
+                <StackPanel Spacing="10" Margin="10">
+                    <CheckBox Content="Enable Automatic Backups (.bak)" IsChecked="{Binding BakEnabled}"/>
+                    <CheckBox Content="Prompt to Create Backup on Load" IsChecked="{Binding BakPrompt}"/>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Saving / Writing -->
+            <TabItem Header="Saving">
+                <StackPanel Spacing="10" Margin="10">
+                    <CheckBox Content="Update Pokedex on Set" IsChecked="{Binding SetUpdateDex}"/>
+                    <CheckBox Content="Update PKM Info on Set" IsChecked="{Binding SetUpdatePKM}"/>
+                    <CheckBox Content="Update Trainer Records (Eggs/Captures)" IsChecked="{Binding SetUpdateRecords}"/>
+                    <CheckBox Content="Warn if closing modified save" IsChecked="{Binding ModifyUnset}"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
+            <Button Content="Cancel" Command="{Binding CloseRequested}"/>
+            <Button Content="Save Settings" Command="{Binding SaveCommand}" Classes="accent"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
