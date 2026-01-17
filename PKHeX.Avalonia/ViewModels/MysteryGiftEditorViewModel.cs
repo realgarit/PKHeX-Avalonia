@@ -22,7 +22,11 @@ public partial class MysteryGiftEditorViewModel : ViewModelBase
         {
             GiftCount = _storage.GiftCountMax;
             IsSupported = true;
+            _flags = _storage as IMysteryGiftFlags;
+            CanManageFlags = _flags != null;
+            
             LoadGifts();
+            LoadReceivedFlags();
         }
         else
         {
@@ -78,6 +82,16 @@ public partial class MysteryGiftEditorViewModel : ViewModelBase
         {
             if (slot.Gift is not null)
                 _storage.SetMysteryGift(slot.Index, slot.Gift);
+        }
+
+        if (_flags != null)
+        {
+            _flags.ClearReceivedFlags();
+            foreach (var s in ReceivedFlags)
+            {
+               if (int.TryParse(s, out int id))
+                   _flags.SetMysteryGiftReceivedFlag(id, true);
+            }
         }
     }
 
@@ -157,7 +171,39 @@ public partial class MysteryGiftEditorViewModel : ViewModelBase
         SelectedGift.Gift.Clear();
         SelectedGift.UpdateFromGift();
     }
+
+    private readonly IMysteryGiftFlags? _flags;
+
+    [ObservableProperty]
+    private ObservableCollection<string> _receivedFlags = [];
+
+    [ObservableProperty]
+    private string? _selectedReceivedFlag;
+
+    [ObservableProperty]
+    private bool _canManageFlags;
+
+    private void LoadReceivedFlags()
+    {
+        ReceivedFlags.Clear();
+        if (_flags is not { } f) return;
+
+        int count = f.MysteryGiftReceivedFlagMax;
+        for (int i = 1; i < count; i++)
+        {
+            if (f.GetMysteryGiftReceivedFlag(i))
+                ReceivedFlags.Add(i.ToString("0000"));
+        }
+    }
+
+    [RelayCommand]
+    private void DeleteFlag()
+    {
+        if (SelectedReceivedFlag == null) return;
+        ReceivedFlags.Remove(SelectedReceivedFlag);
+    }
 }
+
 
 public partial class MysteryGiftSlotViewModel : ViewModelBase
 {

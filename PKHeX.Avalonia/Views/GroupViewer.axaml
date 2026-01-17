@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PKHeX.Avalonia.Views.GroupViewer">
+
+    <Design.DataContext>
+        <!-- ReSharper disable once Xaml.ConstructorWarning -->
+        <vm:GroupViewerViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, *">
+        <!-- Navigation Header -->
+        <DockPanel Grid.Row="0" Margin="10">
+            <Button DockPanel.Dock="Left" Content="&lt;" Command="{Binding PreviousGroupCommand}" Width="40"/>
+            <Button DockPanel.Dock="Right" Content="&gt;" Command="{Binding NextGroupCommand}" Width="40"/>
+            <ComboBox ItemsSource="{Binding GroupNames}" SelectedIndex="{Binding CurrentGroupIndex}" 
+                      HorizontalAlignment="Stretch" Margin="10,0"/>
+        </DockPanel>
+
+        <!-- Slot Grid -->
+        <ScrollViewer Grid.Row="1" Padding="10">
+            <ItemsControl ItemsSource="{Binding Slots}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                         <Button Command="{Binding $parent[UserControl].DataContext.ViewSlotCommand}"
+                                 CommandParameter="{Binding}"
+                                 Background="Transparent"
+                                 Padding="2"
+                                 Margin="2"
+                                 Width="44" Height="34">
+                             <!-- Using fixed size similar to box slots -->
+                             <Panel>
+                                 <Image Source="{Binding Sprite}" Stretch="None" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                 <!-- Optional: Tooltip -->
+                             </Panel>
+                             <ToolTip.Tip>
+                                 <StackPanel>
+                                     <TextBlock Text="{Binding SpeciesName, StringFormat='{}{0}'}" FontWeight="Bold"/>
+                                     <TextBlock Text="{Binding Nickname, StringFormat='Nickname: {0}'}" IsVisible="{Binding Nickname, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                     <TextBlock Text="{Binding Level, StringFormat='Level: {0}'}"/>
+                                 </StackPanel>
+                             </ToolTip.Tip>
+                         </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

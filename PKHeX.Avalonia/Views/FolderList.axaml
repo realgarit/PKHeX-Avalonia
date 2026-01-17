@@ -1,0 +1,73 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PKHeX.Avalonia.Views.FolderList"
+             x:DataType="vm:FolderListViewModel">
+
+    <Grid RowDefinitions="Auto, *, Auto">
+        <!-- Header / Filter -->
+        <DockPanel Grid.Row="0" Margin="10">
+            <TextBlock Text="Save File Browser" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding FilterText}" Watermark="Filter files..." Width="200" HorizontalAlignment="Right" Margin="20,0,0,0"/>
+        </DockPanel>
+
+        <!-- Main Content -->
+        <TabControl Grid.Row="1" Margin="10,0">
+            <TabItem Header="Recent Files">
+                <DataGrid ItemsSource="{Binding RecentSaves}" 
+                          SelectedItem="{Binding SelectedRecentSave}"
+                          IsReadOnly="True"
+                          GridLinesVisibility="All"
+                          BorderThickness="1" BorderBrush="Gray">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="File Name" Binding="{Binding FileName}" Width="200"/>
+                        <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="80"/>
+                        <DataGridTextColumn Header="Trainer" Binding="{Binding TrainerName}" Width="100"/>
+                        <DataGridTextColumn Header="Play Time" Binding="{Binding PlayTime}" Width="100"/>
+                        <DataGridTextColumn Header="Last Modified" Binding="{Binding LastModified}" Width="150"/>
+                        <DataGridTextColumn Header="Path" Binding="{Binding FilePath}" Width="*"/>
+                    </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Open" Command="{Binding OpenSaveCommand}" CommandParameter="{Binding SelectedRecentSave}"/>
+                            <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}" CommandParameter="{Binding SelectedRecentSave}"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Backups">
+                 <DataGrid ItemsSource="{Binding BackupSaves}" 
+                          SelectedItem="{Binding SelectedBackupSave}"
+                          IsReadOnly="True"
+                          GridLinesVisibility="All"
+                          BorderThickness="1" BorderBrush="Gray">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="File Name" Binding="{Binding FileName}" Width="200"/>
+                        <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="80"/>
+                        <DataGridTextColumn Header="Trainer" Binding="{Binding TrainerName}" Width="100"/>
+                        <DataGridTextColumn Header="Play Time" Binding="{Binding PlayTime}" Width="100"/>
+                        <DataGridTextColumn Header="Last Modified" Binding="{Binding LastModified}" Width="150"/>
+                        <DataGridTextColumn Header="Path" Binding="{Binding FilePath}" Width="*"/>
+                    </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Open" Command="{Binding OpenSaveCommand}" CommandParameter="{Binding SelectedBackupSave}"/>
+                            <MenuItem Header="Open Folder" Command="{Binding OpenFolderCommand}" CommandParameter="{Binding SelectedBackupSave}"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+        
+        <!-- Status Bar -->
+        <TextBlock Grid.Row="2" Text="{Binding StatusText}" Margin="10,5"/>
+        
+        <!-- Loading Overlay -->
+        <Border Grid.RowSpan="3" Background="#80000000" IsVisible="{Binding IsLoading}">
+            <TextBlock Text="Loading..." Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+        </Border>
+    </Grid>
+</UserControl>

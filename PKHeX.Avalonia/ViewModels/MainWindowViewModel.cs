@@ -802,6 +802,12 @@ public partial class MainWindowViewModel : ViewModelBase
              return;
         }
 
+
+
+             await _dialogService.ShowDialogAsync(view8, "Pokédex Editor (Gen 8 SwSh)");
+             return;
+        }
+
         if (CurrentSave is SAV8BS sav8b)
         {
              var vm8b = new Pokedex8bEditorViewModel(sav8b);
@@ -1378,5 +1384,50 @@ public partial class MainWindowViewModel : ViewModelBase
         if (loaded < files.Count && currentBox >= CurrentSave.BoxCount) message += "\nStopped because boxes are full.";
         
         await _dialogService.ShowInformationAsync("Load Boxes", message);
+    }
+    [RelayCommand]
+    private async Task OpenFolderListAsync()
+    {
+        var vm = new FolderListViewModel(_saveFileService, _settings, _dialogService);
+        // Subscribe to open requests?
+        // The ViewModel has OpenSaveCommand which loads save.
+        // If it successfully loads, we might want to close the dialog.
+        vm.CloseRequested += () => 
+        {
+             // Close logic if possible, or just let user close.
+             // Accessing the view to close it from here is tricky with ShowDialogAsync.
+             // But if we pass a callback, or if it just loads global state.
+             // MainWindowViewModel monitors SaveFileChanged, so it updates automatically.
+             // We can just define that Open action closes the dialog?
+             // DialogService usually returns 'result'.
+             // Let's assume user manually closes or we implement Close on VM if specific DialogService allows.
+             // For now, simple show.
+        };
+
+        var view = new Views.FolderList { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Save Folder List");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenGroupViewerAsync()
+    {
+        if (CurrentSave is null) return;
+        
+        System.Collections.Generic.IReadOnlyList<SlotGroup>? groups = null;
+
+        if (CurrentSave is SAV_STADIUM s0)
+        {
+            groups = s0.GetRegisteredTeams();
+        }
+
+        if (groups is null || groups.Count == 0)
+        {
+            await _dialogService.ShowErrorAsync("Info", "No groups available for this save file.");
+            return;
+        }
+
+        var vm = new GroupViewerViewModel(CurrentSave, groups, _spriteRenderer, _slotService);
+        var view = new Views.GroupViewer { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Group Viewer");
     }
 }

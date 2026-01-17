@@ -75,45 +75,65 @@
                     </Border>
 
                     <!-- Selected Gift Details -->
-                    <Border Grid.Column="2"
-                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
-                            CornerRadius="4"
-                            Padding="16">
-                        <StackPanel Spacing="16" DataContext="{Binding SelectedGift}">
-                            <TextBlock Text="Selected Gift"
-                                       FontWeight="SemiBold"
-                                       FontSize="16" />
+                    <Grid Grid.Column="2" RowDefinitions="*,16,Auto">
+                        <!-- Selected Gift Details -->
+                        <Border Grid.Row="0"
+                                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                                CornerRadius="4"
+                                Padding="16">
+                            <StackPanel Spacing="16" DataContext="{Binding SelectedGift}">
+                                <TextBlock Text="Selected Gift"
+                                           FontWeight="SemiBold"
+                                           FontSize="16" />
 
-                            <!-- Gift Info -->
-                            <StackPanel Spacing="8" IsVisible="{Binding !IsEmpty}">
-                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding Species}" />
-                                <TextBlock Text="{Binding Summary}" Opacity="0.7" />
+                                <!-- Gift Info -->
+                                <StackPanel Spacing="8" IsVisible="{Binding !IsEmpty}">
+                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding Species}" />
+                                    <TextBlock Text="{Binding Summary}" Opacity="0.7" />
+                                </StackPanel>
+
+                                <TextBlock Text="(Empty slot)"
+                                           Opacity="0.5"
+                                           IsVisible="{Binding IsEmpty}" />
+
+                                <!-- Actions -->
+                                <StackPanel Spacing="8" Margin="0,16,0,0">
+                                    <Button Content="Import..."
+                                            Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).ImportGiftCommand}"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center" />
+                                    <Button Content="Export..."
+                                            Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).ExportGiftCommand}"
+                                            IsEnabled="{Binding !IsEmpty}"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center" />
+                                    <Button Content="Delete"
+                                            Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).DeleteGiftCommand}"
+                                            IsEnabled="{Binding !IsEmpty}"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center" />
+                                </StackPanel>
                             </StackPanel>
+                        </Border>
 
-                            <TextBlock Text="(Empty slot)"
-                                       Opacity="0.5"
-                                       IsVisible="{Binding IsEmpty}" />
-
-                            <!-- Actions -->
-                            <StackPanel Spacing="8" Margin="0,16,0,0">
-                                <Button Content="Import..."
-                                        Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).ImportGiftCommand}"
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center" />
-                                <Button Content="Export..."
-                                        Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).ExportGiftCommand}"
-                                        IsEnabled="{Binding !IsEmpty}"
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center" />
-                                <Button Content="Delete"
-                                        Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).DeleteGiftCommand}"
-                                        IsEnabled="{Binding !IsEmpty}"
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
+                        <!-- Received Flags -->
+                        <Border Grid.Row="2"
+                                IsVisible="{Binding CanManageFlags}"
+                                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                                CornerRadius="4"
+                                Padding="16"
+                                Height="200">
+                             <DockPanel>
+                                 <TextBlock DockPanel.Dock="Top" Text="Received Flags" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                 <Button DockPanel.Dock="Bottom" Content="Delete Flag" 
+                                         Command="{Binding DeleteFlagCommand}" 
+                                         HorizontalAlignment="Stretch" Margin="0,8,0,0"/>
+                                 <ListBox ItemsSource="{Binding ReceivedFlags}" SelectedItem="{Binding SelectedReceivedFlag}" 
+                                          Background="Transparent"/>
+                             </DockPanel>
+                        </Border>
+                    </Grid>
                 </Grid>
             </DockPanel>
         </Panel>
