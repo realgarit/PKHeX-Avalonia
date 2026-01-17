@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             x:Class="PKHeX.Avalonia.Views.EventWorkEditor"
+             x:DataType="vm:EventWorkEditorViewModel">
+
+    <DockPanel Margin="10">
+        <StackPanel IsVisible="{Binding !IsSupported}" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="This save file does not support Event Work editing." Foreground="Red" />
+        </StackPanel>
+
+        <ScrollViewer IsVisible="{Binding IsSupported}">
+            <StackPanel Spacing="15" Margin="10">
+                <!-- Work Variables -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Event Work (Variables)" FontWeight="Bold" FontSize="14" />
+                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Index:" VerticalAlignment="Center" Margin="0,0,10,5" />
+                            <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding SelectedWorkIndex}" Minimum="0" Maximum="{Binding WorkCount}" Margin="0,0,10,5" />
+                            
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Value:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SelectedWorkValue}" Minimum="-2147483648" Maximum="2147483647" Margin="0,0,10,0" />
+                            <Button Grid.Row="1" Grid.Column="2" Content="Apply" Command="{Binding ApplyWorkCommand}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Flags -->
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Event Flags" FontWeight="Bold" FontSize="14" />
+                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Index:" VerticalAlignment="Center" Margin="0,0,10,5" />
+                            <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding SelectedFlagIndex}" Minimum="0" Maximum="{Binding FlagCount}" Margin="0,0,10,5" />
+                            
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Value:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding SelectedFlagValue}" Content="Enabled" Margin="0,0,10,0" />
+                            <Button Grid.Row="1" Grid.Column="2" Content="Apply" Command="{Binding ApplyFlagCommand}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>
