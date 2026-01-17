@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="550"
+             x:Class="PKHeX.Avalonia.Views.RibbonEditor"
+             x:DataType="vm:RibbonEditorViewModel">
+
+    <Grid RowDefinitions="*,1, Auto" Margin="10">
+        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Ribbons}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Width="200" Margin="5" ColumnDefinitions="Auto, *">
+                            <!-- Icon -->
+                            <Image Grid.Column="0" Source="{Binding Icon}" Width="40" Height="40" Margin="0,0,5,0"/>
+                            
+                            <!-- Controls -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding DisplayName}" TextWrapping="Wrap" FontSize="12" Margin="0,0,0,2"/>
+                                
+                                <!-- Boolean Ribbon -->
+                                <CheckBox IsVisible="{Binding IsBooleanRibbon}" 
+                                          IsChecked="{Binding HasRibbon}" 
+                                          Content="Has Ribbon"/>
+                                          
+                                <!-- Count Ribbon -->
+                                <NumericUpDown IsVisible="{Binding !IsBooleanRibbon}" 
+                                               Value="{Binding RibbonCount}" 
+                                               Minimum="0" 
+                                               Maximum="{Binding MaxCount}"
+                                               Increment="1"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        
+        <Separator Grid.Row="1" Margin="0,5"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+            <Button Content="Give All" Command="{Binding GiveAllCommand}"/>
+            <Button Content="Remove All" Command="{Binding RemoveAllCommand}"/>
+            <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

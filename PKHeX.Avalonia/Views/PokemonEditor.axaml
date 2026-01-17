@@ -443,6 +443,7 @@
                                 <StackPanel Spacing="8" Margin="0,8,0,0">
                                     <TextBlock Text="Tech Records (TMs/TRs)" FontWeight="SemiBold" />
                                     <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Button Content="Open Editor" Command="{Binding OpenTechRecordEditorCommand}" />
                                         <Button Content="Set All Legal" Command="{Binding SetAllTechRecordsCommand}" />
                                         <Button Content="Clear All" Command="{Binding ClearTechRecordsCommand}" />
                                     </StackPanel>
@@ -582,6 +583,7 @@
                 <TabItem Header="Memory" IsVisible="{Binding HasMemories}">
                     <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="16">
+                            <Button Content="Advanced / Affection Editor..." Command="{Binding OpenMemoryEditorCommand}" HorizontalAlignment="Right" />
                             <!-- OT Memory -->
                             <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
                                     CornerRadius="4" Padding="12">
@@ -647,7 +649,7 @@
                             <Grid ColumnDefinitions="*,Auto,Auto">
                                 <TextBlock Text="{Binding RibbonCount, StringFormat='Ribbons ({0})'}" 
                                            FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Opacity="0.6" />
-                                <Button Grid.Column="1" Content="Set All" Command="{Binding SetAllRibbonsCommand}" Margin="0,0,8,0" Padding="8,4" FontSize="12" />
+                                <Button Grid.Column="1" Content="Advanced..." Command="{Binding OpenRibbonEditorCommand}" Margin="0,0,8,0" Padding="8,4" FontSize="12" />
                                 <Button Grid.Column="2" Content="Clear All" Command="{Binding ClearRibbonsCommand}" Padding="8,4" FontSize="12" />
                             </Grid>
                             

@@ -43,6 +43,13 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty] private bool _setUpdateRecords;
     [ObservableProperty] private bool _modifyUnset;
 
+    // Privacy
+    [ObservableProperty] private bool _hideSAVDetails;
+    [ObservableProperty] private bool _hideSecretDetails;
+
+    // Legality
+    [ObservableProperty] private bool _wordFilterCheck; // Attempting to map WordFilter.Check
+
     private void Load()
     {
         // General
@@ -63,6 +70,13 @@ public partial class SettingsViewModel : ViewModelBase
         SetUpdatePKM = _settings.SlotWrite.SetUpdatePKM;
         SetUpdateRecords = _settings.SlotWrite.SetUpdateRecords;
         ModifyUnset = _settings.SlotWrite.ModifyUnset;
+
+        // Privacy
+        HideSAVDetails = _settings.Privacy.HideSAVDetails;
+        HideSecretDetails = _settings.Privacy.HideSecretDetails;
+
+        // Legality
+        WordFilterCheck = _settings.Legality.WordFilter.Check;
     }
 
     [RelayCommand]
@@ -86,6 +100,13 @@ public partial class SettingsViewModel : ViewModelBase
         _settings.SlotWrite.SetUpdatePKM = SetUpdatePKM;
         _settings.SlotWrite.SetUpdateRecords = SetUpdateRecords;
         _settings.SlotWrite.ModifyUnset = ModifyUnset;
+
+        // Privacy
+        _settings.Privacy.HideSAVDetails = HideSAVDetails;
+        _settings.Privacy.HideSecretDetails = HideSecretDetails;
+
+        // Legality
+        _settings.Legality.WordFilter.Check = WordFilterCheck;
 
         _settings.Save();
         _settings.InitializeCore();

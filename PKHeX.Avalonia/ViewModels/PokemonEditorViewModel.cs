@@ -568,4 +568,44 @@ public partial class PokemonEditorViewModel : ViewModelBase
         
         return _pk;
     }
+
+    [RelayCommand]
+    private async Task OpenRibbonEditorAsync()
+    {
+        var vm = new RibbonEditorViewModel(_pk);
+        var view = new Views.RibbonEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Ribbon Editor");
+        LoadRibbons(); // Refresh ribbon count display
+        OnPropertyChanged(nameof(RibbonCount));
+    }
+
+    [RelayCommand]
+    private async Task OpenMemoryEditorAsync()
+    {
+        var vm = new MemoryEditorViewModel(_pk);
+        var view = new Views.MemoryEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Memory Editor");
+    }
+
+    [RelayCommand]
+    private async Task OpenTechRecordEditorAsync()
+    {
+        if (_pk is not ITechRecord tr) return;
+
+        var vm = new TechRecordEditorViewModel(tr, _pk);
+        var view = new Views.TechRecordEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Technical Record Editor");
+    }
+
+    public bool CanOpenTechRecord => _pk is ITechRecord;
+
+    partial void OnSpeciesChanged(int value)
+    {
+        if (_isLoading) return;
+        UpdateFormList();
+        UpdateAbilityList();
+        UpdateSprite();
+        UpdateTitle();
+        OnPropertyChanged(nameof(CanOpenTechRecord));
+    }
 }
