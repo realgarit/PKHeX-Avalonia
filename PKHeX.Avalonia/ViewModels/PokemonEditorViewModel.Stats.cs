@@ -77,6 +77,14 @@ public partial class PokemonEditorViewModel
     public int Stat_SPD { get { RecalculateStats(); return _pk.Stat_SPD; } }
     public int Stat_SPE { get { RecalculateStats(); return _pk.Stat_SPE; } }
 
+    // Base Stats
+    public int Base_HP => _pk.PersonalInfo.HP;
+    public int Base_ATK => _pk.PersonalInfo.ATK;
+    public int Base_DEF => _pk.PersonalInfo.DEF;
+    public int Base_SPA => _pk.PersonalInfo.SPA;
+    public int Base_SPD => _pk.PersonalInfo.SPD;
+    public int Base_SPE => _pk.PersonalInfo.SPE;
+
     public int IVTotal => IvHP + IvATK + IvDEF + IvSPA + IvSPD + IvSPE;
     public int EVTotal => EvHP + EvATK + EvDEF + EvSPA + EvSPD + EvSPE;
 

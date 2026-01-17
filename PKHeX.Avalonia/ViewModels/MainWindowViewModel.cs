@@ -96,6 +96,20 @@ public partial class MainWindowViewModel : ViewModelBase
         };
         _undoRedo.UndoPerformed += OnUndoRedoPerformed;
         _undoRedo.RedoPerformed += OnUndoRedoPerformed;
+
+        _languageService.LanguageChanged += OnLanguageChanged;
+    }
+
+    private void OnLanguageChanged()
+    {
+        // Refresh all dynamic strings in the active view models
+        OnPropertyChanged(string.Empty); // Notifies all properties on this VM
+        
+        // Specifically tell the PokemonEditor to refresh its lists
+        CurrentPokemonEditor?.LoadPKM(CurrentPokemonEditor.TargetPKM);
+        
+        // Refresh BoxViewer if it exists
+        BoxViewer?.RefreshCurrentBox();
     }
 
     [ObservableProperty]

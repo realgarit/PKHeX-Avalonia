@@ -47,7 +47,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     // Basic Info
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Sprite))]
+    [NotifyPropertyChangedFor(nameof(Title), nameof(Sprite), nameof(FormList), nameof(AbilityList), nameof(Ability), nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(Base_HP), nameof(Base_ATK), nameof(Base_DEF), nameof(Base_SPA), nameof(Base_SPD), nameof(Base_SPE))]
     private int _species;
 
     [ObservableProperty]
@@ -60,14 +60,14 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private uint _id32;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Sprite))]
+    [NotifyPropertyChangedFor(nameof(Sprite), nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(Base_HP), nameof(Base_ATK), nameof(Base_DEF), nameof(Base_SPA), nameof(Base_SPD), nameof(Base_SPE))]
     private int _form;
 
     [ObservableProperty]
     private string _nickname = string.Empty;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE))]
+    [NotifyPropertyChangedFor(nameof(Title), nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE))]
     private int _level;
 
     [ObservableProperty]
@@ -320,12 +320,16 @@ public partial class PokemonEditorViewModel : ViewModelBase
                 HtMemoryVariable = mht.HandlingTrainerMemoryVariable;
             }
 
-            UpdateTitle();
+        UpdateTitle();
         }
         finally
         {
             _isLoading = false;
         }
+
+        // Manually trigger computed property notifications
+        OnPropertyChanged(nameof(IVTotal));
+        OnPropertyChanged(nameof(EVTotal));
 
         // These can modify _pk, but now we're done loading so it's OK
         UpdateSprite();
@@ -403,6 +407,8 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _pk.Form = (byte)Form;
         if (IsShiny)
             _pk.SetShiny();
+        else
+            _pk.SetUnshiny(); // Clear shiny state when not shiny
 
         Sprite = _spriteRenderer.GetSprite(_pk);
     }
@@ -436,9 +442,9 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _pk.Gender = (byte)Gender;
         _pk.IsEgg = IsEgg;
 
-        if (IsShiny && !_pk.IsShiny)
+        if (IsShiny)
             _pk.SetShiny();
-        else if (!IsShiny && _pk.IsShiny)
+        else
             _pk.SetUnshiny();
 
         _pk.Move1 = (ushort)Move1;

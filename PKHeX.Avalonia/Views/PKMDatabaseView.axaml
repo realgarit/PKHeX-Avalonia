@@ -65,6 +65,7 @@
                 </Border>
     
                 <DataGrid ItemsSource="{Binding Results}" 
+                          SelectedItem="{Binding SelectedResult}"
                           IsReadOnly="True" 
                           AutoGenerateColumns="False"
                           CanUserResizeColumns="True"

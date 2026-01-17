@@ -31,6 +31,9 @@ public partial class PKMDatabaseViewModel : ViewModelBase
     [ObservableProperty]
     private string _statusText = "Ready";
 
+    [ObservableProperty]
+    private PKMDatabaseEntry? _selectedResult;
+
     // Filtering properties (mapped to SearchSettings)
     [ObservableProperty] private int _species;
     [ObservableProperty] private int _nature;
