@@ -915,6 +915,26 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenSimpleTrainerAsync()
+    {
+        if (CurrentSave is not (SAV1 or SAV2 or SAV3 or SAV4 or SAV5)) return;
+
+        var vm = new SimpleTrainerEditorViewModel(CurrentSave);
+        var view = new Views.SimpleTrainerEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Simple Trainer Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenGearBRAsync()
+    {
+        if (CurrentSave is not SAV4BR sav4br) return;
+
+        var vm = new GearBREditorViewModel(sav4br);
+        var view = new Views.GearBREditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Gear Editor (Battle Revolution)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenSecretBase3Async()
     {
         if (CurrentSave is not SAV3 sav3) return;
