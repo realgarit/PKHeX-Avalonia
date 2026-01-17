@@ -66,37 +66,71 @@ public class LayoutTests
             Dispatcher.UIThread.RunJobs();
 
             // Verify bounds for this tab's content
-            VerifyBounds(view, view.Bounds);
+            LayoutValidator.Validate(view);
         }
     }
 
-    private void VerifyBounds(Visual visual, Rect rootBounds)
+
+    [AvaloniaFact]
+    public void Verify_TrainerEditor_Layout()
     {
-        var bounds = visual.Bounds;
+        var vm = new TrainerEditorViewModel(_saveFile);
+        var view = new TrainerEditor { DataContext = vm };
+        ForceLayout(view);
+        LayoutValidator.Validate(view);
+    }
 
-        // Skip items that are intentionally invisible or collapsed
-        if (!visual.IsVisible || bounds.Width == 0 || bounds.Height == 0)
-            return;
+    [AvaloniaFact]
+    public void Verify_InventoryEditor_Layout()
+    {
+        var vm = new InventoryEditorViewModel(_saveFile);
+        var view = new InventoryEditor { DataContext = vm };
+        ForceLayout(view);
+        LayoutValidator.Validate(view);
+    }
 
-        // Recursively check children
-        foreach (var child in visual.GetVisualChildren())
+    [AvaloniaFact]
+    public void Verify_EventFlagsEditor_Layout()
+    {
+        var vm = new EventFlagsEditorViewModel(_saveFile);
+        var view = new EventFlagsEditor { DataContext = vm };
+        ForceLayout(view);
+        LayoutValidator.Validate(view);
+    }
+
+    [AvaloniaFact]
+    public void Verify_MysteryGiftEditor_Layout()
+    {
+        var dialogMock = new Mock<IDialogService>();
+        var vm = new MysteryGiftEditorViewModel(_saveFile, dialogMock.Object);
+        var view = new MysteryGiftEditor { DataContext = vm };
+        ForceLayout(view);
+        LayoutValidator.Validate(view);
+    }
+
+    [AvaloniaFact]
+    public void Verify_BatchEditor_Layout()
+    {
+        var dialogMock = new Mock<IDialogService>();
+        var vm = new BatchEditorViewModel(_saveFile, dialogMock.Object);
+        var view = new PKHeX.Avalonia.Views.BatchEditor { DataContext = vm };
+        ForceLayout(view);
+        LayoutValidator.Validate(view);
+    }
+
+    private void ForceLayout(Control view)
+    {
+         var window = new Window
         {
-            if (child is Visual vChild)
-            {
-                // Skip internal Avalonia containers that often report weird bounds (e.g. DatePicker internal Viewbox)
-                var typeName = vChild.GetType().Name;
-                if (typeName.Contains("Viewbox"))
-                    continue;
-
-                // Check if child fits in parent horizontally
-                // Allow tolerance (8.0 pixel) for border snapping/rounding, WrapPanel edge cases, and internal control sizing quirks
-                Assert.True(vChild.Bounds.Right <= bounds.Width + 8.0, 
-                    $"Horizontal Overflow: {vChild.GetType().Name} (Right: {vChild.Bounds.Right}) exceeds parent {visual.GetType().Name} (Width: {bounds.Width}). \nContext: {vChild}");
-
-                // Recursively check
-                VerifyBounds(vChild, rootBounds);
-            }
-        }
+            Content = view,
+            Width = 800,
+            Height = 600
+        };
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+        view.Measure(new Size(800, 600)); 
+        view.Arrange(new Rect(0, 0, 800, 600));
+        Dispatcher.UIThread.RunJobs();
     }
 
     [AvaloniaFact]
