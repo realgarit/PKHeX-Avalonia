@@ -915,6 +915,17 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenSecretBase3Async()
+    {
+        if (CurrentSave is not SAV3 sav3) return;
+        if (sav3 is not IGen3Hoenn) return;
+
+        var vm = new SecretBase3EditorViewModel(sav3);
+        var view = new Views.SecretBase3Editor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Secret Base Editor (RSE)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenSecretBase6Async()
     {
         if (CurrentSave is not SAV6AO) return;
@@ -1152,6 +1163,26 @@ public partial class MainWindowViewModel : ViewModelBase
         var vm = new Misc9EditorViewModel(sav9);
         var view = new Views.Misc9Editor { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Misc Editor (SV)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMisc7bAsync()
+    {
+        if (CurrentSave is not SAV7b sav7b) return;
+
+        var vm = new Misc7bEditorViewModel(sav7b);
+        var view = new Views.Misc7bEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Misc Editor (Let's Go)");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMisc8aAsync()
+    {
+        if (CurrentSave is not SAV8LA sav8a) return;
+
+        var vm = new Misc8aEditorViewModel(sav8a);
+        var view = new Views.Misc8aEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Misc Editor (Legends Arceus)");
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
