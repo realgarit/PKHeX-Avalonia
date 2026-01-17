@@ -20,103 +20,94 @@
         <KeyBinding Gesture="PageDown" Command="{Binding NextBoxCommand}" />
     </UserControl.KeyBindings>
 
-    <Border Padding="16">
-        <StackPanel Spacing="8" HorizontalAlignment="Center">
-            <!-- Box Navigation -->
-            <DockPanel MinWidth="450">
-                <Button DockPanel.Dock="Left"
-                        Content="◀"
-                        Command="{Binding PreviousBoxCommand}"
-                        Width="40"
-                        ToolTip.Tip="Previous Box (PageUp)" />
-                <Button DockPanel.Dock="Right"
-                        Content="▶"
-                        Command="{Binding NextBoxCommand}"
-                        Width="40"
-                        ToolTip.Tip="Next Box (PageDown)" />
-                <TextBlock Text="{Binding BoxName}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           FontWeight="SemiBold"
-                           FontSize="16" />
-            </DockPanel>
+    <Border Padding="20" Background="{DynamicResource ThemeBackgroundBaseBrush}">
+        <StackPanel Spacing="16" HorizontalAlignment="Center">
+            
+            <!-- Box Navigation - Modern Pill Style -->
+            <Border Classes="card" Padding="12,8" HorizontalAlignment="Center">
+                <DockPanel MinWidth="480">
+                    <Button DockPanel.Dock="Left"
+                            Classes="nav-pill"
+                            Content="◀"
+                            Command="{Binding PreviousBoxCommand}"
+                            ToolTip.Tip="Previous Box (PageUp)"
+                            Padding="14,8"
+                            FontSize="14" />
+                    <Button DockPanel.Dock="Right"
+                            Classes="nav-pill"
+                            Content="▶"
+                            Command="{Binding NextBoxCommand}"
+                            ToolTip.Tip="Next Box (PageDown)"
+                            Padding="14,8"
+                            FontSize="14" />
+                    <TextBlock Text="{Binding BoxName}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               FontSize="18"
+                               Foreground="{DynamicResource ThemeTextPrimaryBrush}" />
+                </DockPanel>
+            </Border>
 
+            <!-- Box Grid (6 columns x 5 rows = 30 slots) - Card Container -->
+            <Border Classes="card-elevated" Padding="16">
+                <ItemsControl ItemsSource="{Binding Slots}" x:Name="SlotGrid">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="6" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:SlotData">
+                            <Button Classes="slot"
+                                    Classes.selected="{Binding IsSelected}"
+                                    Margin="4"
+                                    PointerPressed="OnSlotPointerPressed"
+                                    PointerMoved="OnSlotPointerMoved"
+                                    DragDrop.AllowDrop="True"
+                                    DragDrop.Drop="OnSlotDrop"
+                                    ToolTip.Tip="{Binding ToolTipSummary}"
+                                    Click="OnSlotClicked"
+                                    DoubleTapped="OnSlotDoubleTapped"
+                                    Tag="{Binding}">
+                                <Button.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="View (Ctrl+Click)"
+                                                  Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).ViewSlotCommand}"
+                                                  CommandParameter="{Binding}"
+                                                  IsEnabled="{Binding !IsEmpty}" />
+                                        <MenuItem Header="Set (Shift+Click)"
+                                                  Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).SetSlotCommand}"
+                                                  CommandParameter="{Binding}" />
+                                        <Separator />
+                                        <MenuItem Header="Delete (Alt+Click)"
+                                                  Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).DeleteSlotCommand}"
+                                                  CommandParameter="{Binding}"
+                                                  IsEnabled="{Binding !IsEmpty}" />
+                                    </ContextMenu>
+                                </Button.ContextMenu>
+                                <Panel Width="72" Height="60">
+                                    <!-- Empty slot indicator -->
+                                    <Border Classes="empty-slot"
+                                            IsVisible="{Binding IsEmpty}" />
 
+                                    <!-- Pokemon Sprite -->
+                                    <Image Source="{Binding Sprite}"
+                                           Width="68" Height="56"
+                                           RenderOptions.BitmapInterpolationMode="HighQuality"
+                                           IsVisible="{Binding !IsEmpty}" />
+                                </Panel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
 
-            <!-- Box Grid (6 columns x 5 rows = 30 slots) -->
-            <ItemsControl ItemsSource="{Binding Slots}" x:Name="SlotGrid">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="6" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="models:SlotData">
-                        <Button Background="Transparent"
-                                Padding="2"
-                                Margin="1"
-                                BorderThickness="2"
-                                Classes.selected="{Binding IsSelected}"
-                                PointerPressed="OnSlotPointerPressed"
-                                PointerMoved="OnSlotPointerMoved"
-                                DragDrop.AllowDrop="True"
-                                DragDrop.Drop="OnSlotDrop"
-                                ToolTip.Tip="{Binding ToolTipSummary}"
-                                Click="OnSlotClicked"
-                                DoubleTapped="OnSlotDoubleTapped"
-                                Tag="{Binding}">
-                            <Button.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="View (Ctrl+Click)"
-                                              Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).ViewSlotCommand}"
-                                              CommandParameter="{Binding}"
-                                              IsEnabled="{Binding !IsEmpty}" />
-                                    <MenuItem Header="Set (Shift+Click)"
-                                              Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).SetSlotCommand}"
-                                              CommandParameter="{Binding}" />
-                                    <Separator />
-                                    <MenuItem Header="Delete (Alt+Click)"
-                                              Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).DeleteSlotCommand}"
-                                              CommandParameter="{Binding}"
-                                              IsEnabled="{Binding !IsEmpty}" />
-                                </ContextMenu>
-                            </Button.ContextMenu>
-                            <Button.Styles>
-                                <Style Selector="Button">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
-                                </Style>
-                                <Style Selector="Button.selected">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource SystemAccentColor}" />
-                                    <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}" />
-                                </Style>
-                                <Style Selector="Button:pointerover">
-                                    <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundListLowBrush}" />
-                                </Style>
-                            </Button.Styles>
-                            <Panel Width="68" Height="56">
-                                <!-- Empty slot background -->
-                                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-                                        CornerRadius="4"
-                                        IsVisible="{Binding IsEmpty}" />
-
-                                <!-- Sprite -->
-                                <Image Source="{Binding Sprite}"
-                                       Width="68" Height="56"
-                                       IsVisible="{Binding !IsEmpty}" />
-
-
-                            </Panel>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-            <!-- Keyboard hints -->
+            <!-- Keyboard hints - Muted styling -->
             <TextBlock Text="Arrow keys: Navigate | Enter: Select | PageUp/Down: Switch Box"
-                       Opacity="0.5"
+                       Foreground="{DynamicResource ThemeTextMutedBrush}"
                        FontSize="11"
-                       HorizontalAlignment="Center"
-                       Margin="0,8,0,0" />
+                       HorizontalAlignment="Center" />
         </StackPanel>
     </Border>
 </UserControl>

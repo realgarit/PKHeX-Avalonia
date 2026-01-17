@@ -7,90 +7,118 @@
 
     <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
         <DockPanel>
-            <!-- Header with sprite and title -->
-            <Border DockPanel.Dock="Top" Margin="0,0,0,16">
+            <!-- Header with sprite and title - Glass Effect -->
+            <Border DockPanel.Dock="Top" Margin="0,0,0,16"
+                    Classes="glass" Padding="16">
                 <!-- Header: Sprite | Title/Stats | Legality | Shiny -->
                 <Grid ColumnDefinitions="Auto,*,48,48">
-                    <!-- Sprite -->
+                    <!-- Sprite Container with shadow -->
                     <Border Grid.Column="0"
-                            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-                            CornerRadius="8"
+                            Background="{DynamicResource ThemeBackgroundCardBrush}"
+                            BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
                             Padding="8"
-                            Width="84" Height="72">
+                            BoxShadow="0 4 12 0 #00000030"
+                            Width="88" Height="76">
                         <Image Source="{Binding Sprite}"
                                Width="68" Height="56"
+                               RenderOptions.BitmapInterpolationMode="HighQuality"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center" />
                     </Border>
 
-                    <!-- Title and Quick Info (constrained width to prevent overflow) -->
-                    <StackPanel Grid.Column="1" Margin="8,0" VerticalAlignment="Center" MaxWidth="180">
+                    <!-- Title and Quick Info -->
+                    <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center" MaxWidth="200">
                         <TextBlock Text="{Binding Title}"
-                                   FontSize="18"
+                                   FontSize="20"
                                    FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ThemeTextPrimaryBrush}"
                                    TextTrimming="CharacterEllipsis" />
-                        <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0">
-                            <TextBlock Text="{Binding Level, StringFormat='Lv.{0}'}" Opacity="0.7" FontSize="12" />
-                            <TextBlock Text="|" Opacity="0.5" FontSize="12" />
-                            <TextBlock Opacity="0.7" FontSize="12" TextTrimming="CharacterEllipsis">
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="IV:{0} EV:{1}">
-                                        <Binding Path="IVTotal" />
-                                        <Binding Path="EVTotal" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
+                        <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
+                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}"
+                                    CornerRadius="10" Padding="8,3">
+                                <TextBlock Text="{Binding Level, StringFormat='Lv.{0}'}" 
+                                           Foreground="{DynamicResource ThemeTextSecondaryBrush}" 
+                                           FontSize="12" FontWeight="SemiBold" />
+                            </Border>
+                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}"
+                                    CornerRadius="10" Padding="8,3">
+                                <TextBlock Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="12">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="IV:{0}">
+                                            <Binding Path="IVTotal" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Border>
+                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}"
+                                    CornerRadius="10" Padding="8,3">
+                                <TextBlock Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="12">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="EV:{0}">
+                                            <Binding Path="EVTotal" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Border>
                         </StackPanel>
                     </StackPanel>
 
-                    <!-- Legality Indicator -->
+                    <!-- Legality Indicator - Badge Style -->
                     <Button Grid.Column="2" 
-                            Width="40" Height="40"
+                            Width="44" Height="44"
                             Margin="0,0,8,0"
                             Padding="0"
                             Background="Transparent"
                             BorderThickness="0"
-                            CornerRadius="20"
                             Command="{Binding ShowLegalityCommand}"
                             ToolTip.Tip="{Binding LegalityReport}">
-                        <Border Width="40" Height="40"
-                                Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-                                CornerRadius="20">
-                            <Panel>
+                        <Panel>
+                            <!-- Legal Badge -->
+                            <Border Width="44" Height="44"
+                                    Classes="badge-success"
+                                    CornerRadius="22"
+                                    IsVisible="{Binding IsLegal}">
                                 <TextBlock Text="✔" 
-                                           FontSize="24"
-                                           Foreground="Green"
+                                           FontSize="22"
+                                           Foreground="White"
                                            HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           IsVisible="{Binding IsLegal}" />
+                                           VerticalAlignment="Center" />
+                            </Border>
+                            <!-- Illegal Badge -->
+                            <Border Width="44" Height="44"
+                                    Classes="badge-error"
+                                    CornerRadius="22"
+                                    IsVisible="{Binding !IsLegal}">
                                 <TextBlock Text="✘" 
-                                           FontSize="24"
-                                           Foreground="Red"
+                                           FontSize="22"
+                                           Foreground="White"
                                            HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           IsVisible="{Binding !IsLegal}" />
-                            </Panel>
-                        </Border>
+                                           VerticalAlignment="Center" />
+                            </Border>
+                        </Panel>
                     </Button>
 
-                    <!-- Shiny Toggle -->
+                    <!-- Shiny Toggle - Modern Style -->
                     <Button Grid.Column="3"
+                            Classes="nav-pill"
                             Command="{Binding ToggleShinyCommand}"
                             ToolTip.Tip="Toggle Shiny"
-                            Width="40" Height="40"
+                            Width="44" Height="44"
                             Padding="0">
                         <Panel>
                             <TextBlock Text="★"
-                                       FontSize="20"
+                                       FontSize="22"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
-                                       Foreground="Gold"
+                                       Foreground="{DynamicResource ThemeShinyBrush}"
                                        IsVisible="{Binding IsShiny}" />
                             <TextBlock Text="☆"
-                                       FontSize="20"
+                                       FontSize="22"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
-                                       Opacity="0.5"
+                                       Foreground="{DynamicResource ThemeTextMutedBrush}"
                                        IsVisible="{Binding !IsShiny}" />
                         </Panel>
                     </Button>

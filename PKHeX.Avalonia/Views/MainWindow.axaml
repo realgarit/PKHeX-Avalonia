@@ -134,28 +134,37 @@
             </MenuItem>
         </Menu>
 
-        <!-- Status Bar -->
-        <Border DockPanel.Dock="Bottom" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="8,4">
-            <TextBlock Text="{Binding CurrentSave.Version, StringFormat='Game: {0}', FallbackValue='No save loaded'}" />
+        <!-- Status Bar - Themed -->
+        <Border DockPanel.Dock="Bottom" 
+                Background="{DynamicResource ThemeBackgroundCardBrush}" 
+                BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="12,6">
+            <TextBlock Text="{Binding CurrentSave.Version, StringFormat='Game: {0}', FallbackValue='No save loaded'}" 
+                       Foreground="{DynamicResource ThemeTextSecondaryBrush}"
+                       FontSize="12" />
         </Border>
 
         <!-- Main Content -->
-        <Grid>
-            <!-- No Save Loaded State -->
+        <Grid Background="{DynamicResource ThemeBackgroundDeepBrush}">
+            <!-- No Save Loaded State - Hero Welcome -->
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
                         IsVisible="{Binding !HasSave}">
-                <TextBlock Text="Welcome to PKHeX Avalonia"
-                           FontSize="24"
+                <TextBlock Text="PKHeX Avalonia"
+                           FontSize="32"
                            FontWeight="Light"
+                           Foreground="{DynamicResource ThemeTextPrimaryBrush}"
                            HorizontalAlignment="Center" />
                 <TextBlock Text="Open a save file to get started"
-                           Opacity="0.6"
+                           Foreground="{DynamicResource ThemeTextMutedBrush}"
                            HorizontalAlignment="Center"
-                           Margin="0,8,0,16" />
+                           Margin="0,8,0,24" />
                 <Button Content="Open Save File"
                         Command="{Binding OpenFileCommand}"
                         HorizontalAlignment="Center"
-                        Classes="accent" />
+                        Classes="accent-gradient"
+                        Padding="24,12"
+                        FontSize="14" />
             </StackPanel>
 
             <!-- Save Loaded State: WinForms-style layout -->
@@ -164,8 +173,9 @@
                 
             <!-- Left Panel: PKM Editor (700px) -->
             <Border Grid.Column="0" 
+                    Background="{DynamicResource ThemeBackgroundBaseBrush}"
                     BorderThickness="0,0,1,0" 
-                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}">
+                    BorderBrush="{DynamicResource ThemeBorderDefaultBrush}">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <ContentControl Content="{Binding CurrentPokemonEditor}">
                         <ContentControl.ContentTemplate>
