@@ -1430,4 +1430,45 @@ public partial class MainWindowViewModel : ViewModelBase
         var view = new Views.GroupViewer { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Group Viewer");
     }
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenMoveShopAsync()
+    {
+        if (CurrentSave is not SAV8SWSH s8) return;
+        if (CurrentSave.GetTrainers().FirstOrDefault() is not PKM pkm) return;
+
+        var shop = s8.MoveShop;
+        var mastery = s8.MoveShopMastery;
+        
+        var vm = new MoveShopEditorViewModel(shop, mastery, pkm);
+        
+        var view = new Views.MoveShopEditor { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Move Shop Editor");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenKChartAsync()
+    {
+        if (CurrentSave is null) return;
+        var vm = new KChartViewModel(CurrentSave, _spriteRenderer);
+        var view = new Views.KChart { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Knowledge Chart");       
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenReportAsync()
+    {
+        if (CurrentSave is null) return;
+        var vm = new ReportViewModel(CurrentSave);
+        var view = new Views.ReportWindow { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Box Report");
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenBoxExporterAsync()
+    {
+        if (CurrentSave is null) return;
+        var vm = new BoxExporterViewModel(CurrentSave, _dialogService);
+        var view = new Views.BoxExporter { DataContext = vm };
+        await _dialogService.ShowDialogAsync(view, "Box Exporter");
+    }
 }

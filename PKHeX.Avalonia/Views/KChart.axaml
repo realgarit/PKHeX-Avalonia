@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             x:Class="PKHeX.Avalonia.Views.KChart"
+             x:DataType="vm:KChartViewModel">
+
+    <DataGrid ItemsSource="{Binding Entries}" CanUserSortColumns="True" IsReadOnly="True"
+              GridLinesVisibility="All" BorderThickness="1" BorderBrush="Gray">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="#" Binding="{Binding DisplayID}" Width="80"/>
+            <DataGridTemplateColumn Header="Sprite">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding Sprite}" Width="40" Height="30" Stretch="Uniform"/>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="150"/>
+            <DataGridTextColumn Header="BST" Binding="{Binding BST}" Width="50"/>
+            <DataGridTextColumn Header="Rate" Binding="{Binding CatchRate}" Width="50"/>
+            
+            <DataGridTextColumn Header="Type 1" Binding="{Binding Type1}" Width="80"/>
+            <DataGridTextColumn Header="Type 2" Binding="{Binding Type2}" Width="80"/>
+
+            <DataGridTextColumn Header="HP" Binding="{Binding HP}" Width="40"/>
+            <DataGridTextColumn Header="Atk" Binding="{Binding ATK}" Width="40"/>
+            <DataGridTextColumn Header="Def" Binding="{Binding DEF}" Width="40"/>
+            <DataGridTextColumn Header="SpA" Binding="{Binding SPA}" Width="40"/>
+            <DataGridTextColumn Header="SpD" Binding="{Binding SPD}" Width="40"/>
+            <DataGridTextColumn Header="Spe" Binding="{Binding SPE}" Width="40"/>
+
+            <DataGridTextColumn Header="Ability 1" Binding="{Binding Ability1}" Width="100"/>
+            <DataGridTextColumn Header="Ability 2" Binding="{Binding Ability2}" Width="100"/>
+            <DataGridTextColumn Header="Ability H" Binding="{Binding AbilityH}" Width="100"/>
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             x:Class="PKHeX.Avalonia.Views.ReportWindow"
+             x:DataType="vm:ReportViewModel">
+
+    <DataGrid ItemsSource="{Binding Items}" CanUserSortColumns="True" IsReadOnly="True"
+              GridLinesVisibility="All" BorderThickness="1" BorderBrush="Gray">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Species" Binding="{Binding Species}" Width="100"/>
+            <DataGridTextColumn Header="Nickname" Binding="{Binding Nickname}" Width="100"/>
+            <DataGridTextColumn Header="Lvl" Binding="{Binding Level}" Width="40"/>
+            <DataGridTextColumn Header="Nature" Binding="{Binding Nature}" Width="80"/>
+            <DataGridTextColumn Header="Ability" Binding="{Binding Ability}" Width="100"/>
+            <DataGridTextColumn Header="Item" Binding="{Binding HeldItem}" Width="100"/>
+            
+            <DataGridTextColumn Header="Move 1" Binding="{Binding Move1}" Width="100"/>
+            <DataGridTextColumn Header="Move 2" Binding="{Binding Move2}" Width="100"/>
+            <DataGridTextColumn Header="Move 3" Binding="{Binding Move3}" Width="100"/>
+            <DataGridTextColumn Header="Move 4" Binding="{Binding Move4}" Width="100"/>
+
+            <DataGridTextColumn Header="H" Binding="{Binding IV_HP}" Width="30"/>
+            <DataGridTextColumn Header="A" Binding="{Binding IV_Atk}" Width="30"/>
+            <DataGridTextColumn Header="B" Binding="{Binding IV_Def}" Width="30"/>
+            <DataGridTextColumn Header="C" Binding="{Binding IV_SpA}" Width="30"/>
+            <DataGridTextColumn Header="D" Binding="{Binding IV_SpD}" Width="30"/>
+            <DataGridTextColumn Header="S" Binding="{Binding IV_Spe}" Width="30"/>
+            
+            <DataGridTextColumn Header="EvH" Binding="{Binding EV_HP}" Width="30"/>
+            <DataGridTextColumn Header="EvA" Binding="{Binding EV_Atk}" Width="30"/>
+            <DataGridTextColumn Header="EvB" Binding="{Binding EV_Def}" Width="30"/>
+            <DataGridTextColumn Header="EvC" Binding="{Binding EV_SpA}" Width="30"/>
+            <DataGridTextColumn Header="EvD" Binding="{Binding EV_SpD}" Width="30"/>
+            <DataGridTextColumn Header="EvS" Binding="{Binding EV_Spe}" Width="30"/>
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>
