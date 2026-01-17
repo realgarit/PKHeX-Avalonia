@@ -42,6 +42,13 @@ public sealed class AvaloniaSpriteRenderer : ISpriteRenderer
         return ConvertToBitmap(composed);
     }
 
+    public Bitmap? GetSprite(ushort species, byte form, byte gender, uint formarg, bool shiny, EntityContext context)
+    {
+        var skBitmap = _loader.GetSprite(species, form, gender, formarg, shiny, context);
+        if (skBitmap == null) return null;
+        return ConvertToBitmap(skBitmap);
+    }
+
     public Bitmap? GetEmptySlot()
     {
         using var surface = SKSurface.Create(new SKImageInfo(SpriteWidth, SpriteHeight));

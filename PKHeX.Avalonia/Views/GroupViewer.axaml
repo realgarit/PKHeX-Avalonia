@@ -3,25 +3,30 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:PKHeX.Avalonia.ViewModels"
+             xmlns:models="using:PKHeX.Avalonia.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="PKHeX.Avalonia.Views.GroupViewer">
+             x:Class="PKHeX.Avalonia.Views.GroupViewer"
+             x:DataType="vm:GroupViewerViewModel">
 
     <Design.DataContext>
         <!-- ReSharper disable once Xaml.ConstructorWarning -->
         <vm:GroupViewerViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, *">
-        <!-- Navigation Header -->
-        <DockPanel Grid.Row="0" Margin="10">
-            <Button DockPanel.Dock="Left" Content="&lt;" Command="{Binding PreviousGroupCommand}" Width="40"/>
-            <Button DockPanel.Dock="Right" Content="&gt;" Command="{Binding NextGroupCommand}" Width="40"/>
-            <ComboBox ItemsSource="{Binding GroupNames}" SelectedIndex="{Binding CurrentGroupIndex}" 
-                      HorizontalAlignment="Stretch" Margin="10,0"/>
-        </DockPanel>
+    <UserControl.Resources>
+        <!-- Define any resources here if needed -->
+    </UserControl.Resources>
+    
+    <Grid RowDefinitions="Auto, *, Auto" Margin="10">
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+            <Button Content="&lt;" Command="{Binding PreviousGroupCommand}"/>
+            <ComboBox ItemsSource="{Binding GroupNames}" SelectedIndex="{Binding CurrentGroupIndex}" Width="200" MaxDropDownHeight="400"/>
+            <Button Content="&gt;" Command="{Binding NextGroupCommand}"/>
+        </StackPanel>
 
-        <!-- Slot Grid -->
-        <ScrollViewer Grid.Row="1" Padding="10">
+        <!-- Slots -->
+        <ScrollViewer Grid.Row="1" Margin="0,10">
             <ItemsControl ItemsSource="{Binding Slots}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -29,26 +34,19 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                         <Button Command="{Binding $parent[UserControl].DataContext.ViewSlotCommand}"
-                                 CommandParameter="{Binding}"
-                                 Background="Transparent"
-                                 Padding="2"
-                                 Margin="2"
-                                 Width="44" Height="34">
-                             <!-- Using fixed size similar to box slots -->
-                             <Panel>
-                                 <Image Source="{Binding Sprite}" Stretch="None" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                 <!-- Optional: Tooltip -->
-                             </Panel>
-                             <ToolTip.Tip>
-                                 <StackPanel>
-                                     <TextBlock Text="{Binding SpeciesName, StringFormat='{}{0}'}" FontWeight="Bold"/>
-                                     <TextBlock Text="{Binding Nickname, StringFormat='Nickname: {0}'}" IsVisible="{Binding Nickname, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-                                     <TextBlock Text="{Binding Level, StringFormat='Level: {0}'}"/>
-                                 </StackPanel>
-                             </ToolTip.Tip>
-                         </Button>
+                    <DataTemplate x:DataType="models:SlotData">
+                        <Button Margin="2" Padding="4" Width="80" Height="100"
+                                Command="{Binding $parent[UserControl].((vm:GroupViewerViewModel)DataContext).ViewSlotCommand}"
+                                CommandParameter="{Binding}">
+                            <Grid RowDefinitions="*, Auto, Auto">
+                                <!-- Sprite -->
+                                <Image Grid.Row="0" Source="{Binding Sprite}" Stretch="Uniform" Height="60"/>
+                                
+                                <!-- Info -->
+                                <TextBlock Grid.Row="1" Text="{Binding SpeciesName}" FontSize="10" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Grid.Row="2" Text="{Binding Nickname}" FontSize="9" HorizontalAlignment="Center" Foreground="Gray" TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

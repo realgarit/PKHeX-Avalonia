@@ -42,5 +42,6 @@
     <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Big Shiny Sprites\*.png" LinkBase="Resources\SpritesShiny" />
     <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Big Items\*.png" LinkBase="Resources\Items" />
     <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Pokemon Sprite Overlays\*.png" LinkBase="Resources\Overlays" />
+    <EmbeddedResource Include="..\PKHeX.Drawing.Misc\Resources\img\ribbons\*.png" LinkBase="Resources\Ribbons" />
   </ItemGroup>
 </Project>

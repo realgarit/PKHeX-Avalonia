@@ -22,7 +22,7 @@ public partial class RibbonItemViewModel : ObservableObject
     private int _ribbonCount;
 
     [ObservableProperty]
-    private Avalonia.Media.Imaging.Bitmap? _icon;
+    private global::Avalonia.Media.Imaging.Bitmap? _icon;
     
     public RibbonItemViewModel(PKM pk, RibbonInfo info)
     {

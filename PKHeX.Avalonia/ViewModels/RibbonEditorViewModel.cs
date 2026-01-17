@@ -8,7 +8,7 @@ using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
-using PKHeX.Drawing.Misc;
+
 
 namespace PKHeX.Avalonia.ViewModels;
 
@@ -52,19 +52,31 @@ public partial class RibbonEditorViewModel : ViewModelBase
         {
             var vm = new RibbonItemViewModel(_pkm, info);
             
-            // Load Icon (Convert GDI+ Bitmap to Avalonia Bitmap)
-            // Note: RibbonSpriteUtil.GetRibbonSprite returns System.Drawing.Bitmap
-            // MaxCount logic for memory ribbons from WinForms
+            // Load Icon (Avalonia Resource)
+            // Resource path: resm:PKHeX.Avalonia.Resources.Ribbons.ribbonname.png?assembly=PKHeX.Avalonia
+            // Name mapping: lowercase, remove "CountG3" -> "G3"
+            var resourceName = info.Name.Replace("CountG3", "G3").ToLowerInvariant();
+            
+            // Handle Gold memory ribbons if max count reached
             int max = info.MaxCount;
             if (max == 8 && info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryBattle) && _pkm.Format >= 9)
                 max = 7;
-                
-            var sysBmp = RibbonSpriteUtil.GetRibbonSprite(info.Name, max, info.RibbonCount);
-            vm.Icon = ConvertBitmap(sysBmp);
 
-            // Determine if valid (simple check for now, can extend VM if we need coloring)
-            // WinForms colors based on 'IsMissing' or 'IsInvalid'.
-            // For now we just load them.
+            // TODO: Logic for gold memory ribbons based on count? 
+            // WinForms logic: if count == max, use "2" suffix for gold ribbon?
+            // "ribboncountmemorybattle" vs "ribboncountmemorybattle2"
+            if ((info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryBattle) || 
+                 info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryContest)) && 
+                 info.RibbonCount == max)
+            {
+                 resourceName += "2";
+            }
+
+            var uri = new Uri($"avares://PKHeX.Avalonia/Resources/Ribbons/{resourceName}.png");
+            if (global::Avalonia.Platform.AssetLoader.Exists(uri))
+            {
+                vm.Icon = new global::Avalonia.Media.Imaging.Bitmap(global::Avalonia.Platform.AssetLoader.Open(uri));
+            }
             
             list.Add(vm);
         }
@@ -72,15 +84,6 @@ public partial class RibbonEditorViewModel : ViewModelBase
         Ribbons = new ObservableCollection<RibbonItemViewModel>(list);
     }
     
-    private static Bitmap? ConvertBitmap(System.Drawing.Bitmap? bmp)
-    {
-        if (bmp == null) return null;
-        using var ms = new MemoryStream();
-        bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-        ms.Position = 0;
-        return new Bitmap(ms);
-    }
-
     [RelayCommand]
     private void Save()
     {

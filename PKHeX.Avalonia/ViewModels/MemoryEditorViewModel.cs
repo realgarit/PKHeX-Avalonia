@@ -145,4 +145,6 @@ public partial class MemoryEditorViewModel : ViewModelBase
 
         _closeRequested?.Invoke();
     }
+    [RelayCommand]
+    private void Close() => _closeRequested?.Invoke();
 }

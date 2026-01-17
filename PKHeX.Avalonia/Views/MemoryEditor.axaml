@@ -120,7 +120,7 @@
         </TabControl>
         
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-            <Button Content="Cancel" Command="{Binding CloseRequested}"/>
+            <Button Content="Cancel" Command="{Binding CloseCommand}"/>
             <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent"/>
         </StackPanel>
     </Grid>

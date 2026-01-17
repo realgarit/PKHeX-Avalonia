@@ -31,7 +31,7 @@ public partial class KChartViewModel : ViewModelBase
         for (ushort s = 1; s <= pt.MaxSpeciesID; s++)
         {
             var fc = pt[s, 0].FormCount;
-            var formNames = fc <= 1 ? [] : FormConverter.GetFormList(s, strings.Types, strings.forms, Main.GenderSymbols, _sav.Context);
+            var formNames = fc <= 1 ? [] : FormConverter.GetFormList(s, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, _sav.Context);
             
             for (byte f = 0; f < fc; f++)
             {
@@ -41,7 +41,7 @@ public partial class KChartViewModel : ViewModelBase
                 var entry = pt.GetFormEntry(s, f);
                 
                 // Sprite
-                var sprite = _spriteRenderer.GetSprite(s, f, 0, 0, false, false, _sav.Context);
+                var sprite = _spriteRenderer.GetSprite(s, f, 0, 0, false, _sav.Context);
 
                 Entries.Add(new KChartEntryViewModel(s, f, name, entry, sprite, _sav.Generation));
             }
@@ -54,7 +54,7 @@ public partial class KChartEntryViewModel : ObservableObject
     public ushort Species { get; }
     public byte Form { get; }
     public string Name { get; }
-    public Avalonia.Media.IImage? Sprite { get; }
+    public global::Avalonia.Media.IImage? Sprite { get; }
     public string DisplayID { get; }
     public string BST { get; }
     public string CatchRate { get; }
@@ -76,7 +76,7 @@ public partial class KChartEntryViewModel : ObservableObject
     public string Ability2 { get; }
     public string AbilityH { get; }
 
-    public KChartEntryViewModel(ushort species, byte form, string name, IPersonalInfo info, Avalonia.Media.IImage? sprite, int generation)
+    public KChartEntryViewModel(ushort species, byte form, string name, IPersonalInfo info, global::Avalonia.Media.IImage? sprite, int generation)
     {
         Species = species;
         Form = form;

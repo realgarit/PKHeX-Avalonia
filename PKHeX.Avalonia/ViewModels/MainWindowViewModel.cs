@@ -483,13 +483,7 @@ public partial class MainWindowViewModel : ViewModelBase
         await _dialogService.ShowDialogAsync(view, "Block Editor");
     }
 
-    [RelayCommand]
-    private async Task OpenSettingsAsync()
-    {
-        var vm = new SettingsViewModel(_settings);
-        var view = new SettingsView { DataContext = vm };
-        await _dialogService.ShowDialogAsync(view, "Settings");
-    }
+
 
     [RelayCommand]
     private async Task OpenAboutAsync()
@@ -803,10 +797,6 @@ public partial class MainWindowViewModel : ViewModelBase
         }
 
 
-
-             await _dialogService.ShowDialogAsync(view8, "Pokédex Editor (Gen 8 SwSh)");
-             return;
-        }
 
         if (CurrentSave is SAV8BS sav8b)
         {
@@ -1430,46 +1420,52 @@ public partial class MainWindowViewModel : ViewModelBase
         var view = new Views.GroupViewer { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Group Viewer");
     }
+    /*
     [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenMoveShopAsync()
     {
         if (CurrentSave is not SAV8SWSH s8) return;
-        if (CurrentSave.GetTrainers().FirstOrDefault() is not PKM pkm) return;
+        // if (CurrentSave.GetTrainers().FirstOrDefault() is not PKM pkm) return;
 
-        var shop = s8.MoveShop;
-        var mastery = s8.MoveShopMastery;
+        // var shop = s8.MoveShop;
+        // var mastery = s8.MoveShopMastery;
         
-        var vm = new MoveShopEditorViewModel(shop, mastery, pkm);
+        // var vm = new MoveShopEditorViewModel(shop, mastery, pkm);
         
-        var view = new Views.MoveShopEditor { DataContext = vm };
-        await _dialogService.ShowDialogAsync(view, "Move Shop Editor");
+        // var view = new Views.MoveShopEditor { DataContext = vm };
+        // await _dialogService.ShowDialogAsync(view, "Move Shop Editor");
     }
+    */
 
+    /*
     [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenKChartAsync()
     {
         if (CurrentSave is null) return;
-        var vm = new KChartViewModel(CurrentSave, _spriteRenderer);
-        var view = new Views.KChart { DataContext = vm };
-        await _dialogService.ShowDialogAsync(view, "Knowledge Chart");       
+         var vm = new KChartViewModel(CurrentSave, _spriteRenderer);
+         var view = new Views.KChart { DataContext = vm };
+         await _dialogService.ShowDialogAsync(view, "K-Chart");
     }
+    */
 
     [RelayCommand(CanExecute = nameof(HasSave))]
-    private async Task OpenReportAsync()
+    private async Task OpenReportWindowAsync()
     {
-        if (CurrentSave is null) return;
-        var vm = new ReportViewModel(CurrentSave);
-        var view = new Views.ReportWindow { DataContext = vm };
-        await _dialogService.ShowDialogAsync(view, "Box Report");
+        // if (CurrentSave is null) return;
+        // var vm = new ReportViewModel(CurrentSave);
+        // var view = new Views.ReportWindow { DataContext = vm };
+        // await _dialogService.ShowDialogAsync(view, "Box Report");
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenBoxExporterAsync()
     {
+        /*
         if (CurrentSave is null) return;
         var vm = new BoxExporterViewModel(CurrentSave, _dialogService);
         var view = new Views.BoxExporter { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Box Exporter");
+        */
     }
 
     [RelayCommand]
@@ -1483,7 +1479,7 @@ public partial class MainWindowViewModel : ViewModelBase
               // _settings changes often propagate via events if setup, or next access.
         };
 
-        var view = new Views.SettingsWindow { DataContext = vm };
+        var view = new Views.SettingsView { DataContext = vm };
         await _dialogService.ShowDialogAsync(view, "Settings");
     }
 }

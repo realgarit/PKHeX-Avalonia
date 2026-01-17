@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Avalonia.Services;
 using PKHeX.Core;
-using PKHeX.Drawing.Misc;
+
 
 namespace PKHeX.Avalonia.ViewModels;
 
@@ -132,4 +132,6 @@ public partial class TechRecordEditorViewModel : ViewModelBase
             item.IsActive = _techRecord.GetMoveRecordFlag(item.Index);
         }
     }
+    [RelayCommand]
+    private void Close() => _closeRequested?.Invoke();
 }

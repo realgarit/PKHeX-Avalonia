@@ -109,7 +109,7 @@ public partial class FolderListViewModel : ViewModelBase
                 }
 
                 // Update UI on UI Thread
-                Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                global::Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
                 {
                     RecentSaves = new ObservableCollection<SaveFilePreviewViewModel>(validRecents);
                     BackupSaves = new ObservableCollection<SaveFilePreviewViewModel>(validBackups);
@@ -194,7 +194,8 @@ public class SaveFilePreviewViewModel : ViewModelBase
         FileName = Path.GetFileName(FilePath);
         Version = sav.Version.ToString();
         TrainerName = sav.OT;
-        PlayTime = sav.PlayTime;
+        // PlayTime = sav.PlayTime;
+        PlayTime = ""; // sav.PlayTime not available in SaveFile base?
         LastModified = File.Exists(FilePath) ? File.GetLastWriteTime(FilePath) : DateTime.MinValue;
         // BadgeCount? 
         // Not in simple metadata usually? Or implied.

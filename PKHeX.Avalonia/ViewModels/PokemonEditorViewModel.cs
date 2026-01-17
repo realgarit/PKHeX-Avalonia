@@ -336,14 +336,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     [ObservableProperty]
     private int _statusCondition; // Added back here since missed in partials
 
-    partial void OnSpeciesChanged(int value)
-    {
-        if (_isLoading) return;
-        UpdateFormList();
-        UpdateAbilityList();
-        UpdateSprite();
-        UpdateTitle();
-    }
+
 
     partial void OnFormChanged(int value)
     {

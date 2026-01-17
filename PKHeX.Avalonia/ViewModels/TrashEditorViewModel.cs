@@ -67,7 +67,7 @@ public partial class TrashEditorViewModel : ViewModelBase
             // For now, assume empty or based on converter.
              Span<byte> temp = stackalloc byte[200]; // arbitrarily large
              int len = converter.SetString(temp, initialText.AsSpan(), initialText.Length, StringConverterOption.None);
-             _raw = temp.Slice(0, visibleLength: len).ToArray();
+             _raw = temp.Slice(0, len).ToArray();
              // Adjust length to be "Trash" length?
              // Usually trash bytes are a specific buffer size. 
              // Logic in WinForms: if raw.Length != 0, use it. Else empty.
