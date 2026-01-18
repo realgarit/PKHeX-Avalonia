@@ -385,6 +385,9 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     private void UpdateAbilityList()
     {
+        // Store current ability before clearing to prevent binding race condition
+        var currentAbility = Ability;
+        
         AbilityList.Clear();
         var pi = _sav.Personal.GetFormEntry((ushort)Species, (byte)Form);
         var filtered = GameInfo.FilteredSources;
@@ -392,10 +395,23 @@ public partial class PokemonEditorViewModel : ViewModelBase
         {
             AbilityList.Add(item);
         }
+        
+        // Restore ability if it exists in the new list, otherwise use first available
+        if (AbilityList.Any(a => a.Value == currentAbility))
+        {
+            Ability = currentAbility;
+        }
+        else if (AbilityList.Count > 0)
+        {
+            Ability = AbilityList[0].Value;
+        }
     }
 
     private void UpdateFormList()
     {
+        // Store current form before clearing to prevent binding race condition
+        var currentForm = Form;
+        
         FormList.Clear();
         var pi = _sav.Personal.GetFormEntry((ushort)Species, 0);
         var formCount = pi.FormCount;
@@ -414,6 +430,16 @@ public partial class PokemonEditorViewModel : ViewModelBase
             }
         }
 
+        // Restore form if valid, otherwise use first
+        if (FormList.Any(f => f.Value == currentForm))
+        {
+            Form = currentForm;
+        }
+        else if (FormList.Count > 0)
+        {
+            Form = FormList[0].Value;
+        }
+        
         OnPropertyChanged(nameof(HasForms));
     }
 

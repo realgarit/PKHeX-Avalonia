@@ -42,6 +42,10 @@ public partial class PokemonEditorViewModel
 
     private void UpdateMetDataLists()
     {
+        // Store current values before clearing to prevent binding race condition
+        var currentMetLocation = MetLocation;
+        var currentEggLocation = EggLocation;
+        
         MetLocationList.Clear();
         var context = _sav.Context;
         var locations = GameInfo.Sources.Met.GetLocationList((GameVersion)OriginGame, context);
@@ -52,6 +56,17 @@ public partial class PokemonEditorViewModel
         var eggLocations = GameInfo.Sources.Met.GetLocationList((GameVersion)OriginGame, context, egg: true);
         foreach (var item in eggLocations)
             EggLocationList.Add(item);
+        
+        // Restore values if they exist in new lists
+        if (MetLocationList.Any(l => l.Value == currentMetLocation))
+            MetLocation = currentMetLocation;
+        else if (MetLocationList.Count > 0)
+            MetLocation = MetLocationList[0].Value;
+            
+        if (EggLocationList.Any(l => l.Value == currentEggLocation))
+            EggLocation = currentEggLocation;
+        else if (EggLocationList.Count > 0)
+            EggLocation = EggLocationList[0].Value;
     }
 
     partial void OnMetLocationChanged(int value) { if (!_isLoading) Validate(); }
