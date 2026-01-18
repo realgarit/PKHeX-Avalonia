@@ -11,19 +11,15 @@ namespace PKHeX.Avalonia.ViewModels;
 public partial class SettingsViewModel : ViewModelBase
 {
     private readonly AppSettings _settings;
-    private readonly LanguageService _languageService;
 
     public Action? CloseRequested { get; set; }
 
     public SettingsViewModel(AppSettings settings, LanguageService languageService)
     {
         _settings = settings;
-        _languageService = languageService;
+        // LanguageService no longer needed here - language is set via Options > Language menu
         Load();
     }
-
-    [ObservableProperty] private string _displayLanguage = "en";
-    public IReadOnlyList<string> LanguageOptions { get; } = ["en", "ja", "fr", "it", "de", "es", "ko", "zh"];
 
     // Startup
     [ObservableProperty] private GameVersion _defaultSaveVersion;
@@ -54,9 +50,6 @@ public partial class SettingsViewModel : ViewModelBase
 
     private void Load()
     {
-        // General
-        DisplayLanguage = _settings.DisplayLanguage;
-
         // Startup
         DefaultSaveVersion = _settings.Startup.DefaultSaveVersion;
         AutoLoadMode = _settings.Startup.AutoLoadSaveOnStartup;
@@ -84,15 +77,6 @@ public partial class SettingsViewModel : ViewModelBase
     [RelayCommand]
     private void Save()
     {
-        // General
-        bool languageChanged = _settings.DisplayLanguage != DisplayLanguage;
-        _settings.DisplayLanguage = DisplayLanguage;
-        
-        if (languageChanged)
-        {
-            _languageService.SetLanguage(DisplayLanguage);
-        }
-
         // Startup
         _settings.Startup.DefaultSaveVersion = DefaultSaveVersion;
         _settings.Startup.AutoLoadSaveOnStartup = AutoLoadMode;

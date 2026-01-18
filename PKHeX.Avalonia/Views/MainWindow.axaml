@@ -119,12 +119,11 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Options">
-                <MenuItem Header="Language" ItemsSource="{Binding LanguageService.AvailableLanguages}">
-                    <MenuItem.ItemTemplate>
-                        <DataTemplate>
-                            <MenuItem Header="{Binding Name}" Command="{Binding $parent[views:MainWindow].((vm:MainWindowViewModel)DataContext).ChangeLanguageCommand}" CommandParameter="{Binding Code}" />
-                        </DataTemplate>
-                    </MenuItem.ItemTemplate>
+                <MenuItem Header="Language">
+                    <ComboBox x:CompileBindings="False"
+                              ItemsSource="{Binding LanguageService.AvailableLanguages}"
+                              SelectedItem="{Binding LanguageService.CurrentLanguageOption, Mode=TwoWay}"
+                              Width="120"/>
                 </MenuItem>
                 <MenuItem Header="Undo" Command="{Binding UndoCommand}" InputGesture="Ctrl+Z" />
                 <MenuItem Header="Redo" Command="{Binding RedoCommand}" InputGesture="Ctrl+Y" />

@@ -16,6 +16,22 @@ public partial class LanguageService : ObservableObject
     private string _currentLanguage = "en";
 
     public IReadOnlyList<LanguageOption> AvailableLanguages { get; }
+    
+    /// <summary>
+    /// Gets or sets the current language as a LanguageOption for ComboBox binding.
+    /// Setting this property triggers SetLanguage().
+    /// </summary>
+    public LanguageOption? CurrentLanguageOption
+    {
+        get => AvailableLanguages.FirstOrDefault(l => l.Code == CurrentLanguage);
+        set
+        {
+            if (value is not null && value.Code != CurrentLanguage)
+            {
+                SetLanguage(value.Code);
+            }
+        }
+    }
 
     public event Action? LanguageChanged;
 
@@ -32,6 +48,7 @@ public partial class LanguageService : ObservableObject
             languageCode = "en";
 
         CurrentLanguage = languageCode;
+        OnPropertyChanged(nameof(CurrentLanguageOption));
         
         // Update PKHeX.Core's GameInfo to use this language
         GameInfo.CurrentLanguage = languageCode;

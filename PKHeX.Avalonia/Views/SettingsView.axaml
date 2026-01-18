@@ -8,26 +8,6 @@
         <StackPanel Margin="24" Spacing="24">
             <TextBlock Text="Settings" FontSize="28" FontWeight="Light" Margin="0,0,0,12"/>
 
-            <!-- General Settings Card -->
-            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="20" CornerRadius="8">
-                <StackPanel Spacing="16">
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <TextBlock Text="🌐" FontSize="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="General" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                    </StackPanel>
-                    
-                    <Grid ColumnDefinitions="*,200">
-                        <StackPanel Grid.Column="0">
-                            <TextBlock Text="Display Language" FontWeight="Medium"/>
-                            <TextBlock Text="The language used for the application interface." 
-                                       FontSize="12" Opacity="0.6" TextWrapping="Wrap"/>
-                        </StackPanel>
-                        <ComboBox Grid.Column="1" ItemsSource="{Binding LanguageOptions}" SelectedItem="{Binding DisplayLanguage}" HorizontalAlignment="Stretch"/>
-                    </Grid>
-                </StackPanel>
-
-            </Border>
-
             <!-- Backup Settings Card -->
             <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="20" CornerRadius="8">
                 <StackPanel Spacing="16">
@@ -133,7 +113,7 @@
 
             <Button Content="Save Changes" 
                     Command="{Binding SaveCommand}" 
-                    Classes="accent" 
+                    Classes="accent"
                     HorizontalAlignment="Right" 
                     Padding="24,12"/>
         </StackPanel>
