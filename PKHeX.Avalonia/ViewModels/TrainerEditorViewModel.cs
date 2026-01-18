@@ -52,7 +52,7 @@ public partial class TrainerEditorViewModel : ViewModelBase
     public string SaveType => _sav.GetType().Name;
 
     // Data sources
-    public IReadOnlyList<ComboItem> LanguageList { get; private set; } = [];
+    [ObservableProperty] private IReadOnlyList<ComboItem> _languageList = [];
     public IReadOnlyList<ComboItem> GenderList { get; } = [
         new ComboItem("Male", 0),
         new ComboItem("Female", 1)
@@ -489,6 +489,11 @@ public partial class TrainerEditorViewModel : ViewModelBase
     private void Reset()
     {
         LoadFromSave();
+    }
+
+    public void RefreshLanguage()
+    {
+        LanguageList = GameInfo.Sources.LanguageDataSource(_sav.Generation, _sav.Context);
     }
 }
 

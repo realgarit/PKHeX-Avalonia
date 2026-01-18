@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia.Media.Imaging;
 using PKHeX.Avalonia.Services;
 using PKHeX.Core;
 
@@ -13,12 +14,14 @@ namespace PKHeX.Avalonia.ViewModels;
 public partial class EncounterDatabaseViewModel : ViewModelBase
 {
     private readonly SaveFile _sav;
+    private readonly ISpriteRenderer _spriteRenderer;
     private readonly IDialogService _dialogService;
     private readonly Action<PKM> _onSelect;
 
-    public EncounterDatabaseViewModel(SaveFile sav, IDialogService dialogService, Action<PKM> onSelect)
+    public EncounterDatabaseViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, IDialogService dialogService, Action<PKM> onSelect)
     {
         _sav = sav;
+        _spriteRenderer = spriteRenderer;
         _dialogService = dialogService;
         _onSelect = onSelect;
 
@@ -79,7 +82,8 @@ public partial class EncounterDatabaseViewModel : ViewModelBase
 
             foreach (var enc in foundEncounters)
             {
-                Results.Add(new EncounterResultViewModel(enc));
+                var pk = enc.ConvertToPKM(_sav);
+                Results.Add(new EncounterResultViewModel(enc, pk, _spriteRenderer));
             }
         }
         catch (Exception ex)
@@ -110,17 +114,19 @@ public partial class EncounterDatabaseViewModel : ViewModelBase
     }
 }
 
-public class EncounterResultViewModel
+public class EncounterResultViewModel // Removed 'partial' as it's not needed unless using ObservableProperty
 {
     private readonly IEncounterable _encounter;
     
-    public EncounterResultViewModel(IEncounterable encounter)
+    public EncounterResultViewModel(IEncounterable encounter, PKM pkm, ISpriteRenderer renderer)
     {
         _encounter = encounter;
         Encounter = encounter;
+        Sprite = renderer.GetSprite(pkm);
     }
     
     public IEncounterable Encounter { get; }
+    public Bitmap? Sprite { get; }
     public string Species => GameInfo.Strings.Species.Count > _encounter.Species ? GameInfo.Strings.Species[_encounter.Species] : $"#{_encounter.Species}";
     public string Level => $"Lv. {_encounter.LevelMin}" + (_encounter.LevelMin != _encounter.LevelMax ? $"-{_encounter.LevelMax}" : "");
     public string Version => _encounter.Version.ToString();

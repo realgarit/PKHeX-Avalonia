@@ -17,20 +17,20 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private bool _isLoading; // Flag to prevent modifying _pk during load
 
     // Data sources (mostly filtered by SaveFile context)
-    public IReadOnlyList<ComboItem> SpeciesList { get; }
-    public IReadOnlyList<ComboItem> MoveList { get; }
-    public IReadOnlyList<ComboItem> NatureList { get; }
-    public IReadOnlyList<ComboItem> BallList { get; }
-    public IReadOnlyList<ComboItem> ItemList { get; }
-    public IReadOnlyList<ComboItem> OriginGameList { get; }
-    public IReadOnlyList<ComboItem> RelearnMoveDataSource { get; }
+    [ObservableProperty] private IReadOnlyList<ComboItem> _speciesList;
+    [ObservableProperty] private IReadOnlyList<ComboItem> _moveList;
+    [ObservableProperty] private IReadOnlyList<ComboItem> _natureList;
+    [ObservableProperty] private IReadOnlyList<ComboItem> _ballList;
+    [ObservableProperty] private IReadOnlyList<ComboItem> _itemList;
+    [ObservableProperty] private IReadOnlyList<ComboItem> _originGameList;
+    [ObservableProperty] private IReadOnlyList<ComboItem> _relearnMoveDataSource;
+    [ObservableProperty] private IReadOnlyList<ComboItem> _languageList;
+    
     public IReadOnlyList<ComboItem> GenderList { get; } = [
         new ComboItem("Male", 0),
         new ComboItem("Female", 1),
         new ComboItem("Genderless", 2)
     ];
-
-    public IReadOnlyList<ComboItem> LanguageList { get; }
 
     // Dynamic lists
     [ObservableProperty]
@@ -131,6 +131,23 @@ public partial class PokemonEditorViewModel : ViewModelBase
     public void LoadPKM(PKM pk)
     {
         _pk = pk.Clone();
+        LoadFromPKM();
+    }
+
+    public void RefreshLanguage()
+    {
+        // Re-initialize filtered data sources from the updated GameInfo
+        var filtered = GameInfo.FilteredSources;
+        SpeciesList = filtered.Species;
+        MoveList = filtered.Moves;
+        NatureList = filtered.Natures;
+        BallList = filtered.Balls;
+        ItemList = filtered.Items;
+        OriginGameList = filtered.Games;
+        RelearnMoveDataSource = filtered.Relearn;
+        LanguageList = GameInfo.Sources.LanguageDataSource(_sav.Generation, _sav.Context);
+
+        // Notify that the PKM name etc might have changed
         LoadFromPKM();
     }
 

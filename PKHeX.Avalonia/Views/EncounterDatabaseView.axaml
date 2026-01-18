@@ -3,6 +3,7 @@
              xmlns:vm="using:PKHeX.Avalonia.ViewModels"
              x:Class="PKHeX.Avalonia.Views.EncounterDatabaseView"
              x:DataType="vm:EncounterDatabaseViewModel"
+             x:Name="Root"
              MinWidth="650" MinHeight="500">
     <DockPanel Margin="16">
         <TextBlock DockPanel.Dock="Top" Text="Encounter Database" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
@@ -27,21 +28,43 @@
 
         <!-- Results Grid -->
         <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="4">
-            <DataGrid ItemsSource="{Binding Results}"
-                      SelectedItem="{Binding SelectedResult}"
-                      IsReadOnly="True"
-                      SelectionMode="Single"
-                      CanUserSortColumns="True"
-                      AutoGenerateColumns="False"
-                      GridLinesVisibility="Horizontal">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Species" Binding="{Binding Species}" Width="120" />
-                    <DataGridTextColumn Header="Level" Binding="{Binding Level}" Width="80" />
-                    <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="80" />
-                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="90" />
-                    <DataGridTextColumn Header="Location" Binding="{Binding Location}" Width="*" />
-                </DataGrid.Columns>
-            </DataGrid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Results}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:EncounterResultViewModel">
+                            <Button Margin="4" Padding="4"
+                                    x:CompileBindings="False"
+                                    Command="{Binding #Root.DataContext.SelectEncounterCommand}"
+                                    CommandParameter="{Binding}"
+                                    Background="Transparent" BorderThickness="0">
+                                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" 
+                                        CornerRadius="6" Padding="8" Width="240" Height="70"
+                                        BoxShadow="0 2 4 0 #20000000">
+                                    <Grid ColumnDefinitions="50,*">
+                                        <Image Grid.Column="0" Source="{Binding Sprite}" Width="40" Height="40" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                            <DockPanel LastChildFill="False">
+                                                <TextBlock DockPanel.Dock="Left" Text="{Binding Species}" FontWeight="SemiBold"/>
+                                                <TextBlock DockPanel.Dock="Right" Text="{Binding Level}" FontSize="12" Opacity="0.8"/>
+                                            </DockPanel>
+                                            <TextBlock Text="{Binding Location}" FontSize="11" Opacity="0.7" TextTrimming="CharacterEllipsis"/>
+                                            <DockPanel LastChildFill="False">
+                                                 <TextBlock DockPanel.Dock="Left" Text="{Binding Version}" FontSize="10" Opacity="0.5"/>
+                                                 <TextBlock DockPanel.Dock="Right" Text="{Binding Type}" FontSize="10" Opacity="0.5"/>
+                                            </DockPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Border>
 
         <!-- Action Buttons -->

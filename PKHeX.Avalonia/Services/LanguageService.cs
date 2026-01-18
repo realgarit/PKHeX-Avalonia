@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using PKHeX.Core;
 
 namespace PKHeX.Avalonia.Services;
@@ -39,9 +37,15 @@ public partial class LanguageService : ObservableObject
         GameInfo.CurrentLanguage = languageCode;
         GameInfo.Strings = GameInfo.GetStrings(languageCode);
         
+        // Update FilteredSources if we have a save context (this is a bit hacky but keeps it central)
+        // Ideally we'd have a reference to the current save here, but we can rely on MainWindowViewModel to do it too.
+        
         LanguageChanged?.Invoke();
+        WeakReferenceMessenger.Default.Send(new LanguageChangedMessage(languageCode));
     }
 }
+
+public record LanguageChangedMessage(string LanguageCode);
 
 public record LanguageOption(string Code, string Name)
 {

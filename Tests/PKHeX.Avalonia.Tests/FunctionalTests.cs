@@ -1,6 +1,9 @@
 using Moq;
+using PKHeX.Avalonia.Services;
 using PKHeX.Avalonia.ViewModels;
 using PKHeX.Core;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace PKHeX.Avalonia.Tests;
@@ -65,14 +68,16 @@ public class FunctionalTests
     [Fact]
     public async Task Verify_EncounterDatabase_Functionality()
     {
-        var (vm, spriteMock, dialogMock) = TestHelpers.CreateTestViewModel(new PK3(), _saveFile);
-        var dbVm = new EncounterDatabaseViewModel(_saveFile, dialogMock.Object, _ => { });
+        var sav = BlankSaveFile.Get(GameVersion.SL);
+        var spriteMock = new Mock<ISpriteRenderer>();
+        var dialogMock = new Mock<IDialogService>();
+        var vm = new EncounterDatabaseViewModel(sav, spriteMock.Object, dialogMock.Object, _ => { });
         
         // Search for Pikachu (Species 25)
-        dbVm.SelectedSpecies = 25;
-        await dbVm.SearchCommand.ExecuteAsync(null);
+        vm.SelectedSpecies = 25;
+        await vm.SearchCommand.ExecuteAsync(null);
 
-        Assert.NotEmpty(dbVm.Results);
+        Assert.NotEmpty(vm.Results);
     }
 
     [Fact]

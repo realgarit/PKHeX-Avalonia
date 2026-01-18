@@ -11,12 +11,14 @@ namespace PKHeX.Avalonia.ViewModels;
 public partial class SettingsViewModel : ViewModelBase
 {
     private readonly AppSettings _settings;
+    private readonly LanguageService _languageService;
 
     public Action? CloseRequested { get; set; }
 
-    public SettingsViewModel(AppSettings settings)
+    public SettingsViewModel(AppSettings settings, LanguageService languageService)
     {
         _settings = settings;
+        _languageService = languageService;
         Load();
     }
 
@@ -83,7 +85,13 @@ public partial class SettingsViewModel : ViewModelBase
     private void Save()
     {
         // General
+        bool languageChanged = _settings.DisplayLanguage != DisplayLanguage;
         _settings.DisplayLanguage = DisplayLanguage;
+        
+        if (languageChanged)
+        {
+            _languageService.SetLanguage(DisplayLanguage);
+        }
 
         // Startup
         _settings.Startup.DefaultSaveVersion = DefaultSaveVersion;

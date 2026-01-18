@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using PKHeX.Avalonia.Services;
 using PKHeX.Avalonia.Views;
 using PKHeX.Core;
@@ -98,18 +99,38 @@ public partial class MainWindowViewModel : ViewModelBase
         _undoRedo.RedoPerformed += OnUndoRedoPerformed;
 
         _languageService.LanguageChanged += OnLanguageChanged;
+        
+        // Also subscribe to the messenger for robustness
+        WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, (r, m) => OnLanguageChanged());
     }
 
     private void OnLanguageChanged()
     {
+        // Update FilteredSources with the new GameInfo.Sources (which was updated by LanguageService)
+        if (CurrentSave is not null)
+        {
+            GameInfo.FilteredSources = new FilteredGameDataSource(CurrentSave, GameInfo.Sources);
+        }
+
         // Refresh all dynamic strings in the active view models
         OnPropertyChanged(string.Empty); // Notifies all properties on this VM
         
         // Specifically tell the PokemonEditor to refresh its lists
-        CurrentPokemonEditor?.LoadPKM(CurrentPokemonEditor.TargetPKM);
+        CurrentPokemonEditor?.RefreshLanguage();
         
         // Refresh BoxViewer if it exists
         BoxViewer?.RefreshCurrentBox();
+        
+        // Refresh other editors if they are active
+        TrainerEditor?.RefreshLanguage();
+        InventoryEditor?.RefreshLanguage();
+        
+        // Refresh Database VM if it's open/active (it might not be a property here but accessible)
+        // Since Database is opened via command, checking if we can notify it.
+        // For now, let's rely on the messaging system if the Database VM subscribes, 
+        // OR add a property if we need to track it.
+        // Actually, let's send a generic "Refresh" message that DatabaseVM can listen to as well?
+        // But for now, we'll iterate through known ViewModels.
     }
 
     [ObservableProperty]
@@ -551,7 +572,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (CurrentSave is null) return;
         
-        var vm = new EncounterDatabaseViewModel(CurrentSave, _dialogService, pk =>
+        var vm = new EncounterDatabaseViewModel(CurrentSave, _spriteRenderer, _dialogService, pk =>
         {
             CurrentPokemonEditor?.LoadPKM(pk);
         });
@@ -1485,15 +1506,14 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task OpenSettingsAsync()
     {
-        var vm = new SettingsViewModel(_settings);
-        
-        vm.CloseRequested += () => {
-              // Settings saved. Logic handled in VM.
-              // Maybe MainWindow needs to refresh anything?
-              // _settings changes often propagate via events if setup, or next access.
-        };
-
+        var vm = new SettingsViewModel(_settings, _languageService);
         var view = new Views.SettingsView { DataContext = vm };
+        vm.CloseRequested += () => 
+        {
+            var window = global::Avalonia.Controls.TopLevel.GetTopLevel(view) as global::Avalonia.Controls.Window;
+            window?.Close();
+        };
+        
         await _dialogService.ShowDialogAsync(view, "Settings");
     }
 }

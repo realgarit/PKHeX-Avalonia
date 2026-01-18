@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -43,10 +44,10 @@ public partial class PKMDatabaseViewModel : ViewModelBase
     [ObservableProperty] private bool? _isLegal;
 
     // Data Sources for View
-    public IReadOnlyList<ComboItem> SpeciesList { get; }
-    public IReadOnlyList<ComboItem> NatureList { get; }
-    public IReadOnlyList<ComboItem> AbilityList { get; }
-    public IReadOnlyList<ComboItem> ItemList { get; }
+    [ObservableProperty] private IReadOnlyList<ComboItem> _speciesList;
+    [ObservableProperty] private IReadOnlyList<ComboItem> _natureList;
+    [ObservableProperty] private IReadOnlyList<ComboItem> _abilityList;
+    [ObservableProperty] private IReadOnlyList<ComboItem> _itemList;
 
     public PKMDatabaseViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, IDialogService dialogService)
     {
@@ -54,10 +55,20 @@ public partial class PKMDatabaseViewModel : ViewModelBase
         _spriteRenderer = spriteRenderer;
         _dialogService = dialogService;
 
-        SpeciesList = GameInfo.Sources.SpeciesDataSource;
-        NatureList = GameInfo.Sources.NatureDataSource;
-        AbilityList = GameInfo.Sources.AbilityDataSource;
-        ItemList = GameInfo.Sources.GetItemDataSource(_sav.Version, _sav.Context, _sav.HeldItems);
+        // Data sources with "Any" option prepended. Value must match SearchSettings wildcards:
+        // Species=0 (Any), Nature=25 (Random), Ability=-1, Item=-1
+        SpeciesList = new List<ComboItem> { new("Any", 0) }.Concat(GameInfo.Sources.SpeciesDataSource).ToList();
+        NatureList = new List<ComboItem> { new("Any", 25) }.Concat(GameInfo.Sources.NatureDataSource).ToList(); // Nature.Random = 25
+        AbilityList = new List<ComboItem> { new("Any", -1) }.Concat(GameInfo.Sources.AbilityDataSource).ToList();
+        ItemList = new List<ComboItem> { new("Any", -1) }.Concat(GameInfo.Sources.GetItemDataSource(_sav.Version, _sav.Context, _sav.HeldItems)).ToList();
+        
+        // Default Selections (wildcards)
+        Species = 0;
+        Nature = 25; // Nature.Random = Any
+        Ability = -1;
+        Item = -1;
+        
+        WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, (r, m) => RefreshLanguage());
     }
 
     [RelayCommand]
@@ -67,18 +78,37 @@ public partial class PKMDatabaseViewModel : ViewModelBase
         IsSearching = true;
         StatusText = "Searching current save...";
 
-        var settings = GetSearchSettings();
-        var allPkms = _sav.BoxData.Concat(_sav.PartyData);
-        
-        var matches = await Task.Run(() => settings.Search(allPkms).ToList());
-
-        foreach (var pk in matches)
+        try
         {
-            Results.Add(new PKMDatabaseEntry(pk, _spriteRenderer));
-        }
+            var settings = GetSearchSettings();
+            var allPkms = _sav.BoxData.Concat(_sav.PartyData).ToList();
+            
+            // Check for valid Pokemon to scan
+            int totalMons = allPkms.Count(p => p.Species != 0);
+            if (totalMons == 0)
+            {
+                StatusText = "Save file contains no Pokémon (all slots empty).";
+                return;
+            }
 
-        StatusText = $"Found {Results.Count} matches in current save.";
-        IsSearching = false;
+            var matches = await Task.Run(() => settings.Search(allPkms).Where(p => p.Species != 0).ToList());
+    
+            foreach (var pk in matches)
+            {
+                Results.Add(new PKMDatabaseEntry(pk, _spriteRenderer));
+            }
+    
+            StatusText = $"Found {Results.Count} matches in current save. (Scanned {totalMons} valid PKMs. Filters: S={Species} N={Nature})";
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Error: {ex.Message}";
+            await _dialogService.ShowErrorAsync("Search Error", ex.Message);
+        }
+        finally
+        {
+            IsSearching = false;
+        }
     }
 
     [RelayCommand]
@@ -91,45 +121,51 @@ public partial class PKMDatabaseViewModel : ViewModelBase
         IsSearching = true;
         StatusText = "Scanning folder...";
 
-        var settings = GetSearchSettings();
-        var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-        
-        var matches = await Task.Run(() => 
+        try 
         {
-            var found = new List<PKM>();
-            int count = 0;
-            foreach (var file in files)
+            var settings = GetSearchSettings();
+            var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+            
+            var matches = await Task.Run(() => 
             {
-                count++;
-                // Progress could be reported here if needed
-                
-                var data = File.ReadAllBytes(file);
-                if (SaveUtil.IsSizeValid(data.Length))
+                var found = new List<PKM>();
+                foreach (var file in files)
                 {
-                    var sav = SaveUtil.GetSaveFile(data);
-                    if (sav != null)
+                    var data = File.ReadAllBytes(file);
+                    if (SaveUtil.IsSizeValid(data.Length))
                     {
-                        var pkms = sav.BoxData.Concat(sav.PartyData);
-                        found.AddRange(settings.Search(pkms));
+                        var sav = SaveUtil.GetSaveFile(data);
+                        if (sav != null)
+                        {
+                            var pkms = sav.BoxData.Concat(sav.PartyData);
+                            found.AddRange(settings.Search(pkms).Where(p => p.Species != 0));
+                        }
+                    }
+                    else
+                    {
+                        var pk = EntityFormat.GetFromBytes(data, _sav.Context);
+                        if (pk != null && settings.Search(new[] { pk }).Any())
+                            found.Add(pk);
                     }
                 }
-                else
-                {
-                    var pk = EntityFormat.GetFromBytes(data, _sav.Context);
-                    if (pk != null && settings.Search(new[] { pk }).Any())
-                        found.Add(pk);
-                }
+                return found;
+            });
+    
+            foreach (var pk in matches)
+            {
+                Results.Add(new PKMDatabaseEntry(pk, _spriteRenderer));
             }
-            return found;
-        });
-
-        foreach (var pk in matches)
-        {
-            Results.Add(new PKMDatabaseEntry(pk, _spriteRenderer));
+    
+            StatusText = $"Found {Results.Count} matches in folder.";
         }
-
-        StatusText = $"Found {Results.Count} matches in folder.";
-        IsSearching = false;
+        catch (Exception ex)
+        {
+            StatusText = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            IsSearching = false;
+        }
     }
 
     private SearchSettings GetSearchSettings()
@@ -137,9 +173,9 @@ public partial class PKMDatabaseViewModel : ViewModelBase
         return new SearchSettings
         {
             Species = (ushort)Species,
-            Nature = (Nature)Nature,
-            Ability = Ability,
-            Item = Item,
+            Nature = (Nature)Nature, // Nature.Random (25) is already 'Any'
+            Ability = Ability, // -1 is already 'Any'
+            Item = Item, // -1 is already 'Any'
             SearchShiny = IsShiny,
             SearchLegal = IsLegal,
             Format = _sav.Generation
@@ -148,6 +184,25 @@ public partial class PKMDatabaseViewModel : ViewModelBase
 
     public event Action<PKM>? PokemonSelected;
 
+    public void RefreshLanguage()
+    {
+        // Data sources with "Any" option prepended. Value must match SearchSettings wildcards:
+        // Species=0 (Any), Nature=25 (Random), Ability=-1, Item=-1
+        SpeciesList = new List<ComboItem> { new("Any", 0) }.Concat(GameInfo.Sources.SpeciesDataSource).ToList();
+        NatureList = new List<ComboItem> { new("Any", 25) }.Concat(GameInfo.Sources.NatureDataSource).ToList();
+        AbilityList = new List<ComboItem> { new("Any", -1) }.Concat(GameInfo.Sources.AbilityDataSource).ToList();
+        ItemList = new List<ComboItem> { new("Any", -1) }.Concat(GameInfo.Sources.GetItemDataSource(_sav.Version, _sav.Context, _sav.HeldItems)).ToList();
+        
+        // Refresh current results
+        var currentResults = Results.ToList();
+        Results.Clear();
+        foreach (var entry in currentResults)
+        {
+            entry.Refresh();
+            Results.Add(entry);
+        }
+    }
+
     [RelayCommand]
     private void SelectPokemon(PKMDatabaseEntry entry)
     {
@@ -155,11 +210,29 @@ public partial class PKMDatabaseViewModel : ViewModelBase
     }
 }
 
-public class PKMDatabaseEntry
+public partial class PKMDatabaseEntry : ObservableObject
 {
     public PKM PKM { get; }
     public Bitmap? Sprite { get; }
-    public string SpeciesName => GameInfo.Strings.Species[PKM.Species];
+    
+    public string SpeciesName
+    {
+        get
+        {
+            if (PKM.Species == 0 || PKM.Species >= GameInfo.Strings.Species.Count)
+                return "---";
+
+            var name = GameInfo.Strings.Species[PKM.Species];
+            if (PKM.Form > 0)
+            {
+                var formList = FormConverter.GetFormList(PKM.Species, GameInfo.Strings.types, GameInfo.Strings.forms, GameInfo.GenderSymbolASCII, PKM.Context);
+                if (formList != null && PKM.Form < formList.Count() && !string.IsNullOrEmpty(formList[PKM.Form]))
+                    name += $" ({formList[PKM.Form]})";
+            }
+            return name;
+        }
+    }
+
     public string Level => PKM.CurrentLevel.ToString();
     public string NatureName => GameInfo.Strings.Natures[(int)PKM.Nature];
     public string Gender => PKM.Gender switch { 0 => "♂", 1 => "♀", _ => "-" };
@@ -168,5 +241,10 @@ public class PKMDatabaseEntry
     {
         PKM = pkm;
         Sprite = renderer.GetSprite(pkm);
+    }
+
+    public void Refresh()
+    {
+        OnPropertyChanged(string.Empty);
     }
 }

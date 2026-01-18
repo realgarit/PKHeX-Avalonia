@@ -35,7 +35,25 @@ public partial class InventoryEditorViewModel : ViewModelBase
             SelectedPouch = Pouches[0];
     }
 
-    private readonly string[] _itemNames;
+    private string[] _itemNames;
+
+    public void RefreshLanguage()
+    {
+        // Rebuild item name list
+        var itemStrings = GameInfo.Strings.GetItemStrings(_sav.Context, _sav.Version);
+        for (int i = 0; i < itemStrings.Length && i < _itemNames.Length; i++)
+        {
+            _itemNames[i] = string.IsNullOrEmpty(itemStrings[i])
+                ? $"(Item #{i:000})"
+                : itemStrings[i];
+        }
+
+        // Notify pouches to refresh their item lists
+        foreach (var pouch in Pouches)
+        {
+            pouch.RefreshLanguage();
+        }
+    }
 
     [ObservableProperty]
     private ObservableCollection<InventoryPouchViewModel> _pouches = [];
@@ -112,7 +130,24 @@ public partial class InventoryPouchViewModel : ViewModelBase
 
     public string PouchName { get; }
     public int MaxCount { get; }
-    public IReadOnlyList<ComboItem> ItemList { get; }
+    [ObservableProperty] private IReadOnlyList<ComboItem> _itemList;
+
+    public void RefreshLanguage()
+    {
+        // Rebuild item list for combo box
+        var validItems = _pouch.Info.GetItems(_pouch.Type).ToArray();
+        ItemList = validItems
+            .Where(id => id < _itemNames.Length)
+            .Select(id => new ComboItem(_itemNames[id], id))
+            .OrderBy(x => x.Text)
+            .ToList();
+
+        // Refresh current items display names
+        foreach (var item in Items)
+        {
+            item.RefreshLanguage();
+        }
+    }
 
     [ObservableProperty]
     private ObservableCollection<InventoryItemViewModel> _items = [];
@@ -193,8 +228,15 @@ public partial class InventoryItemViewModel : ViewModelBase
         MaxCount = maxCount;
     }
 
-    public IReadOnlyList<ComboItem> ItemList { get; }
+    [ObservableProperty] private IReadOnlyList<ComboItem> _itemList;
     public int MaxCount { get; }
+
+    public void RefreshLanguage()
+    {
+        // Refresh item name based on current ID and list
+        var item = ItemList.FirstOrDefault(i => i.Value == ItemId);
+        ItemName = item?.Text ?? $"Item #{ItemId}";
+    }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ItemName))]
