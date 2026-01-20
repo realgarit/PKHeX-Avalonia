@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.BatchEditor"
              x:DataType="vm:BatchEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <DockPanel>
             <!-- Header -->
             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
@@ -18,7 +18,7 @@
 
             <!-- Target Selection -->
             <Border DockPanel.Dock="Top"
-                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    Classes="section-card"
                     CornerRadius="4"
                     Padding="12"
                     Margin="0,0,0,12">
@@ -31,7 +31,7 @@
 
             <!-- Quick Actions -->
             <Border DockPanel.Dock="Top"
-                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    Classes="section-card"
                     CornerRadius="4"
                     Padding="12"
                     Margin="0,0,0,12">
@@ -48,7 +48,7 @@
 
             <!-- Instruction Builder -->
             <Border DockPanel.Dock="Top"
-                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    Classes="section-card"
                     CornerRadius="4"
                     Padding="12"
                     Margin="0,0,0,12">
@@ -83,7 +83,7 @@
 
             <!-- Results -->
             <Border DockPanel.Dock="Bottom"
-                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    Classes="section-card"
                     CornerRadius="4"
                     Padding="12"
                     Margin="0,12,0,0"
@@ -106,7 +106,7 @@
                             HorizontalAlignment="Right"
                             Padding="8,2" />
                 </DockPanel>
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border Classes="section-card"
                         CornerRadius="4">
                     <TextBox Text="{Binding Instructions}"
                              AcceptsReturn="True"

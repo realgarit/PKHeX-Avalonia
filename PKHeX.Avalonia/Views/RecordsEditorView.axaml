@@ -15,7 +15,7 @@
         <!-- Records Content -->
         <DockPanel IsVisible="{Binding HasRecords}">
             <!-- Search Bar -->
-            <Border DockPanel.Dock="Top" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="8" Margin="0,0,0,12">
+            <Border DockPanel.Dock="Top" Classes="section-card" CornerRadius="4" Padding="8" Margin="0,0,0,12">
                 <TextBox Text="{Binding SearchText}" Watermark="Search records..." />
             </Border>
 

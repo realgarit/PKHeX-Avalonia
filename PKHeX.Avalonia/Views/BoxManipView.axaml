@@ -8,7 +8,7 @@
         <TextBlock DockPanel.Dock="Top" Text="Box Manipulation" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
 
         <!-- Scope Selection -->
-        <Border DockPanel.Dock="Top" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12" Margin="0,0,0,12">
+        <Border DockPanel.Dock="Top" Classes="section-card" Margin="0,0,0,12">
             <StackPanel Spacing="8">
                 <TextBlock Text="Scope" FontWeight="SemiBold" />
                 <StackPanel Orientation="Horizontal" Spacing="16">

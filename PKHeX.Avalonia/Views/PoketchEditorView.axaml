@@ -17,7 +17,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding IsSupported}">
             <StackPanel Spacing="12">
                 <!-- Settings -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
+                <Border Classes="section-card">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Settings" FontWeight="SemiBold" Margin="0,0,0,4" />
                         <CheckBox Content="Pokétch Enabled" IsChecked="{Binding PoketchEnabled}" />
@@ -38,7 +38,7 @@
                 </Border>
 
                 <!-- Apps -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
+                <Border Classes="section-card">
                     <StackPanel Spacing="8">
                         <StackPanel Orientation="Horizontal" Spacing="16">
                             <TextBlock Text="Unlocked Apps" FontWeight="SemiBold" VerticalAlignment="Center" />

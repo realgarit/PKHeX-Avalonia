@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.ChatterEditor"
              x:DataType="vm:ChatterEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="Chatter not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -17,7 +17,7 @@
                     <Button Content="Refresh" Command="{Binding RefreshCommand}" HorizontalAlignment="Right" Padding="12,6" />
                 </DockPanel>
 
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                <Border Classes="section-card" CornerRadius="4" Padding="16">
                     <StackPanel Spacing="16">
                         <TextBlock Text="Chatot's Chatter move uses a recorded sound to determine the confusion chance in battle." TextWrapping="Wrap" Opacity="0.8" />
 

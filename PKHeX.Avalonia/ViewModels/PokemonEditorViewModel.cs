@@ -240,17 +240,19 @@ public partial class PokemonEditorViewModel : ViewModelBase
             PkrsStrain = _pk.PokerusStrain;
             PkrsDays = _pk.PokerusDays;
 
-            // Met data - set origin game first to populate location lists
+            // Met data - set origin game first
             OriginGame = (int)_pk.Version;
-            UpdateMetDataLists(); // Partial method called implicitly? No, actual method in partial
-
-            // Now set locations after lists are populated
+            
+            // Populating lists manually during load to ensure correct initial selection
+            UpdateMetDataLists(); 
+            
+            // Now set locations from PKM after lists are populated
             MetLocation = _pk.MetLocation;
             EggLocation = _pk.EggLocation;
             MetLevel = _pk.MetLevel;
 
-            MetDate = _pk.MetDate is { } md ? new DateTimeOffset(md.Year, md.Month, md.Day, 0, 0, 0, TimeSpan.Zero) : null;
-            EggDate = _pk.EggMetDate is { } ed ? new DateTimeOffset(ed.Year, ed.Month, ed.Day, 0, 0, 0, TimeSpan.Zero) : null;
+            MetDate = _pk.MetDate is { Year: > 0 } md ? new DateTimeOffset(md.Year, md.Month, md.Day, 0, 0, 0, TimeSpan.Zero) : null;
+            EggDate = _pk.EggMetDate is { Year: > 0 } ed ? new DateTimeOffset(ed.Year, ed.Month, ed.Day, 0, 0, 0, TimeSpan.Zero) : null;
 
             // OT info (Partial)
             OriginalTrainerName = _pk.OriginalTrainerName;
@@ -369,8 +371,44 @@ public partial class PokemonEditorViewModel : ViewModelBase
     partial void OnIsShinyChanged(bool value)
     {
         if (_isLoading) return;
+        
+        // Update the internal PKM to get the new PID that matches shiny state
+        if (value)
+            _pk.SetShiny();
+        else
+            _pk.SetUnshiny();
+            
+        // Sync the PID hex string back to the VM so PreparePKM doesn't overwrite it
+        _isLoading = true; // Temporary flag to avoid re-triggering validation/PID changes
+        Pid = _pk.PID.ToString("X8");
+        _isLoading = false;
+        
         UpdateSprite();
         Validate();
+    }
+
+    partial void OnPidChanged(string value)
+    {
+        if (_isLoading) return;
+        if (uint.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out var pid))
+        {
+            _pk.PID = pid;
+            _isLoading = true;
+            IsShiny = _pk.IsShiny;
+            _isLoading = false;
+            UpdateSprite();
+            Validate();
+        }
+    }
+
+    partial void OnEncryptionConstantChanged(string value)
+    {
+        if (_isLoading) return;
+        if (uint.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out var ec))
+        {
+            _pk.EncryptionConstant = ec;
+            Validate();
+        }
     }
 
     partial void OnNicknameChanged(string value) { if (!_isLoading) Validate(); }
@@ -608,7 +646,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         // Recalculate stats
         _pk.ResetPartyStats();
         
-        return _pk;
+        return _pk.Clone();
     }
 
     [RelayCommand]

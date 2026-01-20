@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.PokedexLAEditor"
              x:DataType="vm:PokedexLAEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <DockPanel>
             <!-- Header -->
             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
@@ -34,7 +34,7 @@
                     <StackPanel Spacing="16">
                         <!-- Summary & Forms -->
                         <Grid ColumnDefinitions="*,16,*">
-                            <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="12" CornerRadius="4">
+                            <Border Grid.Column="0" Classes="section-card" Padding="12" CornerRadius="4">
                                 <StackPanel Spacing="12">
                                     <TextBlock Text="Species Info" FontWeight="SemiBold" />
                                     <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,Auto,Auto">
@@ -54,7 +54,7 @@
                                 </StackPanel>
                             </Border>
 
-                            <Border Grid.Column="2" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="12" CornerRadius="4">
+                            <Border Grid.Column="2" Classes="section-card" Padding="12" CornerRadius="4">
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="Forms" FontWeight="SemiBold" />
                                     <ListBox ItemsSource="{Binding Forms}" SelectedItem="{Binding SelectedForm}" Height="120">
@@ -69,7 +69,7 @@
                         </Grid>
 
                         <!-- Flags -->
-                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="12" CornerRadius="4" DataContext="{Binding SelectedForm}">
+                        <Border Classes="section-card" Padding="12" CornerRadius="4" DataContext="{Binding SelectedForm}">
                             <StackPanel Spacing="12">
                                 <TextBlock Text="Flags (Current Form)" FontWeight="SemiBold" />
                                 <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
@@ -108,7 +108,7 @@
                         </Border>
 
                         <!-- Research Tasks -->
-                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="12" CornerRadius="4">
+                        <Border Classes="section-card" Padding="12" CornerRadius="4">
                             <StackPanel Spacing="12">
                                 <TextBlock Text="Research Tasks" FontWeight="SemiBold" />
                                 <ItemsControl ItemsSource="{Binding Tasks}">

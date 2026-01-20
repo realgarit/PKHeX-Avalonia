@@ -13,7 +13,7 @@
             <TextBlock Text="Gen 3 Real Time Clock Editor" FontWeight="Bold" FontSize="18"/>
 
             <!-- Initial Clock -->
-            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+            <Border Classes="section-card"
                     CornerRadius="4"
                     Padding="15">
                 <StackPanel Spacing="10">
@@ -37,7 +37,7 @@
             </Border>
 
             <!-- Elapsed Clock -->
-            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+            <Border Classes="section-card"
                     CornerRadius="4"
                     Padding="15">
                 <StackPanel Spacing="10">

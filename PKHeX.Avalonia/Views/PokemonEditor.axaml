@@ -5,14 +5,13 @@
              x:DataType="vm:PokemonEditorViewModel"
              MinHeight="480">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <DockPanel>
             <!-- Header with sprite and title - Glass Effect -->
             <Border DockPanel.Dock="Top" Margin="0,0,0,16"
                     Classes="glass" Padding="16">
                 <!-- Header: Sprite | Title/Stats | Legality | Shiny -->
                 <Grid ColumnDefinitions="Auto,*,48,48">
-                    <!-- Sprite Container with shadow -->
                     <Border Grid.Column="0"
                             Background="{DynamicResource ThemeBackgroundCardBrush}"
                             BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
@@ -21,11 +20,20 @@
                             Padding="8"
                             BoxShadow="0 4 12 0 #00000030"
                             Width="88" Height="76">
-                        <Image Source="{Binding Sprite}"
-                               Width="68" Height="56"
-                               RenderOptions.BitmapInterpolationMode="HighQuality"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
+                        <Panel>
+                            <Image Source="{Binding Sprite}"
+                                   Width="68" Height="56"
+                                   RenderOptions.BitmapInterpolationMode="HighQuality"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                            <!-- Illegal Indicator (Top Right) -->
+                            <Path Data="M 15,0 L 15,15 L 0,0 Z" 
+                                  Fill="#E3350D" 
+                                  HorizontalAlignment="Right" 
+                                  VerticalAlignment="Top"
+                                  IsVisible="{Binding !IsLegal}"
+                                  Width="15" Height="15"/>
+                        </Panel>
                     </Border>
 
                     <!-- Title and Quick Info -->
@@ -120,6 +128,7 @@
                                        VerticalAlignment="Center"
                                        Foreground="{DynamicResource ThemeTextMutedBrush}"
                                        IsVisible="{Binding !IsShiny}" />
+
                         </Panel>
                     </Button>
                 </Grid>
@@ -134,7 +143,7 @@
                     <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="16">
                             <!-- Core Info Card -->
-                            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            <Border Classes="section-card"
                                     CornerRadius="4" Padding="12">
                                 <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Core Info" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
@@ -172,7 +181,7 @@
                             </Border>
 
                             <!-- Growth Card -->
-                            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            <Border Classes="section-card"
                                     CornerRadius="4" Padding="12">
                                 <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Growth" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
@@ -216,7 +225,7 @@
                             </Border>
 
                             <!-- Misc Card -->
-                            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            <Border Classes="section-card"
                                     CornerRadius="4" Padding="12">
                                 <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Equipment" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
@@ -246,7 +255,7 @@
                 <!-- Stats Tab -->
                 <TabItem Header="Stats">
                     <ScrollViewer Padding="4" HorizontalScrollBarVisibility="Disabled">
-                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        <Border Classes="section-card"
                                 CornerRadius="4" Padding="12">
                             <Grid ColumnDefinitions="40,*,*,*,*" RowDefinitions="Auto,4,Auto,Auto,Auto,Auto,Auto,Auto">
                                 <!-- Headers -->
@@ -335,16 +344,16 @@
                             </StackPanel>
 
                             <!-- Met Level and Date Row -->
-                            <Grid ColumnDefinitions="Auto,16,*">
-                                <StackPanel Grid.Column="0">
+                            <StackPanel Spacing="8">
+                                <StackPanel>
                                     <TextBlock Text="Met Level" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                    <NumericUpDown Value="{Binding MetLevel}" Minimum="0" Maximum="100" FormatString="0" />
+                                    <NumericUpDown Value="{Binding MetLevel}" Minimum="0" Maximum="100" FormatString="0" HorizontalAlignment="Stretch" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="2">
+                                <StackPanel>
                                     <TextBlock Text="Met Date" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                    <DatePicker SelectedDate="{Binding MetDate}" />
+                                    <CalendarDatePicker SelectedDate="{Binding MetDate}" HorizontalAlignment="Stretch" />
                                 </StackPanel>
-                            </Grid>
+                            </StackPanel>
 
                             <!-- Egg Location -->
                             <StackPanel>
@@ -359,7 +368,7 @@
                             <!-- Egg Date -->
                             <StackPanel>
                                 <TextBlock Text="Egg Date" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                <DatePicker SelectedDate="{Binding EggDate}" />
+                                <CalendarDatePicker SelectedDate="{Binding EggDate}" HorizontalAlignment="Stretch" />
                             </StackPanel>
 
                             <CheckBox Content="Fateful Encounter" IsChecked="{Binding IsFatefulEncounter}" />
@@ -379,71 +388,40 @@
                                             HorizontalAlignment="Right" Padding="8,2" FontSize="12" />
                                 </DockPanel>
                                 
-                                <UniformGrid Columns="2" Rows="2">
-                                    <!-- Move 1 (Top Left) -->
-                                    <Border Margin="0,0,4,4" Padding="8" CornerRadius="4" 
-                                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                                        <Grid ColumnDefinitions="*,8,Auto,4,Auto" RowDefinitions="Auto,Auto">
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Move 1" FontSize="10" Opacity="0.6" Margin="0,0,0,2"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-                                            
-                                            <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MoveList}"
-                                                      SelectedValue="{Binding Move1}" SelectedValueBinding="{Binding Value}"
-                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
-                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding Pp1}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
-                                            <NumericUpDown Grid.Row="1" Grid.Column="4" Value="{Binding PpUps1}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
-                                        </Grid>
-                                    </Border>
-
-                                    <!-- Move 2 (Top Right) -->
-                                    <Border Margin="4,0,0,4" Padding="8" CornerRadius="4"
-                                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                                        <Grid ColumnDefinitions="*,8,Auto,4,Auto" RowDefinitions="Auto,Auto">
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Move 2" FontSize="10" Opacity="0.6" Margin="0,0,0,2"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-
-                                            <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MoveList}"
-                                                      SelectedValue="{Binding Move2}" SelectedValueBinding="{Binding Value}"
-                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
-                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding Pp2}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
-                                            <NumericUpDown Grid.Row="1" Grid.Column="4" Value="{Binding PpUps2}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
-                                        </Grid>
-                                    </Border>
-
-                                    <!-- Move 3 (Bottom Left) -->
-                                    <Border Margin="0,4,4,0" Padding="8" CornerRadius="4"
-                                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                                        <Grid ColumnDefinitions="*,8,Auto,4,Auto" RowDefinitions="Auto,Auto">
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Move 3" FontSize="10" Opacity="0.6" Margin="0,0,0,2"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-
-                                            <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MoveList}"
-                                                      SelectedValue="{Binding Move3}" SelectedValueBinding="{Binding Value}"
-                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
-                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding Pp3}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
-                                            <NumericUpDown Grid.Row="1" Grid.Column="4" Value="{Binding PpUps3}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
-                                        </Grid>
-                                    </Border>
-
-                                    <!-- Move 4 (Bottom Right) -->
-                                    <Border Margin="4,4,0,0" Padding="8" CornerRadius="4"
-                                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                                        <Grid ColumnDefinitions="*,8,Auto,4,Auto" RowDefinitions="Auto,Auto">
-                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Move 4" FontSize="10" Opacity="0.6" Margin="0,0,0,2"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="PP" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-                                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Up" FontSize="10" Opacity="0.6" HorizontalAlignment="Center"/>
-
-                                            <ComboBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding MoveList}"
-                                                      SelectedValue="{Binding Move4}" SelectedValueBinding="{Binding Value}"
-                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
-                                            <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding Pp4}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
-                                            <NumericUpDown Grid.Row="1" Grid.Column="4" Value="{Binding PpUps4}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
-                                        </Grid>
-                                    </Border>
-                                </UniformGrid>
+                                <StackPanel Spacing="4">
+                                    <!-- Move 1 -->
+                                    <Grid ColumnDefinitions="*,8,60,4,40">
+                                        <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
+                                                  SelectedValue="{Binding Move1}" SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                        <NumericUpDown Grid.Column="2" Value="{Binding Pp1}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
+                                        <NumericUpDown Grid.Column="4" Value="{Binding PpUps1}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
+                                    </Grid>
+                                    <!-- Move 2 -->
+                                    <Grid ColumnDefinitions="*,8,60,4,40">
+                                        <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
+                                                  SelectedValue="{Binding Move2}" SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                        <NumericUpDown Grid.Column="2" Value="{Binding Pp2}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
+                                        <NumericUpDown Grid.Column="4" Value="{Binding PpUps2}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
+                                    </Grid>
+                                    <!-- Move 3 -->
+                                    <Grid ColumnDefinitions="*,8,60,4,40">
+                                        <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
+                                                  SelectedValue="{Binding Move3}" SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                        <NumericUpDown Grid.Column="2" Value="{Binding Pp3}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
+                                        <NumericUpDown Grid.Column="4" Value="{Binding PpUps3}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
+                                    </Grid>
+                                    <!-- Move 4 -->
+                                    <Grid ColumnDefinitions="*,8,60,4,40">
+                                        <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
+                                                  SelectedValue="{Binding Move4}" SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                        <NumericUpDown Grid.Column="2" Value="{Binding Pp4}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
+                                        <NumericUpDown Grid.Column="4" Value="{Binding PpUps4}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
+                                    </Grid>
+                                </StackPanel>
                             </StackPanel>
 
                             <!-- Relearn Section -->
@@ -486,7 +464,7 @@
                     <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="16">
                             <!-- Original Trainer Card -->
-                            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            <Border Classes="section-card"
                                     CornerRadius="4" Padding="12">
                                 <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Original Trainer" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
@@ -517,39 +495,43 @@
                             </Border>
 
                             <!-- Extra Info Card -->
-                            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
-                                    CornerRadius="4" Padding="12">
-                                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto">
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Encryption &amp; Status" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
+                            <Border Classes="section-card" CornerRadius="4" Padding="12">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="Encryption &amp; Status" FontWeight="Bold" Opacity="0.6" />
+                                    
+                                    <UniformGrid Columns="2">
+                                        <StackPanel Margin="0,0,4,0">
+                                            <TextBlock Text="PID" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                            <TextBox Text="{Binding Pid}" FontFamily="Consolas" Height="32" VerticalContentAlignment="Center" />
+                                        </StackPanel>
+                                        <StackPanel Margin="4,0,0,0">
+                                            <TextBlock Text="EC" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                            <TextBox Text="{Binding EncryptionConstant}" FontFamily="Consolas" Height="32" VerticalContentAlignment="Center" />
+                                        </StackPanel>
+                                    </UniformGrid>
 
-                                    <StackPanel Grid.Row="1" Grid.Column="0">
-                                        <TextBlock Text="PID" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                        <TextBox Text="{Binding Pid}" FontFamily="Consolas" FontSize="11" />
-                                    </StackPanel>
-                                    <StackPanel Grid.Row="1" Grid.Column="2">
-                                        <TextBlock Text="EC" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                        <TextBox Text="{Binding EncryptionConstant}" FontFamily="Consolas" FontSize="11" />
-                                    </StackPanel>
-
-                                    <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ColumnDefinitions="*,8,*,8,*" Margin="0,12,0,0">
+                                    <Grid ColumnDefinitions="*,8,*,8,*">
                                         <StackPanel Grid.Column="0">
-                                            <TextBlock Text="Friendship" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="11" />
-                                            <NumericUpDown Value="{Binding Happiness}" Minimum="0" Maximum="255" FormatString="0" ShowButtonSpinner="False" />
+                                            <TextBlock Text="EXP" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                            <NumericUpDown Value="{Binding Exp}" Minimum="0" Maximum="16400000" FormatString="0" ShowButtonSpinner="False" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="2">
-                                            <TextBlock Text="PKRS Days" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="11" />
-                                            <NumericUpDown Value="{Binding PkrsDays}" Minimum="0" Maximum="15" FormatString="0" ShowButtonSpinner="False" />
+                                            <TextBlock Text="Friendship" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                            <NumericUpDown Value="{Binding Happiness}" Minimum="0" Maximum="255" FormatString="0" ShowButtonSpinner="False" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="4">
-                                            <TextBlock Text="PKRS Strain" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="11" />
-                                            <NumericUpDown Value="{Binding PkrsStrain}" Minimum="0" Maximum="15" FormatString="0" ShowButtonSpinner="False" />
+                                            <TextBlock Text="PKRS" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                            <Grid ColumnDefinitions="*,2,*">
+                                                <NumericUpDown Grid.Column="0" Value="{Binding PkrsDays}" Minimum="0" Maximum="15" FormatString="0" ShowButtonSpinner="False" />
+                                                <NumericUpDown Grid.Column="2" Value="{Binding PkrsStrain}" Minimum="0" Maximum="15" FormatString="0" ShowButtonSpinner="False" />
+                                            </Grid>
                                         </StackPanel>
                                     </Grid>
-                                </Grid>
+                                </StackPanel>
                             </Border>
 
                             <!-- Markings -->
-                            <Border IsVisible="{Binding HasMarkings}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            <Border IsVisible="{Binding HasMarkings}" Classes="section-card"
                                     CornerRadius="4" Padding="12">
                                 <StackPanel>
                                     <TextBlock Text="Markings" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
@@ -570,7 +552,7 @@
                 <!-- Contest Tab -->
                 <TabItem Header="Contest" IsVisible="{Binding HasContestStats}">
                     <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
-                         <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                         <Border Classes="section-card"
                                 CornerRadius="4" Padding="12">
                             <StackPanel Spacing="16">
                                 <TextBlock Text="Contest Stats" FontWeight="Bold" FontSize="16" Opacity="0.6" />
@@ -613,7 +595,7 @@
                         <StackPanel Spacing="16">
                             <Button Content="Advanced / Affection Editor..." Command="{Binding OpenMemoryEditorCommand}" HorizontalAlignment="Right" />
                             <!-- OT Memory -->
-                            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            <Border Classes="section-card"
                                     CornerRadius="4" Padding="12">
                                 <StackPanel Spacing="12">
                                     <TextBlock Text="Original Trainer Memory" FontWeight="Bold" Opacity="0.6" />
@@ -640,7 +622,7 @@
                             </Border>
 
                             <!-- HT Memory -->
-                            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            <Border Classes="section-card"
                                     CornerRadius="4" Padding="12">
                                 <StackPanel Spacing="12">
                                     <TextBlock Text="Handling Trainer Memory" FontWeight="Bold" Opacity="0.6" />
@@ -682,7 +664,7 @@
                             </Grid>
                             
                             <!-- Ribbon list (wrapped in Border to prevent overflow) -->
-                            <Border ClipToBounds="True" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="8">
+                            <Border ClipToBounds="True" Classes="section-card" CornerRadius="4" Padding="8">
                                 <ItemsControl ItemsSource="{Binding Ribbons}" HorizontalAlignment="Stretch">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>

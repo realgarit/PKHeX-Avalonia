@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.PokeGear4Editor"
              x:DataType="vm:PokeGear4EditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="PokéGear not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -22,7 +22,7 @@
                 </DockPanel>
 
                 <ScrollViewer>
-                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                    <Border Classes="section-card" CornerRadius="4" Padding="16">
                         <ItemsControl ItemsSource="{Binding Callers}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>

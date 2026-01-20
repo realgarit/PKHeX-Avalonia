@@ -20,7 +20,7 @@
                            TextWrapping="Wrap"/>
 
                 <!-- Species and Active -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border Classes="section-card"
                         CornerRadius="4"
                         Padding="15">
                     <StackPanel Spacing="10">
@@ -58,7 +58,7 @@
                 </Border>
 
                 <!-- PID -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border Classes="section-card"
                         CornerRadius="4"
                         Padding="15">
                     <StackPanel Spacing="10">
@@ -79,7 +79,7 @@
                 </Border>
 
                 <!-- IVs -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border Classes="section-card"
                         CornerRadius="4"
                         Padding="15">
                     <StackPanel Spacing="10">

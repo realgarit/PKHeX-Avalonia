@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.PokebeanEditor"
              x:DataType="vm:PokebeanEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <!-- Not supported message -->
             <StackPanel VerticalAlignment="Center"
@@ -33,7 +33,7 @@
                 </DockPanel>
 
                 <!-- Bean Grid -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border Classes="section-card"
                         CornerRadius="4"
                         Padding="16">
                     <ScrollViewer>

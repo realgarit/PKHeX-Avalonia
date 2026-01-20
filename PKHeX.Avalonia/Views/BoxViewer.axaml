@@ -49,19 +49,19 @@
                 </DockPanel>
             </Border>
 
-            <!-- Box Grid (6 columns x 5 rows = 30 slots) - Card Container -->
-            <Border Classes="card-elevated" Padding="16">
+            <!-- Box Grid (6 columns x 5 rows = 30 slots) -->
+            <Border Classes="card-elevated" Padding="1" Width="410" Height="282" HorizontalAlignment="Center">
                 <ItemsControl ItemsSource="{Binding Slots}" x:Name="SlotGrid">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="6" />
+                            <UniformGrid Columns="6" Rows="5" Width="408" Height="280" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:SlotData">
                             <Button Classes="slot"
                                     Classes.selected="{Binding IsSelected}"
-                                    Margin="4"
+                                    Margin="0"
                                     PointerPressed="OnSlotPointerPressed"
                                     PointerMoved="OnSlotPointerMoved"
                                     DragDrop.AllowDrop="True"

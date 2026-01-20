@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.EventFlagsEditor"
              x:DataType="vm:EventFlagsEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <!-- Not supported message -->
             <StackPanel VerticalAlignment="Center"
@@ -37,7 +37,7 @@
 
                 <!-- Quick Flag Access -->
                 <Border DockPanel.Dock="Top"
-                        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        Classes="section-card"
                         CornerRadius="4"
                         Padding="12"
                         Margin="0,0,0,12">
@@ -65,7 +65,7 @@
                 </StackPanel>
 
                 <!-- Flags List -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border Classes="section-card"
                         CornerRadius="4">
                     <ScrollViewer>
                         <ItemsControl ItemsSource="{Binding FilteredFlags}">

@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.RTCEditor"
              x:DataType="vm:RTCEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="RTC not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -20,7 +20,7 @@
                     </StackPanel>
                 </DockPanel>
 
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                <Border Classes="section-card" CornerRadius="4" Padding="16">
                     <StackPanel Spacing="16">
                         <!-- Initial Clock -->
                         <!-- Initial Clock -->

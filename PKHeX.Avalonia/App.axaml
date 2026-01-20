@@ -9,6 +9,15 @@
                 <!-- Add other resources here if needed -->
             </ResourceDictionary.MergedDictionaries>
             
+            <!-- Override FluentTheme accent colors with Pokemon Red -->
+            <Color x:Key="SystemAccentColor">#E3350D</Color>
+            <Color x:Key="SystemAccentColorDark1">#CC0000</Color>
+            <Color x:Key="SystemAccentColorDark2">#990000</Color>
+            <Color x:Key="SystemAccentColorDark3">#660000</Color>
+            <Color x:Key="SystemAccentColorLight1">#FF5533</Color>
+            <Color x:Key="SystemAccentColorLight2">#FF7755</Color>
+            <Color x:Key="SystemAccentColorLight3">#FF9977</Color>
+            
             <converters:ObjectNullConverter x:Key="ObjectNullConverter" />
             <converters:ObjectTrueConverter x:Key="ObjectTrueConverter" />
             <converters:ObjectFalseConverter x:Key="ObjectFalseConverter" />

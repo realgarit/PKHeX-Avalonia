@@ -62,21 +62,21 @@
                             
                             <Button.Styles>
                                 <Style Selector="Button">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
-                                    <Setter Property="CornerRadius" Value="4" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
+                                    <Setter Property="CornerRadius" Value="6" />
                                 </Style>
                                 <Style Selector="Button.selected">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource SystemAccentColor}" />
-                                    <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight3}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+                                    <Setter Property="Background" Value="{DynamicResource ThemeAccentGlowBrush}" />
                                 </Style>
                             </Button.Styles>
                             
                             <!-- Compact Card Content -->
                             <Grid ColumnDefinitions="Auto,*">
-                                <!-- Sprite (Smaller) -->
+                                <!-- Sprite -->
                                 <Panel Grid.Column="0" Width="60" Height="50">
                                     <Image Source="{Binding Sprite}" IsVisible="{Binding !IsEmpty}" />
-                                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                                    <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}"
                                             CornerRadius="4" IsVisible="{Binding IsEmpty}" />
 
                                 </Panel>

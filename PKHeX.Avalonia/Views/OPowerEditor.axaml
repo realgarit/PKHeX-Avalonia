@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.OPowerEditor"
              x:DataType="vm:OPowerEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="O-Powers not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -28,7 +28,7 @@
 
                 <Grid ColumnDefinitions="*,16,*,16,200">
                     <!-- Field Powers -->
-                    <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
+                    <Border Grid.Column="0" Classes="section-card">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Text="Field Powers" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
                             <ScrollViewer>
@@ -48,7 +48,7 @@
                     </Border>
 
                     <!-- Battle Powers -->
-                    <Border Grid.Column="2" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
+                    <Border Grid.Column="2" Classes="section-card">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Text="Battle Powers" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
                             <ScrollViewer>
@@ -68,7 +68,7 @@
                     </Border>
 
                     <!-- Unlocks -->
-                    <Border Grid.Column="4" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
+                    <Border Grid.Column="4" Classes="section-card">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Text="Unlocks" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
                             <ScrollViewer>

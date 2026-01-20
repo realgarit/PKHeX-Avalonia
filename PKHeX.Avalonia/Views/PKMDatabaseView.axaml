@@ -6,7 +6,7 @@
              Width="900" Height="600">
     <Grid ColumnDefinitions="250,*">
         <!-- Sidebar: Filters -->
-        <Border Grid.Column="0" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="16">
+        <Border Grid.Column="0" Classes="section-card" Padding="16">
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="Search Filters" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
                 

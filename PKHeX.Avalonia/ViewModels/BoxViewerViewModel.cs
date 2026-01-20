@@ -87,6 +87,7 @@ public partial class BoxViewerViewModel : ViewModelBase
                 Nature = (byte)pk.Nature,
                 NatureName = strings.Natures[(int)pk.Nature],
                 ShowdownSummary = isEmpty ? string.Empty : new ShowdownSet(pk).Text,
+                IsLegal = isEmpty || new LegalityAnalysis(pk).Valid,
                 IsSelected = false
             });
         }

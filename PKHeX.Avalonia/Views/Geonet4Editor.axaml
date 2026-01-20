@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.Geonet4Editor"
              x:DataType="vm:Geonet4EditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="Geonet not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -18,7 +18,7 @@
                 </DockPanel>
 
                 <StackPanel Spacing="16">
-                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                    <Border Classes="section-card" CornerRadius="4" Padding="16">
                         <StackPanel Spacing="12">
                             <TextBlock Text="Globe Location Management" FontWeight="Bold" FontSize="14" />
                             <TextBlock Text="The Geonet Globe displays locations you've connected with via GTS/WiFi. Set points to populate your globe with locations."
@@ -32,7 +32,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                    <Border Classes="section-card" CornerRadius="4" Padding="16">
                         <StackPanel Spacing="8">
                             <TextBlock Text="Options" FontWeight="Bold" FontSize="14" />
                             <CheckBox IsChecked="{Binding GlobalFlag}" Content="Global Flag (allow globe to pan outside Japan in JP games)" />

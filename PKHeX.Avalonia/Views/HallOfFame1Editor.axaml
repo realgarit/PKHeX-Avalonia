@@ -88,7 +88,7 @@
 
                         <!-- Team Summary -->
                         <Border Grid.Row="4"
-                                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                                Classes="section-card"
                                 CornerRadius="4"
                                 Padding="10"
                                 Margin="0,15,0,0">

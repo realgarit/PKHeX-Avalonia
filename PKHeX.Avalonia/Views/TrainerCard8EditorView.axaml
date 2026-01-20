@@ -17,7 +17,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding IsSupported}">
             <StackPanel Spacing="12">
                 <!-- Basic Info -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
+                <Border Classes="section-card">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Trainer Info" FontWeight="SemiBold" Margin="0,0,0,4" />
                         <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto">
@@ -34,7 +34,7 @@
                 </Border>
 
                 <!-- Stats -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
+                <Border Classes="section-card">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Statistics" FontWeight="SemiBold" Margin="0,0,0,4" />
                         <Grid ColumnDefinitions="180,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
@@ -57,7 +57,7 @@
                 </Border>
 
                 <!-- Pokédex Completion -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12">
+                <Border Classes="section-card">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Pokédex Completion" FontWeight="SemiBold" Margin="0,0,0,4" />
                         <CheckBox Content="Galar Pokédex Complete" IsChecked="{Binding PokeDexComplete}" />

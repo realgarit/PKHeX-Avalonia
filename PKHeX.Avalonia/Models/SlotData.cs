@@ -31,6 +31,7 @@ public partial class SlotData : ObservableObject
     [ObservableProperty] private byte _nature;
     [ObservableProperty] private string _natureName = string.Empty;
     [ObservableProperty] private string _showdownSummary = string.Empty;
+    [ObservableProperty] private bool _isLegal;
     
     /// <summary>
     /// Short summary for tooltip.

@@ -33,7 +33,7 @@
             <ItemsControl ItemsSource="{Binding Categories}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="vm:MedalCategoryViewModel">
-                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12" Margin="0,0,0,8">
+                        <Border Classes="section-card" Margin="0,0,0,8">
                             <Expander Header="{Binding Name}">
                                 <Expander.HeaderTemplate>
                                     <DataTemplate>
@@ -53,7 +53,7 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="vm:MedalItemViewModel">
                                             <Border MinWidth="80" Height="50" Margin="4" Padding="4" CornerRadius="4"
-                                                    Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                                                    Classes="view-container"
                                                     ToolTip.Tip="{Binding StateText}">
                                                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                                     <TextBlock Text="{Binding Index}" HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold" />

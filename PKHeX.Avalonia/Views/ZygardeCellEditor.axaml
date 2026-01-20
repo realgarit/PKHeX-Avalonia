@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.ZygardeCellEditor"
              x:DataType="vm:ZygardeCellEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="Zygarde Cells not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -33,7 +33,7 @@
                 </StackPanel>
 
                 <!-- Cell List -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="8">
+                <Border Classes="section-card" CornerRadius="4" Padding="8">
                     <ListBox ItemsSource="{Binding Cells}" MaxHeight="400">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="vm:ZygardeCellViewModel">

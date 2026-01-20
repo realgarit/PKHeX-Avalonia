@@ -49,7 +49,7 @@
                     </StackPanel>
 
                     <!-- Per-Species Counts -->
-                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    <Border Classes="section-card"
                             CornerRadius="4"
                             Padding="10">
                         <StackPanel Spacing="10">
@@ -71,7 +71,7 @@
                     </Border>
 
                     <!-- Total Counts -->
-                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    <Border Classes="section-card"
                             CornerRadius="4"
                             Padding="10">
                         <StackPanel Spacing="10">

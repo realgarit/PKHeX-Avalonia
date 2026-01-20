@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.BoxLayoutEditor"
              x:DataType="vm:BoxLayoutEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="Box Layout not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -23,7 +23,7 @@
                 </DockPanel>
 
                 <ScrollViewer>
-                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                    <Border Classes="section-card" CornerRadius="4" Padding="16">
                         <ItemsControl ItemsSource="{Binding Boxes}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="vm:BoxLayoutItemViewModel">

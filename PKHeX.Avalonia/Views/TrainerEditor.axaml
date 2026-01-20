@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.TrainerEditor"
              x:DataType="vm:TrainerEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <ScrollViewer HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="16" MaxWidth="400">
                 <!-- Header -->
@@ -13,7 +13,7 @@
                            FontWeight="SemiBold" />
 
                 <!-- Game Info (Read-only) -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border Classes="section-card"
                         CornerRadius="4" Padding="12">
                     <StackPanel Spacing="4">
                         <TextBlock Text="Game Info" FontWeight="SemiBold" Margin="0,0,0,8" />
@@ -65,7 +65,7 @@
                 </Grid>
 
                 <!-- Badges -->
-                <Border IsVisible="{Binding HasBadges}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border IsVisible="{Binding HasBadges}" Classes="section-card"
                         CornerRadius="4" Padding="12">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Badges" FontWeight="SemiBold" />
@@ -87,7 +87,7 @@
                 </Border>
 
                 <!-- Adventure Info -->
-                <Border IsVisible="{Binding HasAdventureInfo}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border IsVisible="{Binding HasAdventureInfo}" Classes="section-card"
                         CornerRadius="4" Padding="12">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Adventure Info" FontWeight="SemiBold" />
@@ -108,7 +108,7 @@
                 </Border>
 
                 <!-- Map Coordinates -->
-                <Border IsVisible="{Binding HasCoordinates}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border IsVisible="{Binding HasCoordinates}" Classes="section-card"
                         CornerRadius="4" Padding="12">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Map Coordinates" FontWeight="SemiBold" />
@@ -141,7 +141,7 @@
                 </StackPanel>
 
                 <!-- Currencies -->
-                <Border IsVisible="{Binding AnyCurrencyVisible}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border IsVisible="{Binding AnyCurrencyVisible}" Classes="section-card"
                         CornerRadius="4" Padding="12">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Currencies" FontWeight="SemiBold" />
@@ -211,7 +211,7 @@
                 </Border>
 
                 <!-- PLA / PLZA Info -->
-                <Border IsVisible="{Binding HasExpeditionRank}" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border IsVisible="{Binding HasExpeditionRank}" Classes="section-card"
                         CornerRadius="4" Padding="12">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Rank &amp; Upgrades" FontWeight="SemiBold" />
@@ -250,7 +250,7 @@
                 </StackPanel>
 
                 <!-- Play Time -->
-                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                <Border Classes="section-card"
                         CornerRadius="4" Padding="12">
                     <StackPanel Spacing="8">
                         <TextBlock Text="Play Time" FontWeight="SemiBold" />

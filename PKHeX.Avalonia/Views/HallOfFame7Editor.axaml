@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.HallOfFame7Editor"
              x:DataType="vm:HallOfFame7EditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="Hall of Fame not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -17,7 +17,7 @@
 
                 <ScrollViewer>
                     <StackPanel Spacing="16">
-                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                        <Border Classes="section-card" CornerRadius="4" Padding="16">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="First Clear Team" FontWeight="Bold" FontSize="14" />
                                 <ItemsControl ItemsSource="{Binding FirstEntries}">
@@ -37,7 +37,7 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16">
+                        <Border Classes="section-card" CornerRadius="4" Padding="16">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="Current Team" FontWeight="Bold" FontSize="14" />
                                 <ItemsControl ItemsSource="{Binding CurrentEntries}">
@@ -57,7 +57,7 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="16"
+                        <Border Classes="section-card" CornerRadius="4" Padding="16"
                                 IsVisible="{Binding HasStarterEc}">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="USUM Only" FontWeight="Bold" FontSize="14" />

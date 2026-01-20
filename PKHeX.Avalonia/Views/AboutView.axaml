@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="PKHeX.Avalonia.Views.AboutView"
              Width="400" Height="250">
-    <Border Padding="24" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="24" Classes="view-container">
         <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="PKHeX"
                        FontSize="32"

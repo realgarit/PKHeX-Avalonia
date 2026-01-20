@@ -27,7 +27,7 @@
             <ItemsControl ItemsSource="{Binding Regions}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="vm:FashionRegionViewModel">
-                        <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12" Margin="0,0,0,8">
+                        <Border Classes="section-card" Margin="0,0,0,8">
                             <Grid ColumnDefinitions="*,Auto">
                                 <StackPanel Grid.Column="0" Spacing="2">
                                     <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />

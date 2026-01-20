@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.InventoryEditor"
              x:DataType="vm:InventoryEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <DockPanel>
             <!-- Header -->
             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
@@ -44,7 +44,7 @@
                             </StackPanel>
 
                             <!-- Items List -->
-                            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            <Border Classes="section-card"
                                     CornerRadius="4">
                                 <ScrollViewer>
                                     <ItemsControl ItemsSource="{Binding Items}">

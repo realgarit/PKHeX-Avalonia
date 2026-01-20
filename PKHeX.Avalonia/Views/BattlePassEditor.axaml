@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.BattlePassEditor"
              x:DataType="vm:BattlePassEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <!-- Not supported message -->
             <StackPanel VerticalAlignment="Center"

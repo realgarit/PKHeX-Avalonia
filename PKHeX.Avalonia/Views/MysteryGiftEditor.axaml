@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.MysteryGiftEditor"
              x:DataType="vm:MysteryGiftEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <!-- Not supported message -->
             <StackPanel VerticalAlignment="Center"
@@ -39,7 +39,7 @@
                 <Grid ColumnDefinitions="*,16,300">
                     <!-- Gift List -->
                     <Border Grid.Column="0"
-                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            Classes="section-card"
                             CornerRadius="4">
                         <ScrollViewer>
                             <ItemsControl ItemsSource="{Binding Gifts}">
@@ -78,7 +78,7 @@
                     <Grid Grid.Column="2" RowDefinitions="*,16,Auto">
                         <!-- Selected Gift Details -->
                         <Border Grid.Row="0"
-                                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                                Classes="section-card"
                                 CornerRadius="4"
                                 Padding="16">
                             <StackPanel Spacing="16" DataContext="{Binding SelectedGift}">
@@ -120,7 +120,7 @@
                         <!-- Received Flags -->
                         <Border Grid.Row="2"
                                 IsVisible="{Binding CanManageFlags}"
-                                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                                Classes="section-card"
                                 CornerRadius="4"
                                 Padding="16"
                                 Height="200">

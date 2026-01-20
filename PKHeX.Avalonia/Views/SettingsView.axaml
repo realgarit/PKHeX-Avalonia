@@ -9,7 +9,7 @@
             <TextBlock Text="Settings" FontSize="28" FontWeight="Light" Margin="0,0,0,12"/>
 
             <!-- Backup Settings Card -->
-            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="20" CornerRadius="8">
+            <Border Classes="section-card" Padding="20" CornerRadius="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="💾" FontSize="20" VerticalAlignment="Center"/>
@@ -28,7 +28,7 @@
             </Border>
 
             <!-- Slot Write Settings Card -->
-            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="20" CornerRadius="8">
+            <Border Classes="section-card" Padding="20" CornerRadius="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="📝" FontSize="20" VerticalAlignment="Center"/>
@@ -65,7 +65,7 @@
             </Border>
 
             <!-- Privacy Settings Card -->
-            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="20" CornerRadius="8">
+            <Border Classes="section-card" Padding="20" CornerRadius="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="🔒" FontSize="20" VerticalAlignment="Center"/>
@@ -93,7 +93,7 @@
             </Border>
             
             <!-- Legality/Advanced Settings Card -->
-             <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" Padding="20" CornerRadius="8">
+             <Border Classes="section-card" Padding="20" CornerRadius="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="⚖️" FontSize="20" VerticalAlignment="Center"/>

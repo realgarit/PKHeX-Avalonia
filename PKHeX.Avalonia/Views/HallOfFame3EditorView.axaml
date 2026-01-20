@@ -24,7 +24,7 @@
                 <ItemsControl ItemsSource="{Binding Entries}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="vm:HallOfFame3EntryViewModel">
-                            <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" CornerRadius="4" Padding="12" Margin="0,0,0,8">
+                            <Border Classes="section-card" Margin="0,0,0,8">
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
                                     <ItemsControl ItemsSource="{Binding Members}">

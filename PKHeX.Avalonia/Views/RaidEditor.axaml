@@ -4,7 +4,7 @@
              x:Class="PKHeX.Avalonia.Views.RaidEditor"
              x:DataType="vm:RaidEditorViewModel">
 
-    <Border Padding="16" Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+    <Border Padding="16" Classes="view-container">
         <Panel>
             <!-- Not supported message -->
             <StackPanel VerticalAlignment="Center"
@@ -38,7 +38,7 @@
                 <Grid ColumnDefinitions="200,16,*">
                     <!-- Den List -->
                     <Border Grid.Column="0"
-                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            Classes="section-card"
                             CornerRadius="4">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Text="Dens" FontWeight="SemiBold" Margin="8" />
@@ -59,7 +59,7 @@
 
                     <!-- Selected Den Details -->
                     <Border Grid.Column="2"
-                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            Classes="section-card"
                             CornerRadius="4"
                             Padding="16"
                             IsVisible="{Binding SelectedDen, Converter={x:Static ObjectConverters.IsNotNull}}">

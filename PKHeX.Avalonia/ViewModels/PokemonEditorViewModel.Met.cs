@@ -27,12 +27,9 @@ public partial class PokemonEditorViewModel
     [ObservableProperty]
     private DateTimeOffset? _eggDate;
 
-    // Dynamic Lists
-    [ObservableProperty]
-    private ObservableCollection<ComboItem> _metLocationList = [];
-
-    [ObservableProperty]
-    private ObservableCollection<ComboItem> _eggLocationList = [];
+    [ObservableProperty] private bool _isIllegal;
+    [ObservableProperty] private ObservableCollection<ComboItem> _metLocationList = [];
+    [ObservableProperty] private ObservableCollection<ComboItem> _eggLocationList = [];
 
     partial void OnOriginGameChanged(int value)
     {
@@ -58,6 +55,8 @@ public partial class PokemonEditorViewModel
             EggLocationList.Add(item);
         
         // Restore values if they exist in new lists
+        if (_isLoading) return; // Don't reset values during load, let LoadFromPKM handle it
+
         if (MetLocationList.Any(l => l.Value == currentMetLocation))
             MetLocation = currentMetLocation;
         else if (MetLocationList.Count > 0)
