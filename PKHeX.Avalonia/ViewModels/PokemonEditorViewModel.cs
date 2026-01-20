@@ -161,8 +161,9 @@ public partial class PokemonEditorViewModel : ViewModelBase
             Form = _pk.Form;
 
             // Update dynamic lists BEFORE setting their selected values
-            UpdateFormList();
-            UpdateAbilityList();
+            // Pass false to avoid restoring previous Pokemon's values into the new list
+            UpdateFormList(false);
+            UpdateAbilityList(false);
 
             // Now set the values that depend on those lists
             Ability = _pk.Ability;
@@ -244,15 +245,40 @@ public partial class PokemonEditorViewModel : ViewModelBase
             OriginGame = (int)_pk.Version;
             
             // Populating lists manually during load to ensure correct initial selection
-            UpdateMetDataLists(); 
+            // Pass false to avoid restoring previous values
+            UpdateMetDataLists(false); 
             
             // Now set locations from PKM after lists are populated
             MetLocation = _pk.MetLocation;
             EggLocation = _pk.EggLocation;
             MetLevel = _pk.MetLevel;
 
-            MetDate = _pk.MetDate is { Year: > 0 } md ? new DateTimeOffset(md.Year, md.Month, md.Day, 0, 0, 0, TimeSpan.Zero) : null;
-            EggDate = _pk.EggMetDate is { Year: > 0 } ed ? new DateTimeOffset(ed.Year, ed.Month, ed.Day, 0, 0, 0, TimeSpan.Zero) : null;
+            // Safely parse Met Date (handle 0 month/day)
+            // Safely parse Met Date
+            if (_pk.MetDate is { Year: > 0 } md)
+            {
+                // Clamp to valid Gregorian ranges to prevent crashes
+                int y = Math.Clamp(md.Year, 1, 9999);
+                int m = Math.Clamp(md.Month, 1, 12);
+                int d = Math.Clamp(md.Day, 1, DateTime.DaysInMonth(y, m));
+                MetDate = new DateTime(y, m, d);
+            }
+            else
+            {
+                MetDate = null;
+            }
+
+            if (_pk.EggMetDate is { Year: > 0 } ed)
+            {
+                int y = Math.Clamp(ed.Year, 1, 9999);
+                int m = Math.Clamp(ed.Month, 1, 12);
+                int d = Math.Clamp(ed.Day, 1, DateTime.DaysInMonth(y, m));
+                EggDate = new DateTime(y, m, d);
+            }
+            else
+            {
+                EggDate = null;
+            }
 
             // OT info (Partial)
             OriginalTrainerName = _pk.OriginalTrainerName;
@@ -262,7 +288,18 @@ public partial class PokemonEditorViewModel : ViewModelBase
             // Health & Status (Partial)
             StatHPCurrent = _pk.Stat_HPCurrent;
             StatHPMax = _pk.Stat_HPMax;
-            StatusCondition = _pk.Status_Condition; // Wait, I didn't verify if I moved StatusCondition?
+            StatusCondition = _pk.Status_Condition;
+            
+            _isLoading = false;
+            
+            // Force UI refresh for list-dependent properties
+            OnPropertyChanged(nameof(MetLocation));
+            OnPropertyChanged(nameof(EggLocation));
+            OnPropertyChanged(nameof(Ability));
+            OnPropertyChanged(nameof(MetDate));
+            OnPropertyChanged(nameof(EggDate));
+            
+            Validate();
             // NOTE: I did NOT move StatusCondition to Stats. Let's check Stats.cs.
             // I see StatHPCurrent, StatHPMax in Stats.cs.
             // I do NOT see StatusCondition in Stats.cs.
@@ -421,52 +458,53 @@ public partial class PokemonEditorViewModel : ViewModelBase
     
     // Some partial methods implemented in other files won't clash.
 
-    private void UpdateAbilityList()
+    private void UpdateAbilityList(bool preserveSelection = true)
     {
-        // Store current ability before clearing to prevent binding race condition
+        // Store current ability
         var currentAbility = Ability;
         
-        AbilityList.Clear();
+        var newList = new ObservableCollection<ComboItem>();
         var pi = _sav.Personal.GetFormEntry((ushort)Species, (byte)Form);
         var filtered = GameInfo.FilteredSources;
         foreach (var item in filtered.GetAbilityList(pi))
         {
-            AbilityList.Add(item);
+            newList.Add(item);
         }
+        AbilityList = newList;
         
+        if (_isLoading || !preserveSelection) return;
+
         // Restore ability if it exists in the new list, otherwise use first available
         if (AbilityList.Any(a => a.Value == currentAbility))
-        {
             Ability = currentAbility;
-        }
         else if (AbilityList.Count > 0)
-        {
             Ability = AbilityList[0].Value;
-        }
     }
 
-    private void UpdateFormList()
+    private void UpdateFormList(bool preserveSelection = true)
     {
-        // Store current form before clearing to prevent binding race condition
+        // Store current form
         var currentForm = Form;
         
-        FormList.Clear();
-        var pi = _sav.Personal.GetFormEntry((ushort)Species, 0);
-        var formCount = pi.FormCount;
+        var newList = new ObservableCollection<ComboItem>();
+        
+        // This logic mirrors WinForms: use FormConverter/PKM to get forms
+        var forms = FormConverter.GetFormList((ushort)Species, GameInfo.Strings.Types, GameInfo.Strings.forms, GameInfo.GenderSymbolASCII, _sav.Context);
+        
+        // Populate the new list
+        for (int i = 0; i < forms.Length; i++)
+        {
+             var name = string.IsNullOrWhiteSpace(forms[i]) ? $"Form {i}" : forms[i];
+             newList.Add(new ComboItem(name, i));
+        }
 
-        if (formCount <= 1)
-        {
-            FormList.Add(new ComboItem("Normal", 0));
-        }
-        else
-        {
-            var formNames = FormConverter.GetFormList((ushort)Species, GameInfo.Strings.Types, GameInfo.Strings.forms, [], _sav.Context);
-            for (int i = 0; i < formCount && i < formNames.Length; i++)
-            {
-                var name = string.IsNullOrWhiteSpace(formNames[i]) ? $"Form {i}" : formNames[i];
-                FormList.Add(new ComboItem(name, i));
-            }
-        }
+        // If list is empty (shouldn't happen for valid PKM, but fallback), add default
+        if (newList.Count == 0)
+            newList.Add(new ComboItem("Normal", 0));
+
+        FormList = newList;
+        
+        if (_isLoading || !preserveSelection) return;
 
         // Restore form if valid, otherwise use first
         if (FormList.Any(f => f.Value == currentForm))

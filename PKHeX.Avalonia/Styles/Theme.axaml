@@ -40,7 +40,7 @@
             <Color x:Key="ThemeErrorColor">#F85149</Color>
             <Color x:Key="ThemeErrorGlow">#F8514940</Color>
             <Color x:Key="ThemeWarningColor">#D29922</Color>
-            <Color x:Key="ThemeShinyColor">#FFD700</Color>
+            <Color x:Key="ThemeShinyColor">#E3350D</Color>
 
             <!-- Brushes -->
             <SolidColorBrush x:Key="ThemeBackgroundDeepBrush" Color="{StaticResource ThemeBackgroundDeep}" />
@@ -101,7 +101,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="12" />
+        <Setter Property="Padding" Value="6" />
         <Setter Property="BoxShadow" Value="{StaticResource ThemeShadowSmall}" />
     </Style>
 
@@ -110,7 +110,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="12" />
+        <Setter Property="Padding" Value="6" />
         <Setter Property="BoxShadow" Value="{StaticResource ThemeShadowMedium}" />
     </Style>
 
@@ -122,7 +122,7 @@
         <Setter Property="BorderBrush" Value="#FFFFFF10" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="10" />
+        <Setter Property="Padding" Value="4" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -153,14 +153,14 @@
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
-                    <!-- Illegal Indicator (Red Triangle in Top Right) -->
-                    <Path Data="M 10,0 L 10,10 L 0,0 Z" 
+                    <!-- Illegal Indicator (Warning Triangle in Top Right) -->
+                    <Path Data="M 6,0 L 12,11 L 0,11 Z M 6.5,9.5 H 5.5 V 8.5 H 6.5 V 9.5 Z M 6.5,7.5 H 5.5 V 3.5 H 6.5 V 7.5 Z" 
                           Fill="#E3350D" 
                           HorizontalAlignment="Right" 
                           VerticalAlignment="Top"
                           IsVisible="{Binding !IsLegal}"
-                          Margin="0,1,1,0"
-                          Width="10" Height="10"/>
+                          Margin="0,0,0,0"
+                          Width="12" Height="11"/>
                 </Panel>
             </ControlTemplate>
         </Setter>

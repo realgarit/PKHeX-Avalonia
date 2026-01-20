@@ -93,13 +93,14 @@ public partial class PokemonEditorViewModel
     {
         var pk = PreparePKM();
         var la = new LegalityAnalysis(pk, _sav.Personal);
-        Span<ushort> moves = stackalloc ushort[4];
-        la.GetSuggestedRelearnMovesFromEncounter(moves);
+        pk.SetRelearnMoves(la);
         
-        RelearnMove1 = moves[0];
-        RelearnMove2 = moves[1];
-        RelearnMove3 = moves[2];
-        RelearnMove4 = moves[3];
+        _isLoading = true;
+        RelearnMove1 = pk.RelearnMove1;
+        RelearnMove2 = pk.RelearnMove2;
+        RelearnMove3 = pk.RelearnMove3;
+        RelearnMove4 = pk.RelearnMove4;
+        _isLoading = false;
         
         Validate();
     }
@@ -108,14 +109,22 @@ public partial class PokemonEditorViewModel
     private void SuggestCurrentMoves()
     {
         var pk = PreparePKM();
-        var la = new LegalityAnalysis(pk, _sav.Personal);
-        Span<ushort> moves = stackalloc ushort[4];
-        la.GetSuggestedCurrentMoves(moves);
+        pk.SetMoveset(false);
         
-        Move1 = moves[0];
-        Move2 = moves[1];
-        Move3 = moves[2];
-        Move4 = moves[3];
+        _isLoading = true;
+        Move1 = pk.Move1;
+        Move2 = pk.Move2;
+        Move3 = pk.Move3;
+        Move4 = pk.Move4;
+        Pp1 = pk.Move1_PP;
+        Pp2 = pk.Move2_PP;
+        Pp3 = pk.Move3_PP;
+        Pp4 = pk.Move4_PP;
+        PpUps1 = pk.Move1_PPUps;
+        PpUps2 = pk.Move2_PPUps;
+        PpUps3 = pk.Move3_PPUps;
+        PpUps4 = pk.Move4_PPUps;
+        _isLoading = false;
         
         Validate();
     }

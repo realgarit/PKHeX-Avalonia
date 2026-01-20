@@ -22,10 +22,9 @@ public partial class PokemonEditorViewModel
     private int _metLevel;
 
     [ObservableProperty]
-    private DateTimeOffset? _metDate;
-
+    private DateTime? _metDate;
     [ObservableProperty]
-    private DateTimeOffset? _eggDate;
+    private DateTime? _eggDate;
 
     [ObservableProperty] private bool _isIllegal;
     [ObservableProperty] private ObservableCollection<ComboItem> _metLocationList = [];
@@ -37,26 +36,28 @@ public partial class PokemonEditorViewModel
         UpdateMetDataLists();
     }
 
-    private void UpdateMetDataLists()
+    private void UpdateMetDataLists(bool preserveSelection = true)
     {
-        // Store current values before clearing to prevent binding race condition
+        // Store current values
         var currentMetLocation = MetLocation;
         var currentEggLocation = EggLocation;
         
-        MetLocationList.Clear();
+        var newMetList = new ObservableCollection<ComboItem>();
         var context = _sav.Context;
         var locations = GameInfo.Sources.Met.GetLocationList((GameVersion)OriginGame, context);
         foreach (var item in locations)
-            MetLocationList.Add(item);
+            newMetList.Add(item);
+        MetLocationList = newMetList;
 
-        EggLocationList.Clear();
+        var newEggList = new ObservableCollection<ComboItem>();
         var eggLocations = GameInfo.Sources.Met.GetLocationList((GameVersion)OriginGame, context, egg: true);
         foreach (var item in eggLocations)
-            EggLocationList.Add(item);
+            newEggList.Add(item);
+        EggLocationList = newEggList;
         
-        // Restore values if they exist in new lists
-        if (_isLoading) return; // Don't reset values during load, let LoadFromPKM handle it
+        if (_isLoading || !preserveSelection) return; 
 
+        // Restore values if they exist in new lists
         if (MetLocationList.Any(l => l.Value == currentMetLocation))
             MetLocation = currentMetLocation;
         else if (MetLocationList.Count > 0)
@@ -70,8 +71,8 @@ public partial class PokemonEditorViewModel
 
     partial void OnMetLocationChanged(int value) { if (!_isLoading) Validate(); }
     partial void OnMetLevelChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnMetDateChanged(DateTimeOffset? value) { if (!_isLoading) Validate(); }
+    partial void OnMetDateChanged(DateTime? value) { if (!_isLoading) Validate(); }
     partial void OnEggLocationChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnEggDateChanged(DateTimeOffset? value) { if (!_isLoading) Validate(); }
+    partial void OnEggDateChanged(DateTime? value) { if (!_isLoading) Validate(); }
     partial void OnIsFatefulEncounterChanged(bool value) { if (!_isLoading) Validate(); }
 }

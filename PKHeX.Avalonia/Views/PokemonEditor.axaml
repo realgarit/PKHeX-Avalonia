@@ -5,11 +5,11 @@
              x:DataType="vm:PokemonEditorViewModel"
              MinHeight="480">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Padding="6" Classes="view-container">
         <DockPanel>
             <!-- Header with sprite and title - Glass Effect -->
-            <Border DockPanel.Dock="Top" Margin="0,0,0,16"
-                    Classes="glass" Padding="16">
+            <Border DockPanel.Dock="Top" Margin="0,0,0,8"
+                    Classes="glass" Padding="8">
                 <!-- Header: Sprite | Title/Stats | Legality | Shiny -->
                 <Grid ColumnDefinitions="Auto,*,48,48">
                     <Border Grid.Column="0"
@@ -26,18 +26,18 @@
                                    RenderOptions.BitmapInterpolationMode="HighQuality"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center" />
-                            <!-- Illegal Indicator (Top Right) -->
-                            <Path Data="M 15,0 L 15,15 L 0,0 Z" 
+                            <!-- Illegal Warning Triangle (Top Right) -->
+                            <Path Data="M 8,0 L 16,14 L 0,14 Z M 8.5,12 H 7.5 V 10.5 H 8.5 V 12 Z M 8.5,9 H 7.5 V 4.5 H 8.5 V 9 Z" 
                                   Fill="#E3350D" 
                                   HorizontalAlignment="Right" 
                                   VerticalAlignment="Top"
                                   IsVisible="{Binding !IsLegal}"
-                                  Width="15" Height="15"/>
+                                  Width="16" Height="14"/>
                         </Panel>
                     </Border>
 
                     <!-- Title and Quick Info -->
-                    <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center" MaxWidth="200">
+                    <StackPanel Grid.Column="1" Margin="8,0" VerticalAlignment="Center" MaxWidth="180">
                         <TextBlock Text="{Binding Title}"
                                    FontSize="20"
                                    FontWeight="SemiBold"
@@ -144,7 +144,7 @@
                         <StackPanel Spacing="16">
                             <!-- Core Info Card -->
                             <Border Classes="section-card"
-                                    CornerRadius="4" Padding="12">
+                                    CornerRadius="4" Padding="6">
                                 <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Core Info" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
                                     
@@ -182,7 +182,7 @@
 
                             <!-- Growth Card -->
                             <Border Classes="section-card"
-                                    CornerRadius="4" Padding="12">
+                                    CornerRadius="4" Padding="6">
                                 <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Growth" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
 
@@ -344,16 +344,16 @@
                             </StackPanel>
 
                             <!-- Met Level and Date Row -->
-                            <StackPanel Spacing="8">
-                                <StackPanel>
-                                    <TextBlock Text="Met Level" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                    <NumericUpDown Value="{Binding MetLevel}" Minimum="0" Maximum="100" FormatString="0" HorizontalAlignment="Stretch" />
+                            <Grid ColumnDefinitions="*,8,*" VerticalAlignment="Center">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Met Level" FontWeight="SemiBold" Margin="0,0,0,4" VerticalAlignment="Center" />
+                                    <NumericUpDown Value="{Binding MetLevel}" Minimum="0" Maximum="100" FormatString="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                                 </StackPanel>
-                                <StackPanel>
-                                    <TextBlock Text="Met Date" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                    <CalendarDatePicker SelectedDate="{Binding MetDate}" HorizontalAlignment="Stretch" />
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Met Date" FontWeight="SemiBold" Margin="0,0,0,4" VerticalAlignment="Center" />
+                                    <CalendarDatePicker SelectedDate="{Binding MetDate}" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                                 </StackPanel>
-                            </StackPanel>
+                            </Grid>
 
                             <!-- Egg Location -->
                             <StackPanel>
@@ -381,16 +381,23 @@
                     <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="16">
                             <!-- Current Moves Section -->
-                            <StackPanel Spacing="8">
+                            <StackPanel Spacing="4">
                                 <DockPanel>
                                     <TextBlock Text="Current Moves" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
                                     <Button Content="Suggest" Command="{Binding SuggestCurrentMovesCommand}"
                                             HorizontalAlignment="Right" Padding="8,2" FontSize="12" />
                                 </DockPanel>
                                 
-                                <StackPanel Spacing="4">
+                                <!-- Move Headers -->
+                                <Grid ColumnDefinitions="*,4,58,4,38" Margin="0,4,0,0">
+                                    <TextBlock Text="Move" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+                                    <TextBlock Grid.Column="2" Text="PP" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}" HorizontalAlignment="Center" />
+                                    <TextBlock Grid.Column="4" Text="Ups" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}" HorizontalAlignment="Center" />
+                                </Grid>
+                                
+                                <StackPanel Spacing="2">
                                     <!-- Move 1 -->
-                                    <Grid ColumnDefinitions="*,8,60,4,40">
+                                    <Grid ColumnDefinitions="*,4,58,4,38">
                                         <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
                                                   SelectedValue="{Binding Move1}" SelectedValueBinding="{Binding Value}"
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
@@ -398,7 +405,7 @@
                                         <NumericUpDown Grid.Column="4" Value="{Binding PpUps1}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
                                     </Grid>
                                     <!-- Move 2 -->
-                                    <Grid ColumnDefinitions="*,8,60,4,40">
+                                    <Grid ColumnDefinitions="*,4,58,4,38">
                                         <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
                                                   SelectedValue="{Binding Move2}" SelectedValueBinding="{Binding Value}"
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
@@ -406,7 +413,7 @@
                                         <NumericUpDown Grid.Column="4" Value="{Binding PpUps2}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
                                     </Grid>
                                     <!-- Move 3 -->
-                                    <Grid ColumnDefinitions="*,8,60,4,40">
+                                    <Grid ColumnDefinitions="*,4,58,4,38">
                                         <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
                                                   SelectedValue="{Binding Move3}" SelectedValueBinding="{Binding Value}"
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
@@ -414,7 +421,7 @@
                                         <NumericUpDown Grid.Column="4" Value="{Binding PpUps3}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
                                     </Grid>
                                     <!-- Move 4 -->
-                                    <Grid ColumnDefinitions="*,8,60,4,40">
+                                    <Grid ColumnDefinitions="*,4,58,4,38">
                                         <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
                                                   SelectedValue="{Binding Move4}" SelectedValueBinding="{Binding Value}"
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />

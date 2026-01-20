@@ -25,7 +25,7 @@
             
             <!-- Box Navigation - Modern Pill Style -->
             <Border Classes="card" Padding="12,8" HorizontalAlignment="Center">
-                <DockPanel MinWidth="480">
+                <DockPanel Width="410">
                     <Button DockPanel.Dock="Left"
                             Classes="nav-pill"
                             Content="◀"
