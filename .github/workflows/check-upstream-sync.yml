@@ -68,45 +68,37 @@ jobs:
           COMMITS_JSON=$(gh api "repos/$UPSTREAM_REPO/commits?path=PKHeX.Core&per_page=50" --jq '[.[] | {sha: .sha, message: .commit.message, author: .commit.author.name, date: .commit.author.date, url: .html_url}]')
           
           # Build commits list until we hit our last synced SHA
-          COMMITS_BODY=""
           COMMIT_COUNT=0
-          
-          while IFS= read -r commit; do
-            SHA=$(echo "$commit" | jq -r '.sha')
-            if [ "$SHA" = "$LAST_SHA" ]; then
-              break
-            fi
-            
-            MESSAGE=$(echo "$commit" | jq -r '.message' | head -n 1)
-            AUTHOR=$(echo "$commit" | jq -r '.author')
-            DATE=$(echo "$commit" | jq -r '.date')
-            URL=$(echo "$commit" | jq -r '.url')
-            SHORT_SHA="${SHA:0:7}"
-            
-            COMMITS_BODY="$COMMITS_BODY
-          - [\`$SHORT_SHA\`]($URL) - $MESSAGE (by $AUTHOR)"
-            COMMIT_COUNT=$((COMMIT_COUNT + 1))
-          done <<< "$(echo "$COMMITS_JSON" | jq -c '.[]')"
+          {
+            while IFS= read -r commit; do
+              SHA=$(echo "$commit" | jq -r '.sha')
+              if [ "$SHA" = "$LAST_SHA" ]; then
+                break
+              fi
+              
+              MESSAGE=$(echo "$commit" | jq -r '.message' | head -n 1 | sed 's/"/\\"/g')
+              AUTHOR=$(echo "$commit" | jq -r '.author')
+              URL=$(echo "$commit" | jq -r '.url')
+              SHORT_SHA="${SHA:0:7}"
+              
+              echo "- [\`$SHORT_SHA\`]($URL) - $MESSAGE (by $AUTHOR)"
+              COMMIT_COUNT=$((COMMIT_COUNT + 1))
+            done <<< "$(echo "$COMMITS_JSON" | jq -c '.[]')"
+          } > /tmp/commits_body.txt
           
           echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
-          echo "$COMMITS_BODY" > /tmp/commits_body.txt
 
-      - name: Analyze breaking changes and new features
+      - name: Analyze file differences
         if: steps.check-upstream.outputs.needs_sync == 'true'
         id: analyze
         run: |
           # Compare our PKHeX.Core with upstream
-          WARNINGS=""
-          NOTES=""
-          FILE_DIFF_SUMMARY=""
-          
-          # --- Get complete file diff summary ---
           DIFF_OUTPUT=$(diff -rq PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core 2>/dev/null | grep -v "bin\|obj\|\.git" || true)
           
           # Count different types
-          FILES_DIFFER=$(echo "$DIFF_OUTPUT" | grep "differ" | wc -l | tr -d ' ')
-          FILES_ONLY_OURS=$(echo "$DIFF_OUTPUT" | grep "Only in PKHeX.Core" | wc -l | tr -d ' ')
-          FILES_ONLY_UPSTREAM=$(echo "$DIFF_OUTPUT" | grep "Only in /tmp/pkhex-upstream" | wc -l | tr -d ' ')
+          FILES_DIFFER=$(echo "$DIFF_OUTPUT" | grep -c "differ" || echo "0")
+          FILES_ONLY_OURS=$(echo "$DIFF_OUTPUT" | grep -c "Only in PKHeX.Core" || echo "0")
+          FILES_ONLY_UPSTREAM=$(echo "$DIFF_OUTPUT" | grep -c "Only in /tmp/pkhex-upstream" || echo "0")
           TOTAL_DIFF=$((FILES_DIFFER + FILES_ONLY_OURS + FILES_ONLY_UPSTREAM))
           
           echo "files_differ=$FILES_DIFFER" >> $GITHUB_OUTPUT
@@ -115,145 +107,116 @@ jobs:
           echo "total_diff=$TOTAL_DIFF" >> $GITHUB_OUTPUT
           
           # Build file diff summary
-          if [ "$TOTAL_DIFF" -gt 0 ]; then
-            FILE_DIFF_SUMMARY="
-          
-          ## File Differences Summary
-          
-          | Type | Count |
-          |------|-------|
-          | Files with changes | $FILES_DIFFER |
-          | Files only in yours | $FILES_ONLY_OURS |
-          | Files only in upstream | $FILES_ONLY_UPSTREAM |
-          | **Total** | **$TOTAL_DIFF** |
-          "
-            
-            # List changed .cs files (most important)
-            CS_FILES_CHANGED=$(echo "$DIFF_OUTPUT" | grep "differ" | grep "\.cs" | sed 's/Files PKHeX.Core\//- /' | sed 's/ and .*//' | head -30 || true)
-            if [ -n "$CS_FILES_CHANGED" ]; then
-              FILE_DIFF_SUMMARY="$FILE_DIFF_SUMMARY
-          
-          **Changed .cs files:**
-          $CS_FILES_CHANGED"
+          {
+            if [ "$TOTAL_DIFF" -gt 0 ]; then
+              echo ""
+              echo "## File Differences Summary"
+              echo ""
+              echo "| Type | Count |"
+              echo "|------|-------|"
+              echo "| Files with changes | $FILES_DIFFER |"
+              echo "| Files only in yours | $FILES_ONLY_OURS |"
+              echo "| Files only in upstream | $FILES_ONLY_UPSTREAM |"
+              echo "| **Total** | **$TOTAL_DIFF** |"
+              echo ""
               
-              # If there are more than 30, indicate that
-              CS_TOTAL=$(echo "$DIFF_OUTPUT" | grep "differ" | grep "\.cs" | wc -l | tr -d ' ')
-              if [ "$CS_TOTAL" -gt 30 ]; then
-                FILE_DIFF_SUMMARY="$FILE_DIFF_SUMMARY
-          ... and $((CS_TOTAL - 30)) more .cs files"
+              # List changed .cs files
+              CS_FILES=$(echo "$DIFF_OUTPUT" | grep "differ" | grep "\.cs" | sed 's|Files PKHeX.Core/|- |' | sed 's| and .*||' | head -30)
+              if [ -n "$CS_FILES" ]; then
+                echo "**Changed .cs files:**"
+                echo "$CS_FILES"
+                CS_TOTAL=$(echo "$DIFF_OUTPUT" | grep "differ" | grep -c "\.cs" || echo "0")
+                if [ "$CS_TOTAL" -gt 30 ]; then
+                  echo "... and $((CS_TOTAL - 30)) more .cs files"
+                fi
+                echo ""
+              fi
+              
+              # List changed resource files
+              RES_FILES=$(echo "$DIFF_OUTPUT" | grep "differ" | grep -E "\.(json|txt)" | sed 's|Files PKHeX.Core/|- |' | sed 's| and .*||' | head -15)
+              if [ -n "$RES_FILES" ]; then
+                echo "**Changed resource/localization files:**"
+                echo "$RES_FILES"
+                echo ""
+              fi
+            fi
+          } > /tmp/file_diff_summary.txt
+          
+          # Build warnings
+          {
+            # Files only in ours
+            OUR_ONLY=$(echo "$DIFF_OUTPUT" | grep "Only in PKHeX.Core" | sed 's|Only in PKHeX.Core|- |' || true)
+            if [ -n "$OUR_ONLY" ]; then
+              echo ""
+              echo "**Files only in your version (you added these or upstream removed them):**"
+              echo "\`\`\`"
+              echo "$OUR_ONLY"
+              echo "\`\`\`"
+              echo "Review these - they may conflict with upstream changes."
+              echo ""
+            fi
+            
+            # Check PKM.cs for local modifications
+            if [ -f "PKHeX.Core/PKM/PKM.cs" ] && [ -f "/tmp/pkhex-upstream/PKHeX.Core/PKM/PKM.cs" ]; then
+              OUR_ADDITIONS=$(diff PKHeX.Core/PKM/PKM.cs /tmp/pkhex-upstream/PKHeX.Core/PKM/PKM.cs 2>/dev/null | grep "^<" | grep -E "public|protected" | head -5 || true)
+              if [ -n "$OUR_ADDITIONS" ]; then
+                echo "**PKM.cs - Your local additions (not in upstream):**"
+                echo "\`\`\`csharp"
+                echo "$OUR_ADDITIONS"
+                echo "\`\`\`"
+                echo "These are your custom methods. Make sure they still compile after syncing."
+                echo ""
+              fi
+            fi
+          } > /tmp/warnings.txt
+          
+          # Build notes
+          {
+            # New files in upstream
+            NEW_FILES=$(echo "$DIFF_OUTPUT" | grep "Only in /tmp/pkhex-upstream" | sed 's|Only in /tmp/pkhex-upstream/PKHeX.Core|- PKHeX.Core|' || true)
+            if [ -n "$NEW_FILES" ]; then
+              echo ""
+              echo "**New files in upstream (add these to your repo):**"
+              echo "\`\`\`"
+              echo "$NEW_FILES"
+              echo "\`\`\`"
+              echo ""
+            fi
+            
+            # New MessageStrings
+            if [ -f "PKHeX.Core/Util/MessageStrings.cs" ] && [ -f "/tmp/pkhex-upstream/PKHeX.Core/Util/MessageStrings.cs" ]; then
+              NEW_MSGS=$(diff PKHeX.Core/Util/MessageStrings.cs /tmp/pkhex-upstream/PKHeX.Core/Util/MessageStrings.cs 2>/dev/null | grep "^>" | grep "public static string Msg" | head -10 || true)
+              if [ -n "$NEW_MSGS" ]; then
+                echo "**New MessageStrings (may need Avalonia UI):**"
+                echo "\`\`\`csharp"
+                echo "$NEW_MSGS"
+                echo "\`\`\`"
+                echo "Check if these are used in new dialogs that need UI work."
+                echo ""
               fi
             fi
             
-            # List changed resource/localization files
-            RESOURCE_FILES=$(echo "$DIFF_OUTPUT" | grep "differ" | grep -E "\.(json|txt|resx)" | sed 's/Files PKHeX.Core\//- /' | sed 's/ and .*//' | head -15 || true)
-            if [ -n "$RESOURCE_FILES" ]; then
-              FILE_DIFF_SUMMARY="$FILE_DIFF_SUMMARY
-          
-          **Changed resource/localization files:**
-          $RESOURCE_FILES"
-            fi
-          fi
-          
-          echo "$FILE_DIFF_SUMMARY" > /tmp/file_diff_summary.txt
-          
-          # --- Detect files only in upstream (new files we don't have) ---
-          NEW_FILES=$(echo "$DIFF_OUTPUT" | grep "Only in /tmp/pkhex-upstream" || true)
-          if [ -n "$NEW_FILES" ]; then
-            NOTES="$NOTES
-          
-          **New files in upstream (you need to add these):**
-          \`\`\`
-          $NEW_FILES
-          \`\`\`"
-          fi
-          
-          # --- Detect files only in ours (we added, or upstream removed) ---
-          OUR_ONLY=$(diff -rq PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core 2>/dev/null | grep "Only in PKHeX.Core" | grep -v "bin\|obj\|.git" || true)
-          if [ -n "$OUR_ONLY" ]; then
-            WARNINGS="$WARNINGS
-          
-          **Files only in your version (local modifications or upstream removed):**
-          \`\`\`
-          $OUR_ONLY
-          \`\`\`
-          These may be intentional local additions. Verify they still work after syncing."
-          fi
-          
-          # --- Check for new MessageStrings (likely needs UI work) ---
-          NEW_MSG_STRINGS=$(diff PKHeX.Core/Util/MessageStrings.cs /tmp/pkhex-upstream/PKHeX.Core/Util/MessageStrings.cs 2>/dev/null | grep "^>" | grep "public static string" || true)
-          if [ -n "$NEW_MSG_STRINGS" ]; then
-            NOTES="$NOTES
-          
-          **New MessageStrings added (may need Avalonia UI integration):**
-          \`\`\`csharp
-          $NEW_MSG_STRINGS
-          \`\`\`
-          Check if these strings are used in new dialogs or features that need UI work."
-          fi
-          
-          # --- Check for renamed/removed public members (breaking changes) ---
-          # Look for methods/properties that exist in ours but not in upstream (potential renames)
-          CHANGED_CS_FILES=$(diff -rq PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core 2>/dev/null | grep "differ" | grep "\.cs" | head -20 || true)
-          
-          BREAKING=""
-          if [ -n "$CHANGED_CS_FILES" ]; then
-            # Sample a few key files for signature changes
-            for file in "PKM/PKM.cs" "Legality/Encounters/Templates/Shared/Moveset.cs"; do
-              if [ -f "PKHeX.Core/$file" ] && [ -f "/tmp/pkhex-upstream/PKHeX.Core/$file" ]; then
-                # Check for lines we have that upstream doesn't (our additions or their removals)
-                OUR_UNIQUE=$(diff PKHeX.Core/$file /tmp/pkhex-upstream/PKHeX.Core/$file 2>/dev/null | grep "^<" | grep -E "public|protected|internal" | head -5 || true)
-                if [ -n "$OUR_UNIQUE" ]; then
-                  BREAKING="$BREAKING
-          
-          **$file** - Lines in your version not in upstream:
-          \`\`\`csharp
-          $OUR_UNIQUE
-          \`\`\`"
-                fi
-                
-                # Check for lines upstream has that we don't (new API)
-                UPSTREAM_UNIQUE=$(diff PKHeX.Core/$file /tmp/pkhex-upstream/PKHeX.Core/$file 2>/dev/null | grep "^>" | grep -E "public|protected|internal" | head -5 || true)
-                if [ -n "$UPSTREAM_UNIQUE" ]; then
-                  NOTES="$NOTES
-          
-          **$file** - New API in upstream:
-          \`\`\`csharp
-          $UPSTREAM_UNIQUE
-          \`\`\`"
-                fi
+            # New API in Moveset.cs
+            if [ -f "PKHeX.Core/Legality/Encounters/Templates/Shared/Moveset.cs" ] && [ -f "/tmp/pkhex-upstream/PKHeX.Core/Legality/Encounters/Templates/Shared/Moveset.cs" ]; then
+              NEW_API=$(diff PKHeX.Core/Legality/Encounters/Templates/Shared/Moveset.cs /tmp/pkhex-upstream/PKHeX.Core/Legality/Encounters/Templates/Shared/Moveset.cs 2>/dev/null | grep "^>" | grep -E "public|internal" | head -5 || true)
+              if [ -n "$NEW_API" ]; then
+                echo "**Moveset.cs - New API in upstream:**"
+                echo "\`\`\`csharp"
+                echo "$NEW_API"
+                echo "\`\`\`"
+                echo ""
               fi
-            done
-          fi
+            fi
+          } > /tmp/notes.txt
           
-          if [ -n "$BREAKING" ]; then
-            WARNINGS="$WARNINGS
-          $BREAKING"
-          fi
-          
-          # --- Check for property/method renames by looking at compile-likely patterns ---
-          # This is a heuristic: if upstream changed a property name, grep for the old name
-          RENAME_HINTS=$(diff -r PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core 2>/dev/null | grep -E "^[<>].*\b(public|private|protected|internal)\b.*(bool|int|string|ushort|byte)" | head -10 || true)
-          if [ -n "$RENAME_HINTS" ]; then
-            NOTES="$NOTES
-          
-          **Potential API changes detected (review these carefully):**
-          \`\`\`
-          $RENAME_HINTS
-          \`\`\`"
-          fi
-          
-          # Save to files for the issue body
-          echo "$WARNINGS" > /tmp/warnings.txt
-          echo "$NOTES" > /tmp/notes.txt
-          
-          # Set flags
-          if [ -n "$WARNINGS" ]; then
+          # Set flags for conditional sections
+          if [ -s /tmp/warnings.txt ]; then
             echo "has_warnings=true" >> $GITHUB_OUTPUT
           else
             echo "has_warnings=false" >> $GITHUB_OUTPUT
           fi
           
-          if [ -n "$NOTES" ]; then
+          if [ -s /tmp/notes.txt ]; then
             echo "has_notes=true" >> $GITHUB_OUTPUT
           else
             echo "has_notes=false" >> $GITHUB_OUTPUT
@@ -276,50 +239,37 @@ jobs:
           COMPARE_URL="${{ steps.check-upstream.outputs.compare_url }}"
           COMMIT_COUNT="${{ steps.check-upstream.outputs.commit_count }}"
           TOTAL_DIFF="${{ steps.analyze.outputs.total_diff }}"
+          
           COMMITS_BODY=$(cat /tmp/commits_body.txt)
+          FILE_DIFF_SUMMARY=$(cat /tmp/file_diff_summary.txt 2>/dev/null || echo "")
           WARNINGS=$(cat /tmp/warnings.txt 2>/dev/null || echo "")
           NOTES=$(cat /tmp/notes.txt 2>/dev/null || echo "")
-          FILE_DIFF_SUMMARY=$(cat /tmp/file_diff_summary.txt 2>/dev/null || echo "")
           
-          # Include file count in title if there are differences
+          # Build title with file count
           if [ -n "$TOTAL_DIFF" ] && [ "$TOTAL_DIFF" -gt 0 ]; then
-            ISSUE_TITLE="PKHeX.Core Upstream Sync Required ($COMMIT_COUNT commits, $TOTAL_DIFF files differ)"
+            ISSUE_TITLE="PKHeX.Core Sync Required ($COMMIT_COUNT commits, $TOTAL_DIFF files differ)"
           else
-            ISSUE_TITLE="PKHeX.Core Upstream Sync Required ($COMMIT_COUNT new commits)"
+            ISSUE_TITLE="PKHeX.Core Sync Required ($COMMIT_COUNT commits)"
           fi
           
-          # Build warnings section
-          WARNINGS_SECTION=""
-          if [ -n "$WARNINGS" ] && [ "$WARNINGS" != "" ]; then
-            WARNINGS_SECTION="
-          ---
-          
-          ## Warnings - Review Before Syncing
-          
-          The following issues were detected that may cause problems:
-          $WARNINGS"
-          fi
-          
-          # Build notes section
-          NOTES_SECTION=""
-          if [ -n "$NOTES" ] && [ "$NOTES" != "" ]; then
-            NOTES_SECTION="
-          ---
-          
-          ## Notes - New Features and Changes
-          
-          The following additions may need attention:
-          $NOTES"
-          fi
-          
-          ISSUE_BODY="## Upstream Changes Detected
+          # Build issue body
+          cat > /tmp/issue_body.md << 'ISSUE_HEADER'
+          ## Upstream Changes Detected
 
           The upstream [PKHeX.Core](https://github.com/kwsch/PKHeX/tree/master/PKHeX.Core) has new commits that need to be synced.
 
           ### Summary
+          ISSUE_HEADER
+          
+          # Remove leading spaces from heredoc
+          sed -i 's/^          //' /tmp/issue_body.md
+          
+          # Add summary details
+          cat >> /tmp/issue_body.md << EOF
           - **Last synced SHA:** \`$LAST_SHA\`
           - **Latest upstream SHA:** \`$LATEST_SHA\`
           - **New commits:** $COMMIT_COUNT
+          - **Files differ:** $TOTAL_DIFF
 
           ### Commits to sync
           $COMMITS_BODY
@@ -327,22 +277,57 @@ jobs:
           ### Quick Links
           - [View full diff]($COMPARE_URL)
           - [PKHeX.Core folder](https://github.com/kwsch/PKHeX/tree/master/PKHeX.Core)
-          $FILE_DIFF_SUMMARY
-          $WARNINGS_SECTION
-          $NOTES_SECTION
+          EOF
+          
+          # Add file diff summary
+          if [ -s /tmp/file_diff_summary.txt ]; then
+            cat /tmp/file_diff_summary.txt >> /tmp/issue_body.md
+          fi
+          
+          # Add warnings section
+          if [ -s /tmp/warnings.txt ]; then
+            cat >> /tmp/issue_body.md << 'EOF'
+
+          ---
+
+          ## Warnings - Review Before Syncing
+
+          The following may cause issues:
+          EOF
+            sed -i 's/^          //' /tmp/issue_body.md
+            cat /tmp/warnings.txt >> /tmp/issue_body.md
+          fi
+          
+          # Add notes section
+          if [ -s /tmp/notes.txt ]; then
+            cat >> /tmp/issue_body.md << 'EOF'
+
+          ---
+
+          ## Notes - New Features
+
+          The following additions may need attention:
+          EOF
+            sed -i 's/^          //' /tmp/issue_body.md
+            cat /tmp/notes.txt >> /tmp/issue_body.md
+          fi
+          
+          # Add footer
+          cat >> /tmp/issue_body.md << EOF
 
           ---
 
           ### After syncing
-          Update \`.github/upstream-sync/last-synced-sha.txt\` with the new SHA:
+          Update \`.github/upstream-sync/last-synced-sha.txt\` with:
           \`\`\`
           $LATEST_SHA
           \`\`\`
 
           ---
-          *This issue was automatically created by the upstream sync checker.*"
+          *Auto-generated by upstream sync checker*
+          EOF
           
-          gh issue create --title "$ISSUE_TITLE" --body "$ISSUE_BODY" --label "sync"
+          gh issue create --title "$ISSUE_TITLE" --body-file /tmp/issue_body.md --label "sync"
 
       - name: Cleanup
         if: always()
