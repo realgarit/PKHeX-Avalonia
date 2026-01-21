@@ -174,16 +174,9 @@
             <Border Grid.Column="0" 
                     Background="{DynamicResource ThemeBackgroundBaseBrush}"
                     BorderThickness="0,0,1,0" 
-                    BorderBrush="{DynamicResource ThemeBorderDefaultBrush}">
-                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                    <ContentControl Content="{Binding CurrentPokemonEditor}">
-                        <ContentControl.ContentTemplate>
-                            <DataTemplate DataType="vm:PokemonEditorViewModel">
-                                <views:PokemonEditor />
-                            </DataTemplate>
-                        </ContentControl.ContentTemplate>
-                    </ContentControl>
-                </ScrollViewer>
+                    BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
+                    Focusable="False">
+                <ContentControl Content="{Binding CurrentPokemonEditor}" Focusable="False" />
             </Border>
                 
                 <!-- Right Panel: SAV Editor (Box, Party, Trainer, etc.) -->

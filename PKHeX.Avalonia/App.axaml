@@ -18,6 +18,10 @@
             <Color x:Key="SystemAccentColorLight2">#FF7755</Color>
             <Color x:Key="SystemAccentColorLight3">#FF9977</Color>
             
+            <!-- Override Focus Visuals to remove yellow/accent border -->
+            <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="Transparent" />
+            <SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="Transparent" />
+            
             <converters:ObjectNullConverter x:Key="ObjectNullConverter" />
             <converters:ObjectTrueConverter x:Key="ObjectTrueConverter" />
             <converters:ObjectFalseConverter x:Key="ObjectFalseConverter" />

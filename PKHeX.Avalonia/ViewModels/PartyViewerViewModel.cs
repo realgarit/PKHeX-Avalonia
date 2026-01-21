@@ -70,6 +70,7 @@ public partial class PartyViewerViewModel : ViewModelBase
                 CurrentHp = (ushort)(pk is PKM pkm ? pkm.Stat_HPCurrent : 0),
                 MaxHp = (ushort)(pk is PKM pkm2 ? pkm2.Stat_HPMax : 0),
                 ShowdownSummary = isEmpty ? string.Empty : new ShowdownSet(pk).Text,
+                IsLegal = isEmpty || new LegalityAnalysis(pk).Valid,
                 IsSelected = false
             });
         }

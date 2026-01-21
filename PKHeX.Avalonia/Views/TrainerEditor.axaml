@@ -5,70 +5,115 @@
              x:DataType="vm:TrainerEditorViewModel">
 
     <Border Padding="16" Classes="view-container">
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-            <StackPanel Spacing="16" MaxWidth="400">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="16">
                 <!-- Header -->
-                <TextBlock Text="Trainer Info"
-                           FontSize="20"
-                           FontWeight="SemiBold" />
+                <TextBlock Text="Trainer Info" FontSize="24" FontWeight="SemiBold" Margin="0,0,0,8" />
 
-                <!-- Game Info (Read-only) -->
-                <Border Classes="section-card"
-                        CornerRadius="4" Padding="12">
-                    <StackPanel Spacing="4">
-                        <TextBlock Text="Game Info" FontWeight="SemiBold" Margin="0,0,0,8" />
-                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,4,Auto,4,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Game:" Opacity="0.7" />
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GameVersion}" />
+                <!-- Top Section: 2 Columns -->
+                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto">
+                    <!-- Column 1: Identity -->
+                    <StackPanel Grid.Column="0" Spacing="16">
+                        <!-- Identity Card -->
+                        <Border Classes="section-card" Padding="12">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Identity" FontWeight="SemiBold" Opacity="0.6" />
+                                
+                                <Grid ColumnDefinitions="*,12,120">
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Trainer Name" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
+                                        <TextBox Text="{Binding TrainerName}" MaxLength="12" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Gender" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
+                                        <ComboBox ItemsSource="{Binding GenderList}"
+                                                  SelectedValue="{Binding Gender}"
+                                                  SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}"
+                                                  HorizontalAlignment="Stretch" />
+                                    </StackPanel>
+                                </Grid>
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Generation:" Opacity="0.7" />
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Generation}" />
+                                <Grid ColumnDefinitions="*,12,*">
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="TID" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
+                                        <NumericUpDown Value="{Binding Tid16}" Minimum="0" Maximum="65535" FormatString="00000" ShowButtonSpinner="False" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="SID" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
+                                        <NumericUpDown Value="{Binding Sid16}" Minimum="0" Maximum="65535" FormatString="00000" ShowButtonSpinner="False" />
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                        
+                        <!-- Game Info (Read-only) -->
+                        <Border Classes="section-card" Padding="12">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Game Info" FontWeight="SemiBold" Opacity="0.6" />
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" Margin="4,0">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Game:" Opacity="0.6" Width="80"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GameVersion}" FontWeight="SemiBold"/>
 
-                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Save Type:" Opacity="0.7" />
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SaveType}" />
-                        </Grid>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Gen:" Opacity="0.6" Margin="0,4,0,0"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Generation}" Margin="0,4,0,0"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Type:" Opacity="0.6" Margin="0,4,0,0"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SaveType}" Margin="0,4,0,0"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
-                </Border>
 
-                <!-- Trainer Name and Gender -->
-                <Grid ColumnDefinitions="*,16,120">
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="Trainer Name" FontWeight="SemiBold" Margin="0,0,0,4" />
-                        <TextBox Text="{Binding TrainerName}" MaxLength="12" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="2">
-                        <TextBlock Text="Gender" FontWeight="SemiBold" Margin="0,0,0,4" />
-                        <ComboBox ItemsSource="{Binding GenderList}"
-                                  SelectedValue="{Binding Gender}"
-                                  SelectedValueBinding="{Binding Value}"
-                                  DisplayMemberBinding="{Binding Text}"
-                                  HorizontalAlignment="Stretch" />
-                    </StackPanel>
-                </Grid>
+                    <!-- Column 2: Status & Money -->
+                    <StackPanel Grid.Column="2" Spacing="16">
+                        <!-- Play Time & Money -->
+                        <Border Classes="section-card" Padding="12">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Status" FontWeight="SemiBold" Opacity="0.6" />
+                                
+                                <!-- Money -->
+                                <StackPanel>
+                                    <TextBlock Text="Money" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
+                                    <Grid ColumnDefinitions="*,8,Auto">
+                                        <NumericUpDown Grid.Column="0" Value="{Binding Money}" Minimum="0" Maximum="{Binding MaxMoney}" FormatString="N0" ShowButtonSpinner="False" />
+                                        <Button Grid.Column="2" Content="Max" Command="{Binding MaxMoney_ClickCommand}" Padding="12,6" FontSize="12"/>
+                                    </Grid>
+                                </StackPanel>
 
-                <!-- TID / SID -->
-                <Grid ColumnDefinitions="*,16,*">
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="TID" FontWeight="SemiBold" Margin="0,0,0,4" />
-                        <NumericUpDown Value="{Binding Tid16}"
-                                       Minimum="0"
-                                       Maximum="65535"
-                                       FormatString="00000" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="2">
-                        <TextBlock Text="SID" FontWeight="SemiBold" Margin="0,0,0,4" />
-                        <NumericUpDown Value="{Binding Sid16}"
-                                       Minimum="0"
-                                       Maximum="65535"
-                                       FormatString="00000" />
+                                <!-- Play Time -->
+                                <StackPanel>
+                                    <TextBlock Text="Play Time" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
+                                    <Grid ColumnDefinitions="*,8,*,8,*">
+                                        <NumericUpDown Grid.Column="0" Value="{Binding PlayedHours}" Minimum="0" Maximum="9999" FormatString="0" ShowButtonSpinner="False" ToolTip.Tip="Hours"/>
+                                        <TextBlock Grid.Column="0" Text="h" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" Opacity="0.5" IsHitTestVisible="False"/>
+                                        
+                                        <NumericUpDown Grid.Column="2" Value="{Binding PlayedMinutes}" Minimum="0" Maximum="59" FormatString="00" ShowButtonSpinner="False" ToolTip.Tip="Minutes"/>
+                                        <TextBlock Grid.Column="2" Text="m" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" Opacity="0.5" IsHitTestVisible="False"/>
+
+                                        <NumericUpDown Grid.Column="4" Value="{Binding PlayedSeconds}" Minimum="0" Maximum="59" FormatString="00" ShowButtonSpinner="False" ToolTip.Tip="Seconds"/>
+                                        <TextBlock Grid.Column="4" Text="s" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" Opacity="0.5" IsHitTestVisible="False"/>
+                                    </Grid>
+                                </StackPanel>
+                                
+                                <!-- Language -->
+                                <StackPanel>
+                                    <TextBlock Text="Language" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
+                                    <ComboBox ItemsSource="{Binding LanguageList}"
+                                              SelectedValue="{Binding Language}"
+                                              SelectedValueBinding="{Binding Value}"
+                                              DisplayMemberBinding="{Binding Text}"
+                                              HorizontalAlignment="Stretch" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Grid>
 
                 <!-- Badges -->
-                <Border IsVisible="{Binding HasBadges}" Classes="section-card"
-                        CornerRadius="4" Padding="12">
+                <Border IsVisible="{Binding HasBadges}" Classes="section-card" Padding="12">
                     <StackPanel Spacing="8">
-                        <TextBlock Text="Badges" FontWeight="SemiBold" />
+                        <TextBlock Text="Badges" FontWeight="SemiBold" Opacity="0.6" />
                         <ItemsControl ItemsSource="{Binding Badges}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -77,209 +122,112 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <CheckBox IsChecked="{Binding IsObtained}" 
-                                              Content="{Binding DisplayName}"
-                                              Margin="0,0,16,8" />
+                                    <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" 
+                                            CornerRadius="4" Margin="0,0,8,8" Padding="8,4">
+                                        <CheckBox IsChecked="{Binding IsObtained}" 
+                                                  Content="{Binding DisplayName}" />
+                                    </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </StackPanel>
                 </Border>
 
-                <!-- Adventure Info -->
-                <Border IsVisible="{Binding HasAdventureInfo}" Classes="section-card"
-                        CornerRadius="4" Padding="12">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Adventure Info" FontWeight="SemiBold" />
-                        <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,4,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Start Timestamp:" Opacity="0.7" FontSize="11" />
-                            <NumericUpDown Grid.Row="2" Grid.Column="0" 
-                                           Value="{Binding SecondsToStart}" 
-                                           Minimum="0" 
-                                           FormatString="0" />
-
-                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Fame Timestamp:" Opacity="0.7" FontSize="11" />
-                            <NumericUpDown Grid.Row="2" Grid.Column="2" 
-                                           Value="{Binding SecondsToFame}" 
-                                           Minimum="0" 
-                                           FormatString="0" />
-                        </Grid>
+                <!-- Currencies (Full Width) -->
+                <Border IsVisible="{Binding AnyCurrencyVisible}" Classes="section-card" Padding="12">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Currencies" FontWeight="SemiBold" Opacity="0.6" />
+                        <ItemsControl>
+                             <!-- I'll use a wrap panel of labeled inputs -->
+                             <WrapPanel Orientation="Horizontal" Margin="0,0,-16,-12">
+                                <StackPanel IsVisible="{Binding HasBP}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="BP" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding BP}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
+                                <StackPanel IsVisible="{Binding HasCoins}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="Coins" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding Coins}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
+                                <StackPanel IsVisible="{Binding HasWatts}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="Watts" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding Watts}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
+                                <StackPanel IsVisible="{Binding HasLP}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="League Points" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding LP}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
+                                <StackPanel IsVisible="{Binding HasBlueberryPoints}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="Blueberry Points" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding BlueberryPoints}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
+                                <StackPanel IsVisible="{Binding HasFestaCoins}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="Festa Coins" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding FestaCoins}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
+                                <StackPanel IsVisible="{Binding HasMeritPoints}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="Merit Points" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding MeritPoints}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
+                                <StackPanel IsVisible="{Binding HasPokeMiles}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="Poke Miles" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding PokeMiles}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
+                                <StackPanel IsVisible="{Binding HasGimmighoulCoins}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="Gimmighoul Coins" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding GimmighoulCoins}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
+                             </WrapPanel>
+                        </ItemsControl>
                     </StackPanel>
                 </Border>
+                
+                <!-- Adventure & Coordinates (2 Columns) -->
+                <Grid ColumnDefinitions="*,16,*" IsVisible="{Binding HasAdventureInfo}">
+                    <Border Grid.Column="0" Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Adventure Info" FontWeight="SemiBold" Opacity="0.6" />
+                            <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,4,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Start Timestamp" FontSize="11" Opacity="0.7" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding SecondsToStart}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
 
-                <!-- Map Coordinates -->
-                <Border IsVisible="{Binding HasCoordinates}" Classes="section-card"
-                        CornerRadius="4" Padding="12">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Map Coordinates" FontWeight="SemiBold" />
-                        <Grid ColumnDefinitions="*,8,*,8,*" RowDefinitions="Auto,4,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="X" Opacity="0.7" FontSize="11" />
-                            <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding X}" FormatString="0.0" />
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Fame Timestamp" FontSize="11" Opacity="0.7" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding SecondsToFame}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Grid.Column="2" Classes="section-card" Padding="12" IsVisible="{Binding HasCoordinates}">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Map Coordinates" FontWeight="SemiBold" Opacity="0.6" />
+                            <Grid ColumnDefinitions="*,8,*,8,*" RowDefinitions="Auto,4,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="X" FontSize="11" Opacity="0.7" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding X}" FormatString="0.0" ShowButtonSpinner="False" />
 
-                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Y" Opacity="0.7" FontSize="11" />
-                            <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Y}" FormatString="0.0" />
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Y" FontSize="11" Opacity="0.7" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Y}" FormatString="0.0" ShowButtonSpinner="False" />
 
-                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Z" Opacity="0.7" FontSize="11" />
-                            <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding Z}" FormatString="0.0" />
-                        </Grid>
-                    </StackPanel>
-                </Border>
-                <!-- Money -->
-                <StackPanel>
-                    <TextBlock Text="Money" FontWeight="SemiBold" Margin="0,0,0,4" />
-                    <DockPanel>
-                        <Button DockPanel.Dock="Right"
-                                Content="Max"
-                                Command="{Binding MaxMoney_ClickCommand}"
-                                Margin="8,0,0,0"
-                                Padding="12,6" />
-                        <NumericUpDown Value="{Binding Money}"
-                                       Minimum="0"
-                                       Maximum="{Binding MaxMoney}"
-                                       FormatString="N0" />
-                    </DockPanel>
-                </StackPanel>
+                                <TextBlock Grid.Row="0" Grid.Column="4" Text="Z" FontSize="11" Opacity="0.7" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding Z}" FormatString="0.0" ShowButtonSpinner="False" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </Grid>
 
-                <!-- Currencies -->
-                <Border IsVisible="{Binding AnyCurrencyVisible}" Classes="section-card"
-                        CornerRadius="4" Padding="12">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Currencies" FontWeight="SemiBold" />
-                        <WrapPanel Orientation="Horizontal" Margin="0,0,-16,-8">
-                            <!-- BP -->
-                            <StackPanel IsVisible="{Binding HasBP}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="BP" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding BP}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <!-- Coins -->
-                            <StackPanel IsVisible="{Binding HasCoins}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Coins" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding Coins}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <!-- Watts -->
-                            <StackPanel IsVisible="{Binding HasWatts}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Watts" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding Watts}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <!-- LP -->
-                            <StackPanel IsVisible="{Binding HasLP}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="LP" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding LP}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                             <!-- Blueberry Points -->
-                            <StackPanel IsVisible="{Binding HasBlueberryPoints}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Blueberry Points" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding BlueberryPoints}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <!-- Festa Coins -->
-                            <StackPanel IsVisible="{Binding HasFestaCoins}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Festa Coins" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding FestaCoins}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <!-- Merit Points -->
-                            <StackPanel IsVisible="{Binding HasMeritPoints}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Merit Points" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding MeritPoints}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <!-- Poke Miles -->
-                            <StackPanel IsVisible="{Binding HasPokeMiles}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Poke Miles" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding PokeMiles}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <!-- Gimmighoul Coins -->
-                            <StackPanel IsVisible="{Binding HasGimmighoulCoins}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Gimmighoul Coins" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding GimmighoulCoins}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <!-- Royale Points -->
-                            <StackPanel IsVisible="{Binding HasRoyalePoints}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Royale Points" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding RoyalePoints}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <!-- Royale Points (Infinite) -->
-                            <StackPanel IsVisible="{Binding HasRoyalePointsInfinite}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Royale Points (∞)" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding RoyalePointsInfinite}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <!-- Hyperspace Points -->
-                            <StackPanel IsVisible="{Binding HasHyperspacePoints}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Hyperspace Survey" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding HyperspacePoints}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
-
-                <!-- PLA / PLZA Info -->
-                <Border IsVisible="{Binding HasExpeditionRank}" Classes="section-card"
-                        CornerRadius="4" Padding="12">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Rank &amp; Upgrades" FontWeight="SemiBold" />
-                        <WrapPanel Orientation="Horizontal" Margin="0,0,-16,-8">
-                            <StackPanel Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Team Rank" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding ExpeditionRank}" Minimum="0" Maximum="10" FormatString="0" />
-                            </StackPanel>
-                            <StackPanel Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Satchel Upgrades" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding SatchelUpgrades}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                            <StackPanel IsVisible="{Binding HasMeritEarned}" Width="110" Margin="0,0,16,8">
-                                <TextBlock Text="Total Merit" FontSize="11" Opacity="0.7" Margin="0,0,0,2" />
-                                <NumericUpDown Value="{Binding MeritEarned}" Minimum="0" FormatString="0" />
-                            </StackPanel>
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
-
-                <!-- PLZA Street Name -->
-                <StackPanel IsVisible="{Binding HasStreetName}">
-                    <TextBlock Text="Street Name" FontWeight="SemiBold" Margin="0,0,0,4" />
-                    <TextBox Text="{Binding StreetName}" MaxLength="18" />
-                </StackPanel>
-
-                <!-- Language -->
-
-                <StackPanel>
-                    <TextBlock Text="Language" FontWeight="SemiBold" Margin="0,0,0,4" />
-                    <ComboBox ItemsSource="{Binding LanguageList}"
-                              SelectedValue="{Binding Language}"
-                              SelectedValueBinding="{Binding Value}"
-                              DisplayMemberBinding="{Binding Text}"
-                              HorizontalAlignment="Stretch" />
-                </StackPanel>
-
-                <!-- Play Time -->
-                <Border Classes="section-card"
-                        CornerRadius="4" Padding="12">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Play Time" FontWeight="SemiBold" />
-                        <Grid ColumnDefinitions="*,8,*,8,*" RowDefinitions="Auto,4,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Hours" FontSize="11" Opacity="0.7"/>
-                            <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding PlayedHours}" Minimum="0" Maximum="9999" FormatString="0" HorizontalAlignment="Stretch"/>
-                            
-                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Minutes" FontSize="11" Opacity="0.7"/>
-                            <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding PlayedMinutes}" Minimum="0" Maximum="59" FormatString="00" HorizontalAlignment="Stretch"/>
-                            
-                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Seconds" FontSize="11" Opacity="0.7"/>
-                            <NumericUpDown Grid.Row="2" Grid.Column="4" Value="{Binding PlayedSeconds}" Minimum="0" Maximum="59" FormatString="00" HorizontalAlignment="Stretch"/>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <!-- Action Buttons -->
-                <Grid ColumnDefinitions="*,8,*" Margin="0,8,0,0">
+                <!-- Footer Buttons -->
+                <Grid ColumnDefinitions="*,16,*" Margin="0,8,0,0">
                     <Button Grid.Column="0"
                             Content="Reset"
                             Command="{Binding ResetCommand}"
                             HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center" />
+                            HorizontalContentAlignment="Center"
+                            Height="32" />
                     <Button Grid.Column="2"
                             Content="Apply Changes"
                             Command="{Binding SaveCommand}"
                             Classes="accent"
                             HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center" />
+                            HorizontalContentAlignment="Center"
+                            Height="32" />
                 </Grid>
             </StackPanel>
         </ScrollViewer>

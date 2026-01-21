@@ -30,6 +30,8 @@ public partial class PokemonEditorViewModel
     [ObservableProperty] private ObservableCollection<ComboItem> _metLocationList = [];
     [ObservableProperty] private ObservableCollection<ComboItem> _eggLocationList = [];
 
+    public bool HasMetDate => _sav.Generation >= 4;
+
     partial void OnOriginGameChanged(int value)
     {
         if (_isLoading) return;

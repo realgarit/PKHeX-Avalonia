@@ -27,6 +27,7 @@ public partial class PartySlotData : ObservableObject
     [ObservableProperty] private ushort _currentHp;
     [ObservableProperty] private ushort _maxHp;
     [ObservableProperty] private byte _status; // Status condition
+    [ObservableProperty] private bool _isLegal = true;
     [ObservableProperty] private string _showdownSummary = string.Empty;
     
     /// <summary>

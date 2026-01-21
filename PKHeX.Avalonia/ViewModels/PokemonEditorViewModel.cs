@@ -253,32 +253,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
             EggLocation = _pk.EggLocation;
             MetLevel = _pk.MetLevel;
 
-            // Safely parse Met Date (handle 0 month/day)
-            // Safely parse Met Date
-            if (_pk.MetDate is { Year: > 0 } md)
-            {
-                // Clamp to valid Gregorian ranges to prevent crashes
-                int y = Math.Clamp(md.Year, 1, 9999);
-                int m = Math.Clamp(md.Month, 1, 12);
-                int d = Math.Clamp(md.Day, 1, DateTime.DaysInMonth(y, m));
-                MetDate = new DateTime(y, m, d);
-            }
-            else
-            {
-                MetDate = null;
-            }
 
-            if (_pk.EggMetDate is { Year: > 0 } ed)
-            {
-                int y = Math.Clamp(ed.Year, 1, 9999);
-                int m = Math.Clamp(ed.Month, 1, 12);
-                int d = Math.Clamp(ed.Day, 1, DateTime.DaysInMonth(y, m));
-                EggDate = new DateTime(y, m, d);
-            }
-            else
-            {
-                EggDate = null;
-            }
 
             // OT info (Partial)
             OriginalTrainerName = _pk.OriginalTrainerName;
@@ -289,6 +264,37 @@ public partial class PokemonEditorViewModel : ViewModelBase
             StatHPCurrent = _pk.Stat_HPCurrent;
             StatHPMax = _pk.Stat_HPMax;
             StatusCondition = _pk.Status_Condition;
+
+            // Safely parse Met Date (moved to end to ensure persistence)
+            // Just trust the data if the year is somewhat valid (Gen 3+)
+            
+            if (_pk.MetDate is { } md && md.Year >= 2000 && md.Year < 2100)
+            {
+                MetDate = md.ToDateTime(TimeOnly.MinValue);
+            }
+            else if (_pk.MetDate is { } md2 && md2.Year > 1900 && md2.Year < 2200)
+            {
+               // Fallback for weirder years
+               MetDate = md2.ToDateTime(TimeOnly.MinValue);
+            }
+            else
+            {
+                MetDate = null;
+            }
+
+            // Safely parse Egg Date
+            if (_pk.EggMetDate is { } ed && ed.Year >= 2000 && ed.Year < 2100)
+            {
+                EggDate = ed.ToDateTime(TimeOnly.MinValue);
+            }
+            else if (_pk.EggMetDate is { } ed2 && ed2.Year > 1900 && ed2.Year < 2200)
+            {
+               EggDate = ed2.ToDateTime(TimeOnly.MinValue);
+            }
+            else
+            {
+                EggDate = null;
+            }
             
             _isLoading = false;
             

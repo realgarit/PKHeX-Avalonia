@@ -3,146 +3,227 @@
              xmlns:vm="using:PKHeX.Avalonia.ViewModels"
              x:Class="PKHeX.Avalonia.Views.PokemonEditor"
              x:DataType="vm:PokemonEditorViewModel"
-             MinHeight="480">
+             MinHeight="480"
+             Focusable="False"
+             KeyboardNavigation.IsTabStop="False">
 
-    <Border Padding="6" Classes="view-container">
-        <DockPanel>
-            <!-- Header with sprite and title - Glass Effect -->
-            <Border DockPanel.Dock="Top" Margin="0,0,0,8"
-                    Classes="glass" Padding="8">
-                <!-- Header: Sprite | Title/Stats | Legality | Shiny -->
-                <Grid ColumnDefinitions="Auto,*,48,48">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="Transparent" />
+        <SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="Transparent" />
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <!-- Nuking the yellow focus border locally for this view -->
+        <Style Selector="Border">
+            <Setter Property="FocusAdorner" Value="{x:Null}" />
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="FocusAdorner" Value="{x:Null}" />
+        </Style>
+        <Style Selector="ContentControl">
+            <Setter Property="FocusAdorner" Value="{x:Null}" />
+        </Style>
+    </UserControl.Styles>
+
+        <Border Padding="6" Classes="view-container">
+
+            <DockPanel>
+
+                <!-- Header Section: Redesigned (No wrapping border) -->
+
+                <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*" Margin="4,0,4,12">
+
+                    <!-- Left: Sprite Card -->
+
                     <Border Grid.Column="0"
+
                             Background="{DynamicResource ThemeBackgroundCardBrush}"
+
                             BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
+
                             BorderThickness="1"
-                            CornerRadius="12"
-                            Padding="8"
-                            BoxShadow="0 4 12 0 #00000030"
-                            Width="88" Height="76">
+
+                            CornerRadius="8"
+
+                            Width="80" Height="68"
+
+                            BoxShadow="0 2 8 0 #00000020">
+
                         <Panel>
+
                             <Image Source="{Binding Sprite}"
-                                   Width="68" Height="56"
+
+                                   Width="64" Height="52"
+
                                    RenderOptions.BitmapInterpolationMode="HighQuality"
+
                                    HorizontalAlignment="Center"
+
                                    VerticalAlignment="Center" />
-                            <!-- Illegal Warning Triangle (Top Right) -->
-                            <Path Data="M 8,0 L 16,14 L 0,14 Z M 8.5,12 H 7.5 V 10.5 H 8.5 V 12 Z M 8.5,9 H 7.5 V 4.5 H 8.5 V 9 Z" 
-                                  Fill="#E3350D" 
-                                  HorizontalAlignment="Right" 
-                                  VerticalAlignment="Top"
-                                  IsVisible="{Binding !IsLegal}"
-                                  Width="16" Height="14"/>
-                        </Panel>
-                    </Border>
 
-                    <!-- Title and Quick Info -->
-                    <StackPanel Grid.Column="1" Margin="8,0" VerticalAlignment="Center" MaxWidth="180">
-                        <TextBlock Text="{Binding Title}"
-                                   FontSize="20"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource ThemeTextPrimaryBrush}"
-                                   TextTrimming="CharacterEllipsis" />
-                        <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
-                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}"
-                                    CornerRadius="10" Padding="8,3">
-                                <TextBlock Text="{Binding Level, StringFormat='Lv.{0}'}" 
-                                           Foreground="{DynamicResource ThemeTextSecondaryBrush}" 
-                                           FontSize="12" FontWeight="SemiBold" />
+                                                    <!-- Illegal Warning -->
+
+                                                    <Path Data="M 8,0 L 16,14 L 0,14 Z M 8.5,12 H 7.5 V 10.5 H 8.5 V 12 Z M 8.5,9 H 7.5 V 4.5 H 8.5 V 9 Z" 
+
+                                                          Fill="#E3350D" 
+
+                                                          HorizontalAlignment="Right" 
+
+                                                          VerticalAlignment="Top"
+
+                                                          IsVisible="{Binding !IsLegal}"
+
+                                                          Width="12" Height="10"/>
+
+                                                </Panel>
+
+                                            </Border>
+
+    
+
+                    <!-- Right: Info & Actions -->
+
+                    <Grid Grid.Column="1" RowDefinitions="*,*" Margin="12,0,0,0">
+
+                        <!-- Top: Title and Actions -->
+
+                        <DockPanel Grid.Row="0" VerticalAlignment="Center">
+
+                            <!-- Action Buttons (Right Aligned) -->
+
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4">
+
+                                <!-- Legality Check -->
+
+                                <Button Background="Transparent" 
+
+                                        BorderThickness="0" 
+
+                                        Padding="4"
+
+                                        Command="{Binding ShowLegalityCommand}"
+
+                                        ToolTip.Tip="{Binding LegalityReport}">
+
+                                    <Panel>
+
+                                        <Border Classes="badge-success" IsVisible="{Binding IsLegal}" Padding="6,2" CornerRadius="4">
+
+                                            <TextBlock Text="LEGAL" FontSize="10" FontWeight="Bold" Foreground="White"/>
+
+                                        </Border>
+
+                                        <Border Classes="badge-error" IsVisible="{Binding !IsLegal}" Padding="6,2" CornerRadius="4">
+
+                                            <TextBlock Text="ILLEGAL" FontSize="10" FontWeight="Bold" Foreground="White"/>
+
+                                        </Border>
+
+                                    </Panel>
+
+                                </Button>
+
+                                
+
+                                <!-- Shiny Toggle -->
+
+                                <Button Background="Transparent" 
+
+                                        BorderThickness="0"
+
+                                        Padding="4"
+
+                                        Command="{Binding ToggleShinyCommand}"
+
+                                        ToolTip.Tip="Toggle Shiny">
+
+                                    <Panel>
+
+                                        <Path Data="M 10,0 L 13,7 L 20,7 L 15,12 L 17,19 L 10,15 L 3,19 L 5,12 L 0,7 L 7,7 Z" 
+
+                                              Fill="{DynamicResource ThemeShinyBrush}"
+
+                                              Width="16" Height="16"
+
+                                              IsVisible="{Binding IsShiny}" />
+
+                                        <Path Data="M 10,0 L 13,7 L 20,7 L 15,12 L 17,19 L 10,15 L 3,19 L 5,12 L 0,7 L 7,7 Z" 
+
+                                              Fill="{DynamicResource ThemeTextMutedBrush}"
+
+                                              Opacity="0.3"
+
+                                              Width="16" Height="16"
+
+                                              IsVisible="{Binding !IsShiny}" />
+
+                                    </Panel>
+
+                                </Button>
+
+                            </StackPanel>
+
+    
+
+                            <!-- Title -->
+
+                            <TextBlock Text="{Binding Title}"
+
+                                       FontSize="18"
+
+                                       FontWeight="SemiBold"
+
+                                       VerticalAlignment="Center"
+
+                                       TextTrimming="CharacterEllipsis" />
+
+                        </DockPanel>
+
+    
+
+                        <!-- Bottom: Badges -->
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+
+                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="6,2">
+
+                                <TextBlock Text="{Binding Level, StringFormat='Lv. {0}'}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+
                             </Border>
-                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}"
-                                    CornerRadius="10" Padding="8,3">
-                                <TextBlock Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="12">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="IV:{0}">
-                                            <Binding Path="IVTotal" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
+
+                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="6,2">
+
+                                <TextBlock Text="{Binding IVTotal, StringFormat='IV: {0}'}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+
                             </Border>
-                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}"
-                                    CornerRadius="10" Padding="8,3">
-                                <TextBlock Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="12">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="EV:{0}">
-                                            <Binding Path="EVTotal" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
+
+                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="6,2">
+
+                                <TextBlock Text="{Binding EVTotal, StringFormat='EV: {0}'}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+
                             </Border>
+
                         </StackPanel>
-                    </StackPanel>
 
-                    <!-- Legality Indicator - Badge Style -->
-                    <Button Grid.Column="2" 
-                            Width="44" Height="44"
-                            Margin="0,0,8,0"
-                            Padding="0"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Command="{Binding ShowLegalityCommand}"
-                            ToolTip.Tip="{Binding LegalityReport}">
-                        <Panel>
-                            <!-- Legal Badge -->
-                            <Border Width="44" Height="44"
-                                    Classes="badge-success"
-                                    CornerRadius="22"
-                                    IsVisible="{Binding IsLegal}">
-                                <TextBlock Text="✔" 
-                                           FontSize="22"
-                                           Foreground="White"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center" />
-                            </Border>
-                            <!-- Illegal Badge -->
-                            <Border Width="44" Height="44"
-                                    Classes="badge-error"
-                                    CornerRadius="22"
-                                    IsVisible="{Binding !IsLegal}">
-                                <TextBlock Text="✘" 
-                                           FontSize="22"
-                                           Foreground="White"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center" />
-                            </Border>
-                        </Panel>
-                    </Button>
+                    </Grid>
 
-                    <!-- Shiny Toggle - Modern Style -->
-                    <Button Grid.Column="3"
-                            Classes="nav-pill"
-                            Command="{Binding ToggleShinyCommand}"
-                            ToolTip.Tip="Toggle Shiny"
-                            Width="44" Height="44"
-                            Padding="0">
-                        <Panel>
-                            <TextBlock Text="★"
-                                       FontSize="22"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Foreground="{DynamicResource ThemeShinyBrush}"
-                                       IsVisible="{Binding IsShiny}" />
-                            <TextBlock Text="☆"
-                                       FontSize="22"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Foreground="{DynamicResource ThemeTextMutedBrush}"
-                                       IsVisible="{Binding !IsShiny}" />
-
-                        </Panel>
-                    </Button>
                 </Grid>
-            </Border>
 
+    
 
+                <!-- Tab Control (Left Placement) -->
 
-            <!-- Tab Control (Left Placement) -->
-            <TabControl Margin="0,0,0,0" TabStripPlacement="Left">
-                <!-- Main Tab -->
-                <TabItem Header="Main">
-                    <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Spacing="16">
-                            <!-- Core Info Card -->
+                <TabControl Margin="0,0,0,0" TabStripPlacement="Left" Focusable="False">
+
+                    <!-- Main Tab -->
+
+                    <TabItem Header="Main">
+
+                        <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
+
+                            <StackPanel Spacing="16">
+
+                                <!-- Core Info Card -->
                             <Border Classes="section-card"
                                     CornerRadius="4" Padding="6">
                                 <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto,Auto">
@@ -349,7 +430,7 @@
                                     <TextBlock Text="Met Level" FontWeight="SemiBold" Margin="0,0,0,4" VerticalAlignment="Center" />
                                     <NumericUpDown Value="{Binding MetLevel}" Minimum="0" Maximum="100" FormatString="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="2">
+                                <StackPanel Grid.Column="2" IsVisible="{Binding HasMetDate}">
                                     <TextBlock Text="Met Date" FontWeight="SemiBold" Margin="0,0,0,4" VerticalAlignment="Center" />
                                     <CalendarDatePicker SelectedDate="{Binding MetDate}" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                                 </StackPanel>
@@ -381,73 +462,117 @@
                     <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="16">
                             <!-- Current Moves Section -->
-                            <StackPanel Spacing="4">
-                                <DockPanel>
+                            <StackPanel Spacing="8">
+                                <DockPanel Margin="0,0,0,4">
                                     <TextBlock Text="Current Moves" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
                                     <Button Content="Suggest" Command="{Binding SuggestCurrentMovesCommand}"
                                             HorizontalAlignment="Right" Padding="8,2" FontSize="12" />
                                 </DockPanel>
                                 
-                                <!-- Move Headers -->
-                                <Grid ColumnDefinitions="*,4,58,4,38" Margin="0,4,0,0">
-                                    <TextBlock Text="Move" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
-                                    <TextBlock Grid.Column="2" Text="PP" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}" HorizontalAlignment="Center" />
-                                    <TextBlock Grid.Column="4" Text="Ups" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}" HorizontalAlignment="Center" />
-                                </Grid>
-                                
-                                <StackPanel Spacing="2">
+                                <StackPanel Spacing="4">
                                     <!-- Move 1 -->
-                                    <Grid ColumnDefinitions="*,4,58,4,38">
-                                        <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
-                                                  SelectedValue="{Binding Move1}" SelectedValueBinding="{Binding Value}"
-                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
-                                        <NumericUpDown Grid.Column="2" Value="{Binding Pp1}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
-                                        <NumericUpDown Grid.Column="4" Value="{Binding PpUps1}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
-                                    </Grid>
+                                    <Border Classes="section-card" Padding="12">
+                                        <Grid RowDefinitions="Auto,12,Auto">
+                                            <ComboBox Grid.Row="0" ItemsSource="{Binding MoveList}"
+                                                      SelectedValue="{Binding Move1}" SelectedValueBinding="{Binding Value}"
+                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                            
+                                            <Grid Grid.Row="2" ColumnDefinitions="Auto,*,8,Auto,*">
+                                                <TextBlock Grid.Column="0" Text="PP" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+                                                <NumericUpDown Grid.Column="1" Value="{Binding Pp1}" Minimum="0" Maximum="64" FormatString="0" 
+                                                             ShowButtonSpinner="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                                
+                                                <TextBlock Grid.Column="3" Text="Ups" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+                                                <NumericUpDown Grid.Column="4" Value="{Binding PpUps1}" Minimum="0" Maximum="3" FormatString="0" 
+                                                             ShowButtonSpinner="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+
                                     <!-- Move 2 -->
-                                    <Grid ColumnDefinitions="*,4,58,4,38">
-                                        <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
-                                                  SelectedValue="{Binding Move2}" SelectedValueBinding="{Binding Value}"
-                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
-                                        <NumericUpDown Grid.Column="2" Value="{Binding Pp2}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
-                                        <NumericUpDown Grid.Column="4" Value="{Binding PpUps2}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
-                                    </Grid>
+                                    <Border Classes="section-card" Padding="12">
+                                        <Grid RowDefinitions="Auto,12,Auto">
+                                            <ComboBox Grid.Row="0" ItemsSource="{Binding MoveList}"
+                                                      SelectedValue="{Binding Move2}" SelectedValueBinding="{Binding Value}"
+                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                            
+                                            <Grid Grid.Row="2" ColumnDefinitions="Auto,*,8,Auto,*">
+                                                <TextBlock Grid.Column="0" Text="PP" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+                                                <NumericUpDown Grid.Column="1" Value="{Binding Pp2}" Minimum="0" Maximum="64" FormatString="0" 
+                                                             ShowButtonSpinner="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                                
+                                                <TextBlock Grid.Column="3" Text="Ups" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+                                                <NumericUpDown Grid.Column="4" Value="{Binding PpUps2}" Minimum="0" Maximum="3" FormatString="0" 
+                                                             ShowButtonSpinner="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+
                                     <!-- Move 3 -->
-                                    <Grid ColumnDefinitions="*,4,58,4,38">
-                                        <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
-                                                  SelectedValue="{Binding Move3}" SelectedValueBinding="{Binding Value}"
-                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
-                                        <NumericUpDown Grid.Column="2" Value="{Binding Pp3}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
-                                        <NumericUpDown Grid.Column="4" Value="{Binding PpUps3}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
-                                    </Grid>
+                                    <Border Classes="section-card" Padding="12">
+                                        <Grid RowDefinitions="Auto,12,Auto">
+                                            <ComboBox Grid.Row="0" ItemsSource="{Binding MoveList}"
+                                                      SelectedValue="{Binding Move3}" SelectedValueBinding="{Binding Value}"
+                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                            
+                                            <Grid Grid.Row="2" ColumnDefinitions="Auto,*,8,Auto,*">
+                                                <TextBlock Grid.Column="0" Text="PP" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+                                                <NumericUpDown Grid.Column="1" Value="{Binding Pp3}" Minimum="0" Maximum="64" FormatString="0" 
+                                                             ShowButtonSpinner="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                                
+                                                <TextBlock Grid.Column="3" Text="Ups" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+                                                <NumericUpDown Grid.Column="4" Value="{Binding PpUps3}" Minimum="0" Maximum="3" FormatString="0" 
+                                                             ShowButtonSpinner="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+
                                     <!-- Move 4 -->
-                                    <Grid ColumnDefinitions="*,4,58,4,38">
-                                        <ComboBox Grid.Column="0" ItemsSource="{Binding MoveList}"
-                                                  SelectedValue="{Binding Move4}" SelectedValueBinding="{Binding Value}"
-                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
-                                        <NumericUpDown Grid.Column="2" Value="{Binding Pp4}" Minimum="0" Maximum="64" FormatString="0" ShowButtonSpinner="False" />
-                                        <NumericUpDown Grid.Column="4" Value="{Binding PpUps4}" Minimum="0" Maximum="3" FormatString="0" ShowButtonSpinner="False" />
-                                    </Grid>
+                                    <Border Classes="section-card" Padding="12">
+                                        <Grid RowDefinitions="Auto,12,Auto">
+                                            <ComboBox Grid.Row="0" ItemsSource="{Binding MoveList}"
+                                                      SelectedValue="{Binding Move4}" SelectedValueBinding="{Binding Value}"
+                                                      DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                            
+                                            <Grid Grid.Row="2" ColumnDefinitions="Auto,*,8,Auto,*">
+                                                <TextBlock Grid.Column="0" Text="PP" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+                                                <NumericUpDown Grid.Column="1" Value="{Binding Pp4}" Minimum="0" Maximum="64" FormatString="0" 
+                                                             ShowButtonSpinner="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                                
+                                                <TextBlock Grid.Column="3" Text="Ups" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
+                                                <NumericUpDown Grid.Column="4" Value="{Binding PpUps4}" Minimum="0" Maximum="3" FormatString="0" 
+                                                             ShowButtonSpinner="False" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
                                 </StackPanel>
                             </StackPanel>
 
                             <!-- Relearn Section -->
-                            <StackPanel Spacing="8">
+                            <!-- Relearn Section -->
+                            <StackPanel Spacing="4">
                                 <DockPanel>
                                     <TextBlock Text="Relearn Moves" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
                                     <Button Content="Suggest" Command="{Binding SuggestRelearnMovesCommand}"
                                             HorizontalAlignment="Right" Padding="8,2" FontSize="12" />
                                 </DockPanel>
-                                <UniformGrid Columns="2" Rows="2"> 
-                                    <ComboBox ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove1}" 
-                                              SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" Margin="0,0,4,4" HorizontalAlignment="Stretch" />
-                                    <ComboBox ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove2}" 
-                                              SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" Margin="4,0,0,4" HorizontalAlignment="Stretch" />
-                                    <ComboBox ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove3}" 
-                                              SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" Margin="0,4,4,0" HorizontalAlignment="Stretch" />
-                                    <ComboBox ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove4}" 
-                                              SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" Margin="4,4,0,0" HorizontalAlignment="Stretch" />
-                                </UniformGrid>
+                                
+                                <Grid ColumnDefinitions="*,8,*" Margin="0,4,0,0">
+                                     <TextBlock Grid.Column="0" Text="Move" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}" Margin="4,0,0,0" />
+                                     <TextBlock Grid.Column="2" Text="Move" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}" Margin="4,0,0,0" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,4,Auto">
+                                    <ComboBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove1}" 
+                                              SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                    <ComboBox Grid.Row="0" Grid.Column="2" ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove2}" 
+                                              SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                    
+                                    <ComboBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove3}" 
+                                              SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                    <ComboBox Grid.Row="2" Grid.Column="2" ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove4}" 
+                                              SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                </Grid>
                             </StackPanel>
 
                             <!-- Tech Records (Gen 8+) -->
@@ -660,50 +785,64 @@
 
                 <!-- Ribbons Tab -->
                 <TabItem Header="Ribbons" IsVisible="{Binding HasRibbons}">
-                    <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer Padding="12" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="16">
                             <!-- Header with buttons -->
-                            <Grid ColumnDefinitions="*,Auto,Auto">
+                            <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,4">
                                 <TextBlock Text="{Binding RibbonCount, StringFormat='Ribbons ({0})'}" 
-                                           FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Opacity="0.6" />
+                                           FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
                                 <Button Grid.Column="1" Content="Advanced..." Command="{Binding OpenRibbonEditorCommand}" Margin="0,0,8,0" Padding="8,4" FontSize="12" />
                                 <Button Grid.Column="2" Content="Clear All" Command="{Binding ClearRibbonsCommand}" Padding="8,4" FontSize="12" />
                             </Grid>
                             
-                            <!-- Ribbon list (wrapped in Border to prevent overflow) -->
-                            <Border ClipToBounds="True" Classes="section-card" CornerRadius="4" Padding="8">
-                                <ItemsControl ItemsSource="{Binding Ribbons}" HorizontalAlignment="Stretch">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Margin="2" Padding="4" CornerRadius="4" Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
-                                                <StackPanel>
-                                                    <!-- Boolean ribbon: checkbox -->
+                            <!-- Ribbon Grid -->
+                            <ItemsControl ItemsSource="{Binding Ribbons}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="72" Height="90" Margin="0,0,8,8" 
+                                                Classes="card"
+                                                ToolTip.Tip="{Binding DisplayName}">
+                                            <Grid RowDefinitions="*,Auto,Auto" Margin="4">
+                                                <!-- Icon -->
+                                                <Image Grid.Row="0" Source="{Binding Icon}" 
+                                                       Height="40" Width="40" 
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       RenderOptions.BitmapInterpolationMode="HighQuality" />
+                                                
+                                                <!-- Name (Truncated) -->
+                                                <TextBlock Grid.Row="1" Text="{Binding DisplayName}" 
+                                                           FontSize="10" TextTrimming="CharacterEllipsis" 
+                                                           HorizontalAlignment="Center" Margin="0,4,0,4"
+                                                           Opacity="0.8"/>
+                                                
+                                                <!-- Control -->
+                                                <Panel Grid.Row="2" Height="20">
+                                                    <!-- Boolean: Checkbox -->
                                                     <CheckBox IsVisible="{Binding IsBooleanRibbon}"
                                                               IsChecked="{Binding HasRibbon}"
-                                                              Content="{Binding DisplayName}"
-                                                              ToolTip.Tip="{Binding DisplayName}" />
-                                                    <!-- Count ribbon: with numeric -->
-                                                    <StackPanel IsVisible="{Binding !IsBooleanRibbon}" Orientation="Horizontal" Spacing="4">
-                                                        <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" FontSize="11" />
-                                                        <NumericUpDown Value="{Binding RibbonCount}" 
-                                                                       Minimum="0" 
-                                                                       Maximum="{Binding MaxCount}" 
-                                                                       FormatString="0"
-                                                                       MinWidth="50"
-                                                                       ShowButtonSpinner="False" 
-                                                                       Padding="2" />
-                                                    </StackPanel>
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </Border>
+                                                              HorizontalAlignment="Center" />
+                                                    
+                                                    <!-- Count: Numeric -->
+                                                    <NumericUpDown IsVisible="{Binding !IsBooleanRibbon}"
+                                                                   Value="{Binding RibbonCount}" 
+                                                                   Minimum="0" Maximum="{Binding MaxCount}" 
+                                                                   FormatString="0"
+                                                                   ShowButtonSpinner="False"
+                                                                   Classes="condensed"
+                                                                   HorizontalAlignment="Stretch"
+                                                                   HorizontalContentAlignment="Center"
+                                                                   Height="20" />
+                                                </Panel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>

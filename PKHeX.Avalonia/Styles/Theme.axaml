@@ -128,7 +128,16 @@
     <!-- ─────────────────────────────────────────────────────────────────────────
          Slot Button - Box slot with hover effects
          ───────────────────────────────────────────────────────────────────────── -->
+    <!-- Global Button Override to kill FocusAdorner (Yellow Ring) -->
+    <Style Selector="Button">
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <!-- ─────────────────────────────────────────────────────────────────────────
+         Slot Button - Box slot with hover effects
+         ───────────────────────────────────────────────────────────────────────── -->
     <Style Selector="Button.slot">
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="Background" Value="{StaticResource ThemeBackgroundCardBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -153,7 +162,7 @@
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
-                    <!-- Illegal Indicator (Warning Triangle in Top Right) -->
+                    <!-- Illegal Indicator -->
                     <Path Data="M 6,0 L 12,11 L 0,11 Z M 6.5,9.5 H 5.5 V 8.5 H 6.5 V 9.5 Z M 6.5,7.5 H 5.5 V 3.5 H 6.5 V 7.5 Z" 
                           Fill="#E3350D" 
                           HorizontalAlignment="Right" 
@@ -177,9 +186,23 @@
         <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentPrimaryBrush}" />
     </Style>
 
+    <!-- Selected State - Enforce Red -->
     <Style Selector="Button.slot.selected">
         <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentPrimaryBrush}" />
         <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="ZIndex" Value="10" />
+    </Style>
+
+    <!-- Focus State - Enforce Red & Kill Yellow -->
+    <Style Selector="Button.slot:focus">
+        <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="ZIndex" Value="10" />
+    </Style>
+    
+    <!-- Deep Focus Override -->
+    <Style Selector="Button.slot:focus /template/ Border#PART_Border">
+        <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentPrimaryBrush}" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -352,6 +375,15 @@
 
     <Style Selector="NumericUpDown:pointerover">
         <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="NumericUpDown.condensed">
+        <Setter Property="Padding" Value="2,0" />
+        <Setter Property="MinHeight" Value="26" />
+        <Setter Property="Height" Value="26" />
+        <Setter Property="MinWidth" Value="30" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────

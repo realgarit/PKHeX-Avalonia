@@ -23,30 +23,41 @@
     <Border Padding="20" Background="{DynamicResource ThemeBackgroundBaseBrush}">
         <StackPanel Spacing="16" HorizontalAlignment="Center">
             
-            <!-- Box Navigation - Modern Pill Style -->
-            <Border Classes="card" Padding="12,8" HorizontalAlignment="Center">
-                <DockPanel Width="410">
-                    <Button DockPanel.Dock="Left"
-                            Classes="nav-pill"
+            <!-- Box Navigation - Integrated Header -->
+            <Border Classes="card" Padding="0" Width="410" HorizontalAlignment="Center">
+                <Grid ColumnDefinitions="40,*,40" Height="40">
+                    <Button Grid.Column="0"
                             Content="◀"
                             Command="{Binding PreviousBoxCommand}"
                             ToolTip.Tip="Previous Box (PageUp)"
-                            Padding="14,8"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
                             FontSize="14" />
-                    <Button DockPanel.Dock="Right"
-                            Classes="nav-pill"
-                            Content="▶"
-                            Command="{Binding NextBoxCommand}"
-                            ToolTip.Tip="Next Box (PageDown)"
-                            Padding="14,8"
-                            FontSize="14" />
-                    <TextBlock Text="{Binding BoxName}"
+                    
+                    <TextBlock Grid.Column="1" 
+                               Text="{Binding BoxName}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontWeight="SemiBold"
-                               FontSize="18"
+                               FontSize="16"
                                Foreground="{DynamicResource ThemeTextPrimaryBrush}" />
-                </DockPanel>
+
+                    <Button Grid.Column="2"
+                            Content="▶"
+                            Command="{Binding NextBoxCommand}"
+                            ToolTip.Tip="Next Box (PageDown)"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            FontSize="14" />
+                </Grid>
             </Border>
 
             <!-- Box Grid (6 columns x 5 rows = 30 slots) -->
