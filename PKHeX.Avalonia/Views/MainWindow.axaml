@@ -176,7 +176,8 @@
                     BorderThickness="0,0,1,0" 
                     BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                     Focusable="False">
-                <ContentControl Content="{Binding CurrentPokemonEditor}" Focusable="False">
+                <ContentControl Content="{Binding CurrentPokemonEditor}" Focusable="False"
+                                HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                     <ContentControl.ContentTemplate>
                         <DataTemplate DataType="vm:PokemonEditorViewModel">
                             <views:PokemonEditor />

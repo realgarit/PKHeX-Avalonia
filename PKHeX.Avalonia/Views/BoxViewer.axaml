@@ -20,12 +20,11 @@
         <KeyBinding Gesture="PageDown" Command="{Binding NextBoxCommand}" />
     </UserControl.KeyBindings>
 
-    <Border Padding="20" Background="{DynamicResource ThemeBackgroundBaseBrush}">
-        <StackPanel Spacing="16" HorizontalAlignment="Center">
-            
-            <!-- Box Navigation - Integrated Header -->
-            <Border Classes="card" Padding="0" Width="410" HorizontalAlignment="Center">
-                <Grid ColumnDefinitions="40,*,40" Height="40">
+    <Border Padding="16" Classes="view-container">
+        <DockPanel>
+            <!-- Box Navigation Header -->
+            <Border DockPanel.Dock="Top" Classes="card" Padding="0" Margin="0,0,0,12">
+                <Grid ColumnDefinitions="48,*,48" Height="44">
                     <Button Grid.Column="0"
                             Content="◀"
                             Command="{Binding PreviousBoxCommand}"
@@ -36,15 +35,14 @@
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
-                            FontSize="14" />
+                            FontSize="16" />
                     
                     <TextBlock Grid.Column="1" 
                                Text="{Binding BoxName}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontWeight="SemiBold"
-                               FontSize="16"
-                               Foreground="{DynamicResource ThemeTextPrimaryBrush}" />
+                               FontSize="16" />
 
                     <Button Grid.Column="2"
                             Content="▶"
@@ -56,23 +54,35 @@
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
-                            FontSize="14" />
+                            FontSize="16" />
                 </Grid>
             </Border>
+            
+            <!-- Footer -->
+            <TextBlock DockPanel.Dock="Bottom" 
+                       Text="Arrow keys: Navigate | Enter: Select | PageUp/Down: Switch Box"
+                       Foreground="{DynamicResource ThemeTextMutedBrush}"
+                       FontSize="11"
+                       HorizontalAlignment="Center"
+                       Margin="0,12,0,0" />
 
-            <!-- Box Grid (6 columns x 5 rows = 30 slots) -->
-            <Border Classes="card-elevated" Padding="1" Width="410" Height="282" HorizontalAlignment="Center">
+            <!-- Box Grid (6 columns x 5 rows = 30 slots) - Fills available space -->
+            <Border Classes="card-elevated" Padding="4">
                 <ItemsControl ItemsSource="{Binding Slots}" x:Name="SlotGrid">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="6" Rows="5" Width="408" Height="280" />
+                            <UniformGrid Columns="6" Rows="5" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:SlotData">
                             <Button Classes="slot"
                                     Classes.selected="{Binding IsSelected}"
-                                    Margin="0"
+                                    Margin="1"
+                                    Width="NaN"
+                                    Height="NaN"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
                                     PointerPressed="OnSlotPointerPressed"
                                     PointerMoved="OnSlotPointerMoved"
                                     DragDrop.AllowDrop="True"
@@ -97,28 +107,25 @@
                                                   IsEnabled="{Binding !IsEmpty}" />
                                     </ContextMenu>
                                 </Button.ContextMenu>
-                                <Panel Width="72" Height="60">
+                                
+                                <!-- Content stretches to fill -->
+                                <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <!-- Empty slot indicator -->
                                     <Border Classes="empty-slot"
                                             IsVisible="{Binding IsEmpty}" />
 
-                                    <!-- Pokemon Sprite -->
+                                    <!-- Pokemon Sprite - scales with slot size -->
                                     <Image Source="{Binding Sprite}"
-                                           Width="68" Height="56"
+                                           Stretch="Uniform"
                                            RenderOptions.BitmapInterpolationMode="HighQuality"
-                                           IsVisible="{Binding !IsEmpty}" />
+                                           IsVisible="{Binding !IsEmpty}"
+                                           Margin="2" />
                                 </Panel>
                             </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Border>
-
-            <!-- Keyboard hints - Muted styling -->
-            <TextBlock Text="Arrow keys: Navigate | Enter: Select | PageUp/Down: Switch Box"
-                       Foreground="{DynamicResource ThemeTextMutedBrush}"
-                       FontSize="11"
-                       HorizontalAlignment="Center" />
-        </StackPanel>
+        </DockPanel>
     </Border>
 </UserControl>
