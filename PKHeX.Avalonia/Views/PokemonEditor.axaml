@@ -47,7 +47,9 @@
 
                             Width="80" Height="68"
 
-                            BoxShadow="0 2 8 0 #00000020">
+                            BoxShadow="0 2 8 0 #00000020"
+
+                            ClipToBounds="True">
 
                         <Panel>
 
@@ -73,7 +75,7 @@
 
                                                           IsVisible="{Binding !IsLegal}"
 
-                                                          Margin="0,2,2,0"
+                                                          Margin="0,2,4,0"
 
                                                           Width="12" Height="10"/>
 
