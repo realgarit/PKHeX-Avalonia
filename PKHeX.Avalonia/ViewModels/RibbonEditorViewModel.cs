@@ -58,18 +58,18 @@ public partial class RibbonEditorViewModel : ViewModelBase
             var resourceName = info.Name.Replace("CountG3", "G3").ToLowerInvariant();
             
             // Handle Gold memory ribbons if max count reached
-            int max = info.MaxCount;
-            if (max == 8 && info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryBattle) && _pkm.Format >= 9)
-                max = 7;
-
-            // TODO: Logic for gold memory ribbons based on count? 
-            // WinForms logic: if count == max, use "2" suffix for gold ribbon?
-            // "ribboncountmemorybattle" vs "ribboncountmemorybattle2"
-            if ((info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryBattle) || 
-                 info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryContest)) && 
-                 info.RibbonCount == max)
+            if (info.Type == RibbonValueType.Byte)
             {
-                 resourceName += "2";
+                int max = info.MaxCount;
+                if (max == 8 && info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryBattle) && _pkm.Format >= 9)
+                    max = 7;
+
+                if ((info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryBattle) || 
+                     info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryContest)) && 
+                     info.RibbonCount == max)
+                {
+                     resourceName += "2";
+                }
             }
 
             var uri = new Uri($"avares://PKHeX.Avalonia/Resources/Ribbons/{resourceName}.png");
