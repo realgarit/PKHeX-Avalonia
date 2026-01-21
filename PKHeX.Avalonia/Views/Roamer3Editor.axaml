@@ -8,121 +8,132 @@
         <vm:Roamer3EditorViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="*,Auto" Margin="15">
-        <ScrollViewer>
-            <StackPanel Spacing="15">
-                <TextBlock Text="Gen 3 Roamer Editor" FontWeight="Bold" FontSize="18"/>
+    <Border Padding="16" Classes="view-container">
+        <Grid RowDefinitions="Auto,*,Auto">
+            
+            <!-- Header -->
+            <TextBlock Grid.Row="0" Text="Gen 3 Roamer Editor" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,16" />
+            
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Spacing="16">
+                    
+                    <!-- Glitch Warning -->
+                    <Border IsVisible="{Binding IsGlitched}" 
+                            Background="#4CD29922" 
+                            BorderBrush="{StaticResource ThemeWarningBrush}"
+                            BorderThickness="1" 
+                            CornerRadius="6" 
+                            Padding="12">
+                        <TextBlock Text="{Binding GlitchWarning}" 
+                                   Foreground="{StaticResource ThemeWarningBrush}" 
+                                   TextWrapping="Wrap" />
+                    </Border>
 
-                <!-- Glitch Warning -->
-                <TextBlock Text="{Binding GlitchWarning}"
-                           IsVisible="{Binding IsGlitched}"
-                           Foreground="Orange"
-                           TextWrapping="Wrap"/>
+                    <!-- Species and Active -->
+                    <Border Classes="section-card" Padding="16">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Roamer Info" FontWeight="SemiBold" Opacity="0.6" />
 
-                <!-- Species and Active -->
-                <Border Classes="section-card"
-                        CornerRadius="4"
-                        Padding="15">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="Roamer Info" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Species" VerticalAlignment="Center" />
+                                <ComboBox Grid.Row="0" Grid.Column="1"
+                                          ItemsSource="{Binding SpeciesList}"
+                                          SelectedIndex="{Binding SelectedSpeciesIndex}"
+                                          MinWidth="180"
+                                          HorizontalAlignment="Left">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Text}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
 
-                        <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Species:" VerticalAlignment="Center"/>
-                            <ComboBox Grid.Row="0" Grid.Column="1"
-                                      ItemsSource="{Binding SpeciesList}"
-                                      SelectedIndex="{Binding SelectedSpeciesIndex}"
-                                      MinWidth="150">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Text}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Active" VerticalAlignment="Center" />
+                                <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding IsActive}" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Active:" VerticalAlignment="Center" Margin="0,5,0,0"/>
-                            <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsActive}" Margin="0,5,0,0"/>
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Level" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="4" Grid.Column="1"
+                                               Value="{Binding CurrentLevel}"
+                                               Minimum="1" Maximum="100"
+                                               Classes="form-field"
+                                               HorizontalAlignment="Left" />
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Level:" VerticalAlignment="Center" Margin="0,5,0,0"/>
-                            <NumericUpDown Grid.Row="2" Grid.Column="1"
-                                           Value="{Binding CurrentLevel}"
-                                           Minimum="1" Maximum="100"
-                                           Width="80" HorizontalAlignment="Left" Margin="0,5,0,0"/>
-
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Current HP:" VerticalAlignment="Center" Margin="0,5,0,0"/>
-                            <NumericUpDown Grid.Row="3" Grid.Column="1"
-                                           Value="{Binding CurrentHp}"
-                                           Minimum="0" Maximum="999"
-                                           Width="80" HorizontalAlignment="Left" Margin="0,5,0,0"/>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <!-- PID -->
-                <Border Classes="section-card"
-                        CornerRadius="4"
-                        Padding="15">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="PID" FontWeight="Bold"/>
-
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="PID (Hex):" VerticalAlignment="Center"/>
-                            <TextBox Text="{Binding PidHex}" Width="120"/>
-                            <Button Content="Random" Command="{Binding RandomPidCommand}"/>
+                                <TextBlock Grid.Row="6" Grid.Column="0" Text="Current HP" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="6" Grid.Column="1"
+                                               Value="{Binding CurrentHp}"
+                                               Minimum="0" Maximum="999"
+                                               Classes="form-field"
+                                               HorizontalAlignment="Left" />
+                            </Grid>
                         </StackPanel>
+                    </Border>
 
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                            <TextBlock Text="Shiny:" VerticalAlignment="Center"/>
-                            <TextBlock Text="Yes" Foreground="Gold" IsVisible="{Binding IsShiny}" VerticalAlignment="Center"/>
-                            <TextBlock Text="No" Opacity="0.6" IsVisible="{Binding !IsShiny}" VerticalAlignment="Center"/>
+                    <!-- PID -->
+                    <Border Classes="section-card" Padding="16">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="PID" FontWeight="SemiBold" Opacity="0.6" />
+
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <TextBlock Text="PID (Hex)" VerticalAlignment="Center" Width="80" />
+                                <TextBox Text="{Binding PidHex}" Width="120" />
+                                <Button Content="Random" Command="{Binding RandomPidCommand}" Padding="12,6" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="Shiny:" VerticalAlignment="Center" Opacity="0.7" />
+                                <TextBlock Text="Yes" Foreground="#FFD700" FontWeight="SemiBold" IsVisible="{Binding IsShiny}" />
+                                <TextBlock Text="No" Opacity="0.5" IsVisible="{Binding !IsShiny}" />
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
+                    </Border>
 
-                <!-- IVs -->
-                <Border Classes="section-card"
-                        CornerRadius="4"
-                        Padding="15">
-                    <StackPanel Spacing="10">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="IVs" FontWeight="Bold" VerticalAlignment="Center"/>
-                            <Button Content="Max All" Command="{Binding MaxIvsCommand}"/>
+                    <!-- IVs -->
+                    <Border Classes="section-card" Padding="16">
+                        <StackPanel Spacing="12">
+                            <DockPanel>
+                                <TextBlock Text="IVs" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
+                                <Button Content="Max All" Command="{Binding MaxIvsCommand}" 
+                                        DockPanel.Dock="Right" Padding="12,4" />
+                            </DockPanel>
+
+                            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,8,Auto">
+                                <!-- Row 1: HP, Atk, Def -->
+                                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4" Margin="0,0,8,0">
+                                    <TextBlock Text="HP" FontSize="12" Opacity="0.7" />
+                                    <NumericUpDown Value="{Binding IvHp}" Minimum="0" Maximum="31" Classes="form-field" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4" Margin="0,0,8,0">
+                                    <TextBlock Text="Atk" FontSize="12" Opacity="0.7" />
+                                    <NumericUpDown Value="{Binding IvAtk}" Minimum="0" Maximum="31" Classes="form-field" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="2" Spacing="4">
+                                    <TextBlock Text="Def" FontSize="12" Opacity="0.7" />
+                                    <NumericUpDown Value="{Binding IvDef}" Minimum="0" Maximum="31" Classes="form-field" />
+                                </StackPanel>
+
+                                <!-- Row 2: Spe, SpA, SpD -->
+                                <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4" Margin="0,0,8,0">
+                                    <TextBlock Text="Spe" FontSize="12" Opacity="0.7" />
+                                    <NumericUpDown Value="{Binding IvSpe}" Minimum="0" Maximum="31" Classes="form-field" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4" Margin="0,0,8,0">
+                                    <TextBlock Text="SpA" FontSize="12" Opacity="0.7" />
+                                    <NumericUpDown Value="{Binding IvSpa}" Minimum="0" Maximum="31" Classes="form-field" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="2" Spacing="4">
+                                    <TextBlock Text="SpD" FontSize="12" Opacity="0.7" />
+                                    <NumericUpDown Value="{Binding IvSpd}" Minimum="0" Maximum="31" Classes="form-field" />
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
 
-                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
-                            <StackPanel Grid.Row="0" Grid.Column="0" Spacing="3" Margin="0,0,10,5">
-                                <TextBlock Text="HP"/>
-                                <NumericUpDown Value="{Binding IvHp}" Minimum="0" Maximum="31" Width="80"/>
-                            </StackPanel>
-                            <StackPanel Grid.Row="0" Grid.Column="1" Spacing="3" Margin="0,0,10,5">
-                                <TextBlock Text="Atk"/>
-                                <NumericUpDown Value="{Binding IvAtk}" Minimum="0" Maximum="31" Width="80"/>
-                            </StackPanel>
-                            <StackPanel Grid.Row="0" Grid.Column="2" Spacing="3" Margin="0,0,0,5">
-                                <TextBlock Text="Def"/>
-                                <NumericUpDown Value="{Binding IvDef}" Minimum="0" Maximum="31" Width="80"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Row="1" Grid.Column="0" Spacing="3" Margin="0,0,10,0">
-                                <TextBlock Text="Spe"/>
-                                <NumericUpDown Value="{Binding IvSpe}" Minimum="0" Maximum="31" Width="80"/>
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="3" Margin="0,0,10,0">
-                                <TextBlock Text="SpA"/>
-                                <NumericUpDown Value="{Binding IvSpa}" Minimum="0" Maximum="31" Width="80"/>
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="2" Spacing="3">
-                                <TextBlock Text="SpD"/>
-                                <NumericUpDown Value="{Binding IvSpd}" Minimum="0" Maximum="31" Width="80"/>
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
-                </Border>
+            <!-- Footer -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,16,0,0">
+                <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" Padding="16,8" />
             </StackPanel>
-        </ScrollViewer>
-
-        <!-- Bottom Buttons -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
-            <Button Content="Save" Command="{Binding SaveCommand}"/>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </Border>
 </UserControl>

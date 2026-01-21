@@ -9,110 +9,135 @@
              x:Class="PKHeX.Avalonia.Views.Pokedex4Editor"
              x:DataType="vm:Pokedex4EditorViewModel">
     
-    <Grid ColumnDefinitions="250, *" Margin="10">
-        <!-- Species List -->
-        <Grid Grid.Column="0" RowDefinitions="Auto, *">
-            <TextBox Text="{Binding SearchText}" Watermark="Search Species..." Margin="0,0,0,10"/>
-            <ListBox Grid.Row="1" ItemsSource="{Binding Species}" SelectedItem="{Binding SelectedSpecies}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate x:DataType="core:ComboItem">
-                        <TextBlock Text="{Binding Text}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
-        
-        <!-- Details -->
-        <ScrollViewer Grid.Column="1" Margin="10,0,0,0">
-            <StackPanel Spacing="10">
-                <StackPanel Orientation="Horizontal" Spacing="20">
-                    <Button Content="Save" Command="{Binding SaveCommand}" MinWidth="100"/>
-                </StackPanel>
-                
-                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
-                    <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto">
-                        <StackPanel Grid.Column="0" Spacing="5">
-                            <CheckBox Content="caught" IsChecked="{Binding Caught}"/>
-                            <CheckBox Content="Seen" IsChecked="{Binding Seen}"/>
-                        </StackPanel>
-                        
-                        <StackPanel Grid.Column="1" Spacing="5">
-                            <TextBlock Text="Dex Mode:" VerticalAlignment="Center"/>
-                            <ComboBox ItemsSource="{Binding DexModes}" SelectedIndex="{Binding DexMode}" HorizontalAlignment="Stretch"/>
-                        </StackPanel>
-                    </Grid>
+    <Border Padding="16" Classes="view-container">
+        <Grid ColumnDefinitions="250, 16, *" RowDefinitions="*,Auto">
+            <!-- Species List -->
+            <Grid Grid.Column="0" RowDefinitions="Auto, 8, *">
+                <TextBox Text="{Binding SearchText}" Watermark="Search Species..." />
+                <Border Grid.Row="2" Classes="section-card" Padding="0">
+                    <ListBox ItemsSource="{Binding Species}" SelectedItem="{Binding SelectedSpecies}" Background="Transparent">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="core:ComboItem">
+                                <TextBlock Text="{Binding Text}" Padding="8,4" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Border>
-                
-                <!-- Genders -->
-                <TextBlock Text="Genders (Seen - Order Matters)" FontWeight="Bold"/>
-                <Grid ColumnDefinitions="*, 50, *">
-                    <!-- Unseen -->
-                    <DockPanel LastChildFill="True">
-                        <TextBlock Text="Unseen" DockPanel.Dock="Top" HorizontalAlignment="Center"/>
-                        <ListBox ItemsSource="{Binding UnseenGenders}" SelectedItem="{Binding SelectedUnseenGender}" Height="100"/>
-                    </DockPanel>
+            </Grid>
+            
+            <!-- Details -->
+            <ScrollViewer Grid.Column="2">
+                <StackPanel Spacing="16">
+                    <!-- Basic Flags & Mode -->
+                    <Border Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Entry Settings" FontWeight="SemiBold" Opacity="0.6" />
+                            <Grid ColumnDefinitions="*, 16, *">
+                                <StackPanel Grid.Column="0" Spacing="8">
+                                    <CheckBox Content="Caught" IsChecked="{Binding Caught}" FontWeight="SemiBold" />
+                                    <CheckBox Content="Seen" IsChecked="{Binding Seen}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Dex Mode" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <ComboBox ItemsSource="{Binding DexModes}" SelectedIndex="{Binding DexMode}" HorizontalAlignment="Stretch" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                     
-                    <!-- Buttons -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="5" HorizontalAlignment="Center">
-                        <Button Content="→" Command="{Binding AddGenderCommand}"/>
-                        <Button Content="←" Command="{Binding RemoveGenderCommand}"/>
-                    </StackPanel>
+                    <!-- Genders -->
+                    <Border Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Genders (Order Matters)" FontWeight="SemiBold" Opacity="0.6" />
+                            <Grid ColumnDefinitions="*, 8, 40, 8, *">
+                                <!-- Unseen -->
+                                <DockPanel Grid.Column="0">
+                                    <TextBlock Text="Unseen" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0,0,0,4" Opacity="0.7" />
+                                    <Border BorderBrush="{DynamicResource ThemeBorderDefaultBrush}" BorderThickness="1" CornerRadius="4">
+                                        <ListBox ItemsSource="{Binding UnseenGenders}" SelectedItem="{Binding SelectedUnseenGender}" Height="120" />
+                                    </Border>
+                                </DockPanel>
+                                
+                                <!-- Move Buttons -->
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
+                                    <Button Content="→" Command="{Binding AddGenderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                    <Button Content="←" Command="{Binding RemoveGenderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                </StackPanel>
+                                
+                                <!-- Seen -->
+                                <DockPanel Grid.Column="4">
+                                    <TextBlock Text="Seen" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0,0,0,4" Opacity="0.7" />
+                                    <Grid ColumnDefinitions="*, 8, Auto">
+                                        <Border Grid.Column="0" BorderBrush="{DynamicResource ThemeBorderDefaultBrush}" BorderThickness="1" CornerRadius="4">
+                                            <ListBox ItemsSource="{Binding SeenGenders}" SelectedItem="{Binding SelectedSeenGender}" Height="120" />
+                                        </Border>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
+                                            <Button Content="▲" Command="{Binding MoveGenderUpCommand}" Padding="8,6"/>
+                                            <Button Content="▼" Command="{Binding MoveGenderDownCommand}" Padding="8,6"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DockPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                     
-                     <!-- Seen -->
-                    <DockPanel Grid.Column="2" LastChildFill="True">
-                        <TextBlock Text="Seen" DockPanel.Dock="Top" HorizontalAlignment="Center"/>
-                        <Grid ColumnDefinitions="*, Auto">
-                            <ListBox ItemsSource="{Binding SeenGenders}" SelectedItem="{Binding SelectedSeenGender}" Height="100"/>
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="5">
-                                <Button Content="▲" Command="{Binding MoveGenderUpCommand}"/>
-                                <Button Content="▼" Command="{Binding MoveGenderDownCommand}"/>
-                            </StackPanel>
-                        </Grid>
-                    </DockPanel>
-                </Grid>
-                
-                <!-- Forms -->
-                <TextBlock Text="Forms (Seen - Order Matters)" FontWeight="Bold" Margin="0,10,0,0"/>
-                <Grid ColumnDefinitions="*, 50, *">
-                     <!-- Unseen -->
-                    <DockPanel LastChildFill="True">
-                        <TextBlock Text="Unseen" DockPanel.Dock="Top" HorizontalAlignment="Center"/>
-                        <ListBox ItemsSource="{Binding UnseenForms}" SelectedItem="{Binding SelectedUnseenForm}" Height="100"/>
-                    </DockPanel>
+                    <!-- Forms -->
+                    <Border Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Forms (Order Matters)" FontWeight="SemiBold" Opacity="0.6" />
+                            <Grid ColumnDefinitions="*, 8, 40, 8, *">
+                                <!-- Unseen -->
+                                <DockPanel Grid.Column="0">
+                                    <TextBlock Text="Unseen" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0,0,0,4" Opacity="0.7" />
+                                    <Border BorderBrush="{DynamicResource ThemeBorderDefaultBrush}" BorderThickness="1" CornerRadius="4">
+                                        <ListBox ItemsSource="{Binding UnseenForms}" SelectedItem="{Binding SelectedUnseenForm}" Height="120" />
+                                    </Border>
+                                </DockPanel>
+                                
+                                <!-- Move Buttons -->
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
+                                    <Button Content="→" Command="{Binding AddFormCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                    <Button Content="←" Command="{Binding RemoveFormCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                </StackPanel>
+                                
+                                <!-- Seen -->
+                                <DockPanel Grid.Column="4">
+                                    <TextBlock Text="Seen" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0,0,0,4" Opacity="0.7" />
+                                    <Grid ColumnDefinitions="*, 8, Auto">
+                                        <Border Grid.Column="0" BorderBrush="{DynamicResource ThemeBorderDefaultBrush}" BorderThickness="1" CornerRadius="4">
+                                            <ListBox ItemsSource="{Binding SeenForms}" SelectedItem="{Binding SelectedSeenForm}" Height="120" />
+                                        </Border>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
+                                            <Button Content="▲" Command="{Binding MoveFormUpCommand}" Padding="8,6"/>
+                                            <Button Content="▼" Command="{Binding MoveFormDownCommand}" Padding="8,6"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DockPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                     
-                    <!-- Buttons -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="5" HorizontalAlignment="Center">
-                        <Button Content="→" Command="{Binding AddFormCommand}"/>
-                        <Button Content="←" Command="{Binding RemoveFormCommand}"/>
-                    </StackPanel>
-                    
-                     <!-- Seen -->
-                    <DockPanel Grid.Column="2" LastChildFill="True">
-                        <TextBlock Text="Seen" DockPanel.Dock="Top" HorizontalAlignment="Center"/>
-                        <Grid ColumnDefinitions="*, Auto">
-                            <ListBox ItemsSource="{Binding SeenForms}" SelectedItem="{Binding SelectedSeenForm}" Height="100"/>
-                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="5">
-                                <Button Content="▲" Command="{Binding MoveFormUpCommand}"/>
-                                <Button Content="▼" Command="{Binding MoveFormDownCommand}"/>
-                            </StackPanel>
-                        </Grid>
-                    </DockPanel>
-                </Grid>
-                
-                <!-- Languages -->
-                <StackPanel IsVisible="{Binding HasLanguages}" Margin="0,10,0,0">
-                    <TextBlock Text="Languages" FontWeight="Bold" Margin="0,0,0,5"/>
-                    <WrapPanel Orientation="Horizontal">
-                        <CheckBox Content="Japanese" IsChecked="{Binding LangJPN}" Margin="0,0,10,0" />
-                        <CheckBox Content="English" IsChecked="{Binding LangENG}" Margin="0,0,10,0" />
-                        <CheckBox Content="French" IsChecked="{Binding LangFRA}" Margin="0,0,10,0" />
-                        <CheckBox Content="Italian" IsChecked="{Binding LangITA}" Margin="0,0,10,0" />
-                        <CheckBox Content="German" IsChecked="{Binding LangGER}" Margin="0,0,10,0" />
-                        <CheckBox Content="Spanish" IsChecked="{Binding LangSPA}" Margin="0,0,10,0" />
-                    </WrapPanel>
+                    <!-- Languages -->
+                    <Border IsVisible="{Binding HasLanguages}" Classes="section-card" Padding="12">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Languages" FontWeight="SemiBold" Opacity="0.6" />
+                            <WrapPanel Orientation="Horizontal">
+                                <CheckBox Content="Japanese" IsChecked="{Binding LangJPN}" Margin="0,0,16,8" />
+                                <CheckBox Content="English" IsChecked="{Binding LangENG}" Margin="0,0,16,8" />
+                                <CheckBox Content="French" IsChecked="{Binding LangFRA}" Margin="0,0,16,8" />
+                                <CheckBox Content="Italian" IsChecked="{Binding LangITA}" Margin="0,0,16,8" />
+                                <CheckBox Content="German" IsChecked="{Binding LangGER}" Margin="0,0,16,8" />
+                                <CheckBox Content="Spanish" IsChecked="{Binding LangSPA}" Margin="0,0,16,8" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
-                
+            </ScrollViewer>
+
+            <!-- Bottom Buttons -->
+            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
+                <Button Content="Save Entry" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center"/>
             </StackPanel>
-        </ScrollViewer>
-    </Grid>
+        </Grid>
+    </Border>
 </UserControl>

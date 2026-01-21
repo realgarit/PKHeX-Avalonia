@@ -42,26 +42,27 @@
                         Padding="12"
                         Margin="0,0,0,12">
                     <StackPanel Orientation="Horizontal" Spacing="16">
-                        <TextBlock Text="Flag #:" VerticalAlignment="Center" />
+                        <TextBlock Text="Flag #" VerticalAlignment="Center" FontWeight="SemiBold" Opacity="0.7" />
                         <NumericUpDown Value="{Binding SelectedFlagIndex}"
                                        Minimum="0"
                                        Maximum="{Binding FlagCount}"
-                                       MinWidth="100"
-                                       FormatString="0" />
+                                       MinWidth="120"
+                                       FormatString="0"
+                                       ShowButtonSpinner="False" />
                         <CheckBox IsChecked="{Binding SelectedFlagValue}"
                                   Content="Set"
-                                  VerticalAlignment="Center" />
+                                  VerticalAlignment="Center"
+                                  FontWeight="SemiBold" />
                     </StackPanel>
                 </Border>
 
                 <!-- Toolbar -->
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,12">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="0,0,0,12">
                     <Button Content="Set All" Command="{Binding SetAllCommand}" Padding="8,4" />
                     <Button Content="Clear All" Command="{Binding ClearAllCommand}" Padding="8,4" />
-                    <Separator Margin="8,0" />
                     <TextBox Text="{Binding SearchText}"
                              Watermark="Search by index..."
-                             MinWidth="200" />
+                             Width="200" />
                 </StackPanel>
 
                 <!-- Flags List -->

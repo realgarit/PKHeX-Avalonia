@@ -61,7 +61,7 @@
 
                                    VerticalAlignment="Center" />
 
-                                                    <!-- Illegal Warning -->
+                                                    <!-- Illegal Warning - inset from corner to match box slots -->
 
                                                     <Path Data="M 8,0 L 16,14 L 0,14 Z M 8.5,12 H 7.5 V 10.5 H 8.5 V 12 Z M 8.5,9 H 7.5 V 4.5 H 8.5 V 9 Z" 
 
@@ -72,6 +72,8 @@
                                                           VerticalAlignment="Top"
 
                                                           IsVisible="{Binding !IsLegal}"
+
+                                                          Margin="0,2,2,0"
 
                                                           Width="12" Height="10"/>
 
@@ -215,13 +217,13 @@
 
                 <TabControl Margin="0,0,0,0" TabStripPlacement="Left" Focusable="False">
 
-                    <!-- Main Tab -->
+                                    <!-- Main Tab -->
 
-                    <TabItem Header="Main">
+                                    <TabItem Header="Main">
 
-                        <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
+                                        <ScrollViewer Padding="8,8,8,40" HorizontalScrollBarVisibility="Disabled">
 
-                            <StackPanel Spacing="16">
+                                            <StackPanel Spacing="16">
 
                                 <!-- Core Info Card -->
                             <Border Classes="section-card"
@@ -335,7 +337,7 @@
 
                 <!-- Stats Tab -->
                 <TabItem Header="Stats">
-                    <ScrollViewer Padding="4" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer Padding="4,4,4,40" HorizontalScrollBarVisibility="Disabled">
                         <Border Classes="section-card"
                                 CornerRadius="4" Padding="12">
                             <Grid ColumnDefinitions="40,*,*,*,*" RowDefinitions="Auto,4,Auto,Auto,Auto,Auto,Auto,Auto">
@@ -402,7 +404,7 @@
 
                 <!-- Met Tab -->
                 <TabItem Header="Met">
-                    <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer Padding="8,8,8,40" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="12">
                             <!-- Origin Game -->
                             <StackPanel>
@@ -459,7 +461,7 @@
 
                 <!-- Moves Tab -->
                 <TabItem Header="Moves">
-                    <ScrollViewer Padding="8" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer Padding="8,8,8,40" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Spacing="16">
                             <!-- Current Moves Section -->
                             <StackPanel Spacing="8">
@@ -785,66 +787,73 @@
 
                 <!-- Ribbons Tab -->
                 <TabItem Header="Ribbons" IsVisible="{Binding HasRibbons}">
-                    <ScrollViewer Padding="12" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Spacing="16">
+                    <Border Padding="8" Classes="view-container">
+                        <Grid RowDefinitions="Auto,*">
                             <!-- Header with buttons -->
-                            <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,4">
+                            <DockPanel Grid.Row="0" Margin="0,0,0,12">
                                 <TextBlock Text="{Binding RibbonCount, StringFormat='Ribbons ({0})'}" 
-                                           FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
-                                <Button Grid.Column="1" Content="Advanced..." Command="{Binding OpenRibbonEditorCommand}" Margin="0,0,8,0" Padding="8,4" FontSize="12" />
-                                <Button Grid.Column="2" Content="Clear All" Command="{Binding ClearRibbonsCommand}" Padding="8,4" FontSize="12" />
-                            </Grid>
+                                           FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" />
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                    <Button Content="Advanced..." Command="{Binding OpenRibbonEditorCommand}" Padding="8,4" FontSize="12" />
+                                    <Button Content="Clear All" Command="{Binding ClearRibbonsCommand}" Padding="8,4" FontSize="12" />
+                                </StackPanel>
+                            </DockPanel>
                             
-                            <!-- Ribbon Grid -->
-                            <ItemsControl ItemsSource="{Binding Ribbons}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Width="72" Height="90" Margin="0,0,8,8" 
-                                                Classes="card"
-                                                ToolTip.Tip="{Binding DisplayName}">
-                                            <Grid RowDefinitions="*,Auto,Auto" Margin="4">
-                                                <!-- Icon -->
-                                                <Image Grid.Row="0" Source="{Binding Icon}" 
-                                                       Height="40" Width="40" 
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                       RenderOptions.BitmapInterpolationMode="HighQuality" />
-                                                
-                                                <!-- Name (Truncated) -->
-                                                <TextBlock Grid.Row="1" Text="{Binding DisplayName}" 
-                                                           FontSize="10" TextTrimming="CharacterEllipsis" 
-                                                           HorizontalAlignment="Center" Margin="0,4,0,4"
-                                                           Opacity="0.8"/>
-                                                
-                                                <!-- Control -->
-                                                <Panel Grid.Row="2" Height="20">
-                                                    <!-- Boolean: Checkbox -->
-                                                    <CheckBox IsVisible="{Binding IsBooleanRibbon}"
-                                                              IsChecked="{Binding HasRibbon}"
-                                                              HorizontalAlignment="Center" />
-                                                    
-                                                    <!-- Count: Numeric -->
-                                                    <NumericUpDown IsVisible="{Binding !IsBooleanRibbon}"
-                                                                   Value="{Binding RibbonCount}" 
-                                                                   Minimum="0" Maximum="{Binding MaxCount}" 
-                                                                   FormatString="0"
-                                                                   ShowButtonSpinner="False"
-                                                                   Classes="condensed"
-                                                                   HorizontalAlignment="Stretch"
-                                                                   HorizontalContentAlignment="Center"
-                                                                   Height="20" />
-                                                </Panel>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </ScrollViewer>
+                            <!-- Ribbon List -->
+                            <Border Grid.Row="1" Classes="section-card" Padding="4">
+                                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding Ribbons}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Spacing="2" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <!-- Each ribbon is a row: Icon | Name | Control -->
+                                                <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}"
+                                                        CornerRadius="4"
+                                                        Padding="6,4"
+                                                        Margin="0,1">
+                                                    <Grid ColumnDefinitions="36,*,60">
+                                                        <!-- Icon -->
+                                                        <Image Grid.Column="0" 
+                                                               Source="{Binding Icon}" 
+                                                               Width="28" Height="28" 
+                                                               VerticalAlignment="Center" />
+                                                        
+                                                        <!-- Name -->
+                                                        <TextBlock Grid.Column="1" 
+                                                                   Text="{Binding DisplayName}" 
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="8,0,0,0"
+                                                                   FontSize="12"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        
+                                                        <!-- Control -->
+                                                        <Panel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                            <!-- Boolean Ribbon: Checkbox -->
+                                                            <CheckBox IsVisible="{Binding IsBooleanRibbon}" 
+                                                                      IsChecked="{Binding HasRibbon}"
+                                                                      HorizontalAlignment="Center" />
+                                                            
+                                                            <!-- Count Ribbon: NumericUpDown -->
+                                                            <NumericUpDown IsVisible="{Binding !IsBooleanRibbon}" 
+                                                                           Value="{Binding RibbonCount}" 
+                                                                           Minimum="0" 
+                                                                           Maximum="{Binding MaxCount}"
+                                                                           Classes="compact"
+                                                                           Width="55" />
+                                                        </Panel>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Border>
+                        </Grid>
+                    </Border>
                 </TabItem>
             </TabControl>
         </DockPanel>

@@ -7,31 +7,40 @@
              x:Class="PKHeX.Avalonia.Views.PokedexSimpleEditor"
              x:DataType="vm:PokedexSimpleEditorViewModel">
 
-    <Grid RowDefinitions="Auto,*,Auto" Margin="10">
-        <!-- Controls -->
-        <StackPanel Grid.Row="0" Spacing="10" Margin="0,0,0,10">
-            <TextBox Text="{Binding SearchText}" Watermark="Search Species..." />
-            <StackPanel Orientation="Horizontal" Spacing="10">
-                <Button Content="Seen All" Command="{Binding SeenAllCommand}" />
-                <Button Content="Seen None" Command="{Binding SeenNoneCommand}" />
-                <Button Content="Caught All" Command="{Binding CaughtAllCommand}" />
-                <Button Content="Caught None" Command="{Binding CaughtNoneCommand}" />
+    <Border Padding="16" Classes="view-container">
+        <Grid RowDefinitions="Auto,*,Auto">
+            <!-- Controls -->
+            <StackPanel Grid.Row="0" Spacing="12" Margin="0,0,0,16">
+                <TextBox Text="{Binding SearchText}" Watermark="Search Species..." />
+                <WrapPanel Orientation="Horizontal">
+                    <Button Content="Seen All" Command="{Binding SeenAllCommand}" Margin="0,0,8,8" />
+                    <Button Content="Seen None" Command="{Binding SeenNoneCommand}" Margin="0,0,8,8" />
+                    <Button Content="Caught All" Command="{Binding CaughtAllCommand}" Margin="0,0,8,8" />
+                    <Button Content="Caught None" Command="{Binding CaughtNoneCommand}" Margin="0,0,8,8" />
+                </WrapPanel>
             </StackPanel>
-        </StackPanel>
 
-        <!-- List -->
-        <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredEntries}" AutoGenerateColumns="False" CanUserResizeColumns="True" CanUserSortColumns="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Species}" Width="Auto" />
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
-                <DataGridCheckBoxColumn Header="Seen" Binding="{Binding IsSeen}" Width="Auto" />
-                <DataGridCheckBoxColumn Header="Caught" Binding="{Binding IsCaught}" Width="Auto" />
-            </DataGrid.Columns>
-        </DataGrid>
+            <!-- List -->
+            <Border Grid.Row="1" Classes="section-card" Padding="0">
+                <DataGrid ItemsSource="{Binding FilteredEntries}" 
+                          AutoGenerateColumns="False" 
+                          CanUserResizeColumns="True" 
+                          CanUserSortColumns="True"
+                          BorderThickness="0"
+                          GridLinesVisibility="Horizontal">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Species}" Width="60" />
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
+                        <DataGridCheckBoxColumn Header="Seen" Binding="{Binding IsSeen}" Width="80" />
+                        <DataGridCheckBoxColumn Header="Caught" Binding="{Binding IsCaught}" Width="80" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
 
-        <!-- Footer -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
-            <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" />
-        </StackPanel>
-    </Grid>
+            <!-- Footer -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,16,0,0">
+                <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </UserControl>

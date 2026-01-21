@@ -46,17 +46,17 @@
 
                                 <Grid ColumnDefinitions="Auto,8,*,8,Auto" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Time:" VerticalAlignment="Center" />
-                                    <NumericUpDown Grid.Row="0" Grid.Column="2" Value="{Binding Time}" Minimum="0" Maximum="65535" />
+                                    <NumericUpDown Grid.Row="0" Grid.Column="2" Value="{Binding Time}" Minimum="0" Maximum="65535" Classes="form-field" />
                                     <Button Grid.Row="0" Grid.Column="4" Content="Make Catchable" Command="{Binding MakeCatchableCommand}" Padding="8,4" />
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Shake:" VerticalAlignment="Center" />
-                                    <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Shake}" Minimum="0" Maximum="7" />
+                                    <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Shake}" Minimum="0" Maximum="7" Classes="form-field" />
 
                                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Group:" VerticalAlignment="Center" />
-                                    <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding Group}" Minimum="0" Maximum="7" />
+                                    <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding Group}" Minimum="0" Maximum="7" Classes="form-field" />
 
                                     <TextBlock Grid.Row="6" Grid.Column="0" Text="Slot:" VerticalAlignment="Center" />
-                                    <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding Slot}" Minimum="0" Maximum="5" />
+                                    <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding Slot}" Minimum="0" Maximum="5" Classes="form-field" />
 
                                     <TextBlock Grid.Row="8" Grid.Column="0" Text="Species:" VerticalAlignment="Center" />
                                     <TextBlock Grid.Row="8" Grid.Column="2" Text="{Binding SpeciesName}" VerticalAlignment="Center" FontWeight="SemiBold" />

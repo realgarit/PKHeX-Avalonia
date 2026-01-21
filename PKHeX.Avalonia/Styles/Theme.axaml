@@ -162,13 +162,13 @@
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
-                    <!-- Illegal Indicator -->
+                    <!-- Illegal Indicator - positioned inside the border with 2px inset -->
                     <Path Data="M 6,0 L 12,11 L 0,11 Z M 6.5,9.5 H 5.5 V 8.5 H 6.5 V 9.5 Z M 6.5,7.5 H 5.5 V 3.5 H 6.5 V 7.5 Z" 
                           Fill="#E3350D" 
                           HorizontalAlignment="Right" 
                           VerticalAlignment="Top"
                           IsVisible="{Binding !IsLegal}"
-                          Margin="0,0,0,0"
+                          Margin="0,2,2,0"
                           Width="12" Height="11"/>
                 </Panel>
             </ControlTemplate>
@@ -362,9 +362,16 @@
         <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentPrimaryBrush}" />
     </Style>
 
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         NumericUpDown Transitions
-         ───────────────────────────────────────────────────────────────────────── -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         COMPONENT STANDARDS - NumericUpDown
+         These styles establish a consistent look for numeric inputs across all editors.
+         Use these classes:
+         - NumericUpDown.compact    : Hide spinners, centered text, good for inline use (tables, grids)
+         - NumericUpDown.form-field : Standard form field with proper sizing
+         - NumericUpDown.condensed  : Smaller variant for tight spaces (legacy, use .compact instead)
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <!-- Base NumericUpDown transitions and hover -->
     <Style Selector="NumericUpDown">
         <Setter Property="Transitions">
             <Transitions>
@@ -377,13 +384,107 @@
         <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentPrimaryBrush}" />
     </Style>
 
+    <!-- Compact: Hides spinners, ideal for DataGrid cells and inline editing -->
+    <Style Selector="NumericUpDown.compact">
+        <Setter Property="ShowButtonSpinner" Value="False" />
+        <Setter Property="MinWidth" Value="60" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="Padding" Value="6,2" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+    </Style>
+
+    <!-- Form Field: Standard sizing for form layouts -->
+    <Style Selector="NumericUpDown.form-field">
+        <Setter Property="ShowButtonSpinner" Value="False" />
+        <Setter Property="MinWidth" Value="80" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- Legacy condensed style - use .compact instead -->
     <Style Selector="NumericUpDown.condensed">
-        <Setter Property="Padding" Value="2,0" />
+        <Setter Property="ShowButtonSpinner" Value="False" />
+        <Setter Property="Padding" Value="4,2" />
         <Setter Property="MinHeight" Value="26" />
         <Setter Property="Height" Value="26" />
-        <Setter Property="MinWidth" Value="30" />
-        <Setter Property="FontSize" Value="11" />
+        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="FontSize" Value="12" />
         <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         COMPONENT STANDARDS - DataGrid
+         Standardized DataGrid appearance for list/table views.
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <Style Selector="DataGrid">
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="RowBackground" Value="Transparent" />
+    </Style>
+    
+    <Style Selector="DataGridRow">
+        <Setter Property="MinHeight" Value="36" />
+    </Style>
+    
+    <Style Selector="DataGridCell">
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         COMPONENT STANDARDS - ComboBox in DataGrid
+         Transparent backgrounds for inline editing feel.
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <Style Selector="DataGrid ComboBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="MinHeight" Value="28" />
+    </Style>
+    
+    <Style Selector="DataGrid NumericUpDown">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="ShowButtonSpinner" Value="False" />
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         COMPONENT STANDARDS - CheckBox in compact layouts
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <Style Selector="CheckBox.compact">
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="MinHeight" Value="24" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         RIBBON ITEM - Standard ribbon item card for RibbonEditor
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    
+    <Style Selector="Border.ribbon-item">
+        <Setter Property="Background" Value="{StaticResource ThemeBackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="Width" Value="140" />
+        <Setter Property="Height" Value="100" />
+        <Setter Property="Margin" Value="4" />
+    </Style>
+
+    <Style Selector="Border.ribbon-item:pointerover">
+        <Setter Property="BorderBrush" Value="{StaticResource ThemeAccentPrimaryBrush}" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────

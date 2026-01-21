@@ -8,77 +8,79 @@
         <vm:Misc9EditorViewModel />
     </Design.DataContext>
 
-    <DockPanel Margin="10">
-        <!-- Bottom Buttons -->
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
-            <Button Content="Save" Command="{Binding SaveCommand}" />
-        </StackPanel>
+    <Border Padding="16" Classes="view-container">
+        <Grid RowDefinitions="*,Auto">
+            <ScrollViewer>
+                <StackPanel Spacing="16" Margin="0,8,0,0">
+                    <!-- Currency -->
+                    <Border Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Currency" FontWeight="SemiBold" Opacity="0.6" />
+                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,8,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Money" VerticalAlignment="Center" Width="100" />
+                                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding Money}" Minimum="0" Maximum="9999999" ShowButtonSpinner="False" />
+                                <Button Grid.Row="0" Grid.Column="2" Content="Max" Command="{Binding MaxMoneyCommand}" Margin="8,0,0,0" Padding="8,4" />
 
-        <ScrollViewer>
-            <StackPanel Spacing="15" Margin="10">
-                <!-- Currency -->
-                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Currency" FontWeight="Bold" FontSize="14" />
-                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Money:" VerticalAlignment="Center" Margin="0,0,10,5" />
-                            <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding Money}" Minimum="0" Maximum="9999999" Margin="0,0,10,5" />
-                            <Button Grid.Row="0" Grid.Column="2" Content="Max" Command="{Binding MaxMoneyCommand}" Margin="0,0,0,5" />
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="League Points" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding LeaguePoints}" Minimum="0" Maximum="9999999" ShowButtonSpinner="False" />
+                                <Button Grid.Row="2" Grid.Column="2" Content="Max" Command="{Binding MaxLPCommand}" Margin="8,0,0,0" Padding="8,4" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="League Points:" VerticalAlignment="Center" Margin="0,0,10,0" />
-                            <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding LeaguePoints}" Minimum="0" Maximum="9999999" Margin="0,0,10,0" />
-                            <Button Grid.Row="1" Grid.Column="2" Content="Max" Command="{Binding MaxLPCommand}" />
-                        </Grid>
-                    </StackPanel>
-                </Border>
+                    <!-- Blueberry (DLC2) -->
+                    <Border Classes="section-card" Padding="12" IsVisible="{Binding HasBlueberry}">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Blueberry Academy (DLC2)" FontWeight="SemiBold" Opacity="0.6" />
+                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="BP" VerticalAlignment="Center" Width="100" />
+                                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding BlueberryPoints}" Minimum="0" Maximum="9999999" ShowButtonSpinner="False" />
+                                <Button Grid.Row="0" Grid.Column="2" Content="Max" Command="{Binding MaxBPCommand}" Margin="8,0,0,0" Padding="8,4" />
 
-                <!-- Blueberry (DLC2) -->
-                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" IsVisible="{Binding HasBlueberry}">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Blueberry Academy (DLC2)" FontWeight="Bold" FontSize="14" />
-                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="BP:" VerticalAlignment="Center" Margin="0,0,10,5" />
-                            <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding BlueberryPoints}" Minimum="0" Maximum="9999999" Margin="0,0,10,5" />
-                            <Button Grid.Row="0" Grid.Column="2" Content="Max" Command="{Binding MaxBPCommand}" Margin="0,0,0,5" />
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Quests (Solo)" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Value="{Binding QuestsDoneSolo}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Quests (Solo):" VerticalAlignment="Center" Margin="0,0,10,5" />
-                            <NumericUpDown Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Value="{Binding QuestsDoneSolo}" Minimum="0" Maximum="9999" Margin="0,0,0,5" />
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Quests (Group)" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Value="{Binding QuestsDoneGroup}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" />
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Quests (Group):" VerticalAlignment="Center" Margin="0,0,10,5" />
-                            <NumericUpDown Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Value="{Binding QuestsDoneGroup}" Minimum="0" Maximum="9999" Margin="0,0,0,5" />
+                                <TextBlock Grid.Row="6" Grid.Column="0" Text="Throw Style" VerticalAlignment="Center" />
+                                <ComboBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding ThrowStyles}" SelectedIndex="{Binding ThrowStyleIndex}" HorizontalAlignment="Stretch" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
 
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Throw Style:" VerticalAlignment="Center" Margin="0,0,10,0" />
-                            <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding ThrowStyles}" SelectedIndex="{Binding ThrowStyleIndex}" />
-                        </Grid>
-                    </StackPanel>
-                </Border>
+                    <!-- Unlocks -->
+                    <Border Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Unlocks" FontWeight="SemiBold" Opacity="0.6" />
+                            <WrapPanel>
+                                <Button Content="Unlock All Fly Locations" Command="{Binding UnlockAllFlyLocationsCommand}" Margin="0,0,8,8" />
+                                <Button Content="Collect All Stakes" Command="{Binding CollectAllStakesCommand}" Margin="0,0,8,8" />
+                                <Button Content="Unlock TM Recipes" Command="{Binding UnlockAllTMRecipesCommand}" Margin="0,0,8,8" />
+                                <Button Content="Unlock Bike Upgrades" Command="{Binding UnlockBikeUpgradesCommand}" Margin="0,0,8,8" />
+                                <Button Content="Unlock Base Clothing" Command="{Binding UnlockBaseClothingCommand}" Margin="0,0,8,8" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
 
-                <!-- Unlocks -->
-                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="Unlocks" FontWeight="Bold" FontSize="14" />
-                        <WrapPanel>
-                            <Button Content="Unlock All Fly Locations" Command="{Binding UnlockAllFlyLocationsCommand}" Margin="0,2,10,2" />
-                            <Button Content="Collect All Stakes" Command="{Binding CollectAllStakesCommand}" Margin="0,2,10,2" />
-                            <Button Content="Unlock TM Recipes" Command="{Binding UnlockAllTMRecipesCommand}" Margin="0,2,10,2" />
-                            <Button Content="Unlock Bike Upgrades" Command="{Binding UnlockBikeUpgradesCommand}" Margin="0,2,10,2" />
-                            <Button Content="Unlock Base Clothing" Command="{Binding UnlockBaseClothingCommand}" Margin="0,2,10,2" />
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
+                    <!-- DLC Unlocks -->
+                    <Border Classes="section-card" Padding="12" IsVisible="{Binding HasBlueberry}">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="DLC Unlocks" FontWeight="SemiBold" Opacity="0.6" />
+                            <WrapPanel>
+                                <Button Content="Unlock All Coaches" Command="{Binding UnlockAllCoachesCommand}" Margin="0,0,8,8" />
+                                <Button Content="Unlock Throw Styles" Command="{Binding UnlockAllThrowStylesCommand}" Margin="0,0,8,8" />
+                                <Button Content="Activate Snacksworth Legendaries" Command="{Binding ActivateSnacksworthLegendariesCommand}" Margin="0,0,8,8" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
 
-                <!-- DLC Unlocks -->
-                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" IsVisible="{Binding HasBlueberry}">
-                    <StackPanel Spacing="8">
-                        <TextBlock Text="DLC Unlocks" FontWeight="Bold" FontSize="14" />
-                        <WrapPanel>
-                            <Button Content="Unlock All Coaches" Command="{Binding UnlockAllCoachesCommand}" Margin="0,2,10,2" />
-                            <Button Content="Unlock Throw Styles" Command="{Binding UnlockAllThrowStylesCommand}" Margin="0,2,10,2" />
-                            <Button Content="Activate Snacksworth Legendaries" Command="{Binding ActivateSnacksworthLegendariesCommand}" Margin="0,2,10,2" />
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
+            <!-- Bottom Buttons -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
+                <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
             </StackPanel>
-        </ScrollViewer>
-    </DockPanel>
+        </Grid>
+    </Border>
 </UserControl>

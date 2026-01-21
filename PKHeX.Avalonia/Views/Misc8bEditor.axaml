@@ -8,110 +8,100 @@
         <vm:Misc8bEditorViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="*,Auto" Margin="15">
-        <ScrollViewer>
-            <StackPanel Spacing="15">
-                <TextBlock Text="BDSP Misc Editor" FontWeight="Bold" FontSize="18"/>
+    <Border Padding="16" Classes="view-container">
+        <Grid RowDefinitions="*,Auto">
+            <ScrollViewer>
+                <StackPanel Spacing="16" Margin="0,8,0,0">
+                    <TextBlock Text="Misc Editor (BDSP)" Classes="view-title" />
 
-                <!-- Mythical Pokemon Section -->
-                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="15">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="Mythical Pokémon Events" FontWeight="Bold" FontSize="14"/>
-                        <TextBlock Text="Unlock encounters for mythical Pokémon. Requires appropriate items and conditions."
-                                   Opacity="0.7" TextWrapping="Wrap"/>
+                    <!-- Mythical Pokemon Section -->
+                    <Border Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Mythical Pokémon Events" FontWeight="SemiBold" Opacity="0.6" />
+                            <TextBlock Text="Unlock encounters for mythical Pokémon. Requires appropriate items and conditions."
+                                       Opacity="0.7" TextWrapping="Wrap" FontSize="12"/>
 
-                        <WrapPanel Orientation="Horizontal">
-                            <Button Content="Unlock Spiritomb"
-                                    Command="{Binding UnlockSpiritombCommand}"
-                                    IsEnabled="{Binding CanUnlockSpiritomb}"
-                                    Margin="0,5,10,5"/>
-                            <Button Content="Unlock Darkrai"
-                                    Command="{Binding UnlockDarkraiCommand}"
-                                    IsEnabled="{Binding CanUnlockDarkrai}"
-                                    Margin="0,5,10,5"/>
-                            <Button Content="Unlock Shaymin"
-                                    Command="{Binding UnlockShayminCommand}"
-                                    IsEnabled="{Binding CanUnlockShaymin}"
-                                    Margin="0,5,10,5"/>
-                            <Button Content="Unlock Arceus"
-                                    Command="{Binding UnlockArceusCommand}"
-                                    IsEnabled="{Binding CanUnlockArceus}"
-                                    Margin="0,5,10,5"/>
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
+                            <WrapPanel Orientation="Horizontal" Margin="0,4,-8,-8">
+                                <Button Content="Unlock Spiritomb"
+                                        Command="{Binding UnlockSpiritombCommand}"
+                                        IsEnabled="{Binding CanUnlockSpiritomb}"
+                                        Margin="0,0,8,8"/>
+                                <Button Content="Unlock Darkrai"
+                                        Command="{Binding UnlockDarkraiCommand}"
+                                        IsEnabled="{Binding CanUnlockDarkrai}"
+                                        Margin="0,0,8,8"/>
+                                <Button Content="Unlock Shaymin"
+                                        Command="{Binding UnlockShayminCommand}"
+                                        IsEnabled="{Binding CanUnlockShaymin}"
+                                        Margin="0,0,8,8"/>
+                                <Button Content="Unlock Arceus"
+                                        Command="{Binding UnlockArceusCommand}"
+                                        IsEnabled="{Binding CanUnlockArceus}"
+                                        Margin="0,0,8,8"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
 
-                <!-- Legendary Pokemon Section -->
-                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="15">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="Legendary Pokémon" FontWeight="Bold" FontSize="14"/>
+                    <!-- Legendary Pokemon Section -->
+                    <Border Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Legendary Pokémon" FontWeight="SemiBold" Opacity="0.6" />
 
-                        <WrapPanel Orientation="Horizontal">
-                            <Button Content="Respawn Dialga/Palkia"
-                                    Command="{Binding UnlockBoxLegendCommand}"
-                                    IsEnabled="{Binding CanUnlockBoxLegend}"
-                                    Margin="0,5,10,5"/>
-                            <Button Content="Respawn Roamers (Mesprit/Cresselia)"
-                                    Command="{Binding RespawnRoamersCommand}"
-                                    IsEnabled="{Binding CanRespawnRoamer}"
-                                    Margin="0,5,10,5"/>
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
+                            <WrapPanel Orientation="Horizontal" Margin="0,0,-8,-8">
+                                <Button Content="Respawn Dialga/Palkia"
+                                        Command="{Binding UnlockBoxLegendCommand}"
+                                        IsEnabled="{Binding CanUnlockBoxLegend}"
+                                        Margin="0,0,8,8"/>
+                                <Button Content="Respawn Roamers (Mesprit/Cresselia)"
+                                        Command="{Binding RespawnRoamersCommand}"
+                                        IsEnabled="{Binding CanRespawnRoamer}"
+                                        Margin="0,0,8,8"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
 
-                <!-- Trainer Battles Section -->
-                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="15">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="Trainer Battles" FontWeight="Bold" FontSize="14"/>
+                    <!-- Trainer Battles Section -->
+                    <Border Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Trainer Battles" FontWeight="SemiBold" Opacity="0.6" />
 
-                        <WrapPanel Orientation="Horizontal">
-                            <Button Content="Defeat All Trainers"
-                                    Command="{Binding DefeatAllTrainersCommand}"
-                                    IsEnabled="{Binding CanDefeatAll}"
-                                    Margin="0,5,10,5"/>
-                            <Button Content="Reset All Trainers (Rebattle)"
-                                    Command="{Binding RebattleAllTrainersCommand}"
-                                    IsEnabled="{Binding CanRebattle}"
-                                    Margin="0,5,10,5"/>
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
+                            <WrapPanel Orientation="Horizontal" Margin="0,0,-8,-8">
+                                <Button Content="Defeat All Trainers"
+                                        Command="{Binding DefeatAllTrainersCommand}"
+                                        IsEnabled="{Binding CanDefeatAll}"
+                                        Margin="0,0,8,8"/>
+                                <Button Content="Reset All Trainers (Rebattle)"
+                                        Command="{Binding RebattleAllTrainersCommand}"
+                                        IsEnabled="{Binding CanRebattle}"
+                                        Margin="0,0,8,8"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
 
-                <!-- Unlockables Section -->
-                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="15">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="Unlockables" FontWeight="Bold" FontSize="14"/>
+                    <!-- Unlockables Section -->
+                    <Border Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Unlockables" FontWeight="SemiBold" Opacity="0.6" />
 
-                        <WrapPanel Orientation="Horizontal">
-                            <Button Content="Unlock All Zones"
-                                    Command="{Binding UnlockZonesCommand}"
-                                    IsEnabled="{Binding CanUnlockZones}"
-                                    Margin="0,5,10,5"/>
-                            <Button Content="Unlock All Fashion"
-                                    Command="{Binding UnlockFashionCommand}"
-                                    IsEnabled="{Binding CanUnlockFashion}"
-                                    Margin="0,5,10,5"/>
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
+                            <WrapPanel Orientation="Horizontal" Margin="0,0,-8,-8">
+                                <Button Content="Unlock All Zones"
+                                        Command="{Binding UnlockZonesCommand}"
+                                        IsEnabled="{Binding CanUnlockZones}"
+                                        Margin="0,0,8,8"/>
+                                <Button Content="Unlock All Fashion"
+                                        Command="{Binding UnlockFashionCommand}"
+                                        IsEnabled="{Binding CanUnlockFashion}"
+                                        Margin="0,0,8,8"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Bottom Buttons -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,16,0,0">
+                <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center"/>
             </StackPanel>
-        </ScrollViewer>
-
-        <!-- Bottom Buttons -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
-            <Button Content="Save" Command="{Binding SaveCommand}"/>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </Border>
 </UserControl>

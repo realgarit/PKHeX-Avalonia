@@ -327,7 +327,7 @@ public class ComprehensiveTests
         var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.MetLevel = 5;
-        vm.MetDate = new DateTimeOffset(2024, 6, 15, 0, 0, 0, TimeSpan.Zero);
+        vm.MetDate = new DateTime(2024, 6, 15);
         
         var result = vm.PreparePKM();
         

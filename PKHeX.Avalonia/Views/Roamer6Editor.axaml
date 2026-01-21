@@ -8,35 +8,50 @@
         <vm:Roamer6EditorViewModel />
     </Design.DataContext>
 
-    <DockPanel Margin="10">
-        <!-- Bottom Buttons -->
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
-            <Button Content="Save" Command="{Binding SaveCommand}" />
-        </StackPanel>
+    <Border Padding="16" Classes="view-container">
+        <Grid RowDefinitions="Auto,*,Auto">
+            
+            <!-- Header -->
+            <TextBlock Grid.Row="0" Text="Gen 6 Roamer Editor" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,16" />
+            
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Spacing="16">
+                    <!-- Roamer Info -->
+                    <Border Classes="section-card" Padding="16">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Roamer Info" FontWeight="SemiBold" Opacity="0.6" />
 
-        <!-- Use a ScrollViewer for content -->
-        <ScrollViewer>
-            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" 
-                    HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" Margin="10">
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Species:" VerticalAlignment="Center" Margin="0,0,10,10" />
-                    <ComboBox Grid.Row="0" Grid.Column="1" 
-                              ItemsSource="{Binding SpeciesList}" 
-                              SelectedIndex="{Binding SelectedSpeciesIndex}" 
-                              Margin="0,0,0,10" MinWidth="150" />
+                            <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,8,Auto,8,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Species" VerticalAlignment="Center" />
+                                <ComboBox Grid.Row="0" Grid.Column="1"
+                                          ItemsSource="{Binding SpeciesList}"
+                                          SelectedIndex="{Binding SelectedSpeciesIndex}"
+                                          MinWidth="180"
+                                          HorizontalAlignment="Left" />
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="State:" VerticalAlignment="Center" Margin="0,0,10,10" />
-                    <ComboBox Grid.Row="1" Grid.Column="1" 
-                              ItemsSource="{Binding RoamStates}" 
-                              SelectedIndex="{Binding RoamStateIndex}" 
-                              Margin="0,0,0,10" MinWidth="150" />
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="State" VerticalAlignment="Center" />
+                                <ComboBox Grid.Row="2" Grid.Column="1"
+                                          ItemsSource="{Binding RoamStates}"
+                                          SelectedIndex="{Binding RoamStateIndex}"
+                                          MinWidth="180"
+                                          HorizontalAlignment="Left" />
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Encountered:" VerticalAlignment="Center" Margin="0,0,10,0" />
-                    <NumericUpDown Grid.Row="2" Grid.Column="1" 
-                                   Value="{Binding TimesEncountered}" 
-                                   Minimum="0" Maximum="255" />
-                </Grid>
-            </Border>
-        </ScrollViewer>
-    </DockPanel>
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Encountered" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="4" Grid.Column="1"
+                                               Value="{Binding TimesEncountered}"
+                                               Minimum="0" Maximum="255"
+                                               Classes="form-field"
+                                               HorizontalAlignment="Left" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Footer -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,16,0,0">
+                <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" Padding="16,8" />
+            </StackPanel>
+        </Grid>
+    </Border>
 </UserControl>

@@ -8,70 +8,79 @@
              x:Class="PKHeX.Avalonia.Views.Pokedex7Editor"
              x:DataType="vm:Pokedex7EditorViewModel">
     
-    <Grid ColumnDefinitions="280, *" Margin="10">
-        <!-- Entry List -->
-        <Grid Grid.Column="0" RowDefinitions="Auto, *">
-            <TextBox Text="{Binding SearchText}" Watermark="Search Species/Form..." Margin="0,0,0,10"/>
-            <ListBox Grid.Row="1" ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate x:DataType="core:ComboItem">
-                        <TextBlock Text="{Binding Text}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
-        
-        <!-- Details -->
-        <ScrollViewer Grid.Column="1" Margin="10,0,0,0">
-            <StackPanel Spacing="10">
-                <Button Content="Save Entry" Command="{Binding SaveCommand}" MinWidth="100" HorizontalAlignment="Left"/>
-                
-                <!-- Entry Flags -->
-                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
-                    <StackPanel Spacing="10">
-                        <TextBlock Text="Entry Flags" FontWeight="Bold"/>
-                        <CheckBox Content="Caught" IsChecked="{Binding Caught}" IsEnabled="{Binding IsCaughtEnabled}"/>
-                        
-                        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto">
-                            <!-- Seen -->
-                            <StackPanel Grid.Column="0" Spacing="5">
-                                <TextBlock Text="Seen"/>
-                                <CheckBox Content="Male" IsChecked="{Binding SeenMale}" IsEnabled="{Binding CanBeMale}"/>
-                                <CheckBox Content="Female" IsChecked="{Binding SeenFemale}" IsEnabled="{Binding CanBeFemale}"/>
-                                <CheckBox Content="Male Shiny" IsChecked="{Binding SeenMaleShiny}" IsEnabled="{Binding CanBeMale}"/>
-                                <CheckBox Content="Female Shiny" IsChecked="{Binding SeenFemaleShiny}" IsEnabled="{Binding CanBeFemale}"/>
-                            </StackPanel>
+    <Border Padding="16" Classes="view-container">
+        <Grid ColumnDefinitions="280, 16, *" RowDefinitions="*,Auto">
+            <!-- Entry List -->
+            <Grid Grid.Column="0" RowDefinitions="Auto, 8, *">
+                <TextBox Text="{Binding SearchText}" Watermark="Search Species/Form..." />
+                <Border Grid.Row="2" Classes="section-card" Padding="0">
+                    <ListBox ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry}" Background="Transparent">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="core:ComboItem">
+                                <TextBlock Text="{Binding Text}" Padding="8,4"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </Grid>
+            
+            <!-- Details -->
+            <ScrollViewer Grid.Column="2">
+                <StackPanel Spacing="16">
+                    <!-- Entry Flags -->
+                    <Border Classes="section-card" Padding="12">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Entry Flags" FontWeight="SemiBold" Opacity="0.6" />
+                            <CheckBox Content="Caught" IsChecked="{Binding Caught}" IsEnabled="{Binding IsCaughtEnabled}" FontWeight="SemiBold" />
                             
-                            <!-- Displayed -->
-                            <StackPanel Grid.Column="1" Spacing="5">
-                                <TextBlock Text="Displayed"/>
-                                <CheckBox Content="Male" IsChecked="{Binding DisplayedMale}" IsEnabled="{Binding CanBeMale}"/>
-                                <CheckBox Content="Female" IsChecked="{Binding DisplayedFemale}" IsEnabled="{Binding CanBeFemale}"/>
-                                <CheckBox Content="Male Shiny" IsChecked="{Binding DisplayedMaleShiny}" IsEnabled="{Binding CanBeMale}"/>
-                                <CheckBox Content="Female Shiny" IsChecked="{Binding DisplayedFemaleShiny}" IsEnabled="{Binding CanBeFemale}"/>
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-                
-                <!-- Languages -->
-                <Border IsVisible="{Binding HasLanguages}" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
-                    <StackPanel Spacing="5">
-                        <TextBlock Text="Languages" FontWeight="Bold"/>
-                        <WrapPanel Orientation="Horizontal">
-                            <CheckBox Content="Japanese" IsChecked="{Binding LangJPN}" Margin="0,0,10,0"/>
-                            <CheckBox Content="English" IsChecked="{Binding LangENG}" Margin="0,0,10,0"/>
-                            <CheckBox Content="French" IsChecked="{Binding LangFRA}" Margin="0,0,10,0"/>
-                            <CheckBox Content="German" IsChecked="{Binding LangGER}" Margin="0,0,10,0"/>
-                            <CheckBox Content="Italian" IsChecked="{Binding LangITA}" Margin="0,0,10,0"/>
-                            <CheckBox Content="Spanish" IsChecked="{Binding LangSPA}" Margin="0,0,10,0"/>
-                            <CheckBox Content="Korean" IsChecked="{Binding LangKOR}" Margin="0,0,10,0"/>
-                            <CheckBox Content="Chinese (T)" IsChecked="{Binding LangCHT}" Margin="0,0,10,0"/>
-                            <CheckBox Content="Chinese (S)" IsChecked="{Binding LangCHS}"/>
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
+                            <Grid ColumnDefinitions="*, 16, *" RowDefinitions="Auto, 8, Auto">
+                                <!-- Headers -->
+                                <TextBlock Text="Seen" Grid.Column="0" FontWeight="SemiBold" Opacity="0.7" />
+                                <TextBlock Text="Displayed" Grid.Column="2" FontWeight="SemiBold" Opacity="0.7" />
+                                
+                                <!-- Seen Checkboxes -->
+                                <StackPanel Grid.Row="2" Grid.Column="0" Spacing="8">
+                                    <CheckBox Content="Male" IsChecked="{Binding SeenMale}" IsEnabled="{Binding CanBeMale}"/>
+                                    <CheckBox Content="Female" IsChecked="{Binding SeenFemale}" IsEnabled="{Binding CanBeFemale}"/>
+                                    <CheckBox Content="Male Shiny" IsChecked="{Binding SeenMaleShiny}" IsEnabled="{Binding CanBeMale}"/>
+                                    <CheckBox Content="Female Shiny" IsChecked="{Binding SeenFemaleShiny}" IsEnabled="{Binding CanBeFemale}"/>
+                                </StackPanel>
+                                
+                                <!-- Displayed Checkboxes -->
+                                <StackPanel Grid.Row="2" Grid.Column="2" Spacing="8">
+                                    <CheckBox Content="Male" IsChecked="{Binding DisplayedMale}" IsEnabled="{Binding CanBeMale}"/>
+                                    <CheckBox Content="Female" IsChecked="{Binding DisplayedFemale}" IsEnabled="{Binding CanBeFemale}"/>
+                                    <CheckBox Content="Male Shiny" IsChecked="{Binding DisplayedMaleShiny}" IsEnabled="{Binding CanBeMale}"/>
+                                    <CheckBox Content="Female Shiny" IsChecked="{Binding DisplayedFemaleShiny}" IsEnabled="{Binding CanBeFemale}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Languages -->
+                    <Border IsVisible="{Binding HasLanguages}" Classes="section-card" Padding="12">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Languages" FontWeight="SemiBold" Opacity="0.6" />
+                            <WrapPanel Orientation="Horizontal">
+                                <CheckBox Content="Japanese" IsChecked="{Binding LangJPN}" Margin="0,0,16,8"/>
+                                <CheckBox Content="English" IsChecked="{Binding LangENG}" Margin="0,0,16,8"/>
+                                <CheckBox Content="French" IsChecked="{Binding LangFRA}" Margin="0,0,16,8"/>
+                                <CheckBox Content="German" IsChecked="{Binding LangGER}" Margin="0,0,16,8"/>
+                                <CheckBox Content="Italian" IsChecked="{Binding LangITA}" Margin="0,0,16,8"/>
+                                <CheckBox Content="Spanish" IsChecked="{Binding LangSPA}" Margin="0,0,16,8"/>
+                                <CheckBox Content="Korean" IsChecked="{Binding LangKOR}" Margin="0,0,16,8"/>
+                                <CheckBox Content="Chinese (T)" IsChecked="{Binding LangCHT}" Margin="0,0,16,8"/>
+                                <CheckBox Content="Chinese (S)" IsChecked="{Binding LangCHS}" Margin="0,0,16,8"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Bottom Buttons -->
+            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
+                <Button Content="Save Entry" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center"/>
             </StackPanel>
-        </ScrollViewer>
-    </Grid>
+        </Grid>
+    </Border>
 </UserControl>

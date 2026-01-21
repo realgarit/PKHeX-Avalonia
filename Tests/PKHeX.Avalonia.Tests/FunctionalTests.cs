@@ -94,10 +94,10 @@ public class FunctionalTests
     }
 
     [Theory]
-    [InlineData(8, 3)] // Gen 3 - SAV3E
-    [InlineData(11, 4)] // Gen 4 - SAV4DP
-    [InlineData(17, 5)] // Gen 5 - SAV5BW
-    public void Audit_MultiGen_InitialState(int savTypeIndex, int gen)
+    [InlineData(3)] // Gen 3 - SAV3E
+    [InlineData(4)] // Gen 4 - SAV4DP
+    [InlineData(5)] // Gen 5 - SAV5BW
+    public void Audit_MultiGen_InitialState(int gen)
     {
         // Use BlankSaveFile to get properly initialized saves
         SaveFile sav = gen switch {

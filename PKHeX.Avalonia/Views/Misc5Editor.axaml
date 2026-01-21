@@ -8,169 +8,170 @@
         <vm:Misc5EditorViewModel />
     </Design.DataContext>
 
-    <DockPanel Margin="10">
-        <!-- Bottom Buttons -->
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
-            <Button Content="Save" Command="{Binding SaveCommand}" />
-        </StackPanel>
-
-        <!-- Main Content with TabControl -->
-        <TabControl>
-            <!-- Main Tab -->
-            <TabItem Header="Main">
-                <ScrollViewer>
-                    <StackPanel Spacing="15" Margin="10">
-                        <!-- Fly Destinations -->
-                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
-                            <StackPanel Spacing="8">
-                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <TextBlock Text="Fly Destinations" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
-                                    <Button Content="Unlock All" Command="{Binding UnlockAllFlyDestinationsCommand}" FontSize="11" Padding="8,4" />
+    <Border Padding="16" Classes="view-container">
+        <Grid RowDefinitions="*,Auto">
+            <!-- Main Content with TabControl -->
+            <TabControl Grid.Row="0">
+                <!-- Main Tab -->
+                <TabItem Header="Main">
+                    <ScrollViewer>
+                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                            <!-- Fly Destinations -->
+                            <Border Classes="section-card" Padding="12">
+                                <StackPanel Spacing="12">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <TextBlock Text="Fly Destinations" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
+                                        <Button Content="Unlock All" Command="{Binding UnlockAllFlyDestinationsCommand}" FontSize="11" Padding="8,4" />
+                                    </StackPanel>
+                                    <ScrollViewer MaxHeight="250">
+                                        <ItemsControl ItemsSource="{Binding FlyDestinations}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:FlyDestination5ViewModel">
+                                                    <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" 
+                                                            CornerRadius="4" Margin="0,0,8,8" Padding="8,4">
+                                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsUnlocked}" 
+                                                                  MinWidth="140" />
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
                                 </StackPanel>
-                                <ScrollViewer MaxHeight="200">
-                                    <ItemsControl ItemsSource="{Binding FlyDestinations}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
+                            </Border>
+
+                            <!-- Key System (B2W2 only) -->
+                            <Border Classes="section-card" Padding="12" IsVisible="{Binding IsB2W2}">
+                                <StackPanel Spacing="12">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <TextBlock Text="Key System" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
+                                        <Button Content="Unlock All" Command="{Binding UnlockAllKeysCommand}" FontSize="11" Padding="8,4" />
+                                    </StackPanel>
+                                    <ItemsControl ItemsSource="{Binding Keys}">
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:FlyDestination5ViewModel">
-                                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsUnlocked}" 
-                                                          Margin="0,2,15,2" MinWidth="140" />
+                                            <DataTemplate x:DataType="vm:KeySystemViewModel">
+                                                <Border Margin="0,0,0,8" Padding="8" Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4">
+                                                    <Grid ColumnDefinitions="*,Auto,Auto">
+                                                        <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" />
+                                                        <CheckBox Grid.Column="1" Content="Obtained" IsChecked="{Binding IsObtained}" Margin="16,0" />
+                                                        <CheckBox Grid.Column="2" Content="Unlocked" IsChecked="{Binding IsUnlocked}" />
+                                                    </Grid>
+                                                </Border>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
-                                </ScrollViewer>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- Key System (B2W2 only) -->
-                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10"
-                                IsVisible="{Binding IsB2W2}">
-                            <StackPanel Spacing="8">
-                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <TextBlock Text="Key System" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
-                                    <Button Content="Unlock All" Command="{Binding UnlockAllKeysCommand}" FontSize="11" Padding="8,4" />
                                 </StackPanel>
-                                <ItemsControl ItemsSource="{Binding Keys}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:KeySystemViewModel">
-                                            <Border Margin="0,2" Padding="8" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3">
-                                                <Grid ColumnDefinitions="*,Auto,Auto">
-                                                    <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" />
-                                                    <CheckBox Grid.Column="1" Content="Obtained" IsChecked="{Binding IsObtained}" Margin="10,0" />
-                                                    <CheckBox Grid.Column="2" Content="Unlocked" IsChecked="{Binding IsUnlocked}" />
+                            </Border>
+
+                            <!-- Roamer (BW only) -->
+                            <Border Classes="section-card" Padding="12" IsVisible="{Binding IsBW}">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="Roamers" FontWeight="SemiBold" Opacity="0.6" />
+                                    <CheckBox Content="Liberty Pass Activated" IsChecked="{Binding LibertyPassActivated}" />
+                                    <ItemsControl ItemsSource="{Binding Roamers}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:RoamerViewModel">
+                                                <Grid ColumnDefinitions="Auto,*" Margin="0,8">
+                                                    <TextBlock Grid.Column="0" Text="{Binding Name}" Width="100" VerticalAlignment="Center" />
+                                                    <ComboBox Grid.Column="1" 
+                                                              ItemsSource="{Binding $parent[UserControl].((vm:Misc5EditorViewModel)DataContext).RoamerStates}"
+                                                              SelectedIndex="{Binding State}" 
+                                                              HorizontalAlignment="Stretch" />
                                                 </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- Roamer (BW only) -->
-                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10"
-                                IsVisible="{Binding IsBW}">
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="Roamers" FontWeight="Bold" FontSize="14" />
-                                <CheckBox Content="Liberty Pass Activated" IsChecked="{Binding LibertyPassActivated}" />
-                                <ItemsControl ItemsSource="{Binding Roamers}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:RoamerViewModel">
-                                            <Grid ColumnDefinitions="Auto,*" Margin="0,4">
-                                                <TextBlock Grid.Column="0" Text="{Binding Name}" Width="100" VerticalAlignment="Center" />
-                                                <ComboBox Grid.Column="1" 
-                                                          ItemsSource="{Binding $parent[UserControl].((vm:Misc5EditorViewModel)DataContext).RoamerStates}"
-                                                          SelectedIndex="{Binding State}" 
-                                                          MinWidth="120" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-
-            <!-- Battle Subway Tab -->
-            <TabItem Header="Battle Subway">
-                <ScrollViewer>
-                    <StackPanel Spacing="15" Margin="10">
-                        <!-- Super Mode Unlocks -->
-                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
-                            <StackPanel Spacing="8">
-                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <TextBlock Text="Super Mode Unlocks" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
-                                    <Button Content="Unlock All" Command="{Binding UnlockAllSuperModesCommand}" FontSize="11" Padding="8,4" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </StackPanel>
-                                <WrapPanel>
-                                    <CheckBox Content="Super Single" IsChecked="{Binding SuperSingleUnlocked}" Margin="0,2,15,2" />
-                                    <CheckBox Content="Super Double" IsChecked="{Binding SuperDoubleUnlocked}" Margin="0,2,15,2" />
-                                    <CheckBox Content="Super Multi" IsChecked="{Binding SuperMultiUnlocked}" Margin="0,2,15,2" />
-                                </WrapPanel>
-                            </StackPanel>
-                        </Border>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
 
-                        <!-- Normal Mode Records -->
-                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="Normal Mode Records" FontWeight="Bold" FontSize="14" />
-                                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
-                                    <TextBlock Grid.Row="0" Grid.Column="0" />
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Past" FontWeight="SemiBold" Margin="5" HorizontalAlignment="Center" />
-                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Record" FontWeight="SemiBold" Margin="5" HorizontalAlignment="Center" />
+                <!-- Battle Subway Tab -->
+                <TabItem Header="Battle Subway">
+                    <ScrollViewer>
+                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                            <!-- Super Mode Unlocks -->
+                            <Border Classes="section-card" Padding="12">
+                                <StackPanel Spacing="12">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <TextBlock Text="Super Mode Unlocks" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
+                                        <Button Content="Unlock All" Command="{Binding UnlockAllSuperModesCommand}" FontSize="11" Padding="8,4" />
+                                    </StackPanel>
+                                    <WrapPanel>
+                                        <CheckBox Content="Super Single" IsChecked="{Binding SuperSingleUnlocked}" Margin="0,0,16,8" />
+                                        <CheckBox Content="Super Double" IsChecked="{Binding SuperDoubleUnlocked}" Margin="0,0,16,8" />
+                                        <CheckBox Content="Super Multi" IsChecked="{Binding SuperMultiUnlocked}" Margin="0,0,16,8" />
+                                    </WrapPanel>
+                                </StackPanel>
+                            </Border>
 
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Single:" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                    <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SinglePast}" Minimum="0" Maximum="9999" Margin="5" />
-                                    <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding SingleRecord}" Minimum="0" Maximum="9999" Margin="5" />
+                            <!-- Normal Mode Records -->
+                            <Border Classes="section-card" Padding="12">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="Normal Mode Records" FontWeight="SemiBold" Opacity="0.6" />
+                                    <Grid ColumnDefinitions="Auto,*,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto">
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Past" FontWeight="SemiBold" Opacity="0.7" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Record" FontWeight="SemiBold" Opacity="0.7" HorizontalAlignment="Center" />
 
-                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Double:" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                    <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding DoublePast}" Minimum="0" Maximum="9999" Margin="5" />
-                                    <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding DoubleRecord}" Minimum="0" Maximum="9999" Margin="5" />
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Single" VerticalAlignment="Center" Width="100" />
+                                        <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SinglePast}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" />
+                                        <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding SingleRecord}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" />
 
-                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Multi (NPC):" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                    <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding MultiNpcPast}" Minimum="0" Maximum="9999" Margin="5" />
-                                    <NumericUpDown Grid.Row="3" Grid.Column="2" Value="{Binding MultiNpcRecord}" Minimum="0" Maximum="9999" Margin="5" />
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Double" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding DoublePast}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" />
+                                        <NumericUpDown Grid.Row="3" Grid.Column="2" Value="{Binding DoubleRecord}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" />
 
-                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Multi (Friend):" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                    <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding MultiFriendsPast}" Minimum="0" Maximum="9999" Margin="5" />
-                                    <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding MultiFriendsRecord}" Minimum="0" Maximum="9999" Margin="5" />
-                                </Grid>
-                            </StackPanel>
-                        </Border>
+                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Multi (NPC)" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="5" Grid.Column="1" Value="{Binding MultiNpcPast}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" />
+                                        <NumericUpDown Grid.Row="5" Grid.Column="2" Value="{Binding MultiNpcRecord}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" />
 
-                        <!-- Super Mode Records -->
-                        <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="Super Mode Records" FontWeight="Bold" FontSize="14" />
-                                <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
-                                    <TextBlock Grid.Row="0" Grid.Column="0" />
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Past" FontWeight="SemiBold" Margin="5" HorizontalAlignment="Center" />
-                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Record" FontWeight="SemiBold" Margin="5" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Multi (Friend)" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="7" Grid.Column="1" Value="{Binding MultiFriendsPast}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" />
+                                        <NumericUpDown Grid.Row="7" Grid.Column="2" Value="{Binding MultiFriendsRecord}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" />
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
 
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Single:" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                    <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SuperSinglePast}" Minimum="0" Maximum="9999" Margin="5" />
-                                    <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding SuperSingleRecord}" Minimum="0" Maximum="9999" Margin="5" />
+                            <!-- Super Mode Records -->
+                            <Border Classes="section-card" Padding="12">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="Super Mode Records" FontWeight="SemiBold" Opacity="0.6" />
+                                    <Grid ColumnDefinitions="Auto,*,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto">
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Past" FontWeight="SemiBold" Opacity="0.7" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Record" FontWeight="SemiBold" Opacity="0.7" HorizontalAlignment="Center" />
 
-                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Double:" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                    <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding SuperDoublePast}" Minimum="0" Maximum="9999" Margin="5" />
-                                    <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding SuperDoubleRecord}" Minimum="0" Maximum="9999" Margin="5" />
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Single" VerticalAlignment="Center" Width="100" />
+                                        <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding SuperSinglePast}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" />
+                                        <NumericUpDown Grid.Row="1" Grid.Column="2" Value="{Binding SuperSingleRecord}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" />
 
-                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Multi (NPC):" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                    <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding SuperMultiNpcPast}" Minimum="0" Maximum="9999" Margin="5" />
-                                    <NumericUpDown Grid.Row="3" Grid.Column="2" Value="{Binding SuperMultiNpcRecord}" Minimum="0" Maximum="9999" Margin="5" />
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Double" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding SuperDoublePast}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" />
+                                        <NumericUpDown Grid.Row="3" Grid.Column="2" Value="{Binding SuperDoubleRecord}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" />
 
-                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Multi (Friend):" VerticalAlignment="Center" Margin="0,0,10,0" />
-                                    <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding SuperMultiFriendsPast}" Minimum="0" Maximum="9999" Margin="5" />
-                                    <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding SuperMultiFriendsRecord}" Minimum="0" Maximum="9999" Margin="5" />
-                                </Grid>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-        </TabControl>
-    </DockPanel>
+                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Multi (NPC)" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="5" Grid.Column="1" Value="{Binding SuperMultiNpcPast}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" />
+                                        <NumericUpDown Grid.Row="5" Grid.Column="2" Value="{Binding SuperMultiNpcRecord}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" />
+
+                                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Multi (Friend)" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="7" Grid.Column="1" Value="{Binding SuperMultiFriendsPast}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" />
+                                        <NumericUpDown Grid.Row="7" Grid.Column="2" Value="{Binding SuperMultiFriendsRecord}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" />
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+
+            <!-- Bottom Buttons -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
+                <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
+            </StackPanel>
+        </Grid>
+    </Border>
 </UserControl>

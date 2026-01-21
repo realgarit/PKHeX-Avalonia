@@ -176,7 +176,13 @@
                     BorderThickness="0,0,1,0" 
                     BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                     Focusable="False">
-                <ContentControl Content="{Binding CurrentPokemonEditor}" Focusable="False" />
+                <ContentControl Content="{Binding CurrentPokemonEditor}" Focusable="False">
+                    <ContentControl.ContentTemplate>
+                        <DataTemplate DataType="vm:PokemonEditorViewModel">
+                            <views:PokemonEditor />
+                        </DataTemplate>
+                    </ContentControl.ContentTemplate>
+                </ContentControl>
             </Border>
                 
                 <!-- Right Panel: SAV Editor (Box, Party, Trainer, etc.) -->
