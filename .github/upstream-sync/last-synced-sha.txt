@@ -1,0 +1,4 @@
+# This file tracks the last synced commit from upstream PKHeX.Core
+# Format: Just the commit SHA on the last line
+# Updated: 2026-01-21 (baseline: Jan 13th, day before project created)
+c7b5777068463a9e4f083848d468eb86c21ab658

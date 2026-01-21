@@ -1,0 +1,294 @@
+name: Check PKHeX.Core Upstream Sync
+
+on:
+  schedule:
+    # Run every day at 08:00 UTC
+    - cron: '0 8 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check-upstream:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get last synced SHA
+        id: get-last-sha
+        run: |
+          LAST_SHA=$(tail -n 1 .github/upstream-sync/last-synced-sha.txt | tr -d '[:space:]')
+          echo "last_sha=$LAST_SHA" >> $GITHUB_OUTPUT
+          echo "Last synced SHA: $LAST_SHA"
+
+      - name: Clone upstream for comparison
+        run: |
+          git clone --depth 100 --filter=blob:none --sparse https://github.com/kwsch/PKHeX.git /tmp/pkhex-upstream
+          cd /tmp/pkhex-upstream
+          git sparse-checkout set PKHeX.Core
+
+      - name: Get upstream commits for PKHeX.Core
+        id: check-upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          UPSTREAM_REPO="kwsch/PKHeX"
+          LAST_SHA="${{ steps.get-last-sha.outputs.last_sha }}"
+          
+          # Get the latest commit SHA on master for PKHeX.Core folder
+          LATEST_SHA=$(gh api repos/$UPSTREAM_REPO/commits?path=PKHeX.Core\&per_page=1 --jq '.[0].sha')
+          echo "latest_sha=$LATEST_SHA" >> $GITHUB_OUTPUT
+          echo "Latest upstream SHA: $LATEST_SHA"
+          
+          # Check if we need to sync
+          if [ "$LAST_SHA" = "$LATEST_SHA" ]; then
+            echo "needs_sync=false" >> $GITHUB_OUTPUT
+            echo "Already in sync!"
+            exit 0
+          fi
+          
+          # Handle initial run (placeholder value)
+          if [ "$LAST_SHA" = "PLACEHOLDER_WILL_BE_SET_ON_FIRST_RUN" ]; then
+            echo "needs_sync=false" >> $GITHUB_OUTPUT
+            echo "initial_run=true" >> $GITHUB_OUTPUT
+            echo "First run - will set baseline SHA"
+            exit 0
+          fi
+          
+          echo "needs_sync=true" >> $GITHUB_OUTPUT
+          
+          # Get compare URL
+          COMPARE_URL="https://github.com/$UPSTREAM_REPO/compare/$LAST_SHA...$LATEST_SHA"
+          echo "compare_url=$COMPARE_URL" >> $GITHUB_OUTPUT
+          
+          # Get list of commits touching PKHeX.Core since our last sync
+          COMMITS_JSON=$(gh api "repos/$UPSTREAM_REPO/commits?path=PKHeX.Core&per_page=50" --jq '[.[] | {sha: .sha, message: .commit.message, author: .commit.author.name, date: .commit.author.date, url: .html_url}]')
+          
+          # Build commits list until we hit our last synced SHA
+          COMMITS_BODY=""
+          COMMIT_COUNT=0
+          
+          while IFS= read -r commit; do
+            SHA=$(echo "$commit" | jq -r '.sha')
+            if [ "$SHA" = "$LAST_SHA" ]; then
+              break
+            fi
+            
+            MESSAGE=$(echo "$commit" | jq -r '.message' | head -n 1)
+            AUTHOR=$(echo "$commit" | jq -r '.author')
+            DATE=$(echo "$commit" | jq -r '.date')
+            URL=$(echo "$commit" | jq -r '.url')
+            SHORT_SHA="${SHA:0:7}"
+            
+            COMMITS_BODY="$COMMITS_BODY
+          - [\`$SHORT_SHA\`]($URL) - $MESSAGE (by $AUTHOR)"
+            COMMIT_COUNT=$((COMMIT_COUNT + 1))
+          done <<< "$(echo "$COMMITS_JSON" | jq -c '.[]')"
+          
+          echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+          echo "$COMMITS_BODY" > /tmp/commits_body.txt
+
+      - name: Analyze breaking changes and new features
+        if: steps.check-upstream.outputs.needs_sync == 'true'
+        id: analyze
+        run: |
+          # Compare our PKHeX.Core with upstream
+          WARNINGS=""
+          NOTES=""
+          
+          # --- Detect files only in upstream (new files we don't have) ---
+          NEW_FILES=$(diff -rq PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core 2>/dev/null | grep "Only in /tmp/pkhex-upstream" | grep -v ".git" || true)
+          if [ -n "$NEW_FILES" ]; then
+            NOTES="$NOTES
+          
+          **New files in upstream (you don't have these yet):**
+          \`\`\`
+          $NEW_FILES
+          \`\`\`"
+          fi
+          
+          # --- Detect files only in ours (we added, or upstream removed) ---
+          OUR_ONLY=$(diff -rq PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core 2>/dev/null | grep "Only in PKHeX.Core" | grep -v "bin\|obj\|.git" || true)
+          if [ -n "$OUR_ONLY" ]; then
+            WARNINGS="$WARNINGS
+          
+          **Files only in your version (local modifications or upstream removed):**
+          \`\`\`
+          $OUR_ONLY
+          \`\`\`
+          These may be intentional local additions. Verify they still work after syncing."
+          fi
+          
+          # --- Check for new MessageStrings (likely needs UI work) ---
+          NEW_MSG_STRINGS=$(diff PKHeX.Core/Util/MessageStrings.cs /tmp/pkhex-upstream/PKHeX.Core/Util/MessageStrings.cs 2>/dev/null | grep "^>" | grep "public static string" || true)
+          if [ -n "$NEW_MSG_STRINGS" ]; then
+            NOTES="$NOTES
+          
+          **New MessageStrings added (may need Avalonia UI integration):**
+          \`\`\`csharp
+          $NEW_MSG_STRINGS
+          \`\`\`
+          Check if these strings are used in new dialogs or features that need UI work."
+          fi
+          
+          # --- Check for renamed/removed public members (breaking changes) ---
+          # Look for methods/properties that exist in ours but not in upstream (potential renames)
+          CHANGED_CS_FILES=$(diff -rq PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core 2>/dev/null | grep "differ" | grep "\.cs" | head -20 || true)
+          
+          BREAKING=""
+          if [ -n "$CHANGED_CS_FILES" ]; then
+            # Sample a few key files for signature changes
+            for file in "PKM/PKM.cs" "Legality/Encounters/Templates/Shared/Moveset.cs"; do
+              if [ -f "PKHeX.Core/$file" ] && [ -f "/tmp/pkhex-upstream/PKHeX.Core/$file" ]; then
+                # Check for lines we have that upstream doesn't (our additions or their removals)
+                OUR_UNIQUE=$(diff PKHeX.Core/$file /tmp/pkhex-upstream/PKHeX.Core/$file 2>/dev/null | grep "^<" | grep -E "public|protected|internal" | head -5 || true)
+                if [ -n "$OUR_UNIQUE" ]; then
+                  BREAKING="$BREAKING
+          
+          **$file** - Lines in your version not in upstream:
+          \`\`\`csharp
+          $OUR_UNIQUE
+          \`\`\`"
+                fi
+                
+                # Check for lines upstream has that we don't (new API)
+                UPSTREAM_UNIQUE=$(diff PKHeX.Core/$file /tmp/pkhex-upstream/PKHeX.Core/$file 2>/dev/null | grep "^>" | grep -E "public|protected|internal" | head -5 || true)
+                if [ -n "$UPSTREAM_UNIQUE" ]; then
+                  NOTES="$NOTES
+          
+          **$file** - New API in upstream:
+          \`\`\`csharp
+          $UPSTREAM_UNIQUE
+          \`\`\`"
+                fi
+              fi
+            done
+          fi
+          
+          if [ -n "$BREAKING" ]; then
+            WARNINGS="$WARNINGS
+          $BREAKING"
+          fi
+          
+          # --- Check for property/method renames by looking at compile-likely patterns ---
+          # This is a heuristic: if upstream changed a property name, grep for the old name
+          RENAME_HINTS=$(diff -r PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core 2>/dev/null | grep -E "^[<>].*\b(public|private|protected|internal)\b.*(bool|int|string|ushort|byte)" | head -10 || true)
+          if [ -n "$RENAME_HINTS" ]; then
+            NOTES="$NOTES
+          
+          **Potential API changes detected (review these carefully):**
+          \`\`\`
+          $RENAME_HINTS
+          \`\`\`"
+          fi
+          
+          # Save to files for the issue body
+          echo "$WARNINGS" > /tmp/warnings.txt
+          echo "$NOTES" > /tmp/notes.txt
+          
+          # Set flags
+          if [ -n "$WARNINGS" ]; then
+            echo "has_warnings=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_warnings=false" >> $GITHUB_OUTPUT
+          fi
+          
+          if [ -n "$NOTES" ]; then
+            echo "has_notes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_notes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update baseline SHA on first run
+        if: steps.check-upstream.outputs.initial_run == 'true'
+        run: |
+          LATEST_SHA="${{ steps.check-upstream.outputs.latest_sha }}"
+          echo "Setting initial baseline to: $LATEST_SHA"
+          echo "::notice::Initial run detected. Please manually update .github/upstream-sync/last-synced-sha.txt with SHA: $LATEST_SHA"
+
+      - name: Create sync issue
+        if: steps.check-upstream.outputs.needs_sync == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST_SHA="${{ steps.check-upstream.outputs.latest_sha }}"
+          LAST_SHA="${{ steps.get-last-sha.outputs.last_sha }}"
+          COMPARE_URL="${{ steps.check-upstream.outputs.compare_url }}"
+          COMMIT_COUNT="${{ steps.check-upstream.outputs.commit_count }}"
+          COMMITS_BODY=$(cat /tmp/commits_body.txt)
+          WARNINGS=$(cat /tmp/warnings.txt 2>/dev/null || echo "")
+          NOTES=$(cat /tmp/notes.txt 2>/dev/null || echo "")
+          
+          ISSUE_TITLE="PKHeX.Core Upstream Sync Required ($COMMIT_COUNT new commits)"
+          
+          # Build warnings section
+          WARNINGS_SECTION=""
+          if [ -n "$WARNINGS" ] && [ "$WARNINGS" != "" ]; then
+            WARNINGS_SECTION="
+          ---
+          
+          ## Warnings - Review Before Syncing
+          
+          The following issues were detected that may cause problems:
+          $WARNINGS"
+          fi
+          
+          # Build notes section
+          NOTES_SECTION=""
+          if [ -n "$NOTES" ] && [ "$NOTES" != "" ]; then
+            NOTES_SECTION="
+          ---
+          
+          ## Notes - New Features and Changes
+          
+          The following additions may need attention:
+          $NOTES"
+          fi
+          
+          ISSUE_BODY="## Upstream Changes Detected
+
+          The upstream [PKHeX.Core](https://github.com/kwsch/PKHeX/tree/master/PKHeX.Core) has new commits that need to be synced.
+
+          ### Summary
+          - **Last synced SHA:** \`$LAST_SHA\`
+          - **Latest upstream SHA:** \`$LATEST_SHA\`
+          - **New commits:** $COMMIT_COUNT
+
+          ### Commits to sync
+          $COMMITS_BODY
+
+          ### Quick Links
+          - [View full diff]($COMPARE_URL)
+          - [PKHeX.Core folder](https://github.com/kwsch/PKHeX/tree/master/PKHeX.Core)
+          $WARNINGS_SECTION
+          $NOTES_SECTION
+
+          ---
+
+          ### After syncing
+          Update \`.github/upstream-sync/last-synced-sha.txt\` with the new SHA:
+          \`\`\`
+          $LATEST_SHA
+          \`\`\`
+
+          ---
+          *This issue was automatically created by the upstream sync checker.*"
+          
+          gh issue create --title "$ISSUE_TITLE" --body "$ISSUE_BODY" --label "sync"
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf /tmp/pkhex-upstream
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.check-upstream.outputs.needs_sync }}" = "true" ]; then
+            echo "::warning::Upstream sync required! Issue created."
+          elif [ "${{ steps.check-upstream.outputs.initial_run }}" = "true" ]; then
+            echo "::notice::First run - baseline SHA needs to be set manually."
+          else
+            echo "::notice::Already in sync with upstream."
+          fi
