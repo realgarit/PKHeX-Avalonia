@@ -5,7 +5,7 @@
         x:Class="PKHeX.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="{Binding WindowTitle}"
-        Icon="/Assets/icon.ico"
+        Icon="/Assets/Icons/icon.ico"
         Width="1100" Height="650"
         MinWidth="900" MinHeight="500">
 

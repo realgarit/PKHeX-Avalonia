@@ -8,12 +8,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <RootNamespace>PKHeX.Avalonia</RootNamespace>
-    <ApplicationIcon>Assets/icon.ico</ApplicationIcon>
+    <ApplicationIcon>Assets/Icons/icon.ico</ApplicationIcon>
     <CFBundleIconFile>icon.icns</CFBundleIconFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Assets\icon.icns">
+    <Content Include="Assets\Icons\icon.icns">
       <Link>icon.icns</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -48,6 +48,49 @@
   <ItemGroup>
     <!-- Embed all images recursively -->
     <EmbeddedResource Include="Assets\Images\**\*.png" />
-    <AvaloniaResource Include="Assets\icon.ico" />
+    <AvaloniaResource Include="Assets/Icons/icon.ico" />
   </ItemGroup>
+
+  <!-- macOS App Bundle Target -->
+  <Target Name="BundleApp" AfterTargets="Publish" Condition="'$(RuntimeIdentifier)' == 'osx-arm64' or '$(RuntimeIdentifier)' == 'osx-x64'">
+    <PropertyGroup>
+      <AppBundleDir>$(PublishDir)$(AssemblyName).app</AppBundleDir>
+      <ContentsDir>$(AppBundleDir)/Contents</ContentsDir>
+      <MacOSDir>$(ContentsDir)/MacOS</MacOSDir>
+      <ResourcesDir>$(ContentsDir)/Resources</ResourcesDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(MacOSDir);$(ResourcesDir)" />
+    <ItemGroup>
+      <PublishFiles Include="$(PublishDir)**/*.*" Exclude="$(AppBundleDir)/**/*.*" />
+    </ItemGroup>
+    <Move SourceFiles="@(PublishFiles)" DestinationFolder="$(MacOSDir)" />
+    <Move SourceFiles="$(MacOSDir)/icon.icns" DestinationFolder="$(ResourcesDir)" Condition="Exists('$(MacOSDir)/icon.icns')" />
+    <!-- Info.plist -->
+    <WriteLinesToFile File="$(ContentsDir)/Info.plist" Lines="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+    &lt;key&gt;CFBundleName&lt;/key&gt;
+    &lt;string&gt;$(AssemblyName)&lt;/string&gt;
+    &lt;key&gt;CFBundleDisplayName&lt;/key&gt;
+    &lt;string&gt;PKHeX&lt;/string&gt;
+    &lt;key&gt;CFBundleIdentifier&lt;/key&gt;
+    &lt;string&gt;io.pkhex.avalonia&lt;/string&gt;
+    &lt;key&gt;CFBundleVersion&lt;/key&gt;
+    &lt;string&gt;1.0.0&lt;/string&gt;
+    &lt;key&gt;CFBundlePackageType&lt;/key&gt;
+    &lt;string&gt;APPL&lt;/string&gt;
+    &lt;key&gt;CFBundleSignature&lt;/key&gt;
+    &lt;string&gt;????&lt;/string&gt;
+    &lt;key&gt;CFBundleExecutable&lt;/key&gt;
+    &lt;string&gt;$(AssemblyName)&lt;/string&gt;
+    &lt;key&gt;CFBundleIconFile&lt;/key&gt;
+    &lt;string&gt;icon.icns&lt;/string&gt;
+    &lt;key&gt;NSHighResolutionCapable&lt;/key&gt;
+    &lt;true/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;" Overwrite="true" />
+    <!-- PkgInfo -->
+    <WriteLinesToFile File="$(ContentsDir)/PkgInfo" Lines="APPL????" Overwrite="true" />
+  </Target>
 </Project>

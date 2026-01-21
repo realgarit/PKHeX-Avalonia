@@ -24,7 +24,7 @@
                            FontSize="12" />
             </StackPanel>
 
-            <TextBlock Text="UI Port by realgar"
+            <TextBlock Text="UI Port by Realgar"
                        FontSize="12"
                        HorizontalAlignment="Center"
                        Margin="0,8,0,0" />

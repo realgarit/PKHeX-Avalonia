@@ -5,9 +5,9 @@
     <Nullable>enable</Nullable>
     <NeutralLanguage>en</NeutralLanguage>
     <Product>PKHeX</Product>
-    <Company>Project Pokémon</Company>
-    <Authors>Kaphotics</Authors>
-    <Copyright>Kaphotics</Copyright>
+    <Company>Realgar</Company>
+    <Authors>Realgar</Authors>
+    <Copyright>Realgar</Copyright>
     <SourceRevisionId>$([System.DateTime]::UtcNow.ToString("yyMMddHHmmss"))</SourceRevisionId>
   </PropertyGroup>
 </Project>
