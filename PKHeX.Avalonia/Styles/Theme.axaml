@@ -385,10 +385,11 @@
     <!-- Compact: Hides spinners, ideal for DataGrid cells and inline editing -->
     <Style Selector="NumericUpDown.compact">
         <Setter Property="ShowButtonSpinner" Value="False" />
-        <Setter Property="MinWidth" Value="60" />
-        <Setter Property="MinHeight" Value="28" />
-        <Setter Property="Padding" Value="6,2" />
+        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="MinHeight" Value="24" />
+        <Setter Property="Padding" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="4" />

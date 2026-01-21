@@ -245,43 +245,43 @@
                                 <!-- HP -->
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="HP" FontWeight="SemiBold" VerticalAlignment="Center" />
                                 <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Base_HP}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
-                                <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding IvHP}" Minimum="0" Maximum="31" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
-                                <NumericUpDown Grid.Row="2" Grid.Column="3" Value="{Binding EvHP}" Minimum="0" Maximum="252" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding IvHP}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="3" Value="{Binding EvHP}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
                                 <TextBlock Grid.Row="2" Grid.Column="4" Text="{Binding Stat_HP}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <!-- Atk -->
                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Atk" FontWeight="SemiBold" VerticalAlignment="Center" />
                                 <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Base_ATK}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
-                                <NumericUpDown Grid.Row="3" Grid.Column="2" Value="{Binding IvATK}" Minimum="0" Maximum="31" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
-                                <NumericUpDown Grid.Row="3" Grid.Column="3" Value="{Binding EvATK}" Minimum="0" Maximum="252" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="3" Grid.Column="2" Value="{Binding IvATK}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="3" Grid.Column="3" Value="{Binding EvATK}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
                                 <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding Stat_ATK}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <!-- Def -->
                                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Def" FontWeight="SemiBold" VerticalAlignment="Center" />
                                 <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Base_DEF}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
-                                <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding IvDEF}" Minimum="0" Maximum="31" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
-                                <NumericUpDown Grid.Row="4" Grid.Column="3" Value="{Binding EvDEF}" Minimum="0" Maximum="252" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding IvDEF}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="4" Grid.Column="3" Value="{Binding EvDEF}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
                                 <TextBlock Grid.Row="4" Grid.Column="4" Text="{Binding Stat_DEF}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <!-- SpA -->
                                 <TextBlock Grid.Row="5" Grid.Column="0" Text="SpA" FontWeight="SemiBold" VerticalAlignment="Center" />
                                 <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Base_SPA}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
-                                <NumericUpDown Grid.Row="5" Grid.Column="2" Value="{Binding IvSPA}" Minimum="0" Maximum="31" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
-                                <NumericUpDown Grid.Row="5" Grid.Column="3" Value="{Binding EvSPA}" Minimum="0" Maximum="252" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="5" Grid.Column="2" Value="{Binding IvSPA}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="5" Grid.Column="3" Value="{Binding EvSPA}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
                                 <TextBlock Grid.Row="5" Grid.Column="4" Text="{Binding Stat_SPA}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <!-- SpD -->
                                 <TextBlock Grid.Row="6" Grid.Column="0" Text="SpD" FontWeight="SemiBold" VerticalAlignment="Center" />
                                 <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding Base_SPD}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
-                                <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding IvSPD}" Minimum="0" Maximum="31" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
-                                <NumericUpDown Grid.Row="6" Grid.Column="3" Value="{Binding EvSPD}" Minimum="0" Maximum="252" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding IvSPD}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="6" Grid.Column="3" Value="{Binding EvSPD}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
                                 <TextBlock Grid.Row="6" Grid.Column="4" Text="{Binding Stat_SPD}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <!-- Spe -->
                                 <TextBlock Grid.Row="7" Grid.Column="0" Text="Spe" FontWeight="SemiBold" VerticalAlignment="Center" />
                                 <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding Base_SPE}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
-                                <NumericUpDown Grid.Row="7" Grid.Column="2" Value="{Binding IvSPE}" Minimum="0" Maximum="31" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
-                                <NumericUpDown Grid.Row="7" Grid.Column="3" Value="{Binding EvSPE}" Minimum="0" Maximum="252" FormatString="0" ShowButtonSpinner="False" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="7" Grid.Column="2" Value="{Binding IvSPE}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
+                                <NumericUpDown Grid.Row="7" Grid.Column="3" Value="{Binding EvSPE}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" />
                                 <TextBlock Grid.Row="7" Grid.Column="4" Text="{Binding Stat_SPE}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
                         </Border>
@@ -719,7 +719,7 @@
                                                                TextTrimming="CharacterEllipsis" />
                                                     
                                                     <!-- Control -->
-                                                    <Panel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                    <Panel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                         <!-- Boolean Ribbon: Checkbox -->
                                                         <CheckBox IsVisible="{Binding IsBooleanRibbon}" 
                                                                   IsChecked="{Binding HasRibbon}"

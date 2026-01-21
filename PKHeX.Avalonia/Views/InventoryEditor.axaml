@@ -72,6 +72,7 @@
                                                                    Minimum="0"
                                                                    Maximum="{Binding MaxCount}"
                                                                    FormatString="0"
+                                                                   Classes="compact"
                                                                    HorizontalAlignment="Stretch" />
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
