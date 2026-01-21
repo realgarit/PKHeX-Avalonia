@@ -8,7 +8,16 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <RootNamespace>PKHeX.Avalonia</RootNamespace>
+    <ApplicationIcon>Assets/icon.ico</ApplicationIcon>
+    <CFBundleIconFile>icon.icns</CFBundleIconFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\icon.icns">
+      <Link>icon.icns</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <!-- Avalonia UI -->
@@ -37,11 +46,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Embed sprite resources from PKHeX.Drawing.PokeSprite -->
-    <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Big Pokemon Sprites\*.png" LinkBase="Resources\Sprites" />
-    <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Big Shiny Sprites\*.png" LinkBase="Resources\SpritesShiny" />
-    <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Big Items\*.png" LinkBase="Resources\Items" />
-    <EmbeddedResource Include="..\PKHeX.Drawing.PokeSprite\Resources\img\Pokemon Sprite Overlays\*.png" LinkBase="Resources\Overlays" />
-    <EmbeddedResource Include="..\PKHeX.Drawing.Misc\Resources\img\ribbons\*.png" LinkBase="Resources\Ribbons" />
+    <!-- Embed all images recursively -->
+    <EmbeddedResource Include="Assets\Images\**\*.png" />
+    <AvaloniaResource Include="Assets\icon.ico" />
   </ItemGroup>
 </Project>

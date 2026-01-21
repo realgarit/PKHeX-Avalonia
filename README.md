@@ -2,18 +2,24 @@
 
 ![License](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
-PKHeX Avalonia is a cross-platform port of [PKHeX](https://github.com/kwsch/PKHeX). By using the Avalonia UI framework, we're bringing the classic Pokémon save editor to macOS and Linux with a native look and feel.
+PKHeX Avalonia is now the main development branch of the cross-platform [PKHeX](https://github.com/kwsch/PKHeX) port. By using the Avalonia UI framework, we bring the classic Pokémon save editor to macOS and Linux with a native look and feel.
 
-### ⚠️ Project Status: Early Development
-This is currently in a pre-alpha state. Most features are still being moved over from the original Windows version. Expect bugs and missing functionality.
+### ⚠️ Project Status: Beta (Migration Complete)
+All core features and editors have been migrated from the original WinForms version to Avalonia. However, **nothing is thoroughly tested**.
+
+**Expect a lot of bugs.** We are currently in a stabilization phase.
 
 ---
 
+## Project Structure
+* **PKHeX.Avalonia**: The main application (cross-platform).
+* **Legacy/PKHeX.WinForms**: The original Windows Forms application, kept as a reference archive.
+* **PKHeX.Core**: Shared logic library.
+
 ## Features
-We're working on full support for everything the original PKHeX offers:
 * **Save Editing:** Core series save files (.sav, .dsv, .dat, .gci, .bin).
-* **Entity Files:** Import and export .pk\*, .ck3, .xk3, .pb7, and more.
-* **Mystery Gifts:** Support for .pgt, .pcd, .pgf, and .wc\* files.
+* **Entity Files:** Import and export .pk*, .ck3, .xk3, .pb7, and more.
+* **Mystery Gifts:** Support for .pgt, .pcd, .pgf, and .wc* files.
 * **Transferring:** Move Pokémon between generations while converting formats automatically.
 
 ## Requirements
@@ -24,7 +30,7 @@ To build and run this, you'll need:
 You can run the project directly from your terminal. Navigate to the root folder and run:
 
 ```bash
-dotnet run --project PKHeX.Avalonia/PKHeX.Avalonia.csproj
+dotnet run --project PKHeX.Avalonia
 ```
 
 ## Screenshots

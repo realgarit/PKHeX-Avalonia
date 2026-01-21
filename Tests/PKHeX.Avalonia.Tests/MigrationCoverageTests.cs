@@ -28,7 +28,7 @@ public class MigrationCoverageTests
         // 2. Discover "Active" Features in WinForms (Scanning Source Code)
         // Adjust path to point to the repository root's PKHeX.WinForms
         var repoRoot = FindRepoRoot();
-        var winFormsPath = Path.Combine(repoRoot, "PKHeX.WinForms"); 
+        var winFormsPath = Path.Combine(repoRoot, "Legacy", "PKHeX.WinForms"); 
         
         Assert.True(Directory.Exists(winFormsPath), $"Could not find PKHeX.WinForms at {winFormsPath}");
 
@@ -115,7 +115,7 @@ public class MigrationCoverageTests
     {
         // Start from the location of the test assembly and walk up
         var dir = AppDomain.CurrentDomain.BaseDirectory;
-        while (!Directory.Exists(Path.Combine(dir, "PKHeX.WinForms")))
+        while (!Directory.Exists(Path.Combine(dir, "Legacy")))
         {
             var parent = Directory.GetParent(dir);
             if (parent == null) throw new DirectoryNotFoundException("Could not find repository root containing PKHeX.WinForms");

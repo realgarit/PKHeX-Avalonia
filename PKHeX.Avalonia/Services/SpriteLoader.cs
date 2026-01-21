@@ -16,10 +16,10 @@ public sealed class SpriteLoader
     private readonly ConcurrentDictionary<string, SKBitmap?> _cache = new();
     private readonly HashSet<string> _availableResources;
 
-    private const string SpritePrefix = "PKHeX.Avalonia.Resources.Sprites.";
-    private const string ShinyPrefix = "PKHeX.Avalonia.Resources.SpritesShiny.";
-    private const string ItemPrefix = "PKHeX.Avalonia.Resources.Items.";
-    private const string OverlayPrefix = "PKHeX.Avalonia.Resources.Overlays.";
+    private const string SpritePrefix = "PKHeX.Avalonia.Assets.Images.Big_Pokemon_Sprites.";
+    private const string ShinyPrefix = "PKHeX.Avalonia.Assets.Images.Big_Shiny_Sprites.";
+    private const string ItemPrefix = "PKHeX.Avalonia.Assets.Images.Big_Items.";
+    private const string OverlayPrefix = "PKHeX.Avalonia.Assets.Images.Pokemon_Sprite_Overlays.";
 
     // Species that show default sprite regardless of form
     private static readonly HashSet<ushort> SpeciesDefaultFormSprite =

@@ -24,10 +24,14 @@
                            FontSize="12" />
             </StackPanel>
 
-            <TextBlock Text="Created by PKHeX Contributors"
+            <TextBlock Text="UI Port by TheCoded"
                        FontSize="12"
                        HorizontalAlignment="Center"
                        Margin="0,8,0,0" />
+            <TextBlock Text="Core Logic by PKHeX Contributors"
+                       FontSize="11"
+                       Opacity="0.8"
+                       HorizontalAlignment="Center" />
             
             <Button Content="Close"
                     Click="OnCloseClick"
