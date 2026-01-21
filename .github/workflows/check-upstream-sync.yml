@@ -98,13 +98,70 @@ jobs:
           # Compare our PKHeX.Core with upstream
           WARNINGS=""
           NOTES=""
+          FILE_DIFF_SUMMARY=""
+          
+          # --- Get complete file diff summary ---
+          DIFF_OUTPUT=$(diff -rq PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core 2>/dev/null | grep -v "bin\|obj\|\.git" || true)
+          
+          # Count different types
+          FILES_DIFFER=$(echo "$DIFF_OUTPUT" | grep "differ" | wc -l | tr -d ' ')
+          FILES_ONLY_OURS=$(echo "$DIFF_OUTPUT" | grep "Only in PKHeX.Core" | wc -l | tr -d ' ')
+          FILES_ONLY_UPSTREAM=$(echo "$DIFF_OUTPUT" | grep "Only in /tmp/pkhex-upstream" | wc -l | tr -d ' ')
+          TOTAL_DIFF=$((FILES_DIFFER + FILES_ONLY_OURS + FILES_ONLY_UPSTREAM))
+          
+          echo "files_differ=$FILES_DIFFER" >> $GITHUB_OUTPUT
+          echo "files_only_ours=$FILES_ONLY_OURS" >> $GITHUB_OUTPUT
+          echo "files_only_upstream=$FILES_ONLY_UPSTREAM" >> $GITHUB_OUTPUT
+          echo "total_diff=$TOTAL_DIFF" >> $GITHUB_OUTPUT
+          
+          # Build file diff summary
+          if [ "$TOTAL_DIFF" -gt 0 ]; then
+            FILE_DIFF_SUMMARY="
+          
+          ## File Differences Summary
+          
+          | Type | Count |
+          |------|-------|
+          | Files with changes | $FILES_DIFFER |
+          | Files only in yours | $FILES_ONLY_OURS |
+          | Files only in upstream | $FILES_ONLY_UPSTREAM |
+          | **Total** | **$TOTAL_DIFF** |
+          "
+            
+            # List changed .cs files (most important)
+            CS_FILES_CHANGED=$(echo "$DIFF_OUTPUT" | grep "differ" | grep "\.cs" | sed 's/Files PKHeX.Core\//- /' | sed 's/ and .*//' | head -30 || true)
+            if [ -n "$CS_FILES_CHANGED" ]; then
+              FILE_DIFF_SUMMARY="$FILE_DIFF_SUMMARY
+          
+          **Changed .cs files:**
+          $CS_FILES_CHANGED"
+              
+              # If there are more than 30, indicate that
+              CS_TOTAL=$(echo "$DIFF_OUTPUT" | grep "differ" | grep "\.cs" | wc -l | tr -d ' ')
+              if [ "$CS_TOTAL" -gt 30 ]; then
+                FILE_DIFF_SUMMARY="$FILE_DIFF_SUMMARY
+          ... and $((CS_TOTAL - 30)) more .cs files"
+              fi
+            fi
+            
+            # List changed resource/localization files
+            RESOURCE_FILES=$(echo "$DIFF_OUTPUT" | grep "differ" | grep -E "\.(json|txt|resx)" | sed 's/Files PKHeX.Core\//- /' | sed 's/ and .*//' | head -15 || true)
+            if [ -n "$RESOURCE_FILES" ]; then
+              FILE_DIFF_SUMMARY="$FILE_DIFF_SUMMARY
+          
+          **Changed resource/localization files:**
+          $RESOURCE_FILES"
+            fi
+          fi
+          
+          echo "$FILE_DIFF_SUMMARY" > /tmp/file_diff_summary.txt
           
           # --- Detect files only in upstream (new files we don't have) ---
-          NEW_FILES=$(diff -rq PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core 2>/dev/null | grep "Only in /tmp/pkhex-upstream" | grep -v ".git" || true)
+          NEW_FILES=$(echo "$DIFF_OUTPUT" | grep "Only in /tmp/pkhex-upstream" || true)
           if [ -n "$NEW_FILES" ]; then
             NOTES="$NOTES
           
-          **New files in upstream (you don't have these yet):**
+          **New files in upstream (you need to add these):**
           \`\`\`
           $NEW_FILES
           \`\`\`"
@@ -218,11 +275,18 @@ jobs:
           LAST_SHA="${{ steps.get-last-sha.outputs.last_sha }}"
           COMPARE_URL="${{ steps.check-upstream.outputs.compare_url }}"
           COMMIT_COUNT="${{ steps.check-upstream.outputs.commit_count }}"
+          TOTAL_DIFF="${{ steps.analyze.outputs.total_diff }}"
           COMMITS_BODY=$(cat /tmp/commits_body.txt)
           WARNINGS=$(cat /tmp/warnings.txt 2>/dev/null || echo "")
           NOTES=$(cat /tmp/notes.txt 2>/dev/null || echo "")
+          FILE_DIFF_SUMMARY=$(cat /tmp/file_diff_summary.txt 2>/dev/null || echo "")
           
-          ISSUE_TITLE="PKHeX.Core Upstream Sync Required ($COMMIT_COUNT new commits)"
+          # Include file count in title if there are differences
+          if [ -n "$TOTAL_DIFF" ] && [ "$TOTAL_DIFF" -gt 0 ]; then
+            ISSUE_TITLE="PKHeX.Core Upstream Sync Required ($COMMIT_COUNT commits, $TOTAL_DIFF files differ)"
+          else
+            ISSUE_TITLE="PKHeX.Core Upstream Sync Required ($COMMIT_COUNT new commits)"
+          fi
           
           # Build warnings section
           WARNINGS_SECTION=""
@@ -263,6 +327,7 @@ jobs:
           ### Quick Links
           - [View full diff]($COMPARE_URL)
           - [PKHeX.Core folder](https://github.com/kwsch/PKHeX/tree/master/PKHeX.Core)
+          $FILE_DIFF_SUMMARY
           $WARNINGS_SECTION
           $NOTES_SECTION
 
