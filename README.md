@@ -35,8 +35,11 @@ dotnet run --project PKHeX.Avalonia
 
 ## Screenshots
 *Work in progress — the UI is changing fast.*
-<img width="1566" height="934" alt="image" src="https://github.com/user-attachments/assets/29135e2b-a95f-42ce-81fa-2fad679b660e" />
-<img width="1566" height="934" alt="image" src="https://github.com/user-attachments/assets/fd494c90-58ac-4ea1-b607-367128fc34be" />
+<img width="1212" height="790" alt="Screenshot 2026-01-21 at 20 46 16" src="https://github.com/user-attachments/assets/430b2ca2-a011-4d8d-aaa6-f07287e30d6c" />
+<img width="1212" height="790" alt="Screenshot 2026-01-21 at 20 46 36" src="https://github.com/user-attachments/assets/1d2d3950-ac98-46bd-853b-c51c1e2e74c3" />
+<img width="1212" height="790" alt="Screenshot 2026-01-21 at 20 46 48" src="https://github.com/user-attachments/assets/40d58fc3-86c7-4d3b-bccd-b6c82fecd14a" />
+<img width="1212" height="790" alt="Screenshot 2026-01-21 at 20 47 06" src="https://github.com/user-attachments/assets/8d0a1b76-ded5-4119-a079-33a2b08ebf7c" />
+<img width="1100" height="677" alt="Screenshot 2026-01-21 at 20 47 32" src="https://github.com/user-attachments/assets/0b9a811c-5fb5-44cc-9f06-5a4dadf6e043" />
 
 ## Credits
 This fork is built on the incredible work of the [PKHeX team](https://github.com/kwsch/PKHeX).
