@@ -58,6 +58,13 @@ jobs:
             exit 0
           fi
           
+          # Check if there's already an open sync issue
+          EXISTING_ISSUE=$(gh issue list --label "sync" --state open --json number,title --jq '.[0].number // empty')
+          if [ -n "$EXISTING_ISSUE" ]; then
+            echo "existing_issue=$EXISTING_ISSUE" >> $GITHUB_OUTPUT
+            echo "Open sync issue already exists: #$EXISTING_ISSUE"
+          fi
+          
           echo "needs_sync=true" >> $GITHUB_OUTPUT
           
           # Get compare URL
@@ -229,12 +236,23 @@ jobs:
           echo "Setting initial baseline to: $LATEST_SHA"
           echo "::notice::Initial run detected. Please manually update .github/upstream-sync/last-synced-sha.txt with SHA: $LATEST_SHA"
 
-      - name: Create sync issue
+      - name: Create or update sync issue
         if: steps.check-upstream.outputs.needs_sync == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          EXISTING_ISSUE="${{ steps.check-upstream.outputs.existing_issue }}"
           LATEST_SHA="${{ steps.check-upstream.outputs.latest_sha }}"
+          
+          # If there's already an open sync issue, add a comment instead of creating new
+          if [ -n "$EXISTING_ISSUE" ]; then
+            echo "Sync issue #$EXISTING_ISSUE already exists, adding update comment..."
+            gh issue comment "$EXISTING_ISSUE" --body "**Update:** New upstream commits detected. Latest SHA is now \`$LATEST_SHA\`. Please sync when ready."
+            echo "::notice::Added comment to existing issue #$EXISTING_ISSUE"
+            exit 0
+          fi
+          
+          # No existing issue - create a new one
           LAST_SHA="${{ steps.get-last-sha.outputs.last_sha }}"
           COMPARE_URL="${{ steps.check-upstream.outputs.compare_url }}"
           COMMIT_COUNT="${{ steps.check-upstream.outputs.commit_count }}"
