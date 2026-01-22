@@ -244,11 +244,10 @@ jobs:
           EXISTING_ISSUE="${{ steps.check-upstream.outputs.existing_issue }}"
           LATEST_SHA="${{ steps.check-upstream.outputs.latest_sha }}"
           
-          # If there's already an open sync issue, add a comment instead of creating new
+          # If there's already an open sync issue, skip - no need to spam comments
           if [ -n "$EXISTING_ISSUE" ]; then
-            echo "Sync issue #$EXISTING_ISSUE already exists, adding update comment..."
-            gh issue comment "$EXISTING_ISSUE" --body "**Update:** New upstream commits detected. Latest SHA is now \`$LATEST_SHA\`. Please sync when ready."
-            echo "::notice::Added comment to existing issue #$EXISTING_ISSUE"
+            echo "Sync issue #$EXISTING_ISSUE already exists, skipping..."
+            echo "::notice::Open sync issue #$EXISTING_ISSUE exists. No action needed."
             exit 0
           fi
           
