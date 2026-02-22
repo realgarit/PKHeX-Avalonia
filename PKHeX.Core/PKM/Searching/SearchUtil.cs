@@ -8,18 +8,6 @@ namespace PKHeX.Core.Searching;
 /// </summary>
 public static class SearchUtil
 {
-    // Future: Might need to clamp down further for generations that cannot exist in the current format.
-    public static bool SatisfiesFilterFormat(PKM pk, byte format, SearchComparison formatOperand) => formatOperand switch
-    {
-        SearchComparison.GreaterThanEquals when pk.Format <  format => false,
-        SearchComparison.Equals            when pk.Format != format => false,
-        SearchComparison.LessThanEquals    when pk.Format >  format => false,
-
-        _ when format <= 2 => pk.Format <= 2, // 1-2
-        _ when format <= 6 => pk.Format >= 3, // 3-6
-        _ => true,
-    };
-
     public static bool SatisfiesFilterContext(PKM pk, EntityContext context, SearchComparison contextOperand) => contextOperand switch
     {
         SearchComparison.GreaterThanEquals when pk.Context.IsGenerationLessThan(context) => false,
@@ -30,9 +18,10 @@ public static class SearchUtil
 
     private static bool CanReachContext(PKM pk, EntityContext context)
     {
-        if (context.IsEraGameBoy)
+        var generation = context.Generation;
+        if (generation <= 2)
             return pk.Format <= 2; // 1-2 can reach 1-2
-        if (context.IsEraPre3DS)
+        if (generation <= 6)
             return pk.Format >= 3; // 3-6 can reach 3-6
         return true; // 7+ can reach all contexts
     }
