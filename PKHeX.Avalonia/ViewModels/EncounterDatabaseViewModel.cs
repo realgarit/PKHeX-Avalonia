@@ -74,7 +74,7 @@ public partial class EncounterDatabaseViewModel : ViewModelBase
                 blank.Form = 0;
                 blank.Gender = 0;
 
-                var versions = GameUtil.GetVersionsWithinRange(blank, _sav.Generation).ToArray();
+                var versions = GameUtil.GetVersionsWithinRange(blank, _sav.Context).ToArray();
                 return EncounterMovesetGenerator.GenerateEncounters(blank, ReadOnlyMemory<ushort>.Empty, versions)
                     .Take(100)
                     .ToList();

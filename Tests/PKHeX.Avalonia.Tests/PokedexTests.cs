@@ -6,6 +6,12 @@ namespace PKHeX.Avalonia.Tests;
 
 public class PokedexTests
 {
+    public PokedexTests()
+    {
+        // Ensure strings are loaded correctly for all tests
+        GameInfo.Strings = GameInfo.GetStrings("en");
+    }
+
     [Fact]
     public void Pokedex8_LoadAndSave_VerifyFlags()
     {
