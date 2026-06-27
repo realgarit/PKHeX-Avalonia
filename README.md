@@ -89,24 +89,19 @@ dotnet test PKHeX.sln
 dotnet publish PKHeX.Avalonia -c Release -r osx-arm64 --self-contained -p:PublishSingleFile=true
 ```
 
-## Versioning
-
-PKHeX Avalonia uses **semantic versioning** (`MAJOR.MINOR.PATCH`) for the UI application via `<UIVersion>` in `Directory.Build.props`. PKHeX.Core keeps the upstream date-based `<Version>`, in sync with kwsch/PKHeX.
-
-Bump `<UIVersion>` according to the change the PR makes:
-- **MAJOR** — incompatible/breaking changes (e.g. dropped save-format support, removed features)
-- **MINOR** — new backward-compatible functionality (new editors, tools, capabilities)
-- **PATCH** — backward-compatible fixes, refactors, chores, dependency bumps, and routine upstream `PKHeX.Core` syncs
-
-To create a release, bump `<UIVersion>` and push to `main`. The release workflow detects the new version, creates the git tag, builds all 4 platforms, and publishes a GitHub release — no manual tagging required.
-
 ## Screenshots
-*Work in progress — the UI is changing fast.*
-<img width="1212" height="790" alt="Screenshot 2026-01-21 at 20 46 16" src="https://github.com/user-attachments/assets/430b2ca2-a011-4d8d-aaa6-f07287e30d6c" />
-<img width="1212" height="790" alt="Screenshot 2026-01-21 at 20 46 36" src="https://github.com/user-attachments/assets/1d2d3950-ac98-46bd-853b-c51c1e2e74c3" />
-<img width="1212" height="790" alt="Screenshot 2026-01-21 at 20 46 48" src="https://github.com/user-attachments/assets/40d58fc3-86c7-4d3b-bccd-b6c82fecd14a" />
-<img width="1212" height="790" alt="Screenshot 2026-01-21 at 20 47 06" src="https://github.com/user-attachments/assets/8d0a1b76-ded5-4119-a079-33a2b08ebf7c" />
-<img width="1100" height="677" alt="Screenshot 2026-01-21 at 20 47 32" src="https://github.com/user-attachments/assets/0b9a811c-5fb5-44cc-9f06-5a4dadf6e043" />
+
+**Pokémon editor & box view** — full entity editor alongside the sprite-based box grid.
+![Pokémon editor and box view](docs/screenshots/pokemon-editor.png)
+
+**Inventory editor** — per-pouch item editing (Medicine, Balls, Berries, Mega Stones, …).
+![Inventory editor](docs/screenshots/inventory-editor.png)
+
+**PKM Database** — searchable browser with the resizable / collapsible filter rail.
+![PKM Database](docs/screenshots/pkm-database.png)
+
+**Per-generation save editors** — Gen 1–9 plus game-specific tools under Tools → Save Editors.
+![Save editors menu](docs/screenshots/save-editors-menu.png)
 
 ## Credits
 This fork is built on the incredible work of the [PKHeX team](https://github.com/kwsch/PKHeX).
