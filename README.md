@@ -80,13 +80,10 @@ dotnet publish PKHeX.Avalonia -c Release -r osx-arm64 --self-contained -p:Publis
 
 Pokémon editor and box view. The full editor next to the sprite box grid.
 ![Pokémon editor and box view](docs/screenshots/pokemon-editor.png)
-
 Inventory editor. Edit items by pouch (Medicine, Balls, Berries, Mega Stones, and so on).
 ![Inventory editor](docs/screenshots/inventory-editor.png)
-
 PKM Database. Search your boxes with a filter rail you can resize or hide.
 ![PKM Database](docs/screenshots/pkm-database.png)
-
 Save editors. Gen 1 to 9 plus game specific tools under Tools, then Save Editors.
 ![Save editors menu](docs/screenshots/save-editors-menu.png)
 
