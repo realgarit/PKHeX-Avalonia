@@ -6,7 +6,6 @@
 
 PKHeX Avalonia is the cross-platform [PKHeX](https://github.com/kwsch/PKHeX) port built with the Avalonia UI framework, bringing the classic Pokémon save editor to **Windows**, **macOS**, and **Linux** with a native look and feel.
 
----
 
 ## Download
 
@@ -25,7 +24,6 @@ All releases are self-contained — no .NET runtime installation required.
 1. Right-click the app → select **Open** → click **Open** in the dialog
 2. Or in Terminal: `xattr -d com.apple.quarantine ~/Downloads/PKHeX.Avalonia.app`
 
----
 
 ## Project Structure
 
@@ -43,26 +41,15 @@ Tests live under `Tests/` (`PKHeX.Core.Tests`, `PKHeX.Avalonia.Tests`, and `PKHe
 
 ## Features
 
-### Save editing
-* **Wide format support:** Core-series saves from **Gen 1 through Gen 9**, including Let's Go, Legends: Arceus, BDSP, and Legends: Z-A (`.sav`, `.dsv`, `.dat`, `.gci`, `.bin`, …).
-* **Live legality:** every loaded Pokémon is checked against upstream legality logic, with a legality report and one-click legalization.
-* **Entity files:** import and export `.pk*`, `.ck3`, `.xk3`, `.pb7`, and more.
-* **Transferring:** move Pokémon between generations with automatic format conversion.
+* Edit saves from Gen 1 to Gen 9, plus Let's Go, Legends: Arceus, BDSP, and Legends: Z-A.
+* Edit any Pokémon: stats, moves, ribbons, memories, and more.
+* Checks legality as you go and can fix illegal Pokémon for you.
+* Import and export Pokémon files and Showdown sets.
+* Move Pokémon between generations. It converts the format for you.
+* Search your boxes with the PKM, Mystery Gift, and Encounter databases.
+* Edit many Pokémon at once with the batch editor.
+* Game specific editors under Tools, like Pokédex, Hall of Fame, and Secret Base.
 
-### Pokémon & box editing
-* **Full entity editor:** Main, Stats, Met, Moves, OT/Misc, Contest, Memory, and Ribbons — all reflecting the active save's generation.
-* **Visual box view:** sprite-based box grid with navigation, plus box manipulation and box-layout tools.
-* **Trainer editor:** identity, money, play time, currencies, and adventure info.
-
-### Tools & databases
-* **PKM / Mystery Gift / Encounter databases:** searchable browsers backed by a shared, resizable & collapsible filter rail.
-* **Batch editor:** bulk-edit Pokémon with searchable batch instructions.
-* **Per-generation save editors:** Pokédex, Hall of Fame, Secret Base, Festival Plaza, Daycare, Records, Mailbox, event flags, and many more — surfaced per game under **Tools → Save Editors**.
-* **Showdown import/export** and **Mystery Gift** (`.pgt`, `.pcd`, `.pgf`, `.wc*`) support.
-
-### Experience
-* Native look and feel on **Windows**, **macOS**, and **Linux** via Avalonia.
-* Themed dark UI with modeless tool windows that can sit alongside the main editor.
 
 ## Building from Source
 
