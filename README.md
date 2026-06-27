@@ -28,15 +28,41 @@ All releases are self-contained — no .NET runtime installation required.
 ---
 
 ## Project Structure
-* **PKHeX.Avalonia**: The main application (cross-platform).
-* **Legacy/PKHeX.WinForms**: The original Windows Forms application, kept as a reference archive.
-* **PKHeX.Core**: Shared logic library (synced from [upstream PKHeX](https://github.com/kwsch/PKHeX)).
+
+The solution follows a clean, layered architecture so the cross-platform UI stays decoupled from the upstream logic:
+
+| Project | Role | References |
+|---------|------|------------|
+| **PKHeX.Core** | Shared save/entity/legality logic, kept 1:1 with [upstream PKHeX](https://github.com/kwsch/PKHeX). Never modified directly. | — |
+| **PKHeX.Application** | Application layer — use-cases and service abstractions over Core. | Core |
+| **PKHeX.Infrastructure** | Platform & I/O implementations (file access, persistence, OS integration). | Application, Core |
+| **PKHeX.Presentation** | MVVM view-models and presentation logic, UI-framework agnostic. | Application, Core |
+| **PKHeX.Avalonia** | The Avalonia UI — views, styles, and the cross-platform desktop app. | all of the above |
+
+Tests live under `Tests/` (`PKHeX.Core.Tests`, `PKHeX.Avalonia.Tests`, and `PKHeX.Architecture.Tests`, which enforces the layer boundaries above).
 
 ## Features
-* **Save Editing:** Core series save files (.sav, .dsv, .dat, .gci, .bin).
-* **Entity Files:** Import and export .pk*, .ck3, .xk3, .pb7, and more.
-* **Mystery Gifts:** Support for .pgt, .pcd, .pgf, and .wc* files.
-* **Transferring:** Move Pokémon between generations while converting formats automatically.
+
+### Save editing
+* **Wide format support:** Core-series saves from **Gen 1 through Gen 9**, including Let's Go, Legends: Arceus, BDSP, and Legends: Z-A (`.sav`, `.dsv`, `.dat`, `.gci`, `.bin`, …).
+* **Live legality:** every loaded Pokémon is checked against upstream legality logic, with a legality report and one-click legalization.
+* **Entity files:** import and export `.pk*`, `.ck3`, `.xk3`, `.pb7`, and more.
+* **Transferring:** move Pokémon between generations with automatic format conversion.
+
+### Pokémon & box editing
+* **Full entity editor:** Main, Stats, Met, Moves, OT/Misc, Contest, Memory, and Ribbons — all reflecting the active save's generation.
+* **Visual box view:** sprite-based box grid with navigation, plus box manipulation and box-layout tools.
+* **Trainer editor:** identity, money, play time, currencies, and adventure info.
+
+### Tools & databases
+* **PKM / Mystery Gift / Encounter databases:** searchable browsers backed by a shared, resizable & collapsible filter rail.
+* **Batch editor:** bulk-edit Pokémon with searchable batch instructions.
+* **Per-generation save editors:** Pokédex, Hall of Fame, Secret Base, Festival Plaza, Daycare, Records, Mailbox, event flags, and many more — surfaced per game under **Tools → Save Editors**.
+* **Showdown import/export** and **Mystery Gift** (`.pgt`, `.pcd`, `.pgf`, `.wc*`) support.
+
+### Experience
+* Native look and feel on **Windows**, **macOS**, and **Linux** via Avalonia.
+* Themed dark UI with modeless tool windows that can sit alongside the main editor.
 
 ## Building from Source
 
