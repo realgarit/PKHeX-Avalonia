@@ -4,7 +4,12 @@
              x:Class="PKHeX.Avalonia.Views.PKMDatabaseView"
              x:DataType="vm:PKMDatabaseViewModel"
              Width="900" Height="600">
-    <Grid ColumnDefinitions="250,*">
+    <Grid x:Name="RootGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" MinWidth="180" MaxWidth="480"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <!-- Sidebar: Filters -->
         <Border Grid.Column="0" Classes="section-card" Padding="16">
             <DockPanel>
@@ -116,14 +121,21 @@
             </DockPanel>
         </Border>
 
+        <!-- Resizable / collapsible divider between filter rail and results -->
+        <GridSplitter Grid.Column="1" x:Name="FilterSplitter" Classes="pane-splitter"/>
+
         <!-- Main Content: Results -->
-        <Border Grid.Column="1" Padding="16">
+        <Border Grid.Column="2" Padding="16">
             <DockPanel>
+                <Button DockPanel.Dock="Top" x:Name="ToggleFiltersButton" Click="OnToggleFilters"
+                        Content="◀ Filters" ToolTip.Tip="Show or hide the filter rail"
+                        HorizontalAlignment="Left" Margin="0,0,0,8"/>
+
                 <Border DockPanel.Dock="Bottom" Padding="0,8,0,0" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,1,0,0">
                     <TextBlock Text="{Binding StatusText}" Opacity="0.7" FontSize="12"/>
                 </Border>
-    
-                <DataGrid ItemsSource="{Binding Results}" 
+
+                <DataGrid ItemsSource="{Binding Results}"
                           SelectedItem="{Binding SelectedResult}"
                           IsReadOnly="True" 
                           AutoGenerateColumns="False"
@@ -147,7 +159,7 @@
         </Border>
 
         <!-- Searching Overlay -->
-        <Grid Grid.ColumnSpan="2" Background="#80000000" IsVisible="{Binding IsSearching}">
+        <Grid Grid.ColumnSpan="3" Background="#80000000" IsVisible="{Binding IsSearching}">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
                 <ProgressBar IsIndeterminate="True" Width="200"/>
                 <TextBlock Text="Searching Database..." Foreground="White" HorizontalAlignment="Center"/>

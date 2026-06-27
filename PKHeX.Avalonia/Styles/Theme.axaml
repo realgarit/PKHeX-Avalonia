@@ -488,5 +488,38 @@
         <Setter Property="Foreground" Value="{StaticResource ThemeTextPrimaryBrush}" />
     </Style>
 
+    <!-- ─────────────────────────────────────────────────────────────────────────
+         Pane Splitter - Draggable divider between a sidebar rail and its content.
+         Shared convention for resizable filter rails (database views, etc.).
+         ───────────────────────────────────────────────────────────────────────── -->
+    <Style Selector="GridSplitter.pane-splitter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Width" Value="8" />
+        <Setter Property="ResizeDirection" Value="Columns" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Cursor" Value="SizeWestEast" />
+        <!-- Thin centred grip line, rendered via a child border in the template -->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}">
+                    <Border Width="2" CornerRadius="1"
+                            HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                            Margin="0,8"
+                            Background="{StaticResource ThemeBorderMutedBrush}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="GridSplitter.pane-splitter:pointerover /template/ Border > Border">
+        <Setter Property="Background" Value="{StaticResource ThemeAccentPrimaryBrush}" />
+    </Style>
+
 </Styles>
 
