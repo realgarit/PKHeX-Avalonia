@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -266,7 +267,7 @@ public partial class MedalEditorViewModel : ViewModelBase
         if (_medals is null) return;
         if (_dialogService is null) return;
 
-        var path = await _dialogService.SaveFileAsync("Export Medal List", GetDefaultFileName(), [MedalListExtension]);
+        var path = await _dialogService.SaveFileAsync(LocalizedStrings.Instance["Medal_ExportMedalListTitle"], GetDefaultFileName(), [MedalListExtension]);
         if (string.IsNullOrEmpty(path)) return;
 
         try
@@ -275,7 +276,7 @@ public partial class MedalEditorViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Export Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Medal_ExportErrorTitle"], ex.Message);
         }
     }
 
@@ -285,7 +286,7 @@ public partial class MedalEditorViewModel : ViewModelBase
         if (_medals is null) return;
         if (_dialogService is null) return;
 
-        var path = await _dialogService.OpenFileAsync("Import Medal List", [MedalListExtension]);
+        var path = await _dialogService.OpenFileAsync(LocalizedStrings.Instance["Medal_ImportMedalListTitle"], [MedalListExtension]);
         if (string.IsNullOrEmpty(path)) return;
 
         try
@@ -293,8 +294,8 @@ public partial class MedalEditorViewModel : ViewModelBase
             var data = await File.ReadAllBytesAsync(path);
             if (data.Length != MedalList5.LengthAllMedals)
             {
-                await _dialogService.ShowErrorAsync("Import Error",
-                    $"Medal list size mismatch. Expected {MedalList5.LengthAllMedals} bytes, got {data.Length} bytes.");
+                await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Medal_ImportErrorTitle"],
+                    LocalizedStrings.Instance.Format("Medal_SizeMismatch", MedalList5.LengthAllMedals, data.Length));
                 return;
             }
 
@@ -302,11 +303,11 @@ public partial class MedalEditorViewModel : ViewModelBase
             MarkEdited();
             LoadMedalData();
             RefreshMedalRows();
-            await _dialogService.ShowInformationAsync("Import Successful", "Medal list has been imported.");
+            await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["Medal_ImportSuccessfulTitle"], LocalizedStrings.Instance["Medal_ListImported"]);
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Import Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Medal_ImportErrorTitle"], ex.Message);
         }
     }
 
@@ -458,11 +459,11 @@ public partial class MedalItemViewModel : ViewModelBase
 
     private static string StateToText(MedalState5 state) => state switch
     {
-        MedalState5.Unobtained => "Not Obtained",
-        MedalState5.HintReady => "Hint Ready",
-        MedalState5.HintObtained => "Hint Obtained",
-        MedalState5.ObtainReady => "Ready to Obtain",
-        MedalState5.Obtained => "Obtained",
+        MedalState5.Unobtained => LocalizedStrings.Instance["Medal_StateNotObtained"],
+        MedalState5.HintReady => LocalizedStrings.Instance["Medal_StateHintReady"],
+        MedalState5.HintObtained => LocalizedStrings.Instance["Medal_StateHintObtained"],
+        MedalState5.ObtainReady => LocalizedStrings.Instance["Medal_StateReadyToObtain"],
+        MedalState5.Obtained => LocalizedStrings.Instance["Medal_StateObtained"],
         _ => state.ToString(),
     };
 }

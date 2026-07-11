@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Presentation.Models;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -68,7 +69,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
 
     /// <summary>Opens (or focuses) the modeless seek tool window.</summary>
     [RelayCommand]
-    private void OpenSeekTool() => _windowService?.ShowTool(Seek, "Search & Seek");
+    private void OpenSeekTool() => _windowService?.ShowTool(Seek, LocalizedStrings.Instance["BoxViewer_SearchSeekTitle"]);
 
     partial void OnSelectedIndexChanged(int value)
     {
@@ -291,7 +292,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
                     return;
                 default:
                     if (_dialogService is not null)
-                        await _dialogService.ShowErrorAsync("Import Failed", result.Message ?? "The file could not be imported.");
+                        await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BoxViewer_ImportFailedTitle"], result.Message ?? LocalizedStrings.Instance["BoxViewer_ImportFailedDefault"]);
                     return;
             }
         }
@@ -301,10 +302,10 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
 
         if (_dialogService is not null)
         {
-            var message = $"Placed {batch.Placed} of {paths.Count} Pokémon into Box {CurrentBox + 1}.";
+            var message = LocalizedStrings.Instance.Format("BoxViewer_PlacedMessage", batch.Placed, paths.Count, CurrentBox + 1);
             if (batch.Skipped > 0)
-                message += $"\n{batch.Skipped} file(s) were skipped (unsupported, incompatible, or the box is full).";
-            await _dialogService.ShowInformationAsync("Import Files", message);
+                message += LocalizedStrings.Instance.Format("BoxViewer_SkippedMessage", batch.Skipped);
+            await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["BoxViewer_ImportFilesTitle"], message);
         }
     }
 }

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -25,6 +26,6 @@ public partial class PokemonEditorViewModel
     private async Task ShowLegalityAsync()
     {
         Validate();
-        await _windowService.ShowDialogAsync(new LegalityViewModel(LegalityReport), "Legality Analysis");
+        await _windowService.ShowDialogAsync(new LegalityViewModel(LegalityReport), LocalizedStrings.Instance["PokemonEditor_LegalityAnalysisTitle"]);
     }
 }

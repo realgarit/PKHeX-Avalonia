@@ -1,22 +1,23 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.PokeBlockEditor"
              x:DataType="vm:PokeBlockEditorViewModel">
 
     <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Pokéblocks not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
-                <TextBlock Text="This feature is only available for Omega Ruby/Alpha Sapphire." HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
+                <TextBlock Text="{loc:Loc PokeBlockEditor_NotAvailable}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
+                <TextBlock Text="{loc:Loc PokeBlockEditor_NotAvailableDescription}" HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
             </StackPanel>
 
             <DockPanel IsVisible="{Binding IsSupported}">
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Pokéblock Editor (ORAS)" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc PokeBlockEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                        <Button Content="Give All (999)" Command="{Binding GiveAllCommand}" Padding="12,6" />
-                        <Button Content="Clear All" Command="{Binding ClearAllCommand}" Padding="12,6" />
+                        <Button Content="{loc:Loc PokeBlockEditor_GiveAll}" Command="{Binding GiveAllCommand}" Padding="12,6" />
+                        <Button Content="{loc:Loc PokeBlockEditor_ClearAll}" Command="{Binding ClearAllCommand}" Padding="12,6" />
                     </StackPanel>
                 </DockPanel>
 

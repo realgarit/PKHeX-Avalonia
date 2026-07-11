@@ -6,6 +6,7 @@ using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -74,11 +75,11 @@ public partial class BoxReportViewModel : ViewModelBase
         try
         {
             File.WriteAllText(path, BuildCsv(Rows), Encoding.UTF8);
-            await _dialogService.ShowInformationAsync("Export Complete", $"Exported {Rows.Count} rows to {path}");
+            await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["BoxReport_ExportCompleteTitle"], LocalizedStrings.Instance.Format("BoxReport_ExportCompleteMessage", Rows.Count, path));
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Export Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BoxReport_ExportErrorTitle"], ex.Message);
         }
     }
 

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Presentation.Models;
+using PKHeX.Presentation.Localization;
 using PKHeX.Core;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -209,7 +210,7 @@ public partial class PartyViewerViewModel : ViewModelBase
                     return;
                 default:
                     if (_dialogService is not null)
-                        await _dialogService.ShowErrorAsync("Import Failed", result.Message ?? "The file could not be imported.");
+                        await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["PartyViewer_ImportFailedTitle"], result.Message ?? LocalizedStrings.Instance["PartyViewer_FileCouldNotBeImported"]);
                     return;
             }
         }
@@ -238,11 +239,11 @@ public partial class PartyViewerViewModel : ViewModelBase
 
         if (_dialogService is not null)
         {
-            var message = $"Placed {placed} of {paths.Count} Pokémon into the party.";
+            var message = LocalizedStrings.Instance.Format("PartyViewer_PlacedPokemonIntoParty", placed, paths.Count);
             var skipped = paths.Count - placed;
             if (skipped > 0)
-                message += $"\n{skipped} file(s) were skipped (unsupported, incompatible, or the party is full).";
-            await _dialogService.ShowInformationAsync("Import Files", message);
+                message += "\n" + LocalizedStrings.Instance.Format("PartyViewer_FilesSkipped", skipped);
+            await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["PartyViewer_ImportFilesTitle"], message);
         }
     }
 }

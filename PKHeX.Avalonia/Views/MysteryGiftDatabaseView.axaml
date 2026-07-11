@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:converters="using:PKHeX.Avalonia.Converters"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.MysteryGiftDatabaseView"
              x:DataType="vm:MysteryGiftDatabaseViewModel"
              MinWidth="900" MinHeight="600">
@@ -14,18 +15,18 @@
         <!-- Sidebar: Filters -->
         <Border Grid.Column="0" Classes="section-card" Padding="16">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="Gift Filters" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
-                
+                <TextBlock DockPanel.Dock="Top" Text="{loc:Loc MysteryGiftDatabaseView_GiftFilters}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
+
                 <StackPanel DockPanel.Dock="Bottom" Spacing="8">
-                    <Button Content="Refresh Database" Command="{Binding SearchDatabaseCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Theme="{StaticResource AccentButtonTheme}"/>
-                    <Button Content="Scan Folder..." Command="{Binding LoadFolderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                    <Button Content="{loc:Loc MysteryGiftDatabaseView_RefreshDatabase}" Command="{Binding SearchDatabaseCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Theme="{StaticResource AccentButtonTheme}"/>
+                    <Button Content="{loc:Loc MysteryGiftDatabaseView_ScanFolder}" Command="{Binding LoadFolderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 </StackPanel>
 
                 <ScrollViewer>
                     <StackPanel Spacing="12">
                         <StackPanel Spacing="4">
-                            <TextBlock Text="Species" Opacity="0.7" FontSize="12"/>
-                            <ComboBox ItemsSource="{Binding SpeciesList}" 
+                            <TextBlock Text="{loc:Loc MysteryGiftDatabaseView_Species}" Opacity="0.7" FontSize="12"/>
+                            <ComboBox ItemsSource="{Binding SpeciesList}"
                                       SelectedValue="{Binding Species}"
                                       SelectedValueBinding="{Binding Value}"
                                       DisplayMemberBinding="{Binding Text}"
@@ -33,8 +34,8 @@
                         </StackPanel>
 
                         <StackPanel Spacing="4">
-                            <TextBlock Text="Generation" Opacity="0.7" FontSize="12"/>
-                            <ComboBox ItemsSource="{Binding GenerationList}" 
+                            <TextBlock Text="{loc:Loc MysteryGiftDatabaseView_Generation}" Opacity="0.7" FontSize="12"/>
+                            <ComboBox ItemsSource="{Binding GenerationList}"
                                       SelectedValue="{Binding Generation}"
                                       SelectedValueBinding="{Binding Value}"
                                       DisplayMemberBinding="{Binding Text}"
@@ -42,9 +43,9 @@
                         </StackPanel>
 
                         <StackPanel Spacing="4">
-                            <TextBlock Text="Gift Type" Opacity="0.7" FontSize="12"/>
-                            <CheckBox Content="Show Pokémon" IsChecked="{Binding ShowPokemon}"/>
-                            <CheckBox Content="Show Items" IsChecked="{Binding ShowItems}"/>
+                            <TextBlock Text="{loc:Loc MysteryGiftDatabaseView_GiftType}" Opacity="0.7" FontSize="12"/>
+                            <CheckBox Content="{loc:Loc MysteryGiftDatabaseView_ShowPokemon}" IsChecked="{Binding ShowPokemon}"/>
+                            <CheckBox Content="{loc:Loc MysteryGiftDatabaseView_ShowItems}" IsChecked="{Binding ShowItems}"/>
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
@@ -58,7 +59,7 @@
         <Border Grid.Column="2" Padding="16">
             <DockPanel>
                 <Button DockPanel.Dock="Top" x:Name="ToggleFiltersButton" Click="OnToggleFilters"
-                        Content="◀ Filters" ToolTip.Tip="Show or hide the filter rail"
+                        Content="{loc:Loc MysteryGiftDatabaseView_ToggleFilters}" ToolTip.Tip="{loc:Loc MysteryGiftDatabaseView_ToggleFiltersTooltip}"
                         HorizontalAlignment="Left" Margin="0,0,0,8"/>
 
                 <Border DockPanel.Dock="Bottom" Padding="0,8,0,0" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,1,0,0">
@@ -71,18 +72,18 @@
                           CanUserResizeColumns="True"
                           DoubleTapped="OnDoubleTapped">
                     <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Sprite" Width="60">
+                    <DataGridTemplateColumn Header="{loc:Loc MysteryGiftDatabaseView_Sprite}" Width="60">
                         <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}" Width="40" Height="40" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Species / Item" Binding="{Binding SpeciesName}" Width="*"/>
-                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="80"/>
-                        <DataGridTextColumn Header="Lv" Binding="{Binding Level}" Width="50"/>
-                        <DataGridTextColumn Header="Card Title" Binding="{Binding CardTitle}" Width="2*"/>
-                        <DataGridTextColumn Header="Format" Binding="{Binding Format}" Width="80"/>
+                        <DataGridTextColumn Header="{loc:Loc MysteryGiftDatabaseView_SpeciesItem}" Binding="{Binding SpeciesName}" Width="*"/>
+                        <DataGridTextColumn Header="{loc:Loc MysteryGiftDatabaseView_Type}" Binding="{Binding Type}" Width="80"/>
+                        <DataGridTextColumn Header="{loc:Loc MysteryGiftDatabaseView_Level}" Binding="{Binding Level}" Width="50"/>
+                        <DataGridTextColumn Header="{loc:Loc MysteryGiftDatabaseView_CardTitle}" Binding="{Binding CardTitle}" Width="2*"/>
+                        <DataGridTextColumn Header="{loc:Loc MysteryGiftDatabaseView_Format}" Binding="{Binding Format}" Width="80"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>
@@ -92,7 +93,7 @@
         <Grid Grid.ColumnSpan="3" Classes="overlay-scrim" IsVisible="{Binding IsSearching}">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
                 <ProgressBar IsIndeterminate="True" Width="200"/>
-                <TextBlock Classes="overlay-text" Text="Loading Mystery Gifts..." HorizontalAlignment="Center"/>
+                <TextBlock Classes="overlay-text" Text="{loc:Loc MysteryGiftDatabaseView_LoadingText}" HorizontalAlignment="Center"/>
             </StackPanel>
         </Grid>
     </Grid>

@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.HallOfFameEditor"
              x:DataType="vm:HallOfFameEditorViewModel">
 
@@ -10,11 +11,11 @@
             <StackPanel VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Hall of Fame not available"
+                <TextBlock Text="{loc:Loc HallOfFameEditor_NotAvailable}"
                            FontSize="18"
                            HorizontalAlignment="Center"
                            Opacity="0.7" />
-                <TextBlock Text="This save type does not support Hall of Fame viewing."
+                <TextBlock Text="{loc:Loc HallOfFameEditor_NotSupportedDetail}"
                            HorizontalAlignment="Center"
                            Opacity="0.5"
                            Margin="0,8,0,0" />
@@ -24,8 +25,8 @@
             <DockPanel IsVisible="{Binding IsSupported}">
                 <!-- Header -->
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Hall of Fame" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                    <Button Content="Refresh"
+                    <TextBlock Text="{loc:Loc HallOfFameEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <Button Content="{loc:Loc HallOfFameEditor_Refresh}"
                             Command="{Binding RefreshCommand}"
                             HorizontalAlignment="Right"
                             Padding="12,6" />
@@ -63,7 +64,7 @@
                             </StackPanel>
 
                             <!-- Team Members -->
-                            <TextBlock Text="Team" FontWeight="SemiBold" />
+                            <TextBlock Text="{loc:Loc HallOfFameEditor_Team}" FontWeight="SemiBold" />
                             <ItemsControl ItemsSource="{Binding Members}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -103,7 +104,7 @@
 
                     <!-- No selection message -->
                     <TextBlock Grid.Column="2"
-                               Text="Select an entry to view details"
+                               Text="{loc:Loc HallOfFameEditor_SelectEntry}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Opacity="0.5"

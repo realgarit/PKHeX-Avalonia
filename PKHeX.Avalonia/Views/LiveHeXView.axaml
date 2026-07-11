@@ -3,15 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="520"
              x:Class="PKHeX.Avalonia.Views.LiveHeXView"
              x:DataType="vm:LiveHeXViewModel"
              MinWidth="440" MinHeight="460" Width="480" Height="520">
 
     <DockPanel Margin="12">
-        <TextBlock DockPanel.Dock="Top" Text="LiveHeX" FontSize="16" FontWeight="SemiBold" />
+        <TextBlock DockPanel.Dock="Top" Text="{loc:Loc LiveHeXView_Title}" FontSize="16" FontWeight="SemiBold" />
         <TextBlock DockPanel.Dock="Top" Margin="0,2,0,10"
-                   Text="Read and write the current box on a hacked console over Wi-Fi (sys-botbase)."
+                   Text="{loc:Loc LiveHeXView_Description}"
                    TextWrapping="Wrap"
                    Foreground="{DynamicResource ThemeTextMutedBrush}" FontSize="12" />
 
@@ -39,19 +40,19 @@
             <!-- Connection panel -->
             <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto,Auto"
                   ColumnSpacing="8" RowSpacing="8">
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Console IP" VerticalAlignment="Center" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc LiveHeXView_ConsoleIp}" VerticalAlignment="Center" />
                 <TextBox Grid.Row="0" Grid.Column="1"
                          Text="{Binding IpAddress}" Watermark="192.168.0.1"
                          IsEnabled="{Binding !IsConnected}" />
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="Port" VerticalAlignment="Center" />
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Loc LiveHeXView_Port}" VerticalAlignment="Center" />
                 <TextBox Grid.Row="0" Grid.Column="3" Width="70"
                          Text="{Binding Port}"
                          IsEnabled="{Binding !IsConnected}" />
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4"
                             Orientation="Horizontal" Spacing="8">
-                    <Button Content="Connect" Classes="accent" Command="{Binding ConnectCommand}" />
-                    <Button Content="Disconnect" Command="{Binding DisconnectCommand}" />
+                    <Button Content="{loc:Loc LiveHeXView_Connect}" Classes="accent" Command="{Binding ConnectCommand}" />
+                    <Button Content="{loc:Loc LiveHeXView_Disconnect}" Command="{Binding DisconnectCommand}" />
                     <ProgressBar IsIndeterminate="True" Width="110" VerticalAlignment="Center"
                                  IsVisible="{Binding IsBusy}" />
                 </StackPanel>
@@ -59,19 +60,19 @@
 
             <!-- Box transfer -->
             <StackPanel Spacing="6">
-                <TextBlock Text="Current box" FontWeight="SemiBold" FontSize="13" />
+                <TextBlock Text="{loc:Loc LiveHeXView_CurrentBox}" FontWeight="SemiBold" FontSize="13" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <Button Content="Read box from console" Command="{Binding ReadBoxCommand}" />
-                    <Button Content="Write box to console" Command="{Binding WriteBoxCommand}"
-                            ToolTip.Tip="Overwrites the current box on the console (asks for confirmation first)" />
+                    <Button Content="{loc:Loc LiveHeXView_ReadBoxFromConsole}" Command="{Binding ReadBoxCommand}" />
+                    <Button Content="{loc:Loc LiveHeXView_WriteBoxToConsole}" Command="{Binding WriteBoxCommand}"
+                            ToolTip.Tip="{loc:Loc LiveHeXView_WriteBoxTooltip}" />
                 </StackPanel>
-                <TextBlock Text="Writes overwrite the current box on the console and always ask for confirmation first."
+                <TextBlock Text="{loc:Loc LiveHeXView_WriteWarning}"
                            TextWrapping="Wrap" FontSize="11"
                            Foreground="{DynamicResource ThemeTextMutedBrush}" />
             </StackPanel>
 
             <!-- Support matrix -->
-            <Expander Header="Supported games">
+            <Expander Header="{loc:Loc LiveHeXView_SupportedGames}">
                 <SelectableTextBlock Text="{Binding SupportMatrix}" TextWrapping="Wrap"
                                      FontSize="12" Padding="4" />
             </Expander>

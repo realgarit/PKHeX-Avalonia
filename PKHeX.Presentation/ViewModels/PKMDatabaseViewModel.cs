@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
 using PKHeX.Core.Searching;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -47,7 +48,7 @@ public partial class PKMDatabaseViewModel : ViewModelBase
     {
         Results.Clear();
         IsSearching = true;
-        StatusText = "Searching current save...";
+        StatusText = LocalizedStrings.Instance["PKMDatabase_SearchingCurrentSave"];
 
         try
         {
@@ -57,7 +58,7 @@ public partial class PKMDatabaseViewModel : ViewModelBase
             int totalMons = allPkms.Count(p => p.Species != 0);
             if (totalMons == 0)
             {
-                StatusText = "Save file contains no Pokémon (all slots empty).";
+                StatusText = LocalizedStrings.Instance["PKMDatabase_SaveHasNoPokemon"];
                 return;
             }
 
@@ -66,12 +67,12 @@ public partial class PKMDatabaseViewModel : ViewModelBase
             foreach (var pk in matches)
                 Results.Add(new PKMDatabaseEntry(pk, _spriteRenderer));
 
-            StatusText = $"Found {Results.Count} matches in current save.";
+            StatusText = LocalizedStrings.Instance.Format("PKMDatabase_FoundMatchesInSave", Results.Count);
         }
         catch (Exception ex)
         {
-            StatusText = $"Error: {ex.Message}";
-            await _dialogService.ShowErrorAsync("Search Error", ex.Message);
+            StatusText = LocalizedStrings.Instance.Format("PKMDatabase_SearchErrorStatus", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["PKMDatabase_SearchErrorTitle"], ex.Message);
         }
         finally
         {
@@ -82,12 +83,12 @@ public partial class PKMDatabaseViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadFolderAsync()
     {
-        var path = await _dialogService.OpenFolderAsync("Select Folder to Scan");
+        var path = await _dialogService.OpenFolderAsync(LocalizedStrings.Instance["PKMDatabase_SelectFolderToScanTitle"]);
         if (string.IsNullOrEmpty(path)) return;
 
         Results.Clear();
         IsSearching = true;
-        StatusText = "Scanning folder...";
+        StatusText = LocalizedStrings.Instance["PKMDatabase_ScanningFolder"];
 
         try 
         {
@@ -122,11 +123,11 @@ public partial class PKMDatabaseViewModel : ViewModelBase
             foreach (var pk in matches)
                 Results.Add(new PKMDatabaseEntry(pk, _spriteRenderer));
 
-            StatusText = $"Found {Results.Count} matches in folder.";
+            StatusText = LocalizedStrings.Instance.Format("PKMDatabase_FoundMatchesInFolder", Results.Count);
         }
         catch (Exception ex)
         {
-            StatusText = $"Error: {ex.Message}";
+            StatusText = LocalizedStrings.Instance.Format("PKMDatabase_SearchErrorStatus", ex.Message);
         }
         finally
         {

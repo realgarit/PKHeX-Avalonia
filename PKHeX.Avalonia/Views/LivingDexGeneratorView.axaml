@@ -3,26 +3,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="440"
              x:Class="PKHeX.Avalonia.Views.LivingDexGeneratorView"
              x:DataType="vm:LivingDexGeneratorViewModel"
              MinWidth="420" MinHeight="380" Width="480" Height="440">
 
     <DockPanel Margin="12">
-        <TextBlock DockPanel.Dock="Top" Text="Living Dex Generator" FontSize="16" FontWeight="SemiBold" />
+        <TextBlock DockPanel.Dock="Top" Text="{loc:Loc LivingDexGeneratorView_Title}" FontSize="16" FontWeight="SemiBold" />
         <TextBlock DockPanel.Dock="Top" Margin="0,2,0,8"
-                   Text="Generates one legal Pokémon per species obtainable in this game, then fills boxes starting at the box below."
+                   Text="{loc:Loc LivingDexGeneratorView_Description}"
                    TextWrapping="Wrap"
                    Foreground="{DynamicResource ThemeTextMutedBrush}" FontSize="12" />
 
         <!-- Options -->
         <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,8">
             <StackPanel Orientation="Horizontal" Spacing="16">
-                <CheckBox Content="Include forms" IsChecked="{Binding IncludeForms}" IsEnabled="{Binding !IsRunning}" />
-                <CheckBox Content="Shiny" IsChecked="{Binding SetShiny}" IsEnabled="{Binding !IsRunning}" />
+                <CheckBox Content="{loc:Loc LivingDexGeneratorView_IncludeForms}" IsChecked="{Binding IncludeForms}" IsEnabled="{Binding !IsRunning}" />
+                <CheckBox Content="{loc:Loc LivingDexGeneratorView_Shiny}" IsChecked="{Binding SetShiny}" IsEnabled="{Binding !IsRunning}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" Spacing="8">
-                <TextBlock Text="Starting box:" VerticalAlignment="Center" />
+                <TextBlock Text="{loc:Loc LivingDexGeneratorView_StartingBox}" VerticalAlignment="Center" />
                 <ComboBox ItemsSource="{Binding BoxNames}" SelectedIndex="{Binding SelectedBoxIndex}"
                           IsEnabled="{Binding !IsRunning}" MinWidth="160" />
             </StackPanel>
@@ -30,8 +31,8 @@
 
         <!-- Action bar -->
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
-            <Button Content="Generate" Classes="accent" Command="{Binding GenerateCommand}" />
-            <Button Content="Cancel" Command="{Binding CancelCommand}" />
+            <Button Content="{loc:Loc LivingDexGeneratorView_Generate}" Classes="accent" Command="{Binding GenerateCommand}" />
+            <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" />
             <ProgressBar Value="{Binding Progress}" Minimum="0" Maximum="100" Width="180" VerticalAlignment="Center"
                          IsVisible="{Binding IsRunning}" />
         </StackPanel>
@@ -42,7 +43,7 @@
 
         <!-- Skipped species report -->
         <Grid RowDefinitions="Auto,*">
-            <TextBlock Grid.Row="0" Text="Skipped Species" FontWeight="SemiBold"
+            <TextBlock Grid.Row="0" Text="{loc:Loc LivingDexGeneratorView_SkippedSpecies}" FontWeight="SemiBold"
                        Margin="0,10,0,4"
                        IsVisible="{Binding SkippedSpeciesReport, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 

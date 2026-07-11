@@ -5,6 +5,7 @@ using PKHeX.Application.Abstractions;
 using PKHeX.Application.Services;
 using PKHeX.Application.UseCases;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -52,7 +53,7 @@ public partial class SaveDiffViewModel : ViewModelBase
         if (string.IsNullOrEmpty(_currentPath))
         {
             AvailableBackups = [];
-            StatusText = "Save this file at least once to compare against backups.";
+            StatusText = LocalizedStrings.Instance["SaveDiff_SaveFileFirst"];
             return;
         }
 
@@ -61,8 +62,8 @@ public partial class SaveDiffViewModel : ViewModelBase
         AvailableBackups = new ObservableCollection<BackupEntryRow>(result.Entries.Select(e => new BackupEntryRow(e)));
 
         StatusText = result.Warnings.Count > 0
-            ? $"{result.Warnings.Count} backup(s) skipped (corrupt/unreadable): {string.Join("; ", result.Warnings)}"
-            : $"{AvailableBackups.Count} backup(s) available.";
+            ? LocalizedStrings.Instance.Format("SaveDiff_BackupsSkipped", result.Warnings.Count, string.Join("; ", result.Warnings))
+            : LocalizedStrings.Instance.Format("SaveDiff_BackupsAvailable", AvailableBackups.Count);
     }
 
     [RelayCommand(CanExecute = nameof(CanCompareCurrentWithBackup))]
@@ -73,11 +74,11 @@ public partial class SaveDiffViewModel : ViewModelBase
 
         if (!TryLoadBackup(SelectedBackupA, out var other, out var error))
         {
-            await _dialogService.ShowErrorAsync("Compare Failed", error!);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["SaveDiff_CompareFailedTitle"], error!);
             return;
         }
 
-        RunDiff(_currentSave, other!, $"Current Save vs. Backup ({SelectedBackupA.Timestamp})");
+        RunDiff(_currentSave, other!, LocalizedStrings.Instance.Format("SaveDiff_CurrentVsBackupLabel", SelectedBackupA.Timestamp));
     }
 
     private bool CanCompareCurrentWithBackup => SelectedBackupA is not null;
@@ -90,16 +91,16 @@ public partial class SaveDiffViewModel : ViewModelBase
 
         if (!TryLoadBackup(SelectedBackupA, out var left, out var errorA))
         {
-            await _dialogService.ShowErrorAsync("Compare Failed", errorA!);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["SaveDiff_CompareFailedTitle"], errorA!);
             return;
         }
         if (!TryLoadBackup(SelectedBackupB, out var right, out var errorB))
         {
-            await _dialogService.ShowErrorAsync("Compare Failed", errorB!);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["SaveDiff_CompareFailedTitle"], errorB!);
             return;
         }
 
-        RunDiff(left!, right!, $"Backup ({SelectedBackupA.Timestamp}) vs. Backup ({SelectedBackupB.Timestamp})");
+        RunDiff(left!, right!, LocalizedStrings.Instance.Format("SaveDiff_BackupVsBackupLabel", SelectedBackupA.Timestamp, SelectedBackupB.Timestamp));
     }
 
     private bool CanCompareTwoBackups => SelectedBackupA is not null && SelectedBackupB is not null;
@@ -114,13 +115,13 @@ public partial class SaveDiffViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            error = $"The backup from {row.Timestamp} is corrupt and cannot be compared.\n\n{ex.Message}";
+            error = LocalizedStrings.Instance.Format("SaveDiff_BackupCorruptWithDetail", row.Timestamp, ex.Message);
             return false;
         }
 
         if (save is null)
         {
-            error = $"The backup from {row.Timestamp} is corrupt and cannot be compared.";
+            error = LocalizedStrings.Instance.Format("SaveDiff_BackupCorrupt", row.Timestamp);
             return false;
         }
 
@@ -134,13 +135,13 @@ public partial class SaveDiffViewModel : ViewModelBase
         if (!result.Success)
         {
             Changes = [];
-            StatusText = result.Error ?? "These saves cannot be compared.";
+            StatusText = result.Error ?? LocalizedStrings.Instance["SaveDiff_SavesCannotBeCompared"];
             return;
         }
 
         Changes = new ObservableCollection<SaveDiffChangeRow>(result.Changes.Select(c => new SaveDiffChangeRow(c)));
         StatusText = Changes.Count == 0
-            ? $"No differences found. ({label})"
-            : $"{Changes.Count} difference(s) found. ({label})";
+            ? LocalizedStrings.Instance.Format("SaveDiff_NoDifferencesFound", label)
+            : LocalizedStrings.Instance.Format("SaveDiff_DifferencesFound", Changes.Count, label);
     }
 }

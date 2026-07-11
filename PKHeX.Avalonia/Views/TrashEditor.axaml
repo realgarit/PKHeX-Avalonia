@@ -3,14 +3,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
              x:Class="PKHeX.Avalonia.Views.TrashEditor"
              x:DataType="vm:TrashEditorViewModel">
-    
+
     <Grid RowDefinitions="Auto, *, Auto, Auto" Margin="10">
         <!-- Text Preview -->
         <StackPanel Grid.Row="0" Spacing="5">
-            <TextBlock Text="Text Preview:" FontWeight="Bold"/>
+            <TextBlock Text="{loc:Loc TrashEditor_TextPreview}" FontWeight="Bold"/>
             <TextBox Text="{Binding CurrentText}" IsReadOnly="True" Background="Transparent" BorderThickness="0"/>
         </StackPanel>
 
@@ -35,9 +36,9 @@
 
         <!-- Trash Generator -->
         <StackPanel Grid.Row="2" Spacing="5" Margin="0,10">
-            <TextBlock Text="Trash String Generator" FontWeight="Bold"/>
+            <TextBlock Text="{loc:Loc TrashEditor_Generator}" FontWeight="Bold"/>
             <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" Margin="0,5">
-                <TextBlock Text="Species" Grid.Column="0" Grid.Row="0"/>
+                <TextBlock Text="{loc:Loc TrashEditor_Species}" Grid.Column="0" Grid.Row="0"/>
                 <ComboBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding SpeciesList}" SelectedItem="{Binding SelectedSpecies}" HorizontalAlignment="Stretch" AutomationProperties.Name="Species">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -46,7 +47,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
-                <TextBlock Text="Language" Grid.Column="1" Grid.Row="0" Margin="10,0,0,0"/>
+                <TextBlock Text="{loc:Loc TrashEditor_Language}" Grid.Column="1" Grid.Row="0" Margin="10,0,0,0"/>
                 <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding LanguageList}" SelectedItem="{Binding SelectedLanguage}" HorizontalAlignment="Stretch" Margin="10,0,0,0" AutomationProperties.Name="Language">
                     <ComboBox.ItemTemplate>
                          <DataTemplate>
@@ -56,15 +57,15 @@
                 </ComboBox>
             </Grid>
             <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
-                <Button Content="Apply Trash" Command="{Binding ApplyTrashCommand}"/>
-                <Button Content="Clear Trash" Command="{Binding ClearTrashCommand}"/>
+                <Button Content="{loc:Loc TrashEditor_ApplyTrash}" Command="{Binding ApplyTrashCommand}"/>
+                <Button Content="{loc:Loc TrashEditor_ClearTrash}" Command="{Binding ClearTrashCommand}"/>
             </StackPanel>
         </StackPanel>
 
         <!-- Footer Buttons -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
-            <Button Content="Cancel" Command="{Binding CloseRequested}"/>
-            <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent"/>
+            <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CloseRequested}"/>
+            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent"/>
         </StackPanel>
     </Grid>
 </UserControl>

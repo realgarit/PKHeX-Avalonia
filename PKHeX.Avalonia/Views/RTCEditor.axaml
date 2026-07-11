@@ -1,22 +1,23 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.RTCEditor"
              x:DataType="vm:RTCEditorViewModel">
 
     <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="RTC not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
-                <TextBlock Text="This feature is only available for Ruby/Sapphire/Emerald." HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
+                <TextBlock Text="{loc:Loc RTCEditor_NotAvailable}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
+                <TextBlock Text="{loc:Loc RTCEditor_NotAvailableDesc}" HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
             </StackPanel>
 
             <DockPanel IsVisible="{Binding IsSupported}">
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Real Time Clock Editor (Gen 3)" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc RTCEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                        <Button Content="Save" Command="{Binding SaveCommand}" Padding="12,6" Classes="accent" />
-                        <Button Content="Refresh" Command="{Binding RefreshCommand}" Padding="12,6" />
+                        <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Padding="12,6" Classes="accent" />
+                        <Button Content="{loc:Loc RTCEditor_Refresh}" Command="{Binding RefreshCommand}" Padding="12,6" />
                     </StackPanel>
                 </DockPanel>
 
@@ -25,12 +26,12 @@
                         <!-- Initial Clock -->
                         <!-- Initial Clock -->
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Initial Clock" FontWeight="SemiBold" FontSize="14"/>
+                            <TextBlock Text="{loc:Loc RTCEditor_InitialClock}" FontWeight="SemiBold" FontSize="14"/>
                             <Grid ColumnDefinitions="*,10,*,10,*,10,*" RowDefinitions="Auto,4,Auto">
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Day" Opacity="0.8" FontSize="12"/>
-                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Hour" Opacity="0.8" FontSize="12"/>
-                                <TextBlock Grid.Row="0" Grid.Column="4" Text="Minute" Opacity="0.8" FontSize="12"/>
-                                <TextBlock Grid.Row="0" Grid.Column="6" Text="Second" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc RTCEditor_Day}" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Loc RTCEditor_Hour}" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="4" Text="{loc:Loc RTCEditor_Minute}" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="6" Text="{loc:Loc RTCEditor_Second}" Opacity="0.8" FontSize="12"/>
 
                                 <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding InitialDay}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False" AutomationProperties.Name="Initial Day"/>
                                 <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding InitialHour}" Minimum="0" Maximum="23" HorizontalAlignment="Stretch" ShowButtonSpinner="False" AutomationProperties.Name="Initial Hour"/>
@@ -42,12 +43,12 @@
                         <!-- Elapsed Clock -->
                         <!-- Elapsed Clock -->
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Elapsed Clock" FontWeight="SemiBold" FontSize="14"/>
+                            <TextBlock Text="{loc:Loc RTCEditor_ElapsedClock}" FontWeight="SemiBold" FontSize="14"/>
                             <Grid ColumnDefinitions="*,10,*,10,*,10,*" RowDefinitions="Auto,4,Auto">
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Day" Opacity="0.8" FontSize="12"/>
-                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Hour" Opacity="0.8" FontSize="12"/>
-                                <TextBlock Grid.Row="0" Grid.Column="4" Text="Minute" Opacity="0.8" FontSize="12"/>
-                                <TextBlock Grid.Row="0" Grid.Column="6" Text="Second" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc RTCEditor_ElapsedDay}" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Loc RTCEditor_ElapsedHour}" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="4" Text="{loc:Loc RTCEditor_ElapsedMinute}" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Grid.Row="0" Grid.Column="6" Text="{loc:Loc RTCEditor_ElapsedSecond}" Opacity="0.8" FontSize="12"/>
 
                                 <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding ElapsedDay}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False" AutomationProperties.Name="Elapsed Day"/>
                                 <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding ElapsedHour}" Minimum="0" Maximum="23" HorizontalAlignment="Stretch" ShowButtonSpinner="False" AutomationProperties.Name="Elapsed Hour"/>
@@ -57,8 +58,8 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Button Content="Reset All" Command="{Binding ResetCommand}" Padding="12,6" />
-                            <Button Content="Berry Glitch Fix" Command="{Binding BerryFixCommand}" Padding="12,6" ToolTip.Tip="Advances elapsed days to fix the berry glitch in Ruby/Sapphire" />
+                            <Button Content="{loc:Loc RTCEditor_ResetAll}" Command="{Binding ResetCommand}" Padding="12,6" />
+                            <Button Content="{loc:Loc RTCEditor_BerryGlitchFix}" Command="{Binding BerryFixCommand}" Padding="12,6" ToolTip.Tip="{loc:Loc RTCEditor_BerryGlitchFixTooltip}" />
                         </StackPanel>
                     </StackPanel>
                 </Border>

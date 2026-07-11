@@ -1,23 +1,24 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.BoxLayoutEditor"
              x:DataType="vm:BoxLayoutEditorViewModel">
 
     <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Box Layout not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
-                <TextBlock Text="This feature is not available for this save type." 
+                <TextBlock Text="{loc:Loc BoxLayoutEditor_NotAvailableTitle}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
+                <TextBlock Text="{loc:Loc BoxLayoutEditor_NotAvailableDesc}"
                            HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
             </StackPanel>
 
             <DockPanel IsVisible="{Binding IsSupported}">
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16">
-                    <TextBlock Text="Box Layout Editor" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                    
+                    <TextBlock Text="{loc:Loc BoxLayoutEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" IsVisible="{Binding CanEditUnlocked}">
-                        <TextBlock Text="Unlocked Boxes:" VerticalAlignment="Center" />
+                        <TextBlock Text="{loc:Loc BoxLayoutEditor_UnlockedBoxesLabel}" VerticalAlignment="Center" />
                         <ComboBox ItemsSource="{Binding UnlockedOptions}" SelectedItem="{Binding UnlockedBoxes}" Width="80" />
                     </StackPanel>
                 </DockPanel>

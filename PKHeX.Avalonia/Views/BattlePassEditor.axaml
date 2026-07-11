@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.BattlePassEditor"
              x:DataType="vm:BattlePassEditorViewModel">
 
@@ -10,11 +11,11 @@
             <StackPanel VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Battle Pass Editor not available"
+                <TextBlock Text="{loc:Loc BattlePassEditor_NotAvailableTitle}"
                            FontSize="18"
                            HorizontalAlignment="Center"
                            Opacity="0.7" />
-                <TextBlock Text="This save type does not support Battle Pass Editor (PBR only)."
+                <TextBlock Text="{loc:Loc BattlePassEditor_NotAvailableDesc}"
                            HorizontalAlignment="Center"
                            Opacity="0.5"
                            Margin="0,8,0,0" />
@@ -24,10 +25,10 @@
             <DockPanel IsVisible="{Binding IsSupported}">
                 <!-- Header -->
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Battle Pass Editor (PBR)" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc BattlePassEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                        <Button Content="Unlock All" Command="{Binding UnlockAllCommand}" />
-                        <Button Content="Refresh" Command="{Binding RefreshCommand}" />
+                        <Button Content="{loc:Loc BattlePassEditor_UnlockAllButton}" Command="{Binding UnlockAllCommand}" />
+                        <Button Content="{loc:Loc BattlePassEditor_RefreshButton}" Command="{Binding RefreshCommand}" />
                     </StackPanel>
                 </DockPanel>
 
@@ -45,52 +46,52 @@
 
                     <!-- Editor -->
                     <TabControl Grid.Column="2" DataContext="{Binding SelectedPass}">
-                        <TabItem Header="Trainer">
+                        <TabItem Header="{loc:Loc BattlePassEditor_TrainerTab}">
                             <ScrollViewer>
                                 <StackPanel Spacing="16" Margin="0,12,0,0">
                                     <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto">
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc BattlePassEditor_NameLabel}" VerticalAlignment="Center" />
                                         <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Name}" MaxLength="12" />
 
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="TID:" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Loc BattlePassEditor_TidLabel}" VerticalAlignment="Center" />
                                         <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Tid}" Minimum="0" Maximum="65535" />
 
-                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="SID:" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Loc BattlePassEditor_SidLabel}" VerticalAlignment="Center" />
                                         <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding Sid}" Minimum="0" Maximum="65535" />
 
-                                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Model:" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="6" Grid.Column="0" Text="{loc:Loc BattlePassEditor_ModelLabel}" VerticalAlignment="Center" />
                                         <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding Model}" Minimum="0" Maximum="255" />
 
-                                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Skin:" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="8" Grid.Column="0" Text="{loc:Loc BattlePassEditor_SkinLabel}" VerticalAlignment="Center" />
                                         <NumericUpDown Grid.Row="8" Grid.Column="2" Value="{Binding Skin}" Minimum="0" Maximum="255" />
                                     </Grid>
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
 
-                        <TabItem Header="Phrases">
+                        <TabItem Header="{loc:Loc BattlePassEditor_PhrasesTab}">
                             <ScrollViewer>
                                 <StackPanel Spacing="16" Margin="0,12,0,0">
-                                    <TextBlock Text="Greeting" FontSize="12" Opacity="0.7" />
+                                    <TextBlock Text="{loc:Loc BattlePassEditor_GreetingLabel}" FontSize="12" Opacity="0.7" />
                                     <TextBox Text="{Binding Greeting}" AcceptsReturn="True" Height="60" />
 
-                                    <TextBlock Text="Sent Out" FontSize="12" Opacity="0.7" />
+                                    <TextBlock Text="{loc:Loc BattlePassEditor_SentOutLabel}" FontSize="12" Opacity="0.7" />
                                     <TextBox Text="{Binding SentOut}" AcceptsReturn="True" Height="60" />
 
-                                    <TextBlock Text="Win" FontSize="12" Opacity="0.7" />
+                                    <TextBlock Text="{loc:Loc BattlePassEditor_WinLabel}" FontSize="12" Opacity="0.7" />
                                     <TextBox Text="{Binding Win}" AcceptsReturn="True" Height="60" />
 
-                                    <TextBlock Text="Lose" FontSize="12" Opacity="0.7" />
+                                    <TextBlock Text="{loc:Loc BattlePassEditor_LoseLabel}" FontSize="12" Opacity="0.7" />
                                     <TextBox Text="{Binding Lose}" AcceptsReturn="True" Height="60" />
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
 
-                        <TabItem Header="Records">
+                        <TabItem Header="{loc:Loc BattlePassEditor_RecordsTab}">
                             <ScrollViewer>
                                 <StackPanel Spacing="16" Margin="0,12,0,0">
                                     <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto">
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Total Battles:" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc BattlePassEditor_TotalBattlesLabel}" VerticalAlignment="Center" />
                                         <NumericUpDown Grid.Row="0" Grid.Column="2" Value="{Binding Battles}" Minimum="0" />
                                     </Grid>
                                 </StackPanel>

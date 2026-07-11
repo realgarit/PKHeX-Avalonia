@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -106,7 +107,7 @@ public partial class MysteryGiftEditorViewModel : ViewModelBase
         if (_storage is null || SelectedGift is null) return;
 
         var path = await _dialogService.OpenFileAsync(
-            "Import Mystery Gift",
+            LocalizedStrings.Instance["MysteryGiftEditor_ImportGiftTitle"],
             ["*.wc9", "*.wa9", "*.wc8", "*.wa8", "*.wb8", "*.wc7", "*.wc6", "*.pgf", "*.pgt", "*.pcd", "*"]);
 
         if (string.IsNullOrEmpty(path)) return;
@@ -119,15 +120,15 @@ public partial class MysteryGiftEditorViewModel : ViewModelBase
 
             if (gift is null)
             {
-                await _dialogService.ShowErrorAsync("Import Error", "Could not parse the mystery gift file.");
+                await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["MysteryGiftEditor_ImportErrorTitle"], LocalizedStrings.Instance["MysteryGiftEditor_CouldNotParseGift"]);
                 return;
             }
 
             // Check compatibility
             if (gift.Generation != _sav.Generation)
             {
-                await _dialogService.ShowErrorAsync("Import Error",
-                    $"Gift generation ({gift.Generation}) does not match save generation ({_sav.Generation}).");
+                await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["MysteryGiftEditor_ImportErrorTitle"],
+                    LocalizedStrings.Instance.Format("MysteryGiftEditor_GenerationMismatch", gift.Generation, _sav.Generation));
                 return;
             }
 
@@ -136,7 +137,7 @@ public partial class MysteryGiftEditorViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Import Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["MysteryGiftEditor_ImportErrorTitle"], ex.Message);
         }
     }
 
@@ -148,7 +149,7 @@ public partial class MysteryGiftEditorViewModel : ViewModelBase
         var gift = SelectedGift.Gift;
         var defaultName = gift.FileName;
 
-        var path = await _dialogService.SaveFileAsync("Export Mystery Gift", defaultName);
+        var path = await _dialogService.SaveFileAsync(LocalizedStrings.Instance["MysteryGiftEditor_ExportGiftTitle"], defaultName);
         if (string.IsNullOrEmpty(path)) return;
 
         try
@@ -158,7 +159,7 @@ public partial class MysteryGiftEditorViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Export Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["MysteryGiftEditor_ExportErrorTitle"], ex.Message);
         }
     }
 
@@ -233,14 +234,14 @@ public partial class MysteryGiftSlotViewModel : ViewModelBase
         if (Gift is null || Gift.IsEmpty)
         {
             IsEmpty = true;
-            Title = $"Slot {Index + 1}: (Empty)";
+            Title = LocalizedStrings.Instance.Format("MysteryGiftEditor_SlotEmptyTitle", Index + 1);
             Species = string.Empty;
             Summary = string.Empty;
         }
         else
         {
             IsEmpty = false;
-            Title = $"Slot {Index + 1}: {Gift.CardTitle}";
+            Title = LocalizedStrings.Instance.Format("MysteryGiftEditor_SlotTitle", Index + 1, Gift.CardTitle);
 
             if (Gift.IsEntity)
             {

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -75,7 +76,7 @@ public partial class PokemonEditorViewModel
         }
         else
         {
-            await _dialogService.ShowErrorAsync("Import Failed", "Could not parse Showdown text.");
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["PokemonEditor_ImportFailedTitle"], LocalizedStrings.Instance["PokemonEditor_CouldNotParseShowdown"]);
         }
     }
 

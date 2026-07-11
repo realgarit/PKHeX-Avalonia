@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.InventoryEditor"
              x:DataType="vm:InventoryEditorViewModel">
 
@@ -8,10 +9,10 @@
         <DockPanel>
             <!-- Header -->
             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                <TextBlock Text="Inventory" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBlock Text="{loc:Loc InventoryEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                    <Button Content="Reset" Command="{Binding ResetCommand}" Padding="12,6" />
-                    <Button Content="Apply" Command="{Binding SaveCommand}" Classes="accent" Padding="12,6" />
+                    <Button Content="{loc:Loc InventoryEditor_Reset}" Command="{Binding ResetCommand}" Padding="12,6" />
+                    <Button Content="{loc:Loc InventoryEditor_Apply}" Command="{Binding SaveCommand}" Classes="accent" Padding="12,6" />
                 </StackPanel>
             </DockPanel>
 
@@ -28,17 +29,17 @@
                         <DockPanel>
                             <!-- Toolbar -->
                             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,8,0,12">
-                                <Button Content="Sort by Name"
+                                <Button Content="{loc:Loc InventoryEditor_SortByName}"
                                         Command="{Binding $parent[TabControl].((vm:InventoryEditorViewModel)DataContext).SortByNameCommand}"
                                         Padding="8,4" />
-                                <Button Content="Sort by Count"
+                                <Button Content="{loc:Loc InventoryEditor_SortByCount}"
                                         Command="{Binding $parent[TabControl].((vm:InventoryEditorViewModel)DataContext).SortByCountCommand}"
                                         Padding="8,4" />
                                 <Separator />
-                                <Button Content="Give All"
+                                <Button Content="{loc:Loc InventoryEditor_GiveAll}"
                                         Command="{Binding $parent[TabControl].((vm:InventoryEditorViewModel)DataContext).GiveAllCommand}"
                                         Padding="8,4" />
-                                <Button Content="Clear All"
+                                <Button Content="{loc:Loc InventoryEditor_ClearAll}"
                                         Command="{Binding $parent[TabControl].((vm:InventoryEditorViewModel)DataContext).ClearAllCommand}"
                                         Padding="8,4" />
                             </StackPanel>
@@ -64,7 +65,7 @@
                                         </DataGridTemplateColumn>
 
                                         <!-- Item Column -->
-                                        <DataGridTemplateColumn Header="Item" Width="*">
+                                        <DataGridTemplateColumn Header="{loc:Loc InventoryEditor_Item}" Width="*">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate DataType="vm:InventoryItemViewModel">
                                                     <ComboBox ItemsSource="{Binding ItemList}"
@@ -78,7 +79,7 @@
                                         </DataGridTemplateColumn>
                                         
                                         <!-- Count Column -->
-                                        <DataGridTemplateColumn Header="Count" Width="100">
+                                        <DataGridTemplateColumn Header="{loc:Loc InventoryEditor_Count}" Width="100">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate DataType="vm:InventoryItemViewModel">
                                                     <NumericUpDown Value="{Binding Count}"

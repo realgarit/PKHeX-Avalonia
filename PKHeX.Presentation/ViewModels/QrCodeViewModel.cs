@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using CommunityToolkit.Mvvm.Input;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -27,7 +28,7 @@ public partial class QrCodeViewModel : ViewModelBase
     [RelayCommand]
     private async System.Threading.Tasks.Task SaveAsPngAsync()
     {
-        var path = await _dialogService.SaveFileAsync("Save QR Code", DefaultFileName);
+        var path = await _dialogService.SaveFileAsync(LocalizedStrings.Instance["QrCode_SaveQrCodeTitle"], DefaultFileName);
         if (string.IsNullOrEmpty(path))
             return;
 
@@ -37,7 +38,7 @@ public partial class QrCodeViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Save Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["QrCode_SaveErrorTitle"], ex.Message);
         }
     }
 }

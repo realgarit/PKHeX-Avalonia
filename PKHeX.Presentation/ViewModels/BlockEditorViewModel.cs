@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -120,7 +121,7 @@ public partial class BlockEditorViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Export Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BlockEditor_ExportErrorTitle"], ex.Message);
         }
     }
 
@@ -128,7 +129,7 @@ public partial class BlockEditorViewModel : ViewModelBase
     private async Task ImportBlockAsync()
     {
         if (SelectedBlock == null) return;
-        var path = await _dialogService.OpenFileAsync("Import Block", ["*.*"]);
+        var path = await _dialogService.OpenFileAsync(LocalizedStrings.Instance["BlockEditor_ImportBlockTitle"], ["*.*"]);
         if (string.IsNullOrEmpty(path)) return;
 
         try
@@ -136,17 +137,17 @@ public partial class BlockEditorViewModel : ViewModelBase
             var data = await System.IO.File.ReadAllBytesAsync(path);
             if (data.Length != SelectedBlock.Length)
             {
-                await _dialogService.ShowErrorAsync("Import Error", $"Block size mismatch. Expected {SelectedBlock.Length} bytes, got {data.Length} bytes.");
+                await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BlockEditor_ImportErrorTitle"], LocalizedStrings.Instance.Format("BlockEditor_SizeMismatch", SelectedBlock.Length, data.Length));
                 return;
             }
 
             SelectedBlock.SetData(data);
             _sav.State.Edited = true;
-            await _dialogService.ShowInformationAsync("Import Successful", $"Block {SelectedBlock.Name} has been updated.");
+            await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["BlockEditor_ImportSuccessTitle"], LocalizedStrings.Instance.Format("BlockEditor_ImportSuccessMessage", SelectedBlock.Name));
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Import Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BlockEditor_ImportErrorTitle"], ex.Message);
         }
     }
 }

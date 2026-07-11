@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Application.UseCases;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -34,7 +35,7 @@ public partial class LegalityAuditViewModel : ViewModelBase
     private LegalityAuditRow? _selectedRow;
 
     [ObservableProperty]
-    private string _statusText = "Run an audit to scan the current save.";
+    private string _statusText = LocalizedStrings.Instance["LegalityAudit_InitialStatus"];
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RunCommand))]
@@ -71,7 +72,7 @@ public partial class LegalityAuditViewModel : ViewModelBase
     {
         IsRunning = true;
         Progress = 0;
-        StatusText = "Auditing...";
+        StatusText = LocalizedStrings.Instance["LegalityAudit_Auditing"];
         _cts = new CancellationTokenSource();
 
         try
@@ -88,12 +89,12 @@ public partial class LegalityAuditViewModel : ViewModelBase
 
             var illegalCount = _allRows.Count(r => !r.Valid);
             StatusText = illegalCount == 0
-                ? $"Audit complete: {_allRows.Count} Pokémon checked, 0 findings."
-                : $"Audit complete: {_allRows.Count} Pokémon checked, {illegalCount} illegal.";
+                ? LocalizedStrings.Instance.Format("LegalityAudit_CompleteNoFindings", _allRows.Count)
+                : LocalizedStrings.Instance.Format("LegalityAudit_CompleteWithFindings", _allRows.Count, illegalCount);
         }
         catch (OperationCanceledException)
         {
-            StatusText = "Audit cancelled.";
+            StatusText = LocalizedStrings.Instance["LegalityAudit_Cancelled"];
         }
         finally
         {
@@ -148,29 +149,29 @@ public partial class LegalityAuditViewModel : ViewModelBase
         try
         {
             File.WriteAllText(path, BuildCsv(Rows), Encoding.UTF8);
-            await _dialogService.ShowInformationAsync("Export Complete", $"Exported {Rows.Count} rows to {path}");
+            await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["LegalityAudit_ExportCompleteTitle"], LocalizedStrings.Instance.Format("LegalityAudit_ExportedRows", Rows.Count, path));
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Export Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["LegalityAudit_ExportErrorTitle"], ex.Message);
         }
     }
 
     [RelayCommand]
     private async Task ExportTextAsync()
     {
-        var path = await _dialogService.SaveFileAsync("Export Legality Reports", "LegalityAudit.txt");
+        var path = await _dialogService.SaveFileAsync(LocalizedStrings.Instance["LegalityAudit_ExportReportsTitle"], "LegalityAudit.txt");
         if (string.IsNullOrEmpty(path))
             return;
 
         try
         {
             File.WriteAllText(path, BuildTextReport(Rows), Encoding.UTF8);
-            await _dialogService.ShowInformationAsync("Export Complete", $"Exported {Rows.Count} reports to {path}");
+            await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["LegalityAudit_ExportCompleteTitle"], LocalizedStrings.Instance.Format("LegalityAudit_ExportedReports", Rows.Count, path));
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Export Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["LegalityAudit_ExportErrorTitle"], ex.Message);
         }
     }
 

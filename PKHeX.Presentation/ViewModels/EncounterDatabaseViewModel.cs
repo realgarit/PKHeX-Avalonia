@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -56,7 +57,7 @@ public partial class EncounterDatabaseViewModel : ViewModelBase
     {
         if (SelectedSpecies == 0)
         {
-            await _dialogService.ShowErrorAsync("Search Error", "Please select a species first.");
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["EncounterDatabase_SearchErrorTitle"], LocalizedStrings.Instance["EncounterDatabase_SelectSpeciesFirst"]);
             return;
         }
 
@@ -86,7 +87,7 @@ public partial class EncounterDatabaseViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Search Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["EncounterDatabase_SearchErrorTitle"], ex.Message);
         }
         finally
         {
@@ -107,7 +108,7 @@ public partial class EncounterDatabaseViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            _ = _dialogService.ShowErrorAsync("Conversion Error", $"Could not convert encounter to PKM: {ex.Message}");
+            _ = _dialogService.ShowErrorAsync(LocalizedStrings.Instance["EncounterDatabase_ConversionErrorTitle"], LocalizedStrings.Instance.Format("EncounterDatabase_ConversionErrorMessage", ex.Message));
         }
     }
 }

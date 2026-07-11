@@ -67,12 +67,15 @@ ViewModel introduces a hardcoded user-facing string instead of going through the
 `LocalizationServiceTests.cs` verifies all nine files are key-complete and that placeholders are
 preserved.
 
-A large backlog of editor dialogs is not yet migrated; those files are listed in
-`Tests/PKHeX.Avalonia.Tests/localization-allowlist.txt`. To localize one:
+The editor views and ViewModels are now migrated into the resource system, so
+`Tests/PKHeX.Avalonia.Tests/localization-allowlist.txt` is near-empty — any remaining line is a
+documented, justified exception (e.g. a glyph-only control or a technical literal). New views and
+ViewModels are enforced by default. If you ever need to defer a file or justify a single literal:
 
-1. Replace its literals with `{loc:Loc Key}` / `LocalizedStrings.Instance["Key"]` and add the keys to
-   all nine JSON files.
-2. Delete that file's line from `localization-allowlist.txt`.
+1. Prefer migrating it: replace its literals with `{loc:Loc Key}` / `LocalizedStrings.Instance["Key"]`
+   and add the keys to all nine JSON files.
+2. Only if migration is genuinely not applicable, add a `RelativePath` (whole file) or
+   `RelativePath|snippet` (single literal) line to `localization-allowlist.txt` with a comment saying why.
 3. Run `dotnet test Tests/PKHeX.Avalonia.Tests` — it must stay green.
 
 ### Verifying

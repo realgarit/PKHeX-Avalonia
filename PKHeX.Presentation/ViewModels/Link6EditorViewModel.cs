@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 using System.IO;
 
 namespace PKHeX.Presentation.ViewModels;
@@ -100,7 +101,7 @@ public partial class Link6EditorViewModel : ViewModelBase
         var data = await File.ReadAllBytesAsync(path);
         if (data.Length != PL6.Size)
         {
-            await _dialogService.ShowErrorAsync("Error", "Invalid file size.");
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Common_Error"], LocalizedStrings.Instance["Link6Editor_InvalidFileSize"]);
             return;
         }
 
@@ -112,7 +113,7 @@ public partial class Link6EditorViewModel : ViewModelBase
     private async Task ExportAsync()
     {
         if (_gifts is null) return;
-        var path = await _dialogService.SaveFileAsync("Export Link Data", "pokemon.pl6", ["*.pl6"]);
+        var path = await _dialogService.SaveFileAsync(LocalizedStrings.Instance["Link6Editor_ExportLinkDataTitle"], "pokemon.pl6", ["*.pl6"]);
         if (path is null) return;
 
         await File.WriteAllBytesAsync(path, _gifts.Data.ToArray());

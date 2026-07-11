@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.BoxViewer"
              x:DataType="vm:BoxViewerViewModel"
              Focusable="True">
@@ -35,7 +36,7 @@
                     <Button Grid.Column="0"
                             Content="◀"
                             Command="{Binding PreviousBoxCommand}"
-                            ToolTip.Tip="Previous Box (PageUp)"
+                            ToolTip.Tip="{loc:Loc BoxViewer_PreviousBoxTooltip}"
                             AutomationProperties.Name="Previous Box"
                             Background="Transparent"
                             BorderThickness="0"
@@ -55,7 +56,7 @@
                     <Button Grid.Column="2"
                             Content="▶"
                             Command="{Binding NextBoxCommand}"
-                            ToolTip.Tip="Next Box (PageDown)"
+                            ToolTip.Tip="{loc:Loc BoxViewer_NextBoxTooltip}"
                             AutomationProperties.Name="Next Box"
                             Background="Transparent"
                             BorderThickness="0"
@@ -68,7 +69,7 @@
                     <Button Grid.Column="3"
                             Content="🔍"
                             Command="{Binding OpenSeekToolCommand}"
-                            ToolTip.Tip="Search this save and seek to matching slots (Ctrl+F)"
+                            ToolTip.Tip="{loc:Loc BoxViewer_SeekTooltip}"
                             AutomationProperties.Name="Open Seek Tool"
                             Background="Transparent"
                             BorderThickness="0"
@@ -82,7 +83,7 @@
 
             <!-- Footer -->
             <TextBlock DockPanel.Dock="Bottom"
-                       Text="Arrow keys: Navigate | Enter: Select | PageUp/Down: Switch Box | Ctrl+C: View | Ctrl+V: Set | Delete: Clear"
+                       Text="{loc:Loc BoxViewer_FooterHelp}"
                        Foreground="{DynamicResource ThemeTextMutedBrush}"
                        FontSize="11"
                        HorizontalAlignment="Center"
@@ -116,15 +117,15 @@
                                     Tag="{Binding}">
                                 <Button.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="View (Ctrl+Click)"
+                                        <MenuItem Header="{loc:Loc BoxViewer_ViewMenuItem}"
                                                   Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).ViewSlotCommand}"
                                                   CommandParameter="{Binding}"
                                                   IsEnabled="{Binding !IsEmpty}" />
-                                        <MenuItem Header="Set (Shift+Click)"
+                                        <MenuItem Header="{loc:Loc BoxViewer_SetMenuItem}"
                                                   Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).SetSlotCommand}"
                                                   CommandParameter="{Binding}" />
                                         <Separator />
-                                        <MenuItem Header="Delete (Alt+Click)"
+                                        <MenuItem Header="{loc:Loc BoxViewer_DeleteMenuItem}"
                                                   Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).DeleteSlotCommand}"
                                                   CommandParameter="{Binding}"
                                                   IsEnabled="{Binding !IsEmpty}" />

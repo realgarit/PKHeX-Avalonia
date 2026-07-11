@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using PKHeX.Application.Abstractions;
 using PKHeX.Application.Abstractions.LiveHex;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -65,8 +66,8 @@ public partial class LiveHeXViewModel : ViewModelBase
         IsGameSupported = support.Supported;
         SupportDetail = support.Detail;
         _status = support.Supported
-            ? "Ready. Enter the console IP and connect."
-            : $"{support.GameName} is not supported by LiveHeX.";
+            ? LocalizedStrings.Instance["LiveHeX_Ready"]
+            : LocalizedStrings.Instance.Format("LiveHeX_NotSupported", support.GameName);
     }
 
     /// <summary>Loaded game's display name.</summary>
@@ -79,12 +80,7 @@ public partial class LiveHeXViewModel : ViewModelBase
     public string SupportDetail { get; }
 
     /// <summary>Static support matrix shown in the tool window.</summary>
-    public string SupportMatrix =>
-        "Sword/Shield — 1.1.1, 1.2.1, 1.3.2\n" +
-        "Brilliant Diamond/Shining Pearl — 1.0.0–1.3.0\n" +
-        "Legends: Arceus — 1.0.0, 1.0.1, 1.0.2, 1.1.1\n" +
-        "Scarlet/Violet — 1.0.1 through 4.0.0\n\n" +
-        "Connection: sys-botbase over Wi-Fi (TCP, default port 6000). USB is not supported in this version.";
+    public string SupportMatrix => LocalizedStrings.Instance["LiveHeX_SupportMatrixText"];
 
     private bool CanConnect => IsGameSupported && !IsConnected && !IsBusy
                                && !string.IsNullOrWhiteSpace(IpAddress) && Port is > 0 and <= 65535;
@@ -95,32 +91,32 @@ public partial class LiveHeXViewModel : ViewModelBase
     private async Task ConnectAsync()
     {
         IsBusy = true;
-        Status = $"Connecting to {IpAddress}:{Port}…";
+        Status = LocalizedStrings.Instance.Format("LiveHeX_Connecting", IpAddress, Port);
         try
         {
             await _liveHex.ConnectAsync(IpAddress, Port, _sav);
             IsConnected = _liveHex.IsConnected;
             if (_liveHex.Session is { } s)
             {
-                SessionInfo = $"Game: {s.ProfileLabel}   Title: {s.TitleId}   sys-botbase: {s.BotbaseVersion}";
-                Status = $"Connected to {s.ProfileLabel}.";
+                SessionInfo = LocalizedStrings.Instance.Format("LiveHeX_SessionInfo", s.ProfileLabel, s.TitleId, s.BotbaseVersion);
+                Status = LocalizedStrings.Instance.Format("LiveHeX_ConnectedTo", s.ProfileLabel);
             }
             else
             {
-                Status = "Connected.";
+                Status = LocalizedStrings.Instance["LiveHeX_Connected"];
             }
         }
         catch (LiveHexConnectionException ex)
         {
             IsConnected = false;
             SessionInfo = string.Empty;
-            Status = $"Connection failed: {ex.Message}";
+            Status = LocalizedStrings.Instance.Format("LiveHeX_ConnectionFailed", ex.Message);
         }
         catch (Exception ex)
         {
             IsConnected = false;
             SessionInfo = string.Empty;
-            Status = $"Unexpected error: {ex.Message}";
+            Status = LocalizedStrings.Instance.Format("LiveHeX_UnexpectedError", ex.Message);
         }
         finally
         {
@@ -140,7 +136,7 @@ public partial class LiveHeXViewModel : ViewModelBase
         {
             IsConnected = false;
             SessionInfo = string.Empty;
-            Status = "Disconnected.";
+            Status = LocalizedStrings.Instance["LiveHeX_Disconnected"];
             IsBusy = false;
         }
     }
@@ -150,20 +146,20 @@ public partial class LiveHeXViewModel : ViewModelBase
     {
         var box = _getCurrentBox();
         IsBusy = true;
-        Status = $"Reading Box {box + 1} from the console…";
+        Status = LocalizedStrings.Instance.Format("LiveHeX_ReadingBox", box + 1);
         try
         {
             await _liveHex.ReadBoxAsync(_sav, box);
             _onBoxUpdated();
-            Status = $"Read Box {box + 1} from the console.";
+            Status = LocalizedStrings.Instance.Format("LiveHeX_ReadBox", box + 1);
         }
         catch (LiveHexConnectionException ex)
         {
-            Status = $"Read failed: {ex.Message}";
+            Status = LocalizedStrings.Instance.Format("LiveHeX_ReadFailed", ex.Message);
         }
         catch (Exception ex)
         {
-            Status = $"Unexpected error: {ex.Message}";
+            Status = LocalizedStrings.Instance.Format("LiveHeX_UnexpectedError", ex.Message);
         }
         finally
         {
@@ -178,32 +174,31 @@ public partial class LiveHeXViewModel : ViewModelBase
 
         // HARD REQUIREMENT: never write to the console without explicit user confirmation.
         var confirmed = await _dialogs.ShowConfirmationAsync(
-            "Write box to console",
-            $"This will OVERWRITE Box {box + 1} on the connected console ({GameName}) with the " +
-            $"contents currently shown in PKHeX.\n\nThis cannot be undone on the console. Continue?",
-            confirmText: "Write to console",
-            cancelText: "Cancel");
+            LocalizedStrings.Instance["LiveHeX_WriteConfirmTitle"],
+            LocalizedStrings.Instance.Format("LiveHeX_WriteConfirmMessage", box + 1, GameName),
+            confirmText: LocalizedStrings.Instance["LiveHeX_WriteConfirmText"],
+            cancelText: LocalizedStrings.Instance["Common_Cancel"]);
 
         if (!confirmed)
         {
-            Status = "Write cancelled.";
+            Status = LocalizedStrings.Instance["LiveHeX_WriteCancelled"];
             return;
         }
 
         IsBusy = true;
-        Status = $"Writing Box {box + 1} to the console…";
+        Status = LocalizedStrings.Instance.Format("LiveHeX_WritingBox", box + 1);
         try
         {
             await _liveHex.WriteBoxAsync(_sav, box);
-            Status = $"Wrote Box {box + 1} to the console.";
+            Status = LocalizedStrings.Instance.Format("LiveHeX_WroteBox", box + 1);
         }
         catch (LiveHexConnectionException ex)
         {
-            Status = $"Write failed: {ex.Message}";
+            Status = LocalizedStrings.Instance.Format("LiveHeX_WriteFailed", ex.Message);
         }
         catch (Exception ex)
         {
-            Status = $"Unexpected error: {ex.Message}";
+            Status = LocalizedStrings.Instance.Format("LiveHeX_UnexpectedError", ex.Message);
         }
         finally
         {

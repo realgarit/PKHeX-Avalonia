@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using PKHeX.Application.Abstractions;
 using PKHeX.Application.Services;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -47,7 +48,7 @@ public partial class BackupManagerViewModel : ViewModelBase
         if (string.IsNullOrEmpty(path))
         {
             Backups = [];
-            StatusText = "Save this file at least once to enable backups.";
+            StatusText = LocalizedStrings.Instance["BackupManager_SaveFirst"];
             return;
         }
 
@@ -56,8 +57,8 @@ public partial class BackupManagerViewModel : ViewModelBase
 
         Backups = new ObservableCollection<BackupEntryRow>(result.Entries.Select(e => new BackupEntryRow(e)));
         StatusText = result.Warnings.Count == 0
-            ? $"{Backups.Count} backup(s)"
-            : $"{Backups.Count} backup(s) — {result.Warnings.Count} skipped (corrupt/unreadable): {string.Join("; ", result.Warnings)}";
+            ? LocalizedStrings.Instance.Format("BackupManager_BackupCount", Backups.Count)
+            : LocalizedStrings.Instance.Format("BackupManager_BackupCountWithWarnings", Backups.Count, result.Warnings.Count, string.Join("; ", result.Warnings));
     }
 
     [RelayCommand]
@@ -69,13 +70,13 @@ public partial class BackupManagerViewModel : ViewModelBase
         var currentPath = _saveFileService.CurrentPath;
         if (string.IsNullOrEmpty(currentPath))
         {
-            await _dialogService.ShowErrorAsync("Restore Failed", "No save file is currently open at a known path.");
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BackupManager_RestoreFailedTitle"], LocalizedStrings.Instance["BackupManager_NoSaveOpen"]);
             return;
         }
 
         var confirmed = await _dialogService.ShowConfirmationAsync(
-            "Restore Backup",
-            $"Restore the backup from {SelectedBackup.Timestamp}?\n\nThe current save state will itself be backed up first, then overwritten.");
+            LocalizedStrings.Instance["BackupManager_RestoreBackupTitle"],
+            LocalizedStrings.Instance.Format("BackupManager_RestoreConfirm", SelectedBackup.Timestamp));
         if (!confirmed)
             return;
 
@@ -86,13 +87,13 @@ public partial class BackupManagerViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Restore Failed", $"This backup could not be read. It may be corrupt.\n\n{ex.Message}");
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BackupManager_RestoreFailedTitle"], LocalizedStrings.Instance.Format("BackupManager_ReadFailed", ex.Message));
             Refresh();
             return;
         }
 
         // Validate the backup actually parses as a save before touching anything on disk.
-        // (Not just "didn't throw" — FileUtil also recognizes PKM/box-binary/etc. formats, so make
+        // (Not just a non-throwing check — FileUtil also recognizes PKM/box-binary/etc. formats, so make
         // sure what comes back is specifically a SaveFile.)
         SaveFile? restoredSave;
         try
@@ -106,7 +107,7 @@ public partial class BackupManagerViewModel : ViewModelBase
 
         if (restoredSave is null)
         {
-            await _dialogService.ShowErrorAsync("Restore Failed", "This backup is corrupt and cannot be restored.");
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BackupManager_RestoreFailedTitle"], LocalizedStrings.Instance["BackupManager_CorruptRestore"]);
             Refresh();
             return;
         }
@@ -130,13 +131,13 @@ public partial class BackupManagerViewModel : ViewModelBase
         var reloaded = await _saveFileService.LoadSaveFileAsync(currentPath);
         if (!reloaded)
         {
-            await _dialogService.ShowErrorAsync("Restore Failed", "The backup was written to disk, but the app could not reload it.");
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BackupManager_RestoreFailedTitle"], LocalizedStrings.Instance["BackupManager_ReloadFailed"]);
             return;
         }
 
         Refresh();
         Restored?.Invoke();
-        await _dialogService.ShowInformationAsync("Restore Complete", "The backup has been restored and reloaded.");
+        await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["BackupManager_RestoreCompleteTitle"], LocalizedStrings.Instance["BackupManager_RestoreCompleteMessage"]);
     }
 
     [RelayCommand]
@@ -146,8 +147,8 @@ public partial class BackupManagerViewModel : ViewModelBase
             return;
 
         var confirmed = await _dialogService.ShowConfirmationAsync(
-            "Delete Backup",
-            $"Delete the backup from {SelectedBackup.Timestamp}? This cannot be undone.");
+            LocalizedStrings.Instance["BackupManager_DeleteBackupTitle"],
+            LocalizedStrings.Instance.Format("BackupManager_DeleteConfirm", SelectedBackup.Timestamp));
         if (!confirmed)
             return;
 

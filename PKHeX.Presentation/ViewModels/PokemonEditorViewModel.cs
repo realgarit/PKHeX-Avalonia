@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -42,7 +43,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private byte[]? _sprite;
 
     [ObservableProperty]
-    private string _title = "Pokémon Editor";
+    private string _title = LocalizedStrings.Instance["PokemonEditor_DefaultTitle"];
 
     // Basic Info
     [ObservableProperty]
@@ -156,7 +157,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         }
 
         if (paths.Count > 0)
-            await _dialogService.ShowErrorAsync("Import Failed", "No supported Pokémon or save file was found in the dropped file(s).");
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["PokemonEditor_ImportFailedTitle"], LocalizedStrings.Instance["PokemonEditor_NoSupportedFileFound"]);
     }
 
     public void RefreshLanguage()
@@ -463,7 +464,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private void UpdateTitle()
     {
         var speciesName = StringResourceLookup.Species((ushort)Species);
-        Title = Species == 0 ? "Empty Slot" : $"Editing: {speciesName}";
+        Title = Species == 0 ? LocalizedStrings.Instance["PokemonEditor_EmptySlot"] : LocalizedStrings.Instance.Format("PokemonEditor_EditingSpecies", speciesName);
     }
 
     [RelayCommand]
@@ -610,7 +611,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     {
         var vm = new RibbonEditorViewModel(_pk);
         var view = vm;
-        await _windowService.ShowDialogAsync(view, "Ribbon Editor");
+        await _windowService.ShowDialogAsync(view, LocalizedStrings.Instance["PokemonEditor_RibbonEditorTitle"]);
         LoadRibbons();
         OnPropertyChanged(nameof(RibbonCount));
     }
@@ -620,7 +621,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     {
         var vm = new MemoryEditorViewModel(_pk);
         var view = vm;
-        await _windowService.ShowDialogAsync(view, "Memory Editor");
+        await _windowService.ShowDialogAsync(view, LocalizedStrings.Instance["PokemonEditor_MemoryEditorTitle"]);
     }
 
     [RelayCommand]
@@ -630,7 +631,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
         var vm = new TechRecordEditorViewModel(tr, _pk);
         var view = vm;
-        await _windowService.ShowDialogAsync(view, "Technical Record Editor");
+        await _windowService.ShowDialogAsync(view, LocalizedStrings.Instance["PokemonEditor_TechnicalRecordEditorTitle"]);
     }
 
     public bool CanOpenTechRecord => _pk is ITechRecord;

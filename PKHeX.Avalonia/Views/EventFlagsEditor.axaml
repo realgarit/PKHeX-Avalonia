@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.EventFlagsEditor"
              x:DataType="vm:EventFlagsEditorViewModel">
 
@@ -10,11 +11,11 @@
             <StackPanel VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Event Flags not available"
+                <TextBlock Text="{loc:Loc EventFlagsEditor_NotAvailable}"
                            FontSize="18"
                            HorizontalAlignment="Center"
                            Opacity="0.7" />
-                <TextBlock Text="This save type does not support event flag editing."
+                <TextBlock Text="{loc:Loc EventFlagsEditor_NotAvailableDetail}"
                            HorizontalAlignment="Center"
                            Opacity="0.5"
                            Margin="0,8,0,0" />
@@ -24,14 +25,14 @@
             <DockPanel IsVisible="{Binding IsSupported}">
                 <!-- Header -->
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Event Flags" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc EventFlagsEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding FlagCount, StringFormat='({0} flags)'}"
                                VerticalAlignment="Center"
                                Opacity="0.6"
                                Margin="8,0,0,0" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                        <Button Content="Reset" Command="{Binding ResetCommand}" Padding="12,6" />
-                        <Button Content="Apply" Command="{Binding SaveCommand}" Classes="accent" Padding="12,6" />
+                        <Button Content="{loc:Loc EventFlagsEditor_Reset}" Command="{Binding ResetCommand}" Padding="12,6" />
+                        <Button Content="{loc:Loc EventFlagsEditor_Apply}" Command="{Binding SaveCommand}" Classes="accent" Padding="12,6" />
                     </StackPanel>
                 </DockPanel>
 
@@ -42,7 +43,7 @@
                         Padding="12"
                         Margin="0,0,0,12">
                     <StackPanel Orientation="Horizontal" Spacing="16">
-                        <TextBlock Text="Flag #" VerticalAlignment="Center" FontWeight="SemiBold" Opacity="0.7" />
+                        <TextBlock Text="{loc:Loc EventFlagsEditor_FlagNumberLabel}" VerticalAlignment="Center" FontWeight="SemiBold" Opacity="0.7" />
                         <NumericUpDown Value="{Binding SelectedFlagIndex}"
                                        Minimum="0"
                                        Maximum="{Binding FlagCount}"
@@ -50,7 +51,7 @@
                                        FormatString="0"
                                        ShowButtonSpinner="False" />
                         <CheckBox IsChecked="{Binding SelectedFlagValue}"
-                                  Content="Set"
+                                  Content="{loc:Loc EventFlagsEditor_SetCheckbox}"
                                   VerticalAlignment="Center"
                                   FontWeight="SemiBold" />
                     </StackPanel>
@@ -58,11 +59,11 @@
 
                 <!-- Toolbar -->
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="0,0,0,12">
-                    <Button Content="Set All" Command="{Binding SetAllCommand}" Padding="8,4" />
-                    <Button Content="Clear All" Command="{Binding ClearAllCommand}" Padding="8,4" />
+                    <Button Content="{loc:Loc EventFlagsEditor_SetAll}" Command="{Binding SetAllCommand}" Padding="8,4" />
+                    <Button Content="{loc:Loc EventFlagsEditor_ClearAll}" Command="{Binding ClearAllCommand}" Padding="8,4" />
                     <TextBox Text="{Binding SearchText}"
                              AutomationProperties.Name="Search"
-                             Watermark="Search by index..."
+                             Watermark="{loc:Loc EventFlagsEditor_SearchWatermark}"
                              Width="200" />
                 </StackPanel>
 

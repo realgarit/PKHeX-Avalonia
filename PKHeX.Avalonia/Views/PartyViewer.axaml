@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.PartyViewer"
              x:DataType="vm:PartyViewerViewModel"
              Focusable="True">
@@ -20,11 +21,11 @@
     <Border Padding="16" Classes="view-container">
         <DockPanel>
             <!-- Header -->
-            <TextBlock DockPanel.Dock="Top" Text="Party" FontWeight="SemiBold" FontSize="18" Margin="0,0,0,12" />
-            
+            <TextBlock DockPanel.Dock="Top" Text="{loc:Loc PartyViewer_Title}" FontWeight="SemiBold" FontSize="18" Margin="0,0,0,12" />
+
             <!-- Footer -->
             <TextBlock DockPanel.Dock="Bottom"
-                       Text="↑↓ Navigate | Enter: Edit | Drag to reorder | Ctrl+C: View | Ctrl+V: Set | Delete: Clear"
+                       Text="{loc:Loc PartyViewer_Footer}"
                        Opacity="0.5" FontSize="11" HorizontalAlignment="Center" Margin="0,12,0,0" />
             
             <!-- Party Grid - 2 columns, 3 rows -->
@@ -56,15 +57,15 @@
                                 <!-- Context Menu -->
                                 <Button.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="View (Ctrl+Click)"
+                                        <MenuItem Header="{loc:Loc PartyViewer_ViewMenuItem}"
                                                   Command="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).ViewSlotCommand}"
                                                   CommandParameter="{Binding}"
                                                   IsEnabled="{Binding !IsEmpty}" />
-                                        <MenuItem Header="Set (Shift+Click)"
+                                        <MenuItem Header="{loc:Loc PartyViewer_SetMenuItem}"
                                                   Command="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).SetSlotCommand}"
                                                   CommandParameter="{Binding}" />
                                         <Separator />
-                                        <MenuItem Header="Delete (Alt+Click)"
+                                        <MenuItem Header="{loc:Loc PartyViewer_DeleteMenuItem}"
                                                   Command="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).DeleteSlotCommand}"
                                                   CommandParameter="{Binding}"
                                                   IsEnabled="{Binding !IsEmpty}" />
@@ -94,8 +95,8 @@
                                             CornerRadius="4" 
                                             IsVisible="{Binding IsEmpty}"
                                             Height="70">
-                                        <TextBlock Text="Empty" 
-                                                   Opacity="0.4" 
+                                        <TextBlock Text="{loc:Loc PartyViewer_Empty}"
+                                                   Opacity="0.4"
                                                    HorizontalAlignment="Center" 
                                                    VerticalAlignment="Center" />
                                     </Border>

@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:conv="clr-namespace:PKHeX.Avalonia.Converters"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.QrCodeView"
              x:DataType="vm:QrCodeViewModel"
              Width="420">
@@ -17,7 +18,7 @@
         </Border>
         <TextBlock Text="{Binding Caption}" TextWrapping="Wrap" HorizontalAlignment="Center"
                    TextAlignment="Center" Foreground="{DynamicResource ThemeTextMutedBrush}" FontSize="12" />
-        <Button Content="Save as PNG…" Classes="accent" HorizontalAlignment="Center"
+        <Button Content="{loc:Loc QrCodeView_SaveAsPng}" Classes="accent" HorizontalAlignment="Center"
                 Command="{Binding SaveAsPngCommand}" />
     </StackPanel>
 </UserControl>

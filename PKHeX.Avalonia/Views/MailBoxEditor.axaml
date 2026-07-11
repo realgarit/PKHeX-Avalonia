@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.MailBoxEditor"
              x:DataType="vm:MailBoxEditorViewModel">
 
@@ -14,7 +15,7 @@
             <!-- Left Panel - Mail Lists -->
             <Grid RowDefinitions="Auto,*,Auto,*">
                 <!-- Party Mail -->
-                <TextBlock Grid.Row="0" Text="Party Mail" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBlock Grid.Row="0" Text="{loc:Loc MailBoxEditor_PartyMail}" FontWeight="Bold" Margin="0,0,0,5"/>
                 <ListBox Grid.Row="1"
                          ItemsSource="{Binding PartyMail}"
                          SelectedItem="{Binding SelectedMail}"
@@ -27,7 +28,7 @@
                 </ListBox>
 
                 <!-- PC Mail -->
-                <TextBlock Grid.Row="2" Text="PC Mail" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBlock Grid.Row="2" Text="{loc:Loc MailBoxEditor_PcMail}" FontWeight="Bold" Margin="0,0,0,5"/>
                 <ListBox Grid.Row="3"
                          ItemsSource="{Binding PcMail}"
                          SelectedItem="{Binding SelectedMail}"
@@ -49,23 +50,23 @@
                 <ScrollViewer>
                     <StackPanel Spacing="10" IsEnabled="{Binding SelectedMail, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <!-- Author Info -->
-                        <TextBlock Text="Author Information" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Text="{loc:Loc MailBoxEditor_AuthorInformation}" FontWeight="Bold" FontSize="14"/>
 
                         <StackPanel Spacing="5">
                             <Grid ColumnDefinitions="100,*">
-                                <TextBlock Grid.Column="0" Text="Name:" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Text="{loc:Loc MailBoxEditor_Name}" VerticalAlignment="Center"/>
                                 <TextBox Grid.Column="1" Text="{Binding AuthorName}" MaxWidth="200" HorizontalAlignment="Left"/>
                             </Grid>
                             <Grid ColumnDefinitions="100,*">
-                                <TextBlock Grid.Column="0" Text="TID:" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Text="{loc:Loc MailBoxEditor_Tid}" VerticalAlignment="Center"/>
                                 <NumericUpDown Grid.Column="1" Value="{Binding AuthorTid}" Minimum="0" Maximum="65535" MinWidth="100" HorizontalAlignment="Stretch"/>
                             </Grid>
                             <Grid ColumnDefinitions="100,*" IsVisible="{Binding ShowSid}">
-                                <TextBlock Grid.Column="0" Text="SID:" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Text="{loc:Loc MailBoxEditor_Sid}" VerticalAlignment="Center"/>
                                 <NumericUpDown Grid.Column="1" Value="{Binding AuthorSid}" Minimum="0" Maximum="65535" MinWidth="100" HorizontalAlignment="Stretch"/>
                             </Grid>
                             <Grid ColumnDefinitions="100,*">
-                                <TextBlock Grid.Column="0" Text="Language:" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Text="{loc:Loc MailBoxEditor_Language}" VerticalAlignment="Center"/>
                                 <ComboBox Grid.Column="1"
                                           ItemsSource="{Binding Languages}"
                                           SelectedIndex="{Binding SelectedLanguageIndex}"
@@ -82,11 +83,11 @@
                         <Separator Margin="0,5"/>
 
                         <!-- Mail Type -->
-                        <TextBlock Text="Mail Details" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Text="{loc:Loc MailBoxEditor_MailDetails}" FontWeight="Bold" FontSize="14"/>
 
                         <StackPanel Spacing="5">
                             <Grid ColumnDefinitions="100,*">
-                                <TextBlock Grid.Column="0" Text="Mail Type:" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Text="{loc:Loc MailBoxEditor_MailType}" VerticalAlignment="Center"/>
                                 <ComboBox Grid.Column="1"
                                           ItemsSource="{Binding MailTypes}"
                                           SelectedIndex="{Binding SelectedMailTypeIndex}"
@@ -99,7 +100,7 @@
                                 </ComboBox>
                             </Grid>
                             <Grid ColumnDefinitions="100,*">
-                                <TextBlock Grid.Column="0" Text="Appear PKM:" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Text="{loc:Loc MailBoxEditor_AppearPkm}" VerticalAlignment="Center"/>
                                 <ComboBox Grid.Column="1"
                                           ItemsSource="{Binding Species}"
                                           SelectedIndex="{Binding SelectedSpeciesIndex}"
@@ -117,15 +118,15 @@
 
                         <!-- Messages - Gen 2 (Text) -->
                         <StackPanel Spacing="5" IsVisible="{Binding ShowMessageText}">
-                            <TextBlock Text="Message" FontWeight="Bold" FontSize="14"/>
-                            <TextBox Text="{Binding MessageText1}" Watermark="Line 1" AutomationProperties.Name="Message Line 1"/>
-                            <TextBox Text="{Binding MessageText2}" Watermark="Line 2" AutomationProperties.Name="Message Line 2"/>
-                            <CheckBox Content="User Entered" IsChecked="{Binding UserEntered}"/>
+                            <TextBlock Text="{loc:Loc MailBoxEditor_Message}" FontWeight="Bold" FontSize="14"/>
+                            <TextBox Text="{Binding MessageText1}" Watermark="{loc:Loc MailBoxEditor_Line1}" AutomationProperties.Name="Message Line 1"/>
+                            <TextBox Text="{Binding MessageText2}" Watermark="{loc:Loc MailBoxEditor_Line2}" AutomationProperties.Name="Message Line 2"/>
+                            <CheckBox Content="{loc:Loc MailBoxEditor_UserEntered}" IsChecked="{Binding UserEntered}"/>
                         </StackPanel>
 
                         <!-- Messages - Gen 3-5 (Numeric) -->
                         <StackPanel Spacing="5" IsVisible="{Binding ShowMessageNud}">
-                            <TextBlock Text="Message Words" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock Text="{loc:Loc MailBoxEditor_MessageWords}" FontWeight="Bold" FontSize="14"/>
 
                             <Grid ColumnDefinitions="*,10,*,10,*" RowDefinitions="Auto,8,Auto,8,Auto">
                                 <NumericUpDown Grid.Row="0" Grid.Column="0" Value="{Binding Message00}" Minimum="0" Maximum="65535" HorizontalAlignment="Stretch" ShowButtonSpinner="False" AutomationProperties.Name="Message Word 1,1"/>
@@ -145,7 +146,7 @@
                         <Separator Margin="0,5"/>
 
                         <!-- Actions -->
-                        <Button Content="Delete Mail" Command="{Binding DeleteMailCommand}" HorizontalAlignment="Left"/>
+                        <Button Content="{loc:Loc MailBoxEditor_DeleteMail}" Command="{Binding DeleteMailCommand}" HorizontalAlignment="Left"/>
                     </StackPanel>
                 </ScrollViewer>
             </Border>
@@ -160,7 +161,7 @@
 
         <!-- Bottom Buttons -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
-            <Button Content="Save" Command="{Binding SaveCommand}" IsVisible="{Binding IsSupported}"/>
+            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" IsVisible="{Binding IsSupported}"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="PKHeX.Avalonia.Views.MemoryEditor"
              x:DataType="vm:MemoryEditorViewModel">
@@ -10,16 +11,16 @@
     <Grid RowDefinitions="*,1, Auto" Margin="10">
         <TabControl Grid.Row="0">
             <!-- Geolocation -->
-            <TabItem Header="Geolocation">
+            <TabItem Header="{loc:Loc MemoryEditor_Geolocation}">
                 <ScrollViewer>
                     <StackPanel Spacing="5" Margin="5">
-                        <TextBlock Text="Country / Region data" FontWeight="Bold"/>
+                        <TextBlock Text="{loc:Loc MemoryEditor_CountryRegionData}" FontWeight="Bold"/>
                         <!-- Slots 1-5 -->
                         <Grid ColumnDefinitions="Auto,*,*">
                             <!-- Headers -->
                             <TextBlock Grid.Column="0" Text="#" Margin="5"/>
-                            <TextBlock Grid.Column="1" Text="Country ID" Margin="5"/>
-                            <TextBlock Grid.Column="2" Text="Region ID" Margin="5"/>
+                            <TextBlock Grid.Column="1" Text="{loc:Loc MemoryEditor_CountryId}" Margin="5"/>
+                            <TextBlock Grid.Column="2" Text="{loc:Loc MemoryEditor_RegionId}" Margin="5"/>
                         </Grid>
                         
                         <!-- Row 1 -->
@@ -57,71 +58,71 @@
             </TabItem>
 
             <!-- Memories -->
-            <TabItem Header="Memories">
+            <TabItem Header="{loc:Loc MemoryEditor_Memories}">
                 <StackPanel Spacing="10" Margin="10">
-                    <TextBlock Text="Original Trainer (OT)" FontWeight="Bold"/>
+                    <TextBlock Text="{loc:Loc MemoryEditor_OriginalTrainer}" FontWeight="Bold"/>
                      <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Memory ID:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc MemoryEditor_MemoryId}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding OtMemory}" Minimum="0" Maximum="255"/>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Variable:" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{loc:Loc MemoryEditor_Variable}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding OtMemoryVar}" Minimum="0" Maximum="65535"/>
 
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Feeling:" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Loc MemoryEditor_Feeling}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding OtMemoryFeel}" Minimum="0" Maximum="255"/>
-                        
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Intensity:" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{loc:Loc MemoryEditor_Intensity}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding OtMemoryQual}" Minimum="0" Maximum="255"/>
                     </Grid>
-                    
+
                     <Separator Margin="0,10"/>
-                    
-                    <TextBlock Text="Handling Trainer (HT)" FontWeight="Bold"/>
+
+                    <TextBlock Text="{loc:Loc MemoryEditor_HandlingTrainer}" FontWeight="Bold"/>
                      <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Memory ID:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc MemoryEditor_MemoryId}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding HtMemory}" Minimum="0" Maximum="255"/>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Variable:" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{loc:Loc MemoryEditor_Variable}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding HtMemoryVar}" Minimum="0" Maximum="65535"/>
 
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Feeling:" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Loc MemoryEditor_Feeling}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding HtMemoryFeel}" Minimum="0" Maximum="255"/>
-                        
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Intensity:" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{loc:Loc MemoryEditor_Intensity}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding HtMemoryQual}" Minimum="0" Maximum="255"/>
                     </Grid>
                 </StackPanel>
             </TabItem>
-            
+
             <!-- Amie / Affection -->
-            <TabItem Header="Affection">
+            <TabItem Header="{loc:Loc MemoryEditor_Affection}">
                  <StackPanel Spacing="10" Margin="10">
                     <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Fullness:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc MemoryEditor_Fullness}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding Fullness}" Minimum="0" Maximum="255"/>
-                        
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Enjoyment:" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{loc:Loc MemoryEditor_Enjoyment}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Enjoyment}" Minimum="0" Maximum="255"/>
-                        
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="OT Friendship:" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Loc MemoryEditor_OtFriendship}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding OtFriendship}" Minimum="0" Maximum="255"/>
-                        
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="HT Friendship:" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{loc:Loc MemoryEditor_HtFriendship}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding HtFriendship}" Minimum="0" Maximum="255"/>
-                        
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="OT Affection:" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Loc MemoryEditor_OtAffection}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding OtAffection}" Minimum="0" Maximum="255"/>
-                        
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="HT Affection:" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="{loc:Loc MemoryEditor_HtAffection}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="5" Grid.Column="1" Value="{Binding HtAffection}" Minimum="0" Maximum="255"/>
                     </Grid>
                  </StackPanel>
             </TabItem>
         </TabControl>
-        
+
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-            <Button Content="Cancel" Command="{Binding CloseCommand}"/>
-            <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent"/>
+            <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CloseCommand}"/>
+            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent"/>
         </StackPanel>
     </Grid>
 </UserControl>

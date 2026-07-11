@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -91,7 +92,7 @@ public partial class DLC5EditorViewModel : ViewModelBase
         var data = await File.ReadAllBytesAsync(result);
         if (data.Length != CGearBackground.SIZE)
         {
-            await _dialogService.ShowErrorAsync("Error", $"Current file size: {data.Length} bytes\nExpected size: {CGearBackground.SIZE} bytes");
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Common_Error"], LocalizedStrings.Instance.Format("DLC5Editor_CGearSizeMismatch", data.Length, CGearBackground.SIZE));
             return;
         }
 
@@ -109,12 +110,12 @@ public partial class DLC5EditorViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-             await _dialogService.ShowErrorAsync("Error", ex.Message);
+             await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Common_Error"], ex.Message);
              return;
         }
 
         _sav.SetCGearSkin(temp.Data);
-        await _dialogService.ShowInformationAsync("Success", "C-Gear Skin imported successfully.");
+        await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["DLC5Editor_SuccessTitle"], LocalizedStrings.Instance["DLC5Editor_CGearImportSuccess"]);
     }
 
     [RelayCommand]
@@ -137,14 +138,14 @@ public partial class DLC5EditorViewModel : ViewModelBase
         var data = await File.ReadAllBytesAsync(result);
         if (data.Length != size)
         {
-             await _dialogService.ShowErrorAsync("Error", $"Invalid file size. Expected {size} bytes.");
+             await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Common_Error"], LocalizedStrings.Instance.Format("DLC5Editor_InvalidFileSizeBytes", size));
              return;
         }
 
         _sav.SetMusical(data);
         var musical = new MusicalShow5(data);
         _sav.Musical.MusicalName = musical.IsUninitialized ? "" : Path.GetFileNameWithoutExtension(result).Trim();
-        await _dialogService.ShowInformationAsync("Success", "Musical data imported.");
+        await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["DLC5Editor_SuccessTitle"], LocalizedStrings.Instance["DLC5Editor_MusicalImported"]);
     }
 
     [RelayCommand]
@@ -166,12 +167,12 @@ public partial class DLC5EditorViewModel : ViewModelBase
         var data = await File.ReadAllBytesAsync(result);
         if (data.Length != _sav.PokedexSkinData.Length)
         {
-             await _dialogService.ShowErrorAsync("Error", $"Invalid file size. Expected {_sav.PokedexSkinData.Length} bytes.");
+             await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Common_Error"], LocalizedStrings.Instance.Format("DLC5Editor_InvalidFileSizeBytes", _sav.PokedexSkinData.Length));
              return;
         }
 
         _sav.SetPokeDexSkin(data);
-        await _dialogService.ShowInformationAsync("Success", "Pokédex Skin imported.");
+        await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["DLC5Editor_SuccessTitle"], LocalizedStrings.Instance["DLC5Editor_PokedexImported"]);
     }
 
     [RelayCommand]
@@ -194,7 +195,7 @@ public partial class DLC5EditorViewModel : ViewModelBase
         var data = await File.ReadAllBytesAsync(result);
         if (data.Length != WorldTournament5.SIZE)
         {
-             await _dialogService.ShowErrorAsync("Error", $"Invalid file size. Expected {WorldTournament5.SIZE} bytes.");
+             await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Common_Error"], LocalizedStrings.Instance.Format("DLC5Editor_InvalidFileSizeBytes", WorldTournament5.SIZE));
              return;
         }
 
@@ -227,7 +228,7 @@ public partial class DLC5EditorViewModel : ViewModelBase
         var data = await File.ReadAllBytesAsync(result);
         if (data.Length != PokestarMovie5.SIZE)
         {
-             await _dialogService.ShowErrorAsync("Error", $"Invalid file size. Expected {PokestarMovie5.SIZE} bytes.");
+             await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Common_Error"], LocalizedStrings.Instance.Format("DLC5Editor_InvalidFileSizeBytes", PokestarMovie5.SIZE));
              return;
         }
 
@@ -257,7 +258,7 @@ public partial class DLC5EditorViewModel : ViewModelBase
         var data = await File.ReadAllBytesAsync(result);
         if (data.Length != BattleVideo5.SIZE)
         {
-             await _dialogService.ShowErrorAsync("Error", $"Invalid file size. Expected {BattleVideo5.SIZE} bytes.");
+             await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Common_Error"], LocalizedStrings.Instance.Format("DLC5Editor_InvalidFileSizeBytes", BattleVideo5.SIZE));
              return;
         }
 
@@ -300,11 +301,11 @@ public partial class DLC5EditorViewModel : ViewModelBase
         
         if (data.Length != size)
         {
-            await _dialogService.ShowErrorAsync("Error", $"Invalid size. Expected {size}.");
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["Common_Error"], LocalizedStrings.Instance.Format("DLC5Editor_InvalidSizeExpected", size));
             return;
         }
         setter(data);
-        await _dialogService.ShowInformationAsync("Success", "Memory Link data imported.");
+        await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["DLC5Editor_SuccessTitle"], LocalizedStrings.Instance["DLC5Editor_MemoryLinkImported"]);
     }
 
     [RelayCommand]

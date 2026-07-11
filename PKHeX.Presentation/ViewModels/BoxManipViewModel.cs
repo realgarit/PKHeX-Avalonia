@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -79,14 +80,14 @@ public partial class BoxManipViewModel : ViewModelBase
                 ? manip.GetSuccess(ApplyToAllBoxes) + $" ({count} slots affected)" 
                 : manip.GetFail(ApplyToAllBoxes);
             
-            await _dialogService.ShowInformationAsync("Box Manipulation", message);
-            
+            await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["BoxManip_Title"], message);
+
             if (count > 0)
                 _onComplete?.Invoke();
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Box Manipulation Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BoxManip_ErrorTitle"], ex.Message);
         }
     }
 }

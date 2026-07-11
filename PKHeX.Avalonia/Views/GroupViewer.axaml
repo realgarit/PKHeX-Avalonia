@@ -20,9 +20,9 @@
     <Grid RowDefinitions="Auto, *, Auto" Margin="10">
         <!-- Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-            <Button Content="&lt;" Command="{Binding PreviousGroupCommand}" AutomationProperties.Name="Previous Group"/>
+            <Button Content="&#60;" Command="{Binding PreviousGroupCommand}" AutomationProperties.Name="Previous Group"/>
             <ComboBox ItemsSource="{Binding GroupNames}" SelectedIndex="{Binding CurrentGroupIndex}" MinWidth="180" MaxDropDownHeight="400" AutomationProperties.Name="Group Selection"/>
-            <Button Content="&gt;" Command="{Binding NextGroupCommand}" AutomationProperties.Name="Next Group"/>
+            <Button Content="&#62;" Command="{Binding NextGroupCommand}" AutomationProperties.Name="Next Group"/>
         </StackPanel>
 
         <!-- Slots -->

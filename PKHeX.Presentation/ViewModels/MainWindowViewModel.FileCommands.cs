@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -9,7 +10,7 @@ public partial class MainWindowViewModel
     private async Task OpenFileAsync()
     {
         var path = await _dialogService.OpenFileAsync(
-            "Open Save File",
+            T("File_OpenSaveFileTitle"),
             FileDialogFilters.OpenSaveFile);
 
         if (string.IsNullOrEmpty(path))
@@ -22,11 +23,11 @@ public partial class MainWindowViewModel
     {
         var success = await _saveFileService.LoadSaveFileAsync(path);
         if (!success)
-            await _dialogService.ShowErrorAsync("Error", $"Could not load the save file at:\n{path}");
+            await _dialogService.ShowErrorAsync(T("Common_Error"), LocalizedStrings.Instance.Format("File_CouldNotLoadSave", path));
     }
 
     // Fired by BoxViewer/PartyViewer when an OS file dropped onto a slot turns out to be a save
-    // file rather than a Pokémon entity; routed through the same "open save" path as File > Open.
+    // file rather than a Pokémon entity; routed through the same open-save path as File > Open.
     private void OnSaveFileDropRequested(string path) => _ = OpenSaveFilePathAsync(path);
 
     /// <summary>
@@ -65,7 +66,7 @@ public partial class MainWindowViewModel
             }
         }
 
-        await _dialogService.ShowErrorAsync("Import Failed", "No supported Pokémon or save file was found in the dropped file(s).");
+        await _dialogService.ShowErrorAsync(T("File_ImportFailedTitle"), T("File_NoSupportedFileFound"));
     }
 
     private object? TryGetSupportedFile(string path)
@@ -79,19 +80,19 @@ public partial class MainWindowViewModel
     {
         var success = await _saveFileService.SaveFileAsync();
         if (!success)
-            await _dialogService.ShowErrorAsync("Error", "Failed to save file.");
+            await _dialogService.ShowErrorAsync(T("Common_Error"), T("File_FailedToSaveFile"));
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task SaveFileAsAsync()
     {
-        var path = await _dialogService.SaveFileAsync("Save As", CurrentSave?.Metadata.FileName);
+        var path = await _dialogService.SaveFileAsync(T("File_SaveAsTitle"), CurrentSave?.Metadata.FileName);
         if (string.IsNullOrEmpty(path))
             return;
 
         var success = await _saveFileService.SaveFileAsync(path);
         if (!success)
-            await _dialogService.ShowErrorAsync("Error", "Failed to save file.");
+            await _dialogService.ShowErrorAsync(T("Common_Error"), T("File_FailedToSaveFile"));
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
@@ -106,7 +107,7 @@ public partial class MainWindowViewModel
         var result = new ImportShowdownSetUseCase().Execute(CurrentSave, text);
         if (!result.Success)
         {
-            await _dialogService.ShowErrorAsync("Import Failed", result.Error!);
+            await _dialogService.ShowErrorAsync(T("File_ImportFailedTitle"), result.Error!);
             return;
         }
 
@@ -132,7 +133,7 @@ public partial class MainWindowViewModel
         var pk = CurrentPokemonEditor.PreparePKM();
         if (pk.Species == 0)
         {
-            await _dialogService.ShowErrorAsync("QR Code", "Load a Pokémon into the editor first.");
+            await _dialogService.ShowErrorAsync(T("Menu_Tools_QRCode"), T("File_LoadPokemonFirst"));
             return;
         }
 
@@ -140,12 +141,12 @@ public partial class MainWindowViewModel
         var png = _qrCodeService.GeneratePng(message);
         var species = GameInfo.Strings.Species[pk.Species];
         var caption = pk.Format == 7
-            ? $"{species} — scannable by the Gen 7 in-game QR Scanner."
-            : $"{species} — raw data QR (import via PKHeX's QR import).";
+            ? LocalizedStrings.Instance.Format("File_QrCaptionGen7", species)
+            : LocalizedStrings.Instance.Format("File_QrCaptionRaw", species);
 
         await _windowService.ShowDialogAsync(
             new QrCodeViewModel(png, caption, $"{species}_qr.png", _dialogService),
-            "QR Code");
+            T("Menu_Tools_QRCode"));
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
@@ -153,7 +154,7 @@ public partial class MainWindowViewModel
     {
         if (CurrentSave is null || CurrentPokemonEditor is null) return;
 
-        var path = await _dialogService.OpenFileAsync("Open QR Code Image", ["*.png", "*.jpg", "*.jpeg", "*.bmp"]);
+        var path = await _dialogService.OpenFileAsync(T("File_OpenQrCodeImageTitle"), ["*.png", "*.jpg", "*.jpeg", "*.bmp"]);
         if (string.IsNullOrEmpty(path)) return;
 
         string? message;
@@ -163,21 +164,21 @@ public partial class MainWindowViewModel
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("QR Import Failed", $"Could not read the image.\n\n{ex.Message}");
+            await _dialogService.ShowErrorAsync(T("File_QrImportFailedTitle"), LocalizedStrings.Instance.Format("File_CouldNotReadImage", ex.Message));
             return;
         }
 
         if (message is null)
         {
-            await _dialogService.ShowErrorAsync("QR Import Failed", "No QR code was found in the image.");
+            await _dialogService.ShowErrorAsync(T("File_QrImportFailedTitle"), T("File_NoQrCodeFound"));
             return;
         }
 
         var pk = QRMessageUtil.GetPKM(message, CurrentSave.Context);
         if (pk is null)
         {
-            await _dialogService.ShowErrorAsync("QR Import Failed",
-                "The QR code was read, but it does not contain Pokémon data compatible with this save.");
+            await _dialogService.ShowErrorAsync(T("File_QrImportFailedTitle"),
+                T("File_QrIncompatibleData"));
             return;
         }
 
@@ -196,16 +197,16 @@ public partial class MainWindowViewModel
             var detail = result.SetErrors.Count > 0
                 ? $"{result.FatalError}\n\n{string.Join("\n", result.SetErrors)}"
                 : result.FatalError!;
-            await _dialogService.ShowErrorAsync("Import Team Failed", detail);
+            await _dialogService.ShowErrorAsync(T("File_ImportTeamFailedTitle"), detail);
             return;
         }
 
         BoxViewer.RefreshCurrentBox();
 
-        var message = $"Imported {result.Imported} Pokémon into the current box.";
+        var message = LocalizedStrings.Instance.Format("File_ImportedPokemonIntoBox", result.Imported);
         if (result.SetErrors.Count > 0)
-            message += $"\n\nSkipped sets:\n{string.Join("\n", result.SetErrors)}";
-        await _dialogService.ShowInformationAsync("Import Team", message);
+            message += "\n\n" + LocalizedStrings.Instance.Format("File_SkippedSets", string.Join("\n", result.SetErrors));
+        await _dialogService.ShowInformationAsync(T("File_ImportTeamTitle"), message);
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
@@ -216,7 +217,7 @@ public partial class MainWindowViewModel
         var text = new ExportShowdownBoxUseCase().Execute(CurrentSave, BoxViewer.CurrentBox);
         if (text.Length == 0)
         {
-            await _dialogService.ShowInformationAsync("Export Box", "The current box is empty.");
+            await _dialogService.ShowInformationAsync(T("File_ExportBoxTitle"), T("File_CurrentBoxEmpty"));
             return;
         }
         await _clipboardService.SetTextAsync(text);
@@ -230,7 +231,7 @@ public partial class MainWindowViewModel
         var text = new ExportShowdownBoxUseCase().ExecuteAll(CurrentSave);
         if (text.Length == 0)
         {
-            await _dialogService.ShowInformationAsync("Export All Boxes", "All boxes are empty.");
+            await _dialogService.ShowInformationAsync(T("File_ExportAllBoxesTitle"), T("File_AllBoxesEmpty"));
             return;
         }
         await _clipboardService.SetTextAsync(text);
@@ -244,7 +245,7 @@ public partial class MainWindowViewModel
         var vm = new PKMDatabaseViewModel(CurrentSave, _spriteRenderer, _dialogService);
         vm.PokemonSelected += pk => CurrentPokemonEditor?.LoadPKM(pk);
 
-        await _windowService.ShowDialogAsync(vm, "PKM Database");
+        await _windowService.ShowDialogAsync(vm, T("Menu_Data_PKMDatabase"));
     }
 
     // Cached so re-invoking the menu item focuses the existing tool window instead of
@@ -270,7 +271,7 @@ public partial class MainWindowViewModel
             _boxReport.Refresh();
         }
 
-        _windowService.ShowTool(_boxReport, "Box Data Report");
+        _windowService.ShowTool(_boxReport, T("File_BoxDataReportTitle"));
     }
 
     // Cached so re-invoking the menu item focuses the existing tool window instead of
@@ -295,7 +296,7 @@ public partial class MainWindowViewModel
             };
         }
 
-        _windowService.ShowTool(_legalityAudit, "Legality Audit");
+        _windowService.ShowTool(_legalityAudit, T("File_LegalityAuditTitle"));
     }
 
     // Cached so re-invoking the menu item focuses the existing tool window instead of
@@ -318,7 +319,7 @@ public partial class MainWindowViewModel
             _backupManager.Refresh();
         }
 
-        _windowService.ShowTool(_backupManager, "Backup Manager");
+        _windowService.ShowTool(_backupManager, T("File_BackupManagerTitle"));
     }
 
     private SaveDiffViewModel? _saveDiff;
@@ -333,7 +334,7 @@ public partial class MainWindowViewModel
         else
             _saveDiff.RefreshBackups();
 
-        _windowService.ShowTool(_saveDiff, "Compare Saves");
+        _windowService.ShowTool(_saveDiff, T("File_CompareSavesTitle"));
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
@@ -344,7 +345,7 @@ public partial class MainWindowViewModel
         var vm = new MysteryGiftDatabaseViewModel(CurrentSave, _spriteRenderer, _dialogService);
         vm.GiftSelected += mg => CurrentPokemonEditor?.LoadPKM(mg.ConvertToPKM(CurrentSave));
 
-        await _windowService.ShowDialogAsync(vm, "Mystery Gift Database");
+        await _windowService.ShowDialogAsync(vm, T("Menu_Data_MysteryGiftDatabase"));
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
@@ -352,17 +353,17 @@ public partial class MainWindowViewModel
     {
         if (CurrentSave is null) return;
 
-        var path = await _dialogService.OpenFolderAsync("Select Folder to Dump Boxes");
+        var path = await _dialogService.OpenFolderAsync(T("File_SelectFolderDumpBoxes"));
         if (string.IsNullOrEmpty(path)) return;
 
         var result = new DumpBoxesUseCase().Execute(CurrentSave, path);
         if (!result.Success)
         {
-            await _dialogService.ShowErrorAsync("Dump Boxes", result.Message);
+            await _dialogService.ShowErrorAsync(T("Menu_Data_DumpBoxes"), result.Message);
             return;
         }
 
-        await _dialogService.ShowInformationAsync("Dump Boxes", result.Message);
+        await _dialogService.ShowInformationAsync(T("Menu_Data_DumpBoxes"), result.Message);
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
@@ -370,7 +371,7 @@ public partial class MainWindowViewModel
     {
         if (CurrentSave is null) return;
 
-        var path = await _dialogService.OpenFolderAsync("Select Folder to Load Boxes");
+        var path = await _dialogService.OpenFolderAsync(T("File_SelectFolderLoadBoxes"));
         if (string.IsNullOrEmpty(path)) return;
 
         var result = new LoadBoxesUseCase().Execute(CurrentSave, path);
@@ -378,8 +379,8 @@ public partial class MainWindowViewModel
         BoxViewer?.RefreshCurrentBox();
 
         if (!result.Success)
-            await _dialogService.ShowErrorAsync("Load Boxes", result.Message);
+            await _dialogService.ShowErrorAsync(T("Menu_Data_LoadBoxes"), result.Message);
         else
-            await _dialogService.ShowInformationAsync("Load Boxes", result.Message);
+            await _dialogService.ShowInformationAsync(T("Menu_Data_LoadBoxes"), result.Message);
     }
 }

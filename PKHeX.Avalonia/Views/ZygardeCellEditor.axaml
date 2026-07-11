@@ -1,33 +1,34 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.ZygardeCellEditor"
              x:DataType="vm:ZygardeCellEditorViewModel">
 
     <Border Padding="16" Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Zygarde Cells not available" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
-                <TextBlock Text="This feature is only available for Sun/Moon and Ultra Sun/Ultra Moon." HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
+                <TextBlock Text="{loc:Loc ZygardeCellEditor_NotAvailable}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
+                <TextBlock Text="{loc:Loc ZygardeCellEditor_NotAvailableDesc}" HorizontalAlignment="Center" Opacity="0.5" Margin="0,8,0,0" />
             </StackPanel>
 
             <DockPanel IsVisible="{Binding IsSupported}">
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Zygarde Cell Editor" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc ZygardeCellEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                        <Button Content="Collect All" Command="{Binding CollectAllCommand}" Padding="12,6" />
-                        <Button Content="Refresh" Command="{Binding RefreshCommand}" Padding="12,6" />
+                        <Button Content="{loc:Loc ZygardeCellEditor_CollectAll}" Command="{Binding CollectAllCommand}" Padding="12,6" />
+                        <Button Content="{loc:Loc ZygardeCellEditor_Refresh}" Command="{Binding RefreshCommand}" Padding="12,6" />
                     </StackPanel>
                 </DockPanel>
 
                 <!-- Totals -->
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="16" Margin="0,0,0,12">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBlock Text="Cells Total:" VerticalAlignment="Center" />
+                        <TextBlock Text="{loc:Loc ZygardeCellEditor_CellsTotal}" VerticalAlignment="Center" />
                         <NumericUpDown Value="{Binding CellsTotal}" Minimum="0" Maximum="999" Width="100" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBlock Text="Cells Collected:" VerticalAlignment="Center" />
+                        <TextBlock Text="{loc:Loc ZygardeCellEditor_CellsCollected}" VerticalAlignment="Center" />
                         <NumericUpDown Value="{Binding CellsCollected}" Minimum="0" Maximum="999" Width="100" />
                     </StackPanel>
                 </StackPanel>
@@ -41,9 +42,9 @@
                                     <TextBlock Text="{Binding Index, StringFormat='#{0}'}" VerticalAlignment="Center" FontWeight="SemiBold" />
                                     <TextBlock Grid.Column="1" Text="{Binding Location}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Location}" />
                                     <ComboBox Grid.Column="2" SelectedIndex="{Binding State}" Width="110" AutomationProperties.Name="Status">
-                                        <ComboBoxItem Content="None" />
-                                        <ComboBoxItem Content="Available" />
-                                        <ComboBoxItem Content="Received" />
+                                        <ComboBoxItem Content="{loc:Loc ZygardeCellEditor_None}" />
+                                        <ComboBoxItem Content="{loc:Loc ZygardeCellEditor_Available}" />
+                                        <ComboBoxItem Content="{loc:Loc ZygardeCellEditor_Received}" />
                                     </ComboBox>
                                 </Grid>
                             </DataTemplate>

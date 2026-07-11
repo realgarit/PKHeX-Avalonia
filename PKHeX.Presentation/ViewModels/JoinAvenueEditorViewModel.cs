@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Application.Abstractions;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -33,7 +34,7 @@ public partial class JoinAvenueEditorViewModel : ViewModelBase
     public bool IsSupported { get; }
 
     /// <summary>Human-readable description of the loaded game, or an unsupported notice.</summary>
-    public string GameInfo { get; } = "No Generation 5 B2W2 save loaded.";
+    public string GameInfo { get; } = LocalizedStrings.Instance["JoinAvenue_NotLoaded"];
 
     /// <summary>Gate used by the host before constructing the editor.</summary>
     public static bool IsSupportedSave(SaveFile sav) => sav is SAV5B2W2;
@@ -49,7 +50,7 @@ public partial class JoinAvenueEditorViewModel : ViewModelBase
         _dialogService = dialogService;
         _block = sav.JoinAvenue;
         IsSupported = true;
-        GameInfo = $"{sav.Version} — Join Avenue (B2W2)";
+        GameInfo = LocalizedStrings.Instance.Format("JoinAvenue_GameInfo", sav.Version);
 
         var block = _block;
         var settings = block.Settings;
@@ -217,15 +218,15 @@ public partial class JoinAvenueEditorViewModel : ViewModelBase
             var data = await File.ReadAllBytesAsync(path);
             if (data.Length != expectedLength)
             {
-                await _dialogService.ShowErrorAsync("Import Error",
-                    $"Entity size mismatch. Expected {expectedLength} bytes, got {data.Length} bytes.");
+                await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["JoinAvenue_ImportErrorTitle"],
+                    LocalizedStrings.Instance.Format("JoinAvenue_SizeMismatch", expectedLength, data.Length));
                 return null;
             }
             return data;
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Import Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["JoinAvenue_ImportErrorTitle"], ex.Message);
             return null;
         }
     }
@@ -242,7 +243,7 @@ public partial class JoinAvenueEditorViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Export Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["JoinAvenue_ExportErrorTitle"], ex.Message);
         }
     }
 

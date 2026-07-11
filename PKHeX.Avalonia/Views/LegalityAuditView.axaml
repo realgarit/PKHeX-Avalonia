@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="650"
              x:Class="PKHeX.Avalonia.Views.LegalityAuditView"
              x:DataType="vm:LegalityAuditViewModel"
@@ -12,17 +13,17 @@
         <Border DockPanel.Dock="Top" Padding="12,8">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
-                    <Button Content="Run Audit" Classes="accent" Command="{Binding RunCommand}" />
-                    <Button Content="Cancel" Command="{Binding CancelCommand}" />
-                    <Button Content="Export CSV" Command="{Binding ExportCsvCommand}" />
-                    <Button Content="Export Text" Command="{Binding ExportTextCommand}" />
-                    <Button Content="Copy Selected Report" Command="{Binding CopySelectedReportCommand}" />
+                    <Button Content="{loc:Loc LegalityAuditView_RunAudit}" Classes="accent" Command="{Binding RunCommand}" />
+                    <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" />
+                    <Button Content="{loc:Loc LegalityAuditView_ExportCsv}" Command="{Binding ExportCsvCommand}" />
+                    <Button Content="{loc:Loc LegalityAuditView_ExportText}" Command="{Binding ExportTextCommand}" />
+                    <Button Content="{loc:Loc LegalityAuditView_CopySelectedReport}" Command="{Binding CopySelectedReportCommand}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock Text="Verdict:" VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc LegalityAuditView_Verdict}" VerticalAlignment="Center" />
                     <ComboBox ItemsSource="{Binding VerdictFilterOptions}" SelectedItem="{Binding VerdictFilter}" Width="90" />
-                    <TextBlock Text="Filter:" VerticalAlignment="Center" />
-                    <TextBox Text="{Binding TextFilter}" Watermark="species, nickname, or failed check..." Width="240" />
+                    <TextBlock Text="{loc:Loc LegalityAuditView_Filter}" VerticalAlignment="Center" />
+                    <TextBox Text="{Binding TextFilter}" Watermark="{loc:Loc LegalityAuditView_FilterWatermark}" Width="240" />
                 </StackPanel>
             </DockPanel>
         </Border>
@@ -40,13 +41,13 @@
                   GridLinesVisibility="All" BorderThickness="1"
                   BorderBrush="{DynamicResource ThemeBorderBrush}"
                   DoubleTapped="OnRowDoubleTapped"
-                  ToolTip.Tip="Double-click a row to jump to that Pokémon in the editor">
+                  ToolTip.Tip="{loc:Loc LegalityAuditView_RowTooltip}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Location" Binding="{Binding Position}" Width="90"/>
-                <DataGridTextColumn Header="Species" Binding="{Binding Species}" Width="120"/>
-                <DataGridTextColumn Header="Nickname" Binding="{Binding Nickname}" Width="110"/>
-                <DataGridTextColumn Header="Verdict" Binding="{Binding Verdict}" Width="70"/>
-                <DataGridTextColumn Header="Failed Checks" Binding="{Binding FailureSummary}" Width="*"/>
+                <DataGridTextColumn Header="{loc:Loc LegalityAuditView_Location}" Binding="{Binding Position}" Width="90"/>
+                <DataGridTextColumn Header="{loc:Loc LegalityAuditView_Species}" Binding="{Binding Species}" Width="120"/>
+                <DataGridTextColumn Header="{loc:Loc LegalityAuditView_Nickname}" Binding="{Binding Nickname}" Width="110"/>
+                <DataGridTextColumn Header="{loc:Loc LegalityAuditView_VerdictHeader}" Binding="{Binding Verdict}" Width="70"/>
+                <DataGridTextColumn Header="{loc:Loc LegalityAuditView_FailedChecks}" Binding="{Binding FailureSummary}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

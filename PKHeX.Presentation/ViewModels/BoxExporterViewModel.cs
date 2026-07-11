@@ -4,6 +4,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -65,12 +66,12 @@ public partial class BoxExporterViewModel : ViewModelBase
         try
         {
             int count = BoxExport.Export(_sav, folder, namer, settings);
-            await _dialogService.ShowInformationAsync("Export Complete", $"Exported {count} Pokémon to {folder}");
+            await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["BoxExporter_ExportCompleteTitle"], LocalizedStrings.Instance.Format("BoxExporter_ExportCompleteMessage", count, folder));
             CloseRequested?.Invoke();
         }
         catch (Exception ex)
         {
-            await _dialogService.ShowErrorAsync("Export Error", ex.Message);
+            await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["BoxExporter_ExportErrorTitle"], ex.Message);
         }
     }
 }

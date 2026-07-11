@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.PokebeanEditor"
              x:DataType="vm:PokebeanEditorViewModel">
 
@@ -10,11 +11,11 @@
             <StackPanel VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Poké Beans not available"
+                <TextBlock Text="{loc:Loc PokebeanEditor_NotAvailable}"
                            FontSize="18"
                            HorizontalAlignment="Center"
                            Opacity="0.7" />
-                <TextBlock Text="This save type does not support Poké Beans (Gen 7 SM/USUM only)."
+                <TextBlock Text="{loc:Loc PokebeanEditor_NotAvailableDescription}"
                            HorizontalAlignment="Center"
                            Opacity="0.5"
                            Margin="0,8,0,0" />
@@ -24,11 +25,11 @@
             <DockPanel IsVisible="{Binding IsSupported}">
                 <!-- Header -->
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Poké Bean Editor" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc PokebeanEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                        <Button Content="Fill All" Command="{Binding FillAllCommand}" Padding="12,6" />
-                        <Button Content="Clear All" Command="{Binding ClearAllCommand}" Padding="12,6" />
-                        <Button Content="Refresh" Command="{Binding RefreshCommand}" Padding="12,6" />
+                        <Button Content="{loc:Loc PokebeanEditor_FillAll}" Command="{Binding FillAllCommand}" Padding="12,6" />
+                        <Button Content="{loc:Loc PokebeanEditor_ClearAll}" Command="{Binding ClearAllCommand}" Padding="12,6" />
+                        <Button Content="{loc:Loc PokebeanEditor_Refresh}" Command="{Binding RefreshCommand}" Padding="12,6" />
                     </StackPanel>
                 </DockPanel>
 

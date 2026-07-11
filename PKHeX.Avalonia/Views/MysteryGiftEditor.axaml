@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.MysteryGiftEditor"
              x:DataType="vm:MysteryGiftEditorViewModel">
 
@@ -10,11 +11,11 @@
             <StackPanel VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Mystery Gifts not available"
+                <TextBlock Text="{loc:Loc MysteryGiftEditor_NotAvailable}"
                            FontSize="18"
                            HorizontalAlignment="Center"
                            Opacity="0.7" />
-                <TextBlock Text="This save type does not support mystery gift storage."
+                <TextBlock Text="{loc:Loc MysteryGiftEditor_NotAvailableDescription}"
                            HorizontalAlignment="Center"
                            Opacity="0.5"
                            Margin="0,8,0,0" />
@@ -24,14 +25,14 @@
             <DockPanel IsVisible="{Binding IsSupported}">
                 <!-- Header -->
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Mystery Gifts" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc MysteryGiftEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding GiftCount, StringFormat='({0} slots)'}"
                                VerticalAlignment="Center"
                                Opacity="0.6"
                                Margin="8,0,0,0" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                        <Button Content="Reset" Command="{Binding ResetCommand}" Padding="12,6" />
-                        <Button Content="Apply" Command="{Binding SaveCommand}" Classes="accent" Padding="12,6" />
+                        <Button Content="{loc:Loc MysteryGiftEditor_Reset}" Command="{Binding ResetCommand}" Padding="12,6" />
+                        <Button Content="{loc:Loc MysteryGiftEditor_Apply}" Command="{Binding SaveCommand}" Classes="accent" Padding="12,6" />
                     </StackPanel>
                 </DockPanel>
 
@@ -82,7 +83,7 @@
                                 CornerRadius="4"
                                 Padding="16">
                             <StackPanel Spacing="16" DataContext="{Binding SelectedGift}">
-                                <TextBlock Text="Selected Gift"
+                                <TextBlock Text="{loc:Loc MysteryGiftEditor_SelectedGift}"
                                            FontWeight="SemiBold"
                                            FontSize="16" />
 
@@ -93,22 +94,22 @@
                                     <TextBlock Text="{Binding Summary}" Opacity="0.7" />
                                 </StackPanel>
 
-                                <TextBlock Text="(Empty slot)"
+                                <TextBlock Text="{loc:Loc MysteryGiftEditor_EmptySlot}"
                                            Opacity="0.5"
                                            IsVisible="{Binding IsEmpty}" />
 
                                 <!-- Actions -->
                                 <StackPanel Spacing="8" Margin="0,16,0,0">
-                                    <Button Content="Import..."
+                                    <Button Content="{loc:Loc MysteryGiftEditor_Import}"
                                             Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).ImportGiftCommand}"
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Center" />
-                                    <Button Content="Export..."
+                                    <Button Content="{loc:Loc MysteryGiftEditor_Export}"
                                             Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).ExportGiftCommand}"
                                             IsEnabled="{Binding !IsEmpty}"
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Center" />
-                                    <Button Content="Delete"
+                                    <Button Content="{loc:Loc Common_Delete}"
                                             Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).DeleteGiftCommand}"
                                             IsEnabled="{Binding !IsEmpty}"
                                             HorizontalAlignment="Stretch"
@@ -125,8 +126,8 @@
                                 Padding="16"
                                 Height="200">
                              <DockPanel>
-                                 <TextBlock DockPanel.Dock="Top" Text="Received Flags" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                                 <Button DockPanel.Dock="Bottom" Content="Delete Flag" 
+                                 <TextBlock DockPanel.Dock="Top" Text="{loc:Loc MysteryGiftEditor_ReceivedFlags}" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                 <Button DockPanel.Dock="Bottom" Content="{loc:Loc MysteryGiftEditor_DeleteFlag}"
                                          Command="{Binding DeleteFlagCommand}" 
                                          HorizontalAlignment="Stretch" Margin="0,8,0,0"/>
                                  <ListBox ItemsSource="{Binding ReceivedFlags}" SelectedItem="{Binding SelectedReceivedFlag}" 

@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.FestivalPlazaEditor"
              x:DataType="vm:FestivalPlazaEditorViewModel">
 
@@ -10,11 +11,11 @@
             <StackPanel VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         IsVisible="{Binding !IsSupported}">
-                <TextBlock Text="Festival Plaza not available"
+                <TextBlock Text="{loc:Loc FestivalPlazaEditor_NotAvailable}"
                            FontSize="18"
                            HorizontalAlignment="Center"
                            Opacity="0.7" />
-                <TextBlock Text="This save type does not support Festival Plaza (Gen 7 SM/USUM only)."
+                <TextBlock Text="{loc:Loc FestivalPlazaEditor_NotSupportedDetail}"
                            HorizontalAlignment="Center"
                            Opacity="0.5"
                            Margin="0,8,0,0" />
@@ -24,8 +25,8 @@
             <DockPanel IsVisible="{Binding IsSupported}">
                 <!-- Header -->
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="Festival Plaza Editor" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                    <Button Content="Refresh"
+                    <TextBlock Text="{loc:Loc FestivalPlazaEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <Button Content="{loc:Loc FestivalPlazaEditor_Refresh}"
                             Command="{Binding RefreshCommand}"
                             HorizontalAlignment="Right"
                             Padding="12,6" />
@@ -39,22 +40,22 @@
                             CornerRadius="4"
                             Padding="16">
                         <StackPanel Spacing="16">
-                            <TextBlock Text="Plaza Info" FontWeight="SemiBold" FontSize="14" />
+                            <TextBlock Text="{loc:Loc FestivalPlazaEditor_PlazaInfo}" FontWeight="SemiBold" FontSize="14" />
 
                             <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto">
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Plaza Name:" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc FestivalPlazaEditor_PlazaName}" VerticalAlignment="Center" />
                                 <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding PlazaName}" />
 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Rank:" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Loc FestivalPlazaEditor_Rank}" VerticalAlignment="Center" />
                                 <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Rank}" Minimum="1" Maximum="999" />
 
-                                <TextBlock Grid.Row="4" Grid.Column="0" Text="FC Range:" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Loc FestivalPlazaEditor_FcRange}" VerticalAlignment="Center" />
                                 <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding RankFCRange}" VerticalAlignment="Center" Opacity="0.7" />
 
-                                <TextBlock Grid.Row="6" Grid.Column="0" Text="Current FC:" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="6" Grid.Column="0" Text="{loc:Loc FestivalPlazaEditor_CurrentFc}" VerticalAlignment="Center" />
                                 <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding CurrentFC}" Minimum="0" Maximum="9999999" />
 
-                                <TextBlock Grid.Row="8" Grid.Column="0" Text="Total FC:" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="8" Grid.Column="0" Text="{loc:Loc FestivalPlazaEditor_TotalFc}" VerticalAlignment="Center" />
                                 <TextBlock Grid.Row="8" Grid.Column="2" Text="{Binding TotalFC}" VerticalAlignment="Center" FontWeight="SemiBold" />
                             </Grid>
                         </StackPanel>
@@ -66,7 +67,7 @@
                             CornerRadius="4"
                             Padding="16">
                         <DockPanel>
-                            <TextBlock DockPanel.Dock="Top" Text="Facilities" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,12" />
+                            <TextBlock DockPanel.Dock="Top" Text="{loc:Loc FestivalPlazaEditor_Facilities}" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,12" />
 
                             <Grid RowDefinitions="*,8,Auto">
                                 <ListBox Grid.Row="0"
@@ -90,13 +91,13 @@
                                         IsVisible="{Binding SelectedFacility, Converter={x:Static ObjectConverters.IsNotNull}}">
                                     <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,8,Auto,8,Auto"
                                           DataContext="{Binding SelectedFacility}">
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Owner:" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc FestivalPlazaEditor_Owner}" VerticalAlignment="Center" />
                                         <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding OwnerName}" />
 
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Type:" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Loc FestivalPlazaEditor_Type}" VerticalAlignment="Center" />
                                         <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding Type}" Minimum="0" Maximum="127" />
 
-                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Color:" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Loc FestivalPlazaEditor_Color}" VerticalAlignment="Center" />
                                         <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding Color}" Minimum="0" Maximum="7" />
                                     </Grid>
                                 </Border>

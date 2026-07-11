@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Application.Abstractions;
 using PKHeX.Application.Services;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -19,7 +20,7 @@ public partial class UpdateNotificationViewModel : ViewModelBase
     private readonly ISettingsStore _settingsStore;
 
     public string LatestVersion { get; }
-    public string Message => $"Update available: v{LatestVersion}";
+    public string Message => LocalizedStrings.Instance.Format("UpdateNotification_UpdateAvailable", LatestVersion);
 
     /// <summary>Raised when the notification should be removed from the status bar (dismissed or skipped).</summary>
     public event Action? Dismissed;
@@ -38,7 +39,7 @@ public partial class UpdateNotificationViewModel : ViewModelBase
     private async Task ShowChangelog()
     {
         var changelog = new UpdateChangelogViewModel(_releasesNewestFirst);
-        await _windowService.ShowDialogAsync(changelog, "What's New");
+        await _windowService.ShowDialogAsync(changelog, LocalizedStrings.Instance["UpdateNotification_WhatsNewTitle"]);
     }
 
     [RelayCommand]

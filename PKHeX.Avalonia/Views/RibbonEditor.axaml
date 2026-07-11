@@ -3,20 +3,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="550"
              x:Class="PKHeX.Avalonia.Views.RibbonEditor"
              x:DataType="vm:RibbonEditorViewModel">
 
     <Border Padding="16" Classes="view-container">
         <Grid RowDefinitions="Auto,*,Auto">
-            
+
             <!-- Header -->
             <DockPanel Grid.Row="0" Margin="0,0,0,16">
-                <TextBlock Text="Ribbon Editor" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                
+                <TextBlock Text="{loc:Loc RibbonEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                    <Button Content="Give All" Command="{Binding GiveAllCommand}" Padding="12,6" />
-                    <Button Content="Remove All" Command="{Binding RemoveAllCommand}" Padding="12,6" />
+                    <Button Content="{loc:Loc RibbonEditor_GiveAll}" Command="{Binding GiveAllCommand}" Padding="12,6" />
+                    <Button Content="{loc:Loc RibbonEditor_RemoveAll}" Command="{Binding RemoveAllCommand}" Padding="12,6" />
                 </StackPanel>
             </DockPanel>
             
@@ -76,7 +77,7 @@
             
             <!-- Footer -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,16,0,0">
-                <Button Content="Save" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" Padding="16,8" />
+                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" Padding="16,8" />
             </StackPanel>
         </Grid>
     </Border>
