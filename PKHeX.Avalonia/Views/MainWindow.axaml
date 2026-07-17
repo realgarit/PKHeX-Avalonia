@@ -218,7 +218,7 @@
             <!-- Left: PKMEditor (persistent side panel) | Right: SAVEditor (tabs with Box/Party/Trainer/etc) -->
             <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="520,*">
 
-            <!-- Left Panel: PKM Editor (700px) -->
+            <!-- Left Panel: PKM Editor (520px) -->
             <Border Grid.Column="0"
                     Background="{DynamicResource ThemeBackgroundBaseBrush}"
                     BorderThickness="0,0,1,0"
