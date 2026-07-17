@@ -168,7 +168,7 @@
                 Background="{DynamicResource ThemeBackgroundCardBrush}"
                 BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                 BorderThickness="0,1,0,0"
-                Padding="12,6">
+                Padding="8,4">
             <Grid ColumnDefinitions="*,Auto">
                 <TextBlock Grid.Column="0"
                            Text="{Binding StatusText}"
@@ -216,7 +216,7 @@
 
             <!-- Save Loaded State: WinForms-style layout -->
             <!-- Left: PKMEditor (persistent side panel) | Right: SAVEditor (tabs with Box/Party/Trainer/etc) -->
-            <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="560,*">
+            <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="520,*">
 
             <!-- Left Panel: PKM Editor (700px) -->
             <Border Grid.Column="0"
