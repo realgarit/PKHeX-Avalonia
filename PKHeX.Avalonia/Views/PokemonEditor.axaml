@@ -344,7 +344,7 @@
                 <!-- Met Tab -->
                 <TabItem Header="{loc:Loc PokemonEditor_TabMet}">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="8,8,8,80" Spacing="12">
+                        <StackPanel Margin="6,6,6,64" Spacing="12">
                             <!-- Origin Game -->
                             <StackPanel>
                                 <TextBlock Text="{loc:Loc PokemonEditor_OriginGame}" FontWeight="SemiBold" Margin="0,0,0,4" />

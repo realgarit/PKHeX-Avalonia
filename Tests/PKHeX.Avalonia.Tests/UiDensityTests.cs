@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace PKHeX.Avalonia.Tests;
 
 public class UiDensityTests
@@ -23,8 +25,16 @@ public class UiDensityTests
     public void PokemonEditor_UsesCompactContentSpacingAndMargin()
     {
         var pokemonEditor = ReadSourceFile("Views", "PokemonEditor.axaml");
+        var topLevelContentStacks = Regex.Matches(
+            pokemonEditor,
+            "<ScrollViewer HorizontalScrollBarVisibility=\"Disabled\" VerticalScrollBarVisibility=\"Auto\">\\s*<StackPanel\\b[^>]*>");
 
-        Assert.Contains("<StackPanel Spacing=\"12\" Margin=\"6,6,6,64\">", pokemonEditor);
+        Assert.Equal(7, topLevelContentStacks.Count);
+        Assert.All(topLevelContentStacks, stack =>
+        {
+            Assert.Contains("Spacing=\"12\"", stack.Value);
+            Assert.Contains("Margin=\"6,6,6,64\"", stack.Value);
+        });
     }
 
     private static string ReadSourceFile(params string[] relativePath)
