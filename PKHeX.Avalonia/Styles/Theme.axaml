@@ -307,7 +307,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="6" />
+        <Setter Property="Padding" Value="4" />
         <Setter Property="BoxShadow" Value="{DynamicResource ThemeShadowSmall}" />
     </Style>
 
@@ -316,7 +316,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="6" />
+        <Setter Property="Padding" Value="4" />
         <Setter Property="BoxShadow" Value="{DynamicResource ThemeShadowMedium}" />
     </Style>
 
@@ -418,7 +418,7 @@
         <Setter Property="Foreground" Value="White" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="20,10" />
+        <Setter Property="Padding" Value="16,8" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
@@ -428,14 +428,14 @@
     <Style Selector="Border.badge-success">
         <Setter Property="Background" Value="{DynamicResource ThemeSuccessBrush}" />
         <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="Padding" Value="6,3" />
         <Setter Property="BoxShadow" Value="{DynamicResource ThemeGlowSuccess}" />
     </Style>
 
     <Style Selector="Border.badge-error">
         <Setter Property="Background" Value="{DynamicResource ThemeErrorBrush}" />
         <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="Padding" Value="6,3" />
         <Setter Property="BoxShadow" Value="{DynamicResource ThemeGlowError}" />
     </Style>
 
@@ -446,7 +446,7 @@
         <Setter Property="Background" Value="{DynamicResource ThemeHeaderGradient}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
         <Setter Property="BorderThickness" Value="0,0,0,1" />
-        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="Padding" Value="12,8" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -466,7 +466,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="8" />
+        <Setter Property="Padding" Value="6" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -474,7 +474,7 @@
          ───────────────────────────────────────────────────────────────────────── -->
     <Style Selector="Border.view-container">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBaseBrush}" />
-        <Setter Property="Padding" Value="12" />
+        <Setter Property="Padding" Value="8" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -606,8 +606,8 @@
     <Style Selector="NumericUpDown.form-field">
         <Setter Property="ShowButtonSpinner" Value="False" />
         <Setter Property="MinWidth" Value="80" />
-        <Setter Property="MinHeight" Value="32" />
-        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="Padding" Value="6,3" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
@@ -636,11 +636,11 @@
     </Style>
 
     <Style Selector="DataGridRow">
-        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="MinHeight" Value="32" />
     </Style>
 
     <Style Selector="DataGridCell">
-        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="Padding" Value="6,3" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
