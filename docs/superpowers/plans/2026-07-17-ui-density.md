@@ -71,11 +71,11 @@ Update the shared style values only:
     <Setter Property="Padding" Value="8" />
 </Style>
 <Style Selector="NumericUpDown.form-field">
-    <Setter Property="MinHeight" Value="28" />
+    <Setter Property="MinHeight" Value="32" />
     <Setter Property="Padding" Value="6,3" />
 </Style>
 <Style Selector="DataGridRow">
-    <Setter Property="MinHeight" Value="32" />
+    <Setter Property="MinHeight" Value="36" />
 </Style>
 <Style Selector="DataGridCell">
     <Setter Property="Padding" Value="6,3" />
