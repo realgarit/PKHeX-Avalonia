@@ -243,3 +243,9 @@ pingme.txt
 #############
 
 docs/superpowers/
+
+#############
+## Playwright MCP (browser automation artifacts)
+#############
+
+.playwright-mcp/
