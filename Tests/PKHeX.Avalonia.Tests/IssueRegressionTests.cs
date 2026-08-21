@@ -15,6 +15,11 @@ namespace PKHeX.Avalonia.Tests;
 ///      path performed no game/generation conversion.
 ///
 /// #76: Money and Pokémon stat edits "reset back to default" after saving.
+///
+/// GitHub issue #213 (Discord support report from BlvckFr0st, 2026-08-21): changing the ability
+/// of an egg-hatched Gen 7 Pokémon changed only the ability ID in the editor,
+/// leaving the stored ability slot unchanged. The resulting ID/slot pair was
+/// reported as "Ability mismatch for encounter" by the legality checker.
 /// </summary>
 public class IssueRegressionTests(ITestOutputHelper output)
 {
@@ -156,5 +161,56 @@ public class IssueRegressionTests(ITestOutputHelper output)
         var reread = reloaded.GetBoxSlotAtIndex(idx);
         output.WriteLine($"{label}: slot {idx} EV_ATK -> {expectedEv}, reloaded {reread.EV_ATK}");
         Assert.Equal(expectedEv, reread.EV_ATK);
+    }
+
+    // =========================================================================
+    // Discord support report: changing a Gen 7 egg ability must update the
+    // ability slot bits together with the selected ability ID.
+    // =========================================================================
+
+    [Fact]
+    public void DiscordBlvckFr0st_ChangingEggAbility_UpdatesAbilitySlot()
+    {
+        var sav = new SAV7SM();
+        var trainer = new SimpleTrainerInfo(GameVersion.MN);
+        // Eggs hatch as the first-stage species; the same ability-slot bug is
+        // what the reporter saw after evolving the result to Kommo-o.
+        var egg = new EncounterEgg7((ushort)Species.Jangmoo, 0, GameVersion.MN).ConvertToPKM(trainer);
+        egg.RefreshAbility(0); // Bulletproof, ability slot 1.
+
+        var before = new LegalityAnalysis(egg, sav.Personal);
+        Assert.True(before.Valid, before.Report());
+        Assert.Equal(1, egg.AbilityNumber);
+        Assert.NotEqual((int)Ability.Soundproof, egg.Ability);
+
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(egg, sav);
+        vm.Ability = (int)Ability.Soundproof; // Soundproof, ability slot 2.
+
+        var edited = vm.PreparePKM();
+        Assert.Equal((int)Ability.Soundproof, edited.Ability);
+        Assert.Equal(2, edited.AbilityNumber);
+
+        var after = new LegalityAnalysis(edited, sav.Personal);
+        Assert.True(after.Valid, after.Report());
+    }
+
+    [Fact]
+    public void DiscordBlvckFr0st_ChangingEvolvedEggAbility_FromHiddenToNormal_UpdatesAbilitySlot()
+    {
+        var sav = new SAV7SM();
+        var trainer = new SimpleTrainerInfo(GameVersion.MN);
+        var egg = new EncounterEgg7((ushort)Species.Beldum, 0, GameVersion.MN).ConvertToPKM(trainer);
+        egg.RefreshAbility(2); // Hidden ability, slot 4.
+
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(egg, sav);
+        vm.Species = (int)Species.Metagross;
+        vm.Ability = (int)Ability.ClearBody; // Normal ability, slot 1.
+
+        var edited = vm.PreparePKM();
+        Assert.Equal((int)Ability.ClearBody, edited.Ability);
+        Assert.Equal(1, edited.AbilityNumber);
+
+        var report = new LegalityAnalysis(edited, sav.Personal).Report();
+        Assert.DoesNotContain("Ability mismatch for encounter", report);
     }
 }
