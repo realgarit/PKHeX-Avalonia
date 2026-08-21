@@ -18,7 +18,7 @@ public partial class PokemonEditorViewModel
     {
         var pk = PreparePKM();
         var la = new LegalityAnalysis(pk, _sav.Personal);
-        IsLegal = la.Valid;
+        IsLegal = _haXMode || la.Valid;
         LegalityReport = la.Report();
     }
 

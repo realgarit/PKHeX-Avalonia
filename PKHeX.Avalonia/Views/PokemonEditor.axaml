@@ -272,6 +272,11 @@
                 <TabItem Header="{loc:Loc PokemonEditor_TabStats}">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <StackPanel Spacing="12" Margin="6,6,6,64">
+                        <TextBlock Text="{loc:Loc PokemonEditor_HaXStatsWarning}"
+                                   IsVisible="{Binding IsHaXMode}"
+                                   Foreground="{DynamicResource ThemeWarningBrush}"
+                                   TextWrapping="Wrap"
+                                   Margin="2,0,2,0" />
                         <Border Classes="section-card"
                                 CornerRadius="4" Padding="8">
                             <Grid ColumnDefinitions="40,*,*,*,*,*" RowDefinitions="Auto,Auto,4,Auto,Auto,Auto,Auto,Auto,Auto">
@@ -300,7 +305,8 @@
                                 <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Base_HP}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
                                 <NumericUpDown Grid.Row="3" Grid.Column="2" Value="{Binding IvHP}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="HP IV" />
                                 <NumericUpDown Grid.Row="3" Grid.Column="3" Value="{Binding EvHP}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="HP EV" />
-                                <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding Stat_HP}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding Stat_HP}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
+                                <NumericUpDown Grid.Row="3" Grid.Column="4" Value="{Binding HaXStatHP}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatHp}" />
                                 <CheckBox Grid.Row="3" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedHP, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <!-- Atk -->
@@ -308,7 +314,8 @@
                                 <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Base_ATK}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
                                 <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding IvATK}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Attack IV" />
                                 <NumericUpDown Grid.Row="4" Grid.Column="3" Value="{Binding EvATK}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Attack EV" />
-                                <TextBlock Grid.Row="4" Grid.Column="4" Text="{Binding Stat_ATK}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="4" Grid.Column="4" Text="{Binding Stat_ATK}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
+                                <NumericUpDown Grid.Row="4" Grid.Column="4" Value="{Binding HaXStatATK}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatAtk}" />
                                 <CheckBox Grid.Row="4" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedATK, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <!-- Def -->
@@ -316,7 +323,8 @@
                                 <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Base_DEF}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
                                 <NumericUpDown Grid.Row="5" Grid.Column="2" Value="{Binding IvDEF}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Defense IV" />
                                 <NumericUpDown Grid.Row="5" Grid.Column="3" Value="{Binding EvDEF}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Defense EV" />
-                                <TextBlock Grid.Row="5" Grid.Column="4" Text="{Binding Stat_DEF}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="5" Grid.Column="4" Text="{Binding Stat_DEF}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
+                                <NumericUpDown Grid.Row="5" Grid.Column="4" Value="{Binding HaXStatDEF}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatDef}" />
                                 <CheckBox Grid.Row="5" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedDEF, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <!-- SpA -->
@@ -324,7 +332,8 @@
                                 <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding Base_SPA}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
                                 <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding IvSPA}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Special Attack IV" />
                                 <NumericUpDown Grid.Row="6" Grid.Column="3" Value="{Binding EvSPA}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Special Attack EV" />
-                                <TextBlock Grid.Row="6" Grid.Column="4" Text="{Binding Stat_SPA}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="6" Grid.Column="4" Text="{Binding Stat_SPA}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
+                                <NumericUpDown Grid.Row="6" Grid.Column="4" Value="{Binding HaXStatSPA}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatSpa}" />
                                 <CheckBox Grid.Row="6" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedSPA, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <!-- SpD -->
@@ -332,7 +341,8 @@
                                 <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding Base_SPD}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
                                 <NumericUpDown Grid.Row="7" Grid.Column="2" Value="{Binding IvSPD}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Special Defense IV" />
                                 <NumericUpDown Grid.Row="7" Grid.Column="3" Value="{Binding EvSPD}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Special Defense EV" />
-                                <TextBlock Grid.Row="7" Grid.Column="4" Text="{Binding Stat_SPD}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="7" Grid.Column="4" Text="{Binding Stat_SPD}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
+                                <NumericUpDown Grid.Row="7" Grid.Column="4" Value="{Binding HaXStatSPD}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatSpd}" />
                                 <CheckBox Grid.Row="7" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedSPD, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <!-- Spe -->
@@ -340,7 +350,8 @@
                                 <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding Base_SPE}" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
                                 <NumericUpDown Grid.Row="8" Grid.Column="2" Value="{Binding IvSPE}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Speed IV" />
                                 <NumericUpDown Grid.Row="8" Grid.Column="3" Value="{Binding EvSPE}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Speed EV" />
-                                <TextBlock Grid.Row="8" Grid.Column="4" Text="{Binding Stat_SPE}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="8" Grid.Column="4" Text="{Binding Stat_SPE}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
+                                <NumericUpDown Grid.Row="8" Grid.Column="4" Value="{Binding HaXStatSPE}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatSpe}" />
                                 <CheckBox Grid.Row="8" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedSPE, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
                         </Border>

@@ -31,6 +31,13 @@ public sealed class AppSettings : IProgramSettings
     public string DisplayLanguage { get; set; } = "en";
 
     /// <summary>
+    /// Runtime-only flag for the current process. HaX is selected during host startup from the
+    /// persisted startup preference or the command line and is intentionally never serialized.
+    /// </summary>
+    [JsonIgnore]
+    public bool IsHaXMode { get; set; }
+
+    /// <summary>
     /// Forward-compatibility bucket: any JSON keys written by a newer version that this build does
     /// not recognize are captured here and re-emitted on save, so upgrading/downgrading does not
     /// silently drop settings. See issue #138 acceptance criteria.

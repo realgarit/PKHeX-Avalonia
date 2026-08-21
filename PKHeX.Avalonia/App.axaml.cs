@@ -11,6 +11,7 @@ using PKHeX.Infrastructure.Configuration;
 using PKHeX.Avalonia.Services;
 using PKHeX.Presentation.ViewModels;
 using PKHeX.Avalonia.Views;
+using PKHeX.Core;
 
 namespace PKHeX.Avalonia;
 
@@ -44,6 +45,12 @@ public partial class App : global::Avalonia.Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            var startup = StartupUtil.FormLoadInitialActions(
+                desktop.Args,
+                settings,
+                typeof(App).Assembly.GetName().Version ?? new Version(0, 0));
+            settings.IsHaXMode = startup.HaX;
+
             var mainViewModel = Services.GetRequiredService<MainWindowViewModel>();
             desktop.MainWindow = new MainWindow
             {
