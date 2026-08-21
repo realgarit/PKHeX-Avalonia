@@ -77,11 +77,20 @@ public sealed class SpriteLoader
 
         var bitmap = LoadSprite(resourceName);
 
-        // If shiny not found, try non-shiny
+        // Some styles (notably HOME artwork) do not include shiny assets for every species.
+        // Prefer a real classic shiny sprite over showing the normal-color sprite with only
+        // the shiny overlay, which is misleading for transferred Pokémon.
         if (bitmap is null && shiny)
         {
+            if (Style != SpriteStyle.Classic)
+            {
+                var classicShinyName = GetResourceName(SpriteStyle.Classic, species, form, gender, formarg, true, context);
+                bitmap = LoadSprite(classicShinyName);
+            }
+
+            // If no shiny sprite exists in either style, try non-shiny as a last resort.
             var nonShinyName = GetResourceName(species, form, gender, formarg, false, context);
-            bitmap = LoadSprite(nonShinyName);
+            bitmap ??= LoadSprite(nonShinyName);
         }
 
         // If form not found, try base form
@@ -136,8 +145,11 @@ public sealed class SpriteLoader
     }
 
     private string GetResourceName(ushort species, byte form, byte gender, uint formarg, bool shiny, EntityContext context)
+        => GetResourceName(Style, species, form, gender, formarg, shiny, context);
+
+    private static string GetResourceName(SpriteStyle style, ushort species, byte form, byte gender, uint formarg, bool shiny, EntityContext context)
     {
-        var res = GetStyleResources(Style);
+        var res = GetStyleResources(style);
         var spriteName = GetSpriteName(species, form, gender, formarg, context);
         var useShiny = shiny && res.ShinyFolder is not null;
         var folder = useShiny ? res.ShinyFolder! : res.NormalFolder;
