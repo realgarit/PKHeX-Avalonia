@@ -16,7 +16,9 @@ public partial class BatchEditorViewModel : ViewModelBase, IDisposable
     private readonly List<UndoRedoService.BatchToken> _batchTokens = [];
     private readonly IUiDispatcher? _uiDispatcher;
     private CancellationTokenSource? _previewCancellation;
+    private CancellationTokenSource? _runCancellation;
     private long _previewVersion;
+    private long _stateVersion;
     private bool _disposed;
 
     public event Action? BatchEditCompleted;
@@ -165,23 +167,28 @@ public partial class BatchEditorViewModel : ViewModelBase, IDisposable
 
         IsRunning = true;
         CancelPreview();
+        var runCancellation = new CancellationTokenSource();
+        _runCancellation = runCancellation;
+        var cancellationToken = runCancellation.Token;
         var text = Instructions;
         var editBoxes = EditBoxes;
         var editParty = EditParty;
+        var stateVersion = Volatile.Read(ref _stateVersion);
+        var historyVersion = _undoRedo.ChangeCount;
         try
         {
-            var plan = await Task.Run(() => BuildPlan(text, editBoxes, editParty));
+            var plan = await Task.Run(
+                () => BuildPlan(text, editBoxes, editParty, cancellationToken),
+                cancellationToken);
             if (plan is null || plan.Changes.Count == 0)
             {
-                RefreshPreview();
+                RefreshIfActive();
                 return;
             }
 
-            if (!string.Equals(text, Instructions, StringComparison.Ordinal)
-                || editBoxes != EditBoxes
-                || editParty != EditParty)
+            if (!CanCommitRun(text, editBoxes, editParty, stateVersion, historyVersion, cancellationToken))
             {
-                RefreshPreview();
+                RefreshIfActive();
                 return;
             }
 
@@ -198,7 +205,7 @@ public partial class BatchEditorViewModel : ViewModelBase, IDisposable
 
             if (token is null)
             {
-                RefreshPreview();
+                RefreshIfActive();
                 return;
             }
 
@@ -206,12 +213,21 @@ public partial class BatchEditorViewModel : ViewModelBase, IDisposable
             BatchEditCompleted?.Invoke();
             RefreshPreview();
         }
-        catch (Exception ex)
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // The save or editor state changed while the background plan was being built.
+        }
+        catch (Exception ex) when (!_disposed)
         {
             Results = $"Error: {ex.Message}";
         }
         finally
         {
+            if (ReferenceEquals(_runCancellation, runCancellation))
+            {
+                _runCancellation = null;
+                runCancellation.Dispose();
+            }
             IsRunning = false;
             ResetBatchCommand.NotifyCanExecuteChanged();
         }
@@ -277,9 +293,24 @@ public partial class BatchEditorViewModel : ViewModelBase, IDisposable
 
     private void OnUndoRedoStateChanged(object? sender, EventArgs e) => PostToUi(() =>
     {
+        Interlocked.Increment(ref _stateVersion);
+        CancelRun();
         ResetBatchCommand.NotifyCanExecuteChanged();
+        NotifyTargetCommands();
         RefreshPreview();
     });
+
+    /// <summary>Refreshes preview and command state after a direct save-slot mutation.</summary>
+    public void RefreshExternalState()
+    {
+        if (_disposed)
+            return;
+
+        Interlocked.Increment(ref _stateVersion);
+        CancelRun();
+        NotifyTargetCommands();
+        RefreshPreview();
+    }
 
     private void RefreshPreview()
     {
@@ -348,6 +379,37 @@ public partial class BatchEditorViewModel : ViewModelBase, IDisposable
 
     private void CancelPreview() => _previewCancellation?.Cancel();
 
+    private void CancelRun() => _runCancellation?.Cancel();
+
+    private void RefreshIfActive()
+    {
+        if (!_disposed)
+            RefreshPreview();
+    }
+
+    private void NotifyTargetCommands()
+    {
+        SetMaxIVsCommand.NotifyCanExecuteChanged();
+        SetMaxEVsCommand.NotifyCanExecuteChanged();
+        SetShinyCommand.NotifyCanExecuteChanged();
+        HealAllCommand.NotifyCanExecuteChanged();
+    }
+
+    private bool CanCommitRun(
+        string text,
+        bool editBoxes,
+        bool editParty,
+        long stateVersion,
+        int historyVersion,
+        CancellationToken cancellationToken)
+        => !_disposed
+            && !cancellationToken.IsCancellationRequested
+            && stateVersion == Volatile.Read(ref _stateVersion)
+            && historyVersion == _undoRedo.ChangeCount
+            && string.Equals(text, Instructions, StringComparison.Ordinal)
+            && editBoxes == EditBoxes
+            && editParty == EditParty;
+
     private void PostToUi(Action action)
     {
         if (_uiDispatcher is null || _uiDispatcher.CheckAccess())
@@ -359,7 +421,11 @@ public partial class BatchEditorViewModel : ViewModelBase, IDisposable
     private int GetWritableTargetCount() => GetTargetSlots(EditBoxes, EditParty)
         .Count(entry => entry.Pokemon.Species != 0 && entry.Slot.CanWriteTo(_sav));
 
-    private BatchEditPlan? BuildPlan(string text, bool editBoxes, bool editParty)
+    private BatchEditPlan? BuildPlan(
+        string text,
+        bool editBoxes,
+        bool editParty,
+        CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(text))
             return null;
@@ -390,6 +456,7 @@ public partial class BatchEditorViewModel : ViewModelBase, IDisposable
         var changes = new List<PlannedChange>();
         foreach (var target in GetTargetSlots(editBoxes, editParty))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (target.Pokemon.Species == 0 || !target.Slot.CanWriteTo(_sav))
                 continue;
 
@@ -455,7 +522,9 @@ public partial class BatchEditorViewModel : ViewModelBase, IDisposable
 
         _disposed = true;
         Interlocked.Increment(ref _previewVersion);
+        Interlocked.Increment(ref _stateVersion);
         CancelPreview();
+        CancelRun();
         _previewCancellation?.Dispose();
         _undoRedo.StateChanged -= OnUndoRedoStateChanged;
     }

@@ -337,6 +337,27 @@ public class BatchEditorTests(ITestOutputHelper output)
     }
 
     [Fact]
+    public async Task BatchEditor_RefreshExternalState_UpdatesPreviewAndQuickActions()
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 1, CurrentLevel = 5 }, 0, 0);
+        var vm = new BatchEditorViewModel(sav, DialogMock().Object)
+        {
+            Instructions = "=Species=1" + Environment.NewLine + ".CurrentLevel=50",
+        };
+        await WaitForAsync(() => vm.AffectedCount == 1);
+
+        var commandNotifications = 0;
+        vm.SetShinyCommand.CanExecuteChanged += (_, _) => commandNotifications++;
+        sav.SetBoxSlotAtIndex(sav.BlankPKM, 0, 0);
+        vm.RefreshExternalState();
+
+        await WaitForAsync(() => vm.AffectedCount == 0);
+        Assert.True(commandNotifications > 0);
+        Assert.False(vm.SetShinyCommand.CanExecute(null));
+    }
+
+    [Fact]
     public void BatchEditor_InstructionBuilderCommands_RequireAProperty()
     {
         var sav = new SAV6XY();
