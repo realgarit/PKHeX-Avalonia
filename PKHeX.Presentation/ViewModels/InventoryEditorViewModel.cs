@@ -10,12 +10,14 @@ public partial class InventoryEditorViewModel : ViewModelBase
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly PlayerBag? _bag;
+    private readonly bool _haXMode;
     private readonly IReadOnlyList<InventoryPouch> _originalPouches;
 
-    public InventoryEditorViewModel(SaveFile sav, ISpriteRenderer spriteRenderer)
+    public InventoryEditorViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, bool haXMode = false)
     {
         _sav = sav;
         _spriteRenderer = spriteRenderer;
+        _haXMode = haXMode;
 
         // sav.Inventory can throw on blank SCBlock-based saves (LA, SV, ZA) where
         // blocks have Type=None and are not yet populated. Fall back to empty.
@@ -33,6 +35,14 @@ public partial class InventoryEditorViewModel : ViewModelBase
         _bag = bag;
         _originalPouches = pouches;
 
+        var availableItemIds = _haXMode && sav.Generation > 1
+            ? GameInfo.Sources.GetItemDataSource(sav.Version, sav.Context, sav.HeldItems, true)
+                .Where(item => item.Value <= sav.MaxItemID)
+                .Select(item => item.Value)
+                .ToArray()
+            : null;
+        var maxItemCount = _haXMode && bag is not null ? bag.MaxQuantityHaX : (int?)null;
+
         // Build item name list
         var itemStrings = GameInfo.Strings.GetItemStrings(sav.Context, sav.Version);
         _itemNames = new string[itemStrings.Length];
@@ -46,7 +56,7 @@ public partial class InventoryEditorViewModel : ViewModelBase
         // Create pouch view models
         foreach (var pouch in _originalPouches)
         {
-            Pouches.Add(new InventoryPouchViewModel(pouch, _itemNames, _spriteRenderer));
+            Pouches.Add(new InventoryPouchViewModel(pouch, _itemNames, _spriteRenderer, availableItemIds, maxItemCount));
         }
 
         if (Pouches.Count > 0)
@@ -131,17 +141,19 @@ public partial class InventoryPouchViewModel : ViewModelBase
     private readonly InventoryPouch _pouch;
     private readonly string[] _itemNames;
     private readonly ISpriteRenderer _spriteRenderer;
+    private readonly IReadOnlyList<int> _availableItemIds;
 
-    public InventoryPouchViewModel(InventoryPouch pouch, string[] itemNames, ISpriteRenderer spriteRenderer)
+    public InventoryPouchViewModel(InventoryPouch pouch, string[] itemNames, ISpriteRenderer spriteRenderer, IReadOnlyList<int>? availableItemIds = null, int? maxCount = null)
     {
         _pouch = pouch;
         _itemNames = itemNames;
         _spriteRenderer = spriteRenderer;
+        _availableItemIds = availableItemIds ?? pouch.GetAllItems().ToArray().Select(id => (int)id).ToArray();
         PouchName = pouch.Type.ToString();
-        MaxCount = pouch.MaxCount;
+        MaxCount = maxCount ?? pouch.MaxCount;
 
         // Build item list for combo box
-        var validItems = pouch.GetAllItems().ToArray();
+        var validItems = _availableItemIds;
         ItemList = validItems
             .Where(id => id < itemNames.Length)
             .Select(id => new ComboItem(itemNames[id], id))
@@ -158,7 +170,7 @@ public partial class InventoryPouchViewModel : ViewModelBase
     public void RefreshLanguage()
     {
         // Rebuild item list for combo box
-        var validItems = _pouch.GetAllItems().ToArray();
+        var validItems = _availableItemIds;
         ItemList = validItems
             .Where(id => id < _itemNames.Length)
             .Select(id => new ComboItem(_itemNames[id], id))
@@ -216,7 +228,7 @@ public partial class InventoryPouchViewModel : ViewModelBase
 
     public void GiveAllItems()
     {
-        var validItems = _pouch.GetAllItems();
+        var validItems = _availableItemIds;
         int slot = 0;
         foreach (var itemId in validItems)
         {

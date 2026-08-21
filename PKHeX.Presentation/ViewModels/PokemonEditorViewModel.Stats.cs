@@ -14,6 +14,15 @@ public partial class PokemonEditorViewModel
     [ObservableProperty]
     private int _statHPMax;
 
+    // PKHaX exposes the six stored battle stats directly. These values are kept separate from
+    // the normal calculated-stat properties so the standard editor remains read-only.
+    [ObservableProperty] private int _haXStatHP;
+    [ObservableProperty] private int _haXStatATK;
+    [ObservableProperty] private int _haXStatDEF;
+    [ObservableProperty] private int _haXStatSPA;
+    [ObservableProperty] private int _haXStatSPD;
+    [ObservableProperty] private int _haXStatSPE;
+
     [ObservableProperty]
     private int _statAlignment;
 
@@ -124,6 +133,16 @@ public partial class PokemonEditorViewModel
     /// </summary>
     public bool ShowStatAlignment => _pk.Format >= 8;
 
+    private void ApplyHaXStats()
+    {
+        _pk.Stat_HPMax = Math.Clamp(HaXStatHP, 0, ushort.MaxValue);
+        _pk.Stat_ATK = Math.Clamp(HaXStatATK, 0, ushort.MaxValue);
+        _pk.Stat_DEF = Math.Clamp(HaXStatDEF, 0, ushort.MaxValue);
+        _pk.Stat_SPA = Math.Clamp(HaXStatSPA, 0, ushort.MaxValue);
+        _pk.Stat_SPD = Math.Clamp(HaXStatSPD, 0, ushort.MaxValue);
+        _pk.Stat_SPE = Math.Clamp(HaXStatSPE, 0, ushort.MaxValue);
+    }
+
     private void RecalculateStats()
     {
         if (_isLoading) return; // Don't overwrite _pk during loading
@@ -150,6 +169,12 @@ public partial class PokemonEditorViewModel
             ht.HT_SPD = HyperTrainedSPD;
             ht.HT_SPE = HyperTrainedSPE;
         }
+        if (_haXMode)
+        {
+            ApplyHaXStats();
+            return;
+        }
+
         _pk.ResetPartyStats();
     }
 
@@ -177,6 +202,13 @@ public partial class PokemonEditorViewModel
 
     // Stat Alignment changes the displayed stats (gen8+ stores it independently of Nature).
     partial void OnStatAlignmentChanged(int value) { if (!_isLoading) { _pk.StatAlignment = (Nature)value; RecalculateStats(); Validate(); } }
+
+    partial void OnHaXStatHPChanged(int value) { if (!_isLoading && _haXMode) { ApplyHaXStats(); OnPropertyChanged(nameof(Stat_HP)); Validate(); } }
+    partial void OnHaXStatATKChanged(int value) { if (!_isLoading && _haXMode) { ApplyHaXStats(); OnPropertyChanged(nameof(Stat_ATK)); Validate(); } }
+    partial void OnHaXStatDEFChanged(int value) { if (!_isLoading && _haXMode) { ApplyHaXStats(); OnPropertyChanged(nameof(Stat_DEF)); Validate(); } }
+    partial void OnHaXStatSPAChanged(int value) { if (!_isLoading && _haXMode) { ApplyHaXStats(); OnPropertyChanged(nameof(Stat_SPA)); Validate(); } }
+    partial void OnHaXStatSPDChanged(int value) { if (!_isLoading && _haXMode) { ApplyHaXStats(); OnPropertyChanged(nameof(Stat_SPD)); Validate(); } }
+    partial void OnHaXStatSPEChanged(int value) { if (!_isLoading && _haXMode) { ApplyHaXStats(); OnPropertyChanged(nameof(Stat_SPE)); Validate(); } }
 
     // Recalculate once per change, then let NotifyPropertyChangedFor push the new values to the UI.
     partial void OnIvHPChanged(int value) { if (!_isLoading) { RecalculateStats(); Validate(); } }

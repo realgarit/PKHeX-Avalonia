@@ -68,6 +68,15 @@
                         </StackPanel>
                         <ToggleSwitch Grid.Column="1" IsChecked="{Binding ModifyUnset}" OnContent="{loc:Loc Common_On}" OffContent="{loc:Loc Common_Off}"/>
                     </Grid>
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{loc:Loc Settings_ForceHaX}" FontWeight="Medium"/>
+                            <TextBlock Text="{loc:Loc Settings_ForceHaX_Desc}"
+                                       FontSize="12" Opacity="0.6" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding ForceHaX}" OnContent="{loc:Loc Common_On}" OffContent="{loc:Loc Common_Off}"/>
+                    </Grid>
                 </StackPanel>
             </Border>
 

@@ -69,6 +69,7 @@ Tests live under `Tests/`: `PKHeX.Core.Tests`, `PKHeX.Avalonia.Tests`, and `PKHe
 * Edit saves from Gen 1 to Gen 9, plus Let's Go, Legends: Arceus, BDSP, and Legends: Z-A.
 * Edit any Pokémon: stats, moves, ribbons, memories, and more.
 * Checks legality as you go and can fix illegal Pokémon for you.
+* Optional PKHaX mode for offline or hacked-game saves: enable it in Settings → Editor Behavior, then restart the app.
 * Import and export Pokémon files and Showdown sets.
 * Move Pokémon between generations — format conversion is automatic.
 * Search your boxes with the PKM, Mystery Gift, and Encounter databases.

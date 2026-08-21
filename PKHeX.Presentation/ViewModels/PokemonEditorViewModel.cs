@@ -15,6 +15,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly IDialogService _dialogService;
     private readonly IWindowService _windowService;
+    private readonly bool _haXMode;
     private bool _isLoading; // Flag to prevent modifying _pk during load
 
     // Data sources (mostly filtered by SaveFile context)
@@ -105,15 +106,17 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private int _language;
 
     public bool HasForms => FormList.Count > 1;
+    public bool IsHaXMode => _haXMode;
     public PKM TargetPKM => _pk;
 
-    public PokemonEditorViewModel(PKM pk, SaveFile sav, ISpriteRenderer spriteRenderer, IDialogService dialogService, IWindowService windowService)
+    public PokemonEditorViewModel(PKM pk, SaveFile sav, ISpriteRenderer spriteRenderer, IDialogService dialogService, IWindowService windowService, bool haXMode = false)
     {
         _pk = pk.Clone(); // Always work on a copy
         _sav = sav;
         _spriteRenderer = spriteRenderer;
         _dialogService = dialogService;
         _windowService = windowService;
+        _haXMode = haXMode;
 
         var filtered = GameInfo.FilteredSources;
         SpeciesList = filtered.Species;
@@ -271,6 +274,12 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
             StatHPCurrent = _pk.Stat_HPCurrent;
             StatHPMax = _pk.Stat_HPMax;
+            HaXStatHP = _pk.Stat_HPMax;
+            HaXStatATK = _pk.Stat_ATK;
+            HaXStatDEF = _pk.Stat_DEF;
+            HaXStatSPA = _pk.Stat_SPA;
+            HaXStatSPD = _pk.Stat_SPD;
+            HaXStatSPE = _pk.Stat_SPE;
             StatusCondition = _pk.Status_Condition;
             StatAlignment = (int)_pk.StatAlignment;
 
@@ -433,7 +442,9 @@ public partial class PokemonEditorViewModel : ViewModelBase
     {
         var currentAbility = Ability;
         var pi = _sav.Personal.GetFormEntry((ushort)Species, (byte)Form);
-        AbilityList = new ObservableCollection<ComboItem>(GameInfo.FilteredSources.GetAbilityList(pi));
+        AbilityList = new ObservableCollection<ComboItem>(_haXMode
+            ? GameInfo.FilteredSources.Abilities
+            : GameInfo.FilteredSources.GetAbilityList(pi));
 
         if (_isLoading || !preserveSelection) return;
 
@@ -630,7 +641,10 @@ public partial class PokemonEditorViewModel : ViewModelBase
         if (_pk is IFormArgument && _formArgumentType != FormArgumentType.None)
             _pk.ChangeFormArgument((uint)FormArgumentValue);
 
-        _pk.ResetPartyStats();
+        if (_haXMode)
+            ApplyHaXStats();
+        else
+            _pk.ResetPartyStats();
         
         return _pk.Clone();
     }
