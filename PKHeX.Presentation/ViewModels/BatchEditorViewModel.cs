@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Application.Services;
@@ -6,22 +8,32 @@ using PKHeX.Core;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class BatchEditorViewModel : ViewModelBase
+public partial class BatchEditorViewModel : ViewModelBase, IDisposable
 {
     private readonly SaveFile _sav;
     private readonly IDialogService _dialogService;
     private readonly UndoRedoService _undoRedo;
     private readonly List<UndoRedoService.BatchToken> _batchTokens = [];
+    private readonly IUiDispatcher? _uiDispatcher;
+    private CancellationTokenSource? _previewCancellation;
+    private long _previewVersion;
+    private bool _disposed;
 
     public event Action? BatchEditCompleted;
 
-    public BatchEditorViewModel(SaveFile sav, IDialogService dialogService, UndoRedoService? undoRedo = null)
+    public BatchEditorViewModel(
+        SaveFile sav,
+        IDialogService dialogService,
+        UndoRedoService? undoRedo = null,
+        IUiDispatcher? uiDispatcher = null)
     {
         _sav = sav;
         _dialogService = dialogService;
         _undoRedo = undoRedo ?? new UndoRedoService();
+        _uiDispatcher = uiDispatcher;
         if (undoRedo is null)
             _undoRedo.Initialize(sav);
+        _undoRedo.StateChanged += OnUndoRedoStateChanged;
 
         PropertySuggestions = GetCommonPkmProperties();
         RefreshPreview();
@@ -88,6 +100,8 @@ public partial class BatchEditorViewModel : ViewModelBase
     private bool _isRunning;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddFilterCommand))]
+    [NotifyCanExecuteChangedFor(nameof(AddInstructionCommand))]
     private string _selectedProperty = string.Empty;
 
     [ObservableProperty]
@@ -102,7 +116,7 @@ public partial class BatchEditorViewModel : ViewModelBase
     partial void OnEditBoxesChanged(bool value) => RefreshPreview();
     partial void OnEditPartyChanged(bool value) => RefreshPreview();
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanAddInstruction))]
     private void AddInstruction()
     {
         if (string.IsNullOrWhiteSpace(SelectedProperty))
@@ -115,7 +129,7 @@ public partial class BatchEditorViewModel : ViewModelBase
         Instructions += instruction;
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanAddInstruction))]
     private void AddFilter()
     {
         if (string.IsNullOrWhiteSpace(SelectedProperty))
@@ -141,12 +155,35 @@ public partial class BatchEditorViewModel : ViewModelBase
         if (!CanRunBatch())
             return;
 
+        await RunBatchCoreAsync();
+    }
+
+    private async Task RunBatchCoreAsync()
+    {
+        if (IsRunning)
+            return;
+
         IsRunning = true;
+        CancelPreview();
+        var text = Instructions;
+        var editBoxes = EditBoxes;
+        var editParty = EditParty;
         try
         {
-            var plan = BuildPlan(Instructions);
+            var plan = await Task.Run(() => BuildPlan(text, editBoxes, editParty));
             if (plan is null || plan.Changes.Count == 0)
+            {
+                RefreshPreview();
                 return;
+            }
+
+            if (!string.Equals(text, Instructions, StringComparison.Ordinal)
+                || editBoxes != EditBoxes
+                || editParty != EditParty)
+            {
+                RefreshPreview();
+                return;
+            }
 
             Results = plan.Editor.GetEditorResults(plan.Sets);
             var undoSlots = GetUndoSlots(plan.Changes);
@@ -160,7 +197,10 @@ public partial class BatchEditorViewModel : ViewModelBase
             });
 
             if (token is null)
+            {
+                RefreshPreview();
                 return;
+            }
 
             _batchTokens.Add(token);
             BatchEditCompleted?.Invoke();
@@ -204,51 +244,122 @@ public partial class BatchEditorViewModel : ViewModelBase
     private async Task SetMaxIVs()
     {
         Instructions = ".IVs=$suggestPokemon MaxIVs($0)";
-        await RunBatchAsync();
+        await RunBatchCoreAsync();
     }
 
     [RelayCommand(CanExecute = nameof(CanRunQuickAction))]
     private async Task SetMaxEVs()
     {
         Instructions = ".EVs=$suggestPokemon MaxEVs($0)";
-        await RunBatchAsync();
+        await RunBatchCoreAsync();
     }
 
     [RelayCommand(CanExecute = nameof(CanRunQuickAction))]
     private async Task SetShiny()
     {
         Instructions = ".Shiny=Star";
-        await RunBatchAsync();
+        await RunBatchCoreAsync();
     }
 
     [RelayCommand(CanExecute = nameof(CanRunQuickAction))]
     private async Task HealAll()
     {
         Instructions = ".Heal";
-        await RunBatchAsync();
+        await RunBatchCoreAsync();
     }
 
+    private bool CanAddInstruction() => !string.IsNullOrWhiteSpace(SelectedProperty);
     private bool CanRunBatch() => !IsRunning && AffectedCount > 0;
 
     private bool CanRunQuickAction() => !IsRunning && GetWritableTargetCount() > 0;
 
     private bool CanResetBatch() => _batchTokens.Count != 0 && _undoRedo.CanUndoBatch(_batchTokens[^1]);
 
+    private void OnUndoRedoStateChanged(object? sender, EventArgs e) => PostToUi(() =>
+    {
+        ResetBatchCommand.NotifyCanExecuteChanged();
+        RefreshPreview();
+    });
+
     private void RefreshPreview()
+    {
+        if (_disposed)
+            return;
+
+        CancelPreview();
+        var cancellation = new CancellationTokenSource();
+        _previewCancellation = cancellation;
+        var version = Interlocked.Increment(ref _previewVersion);
+        var text = Instructions;
+        var editBoxes = EditBoxes;
+        var editParty = EditParty;
+
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            AffectedCount = 0;
+            ResetBatchCommand.NotifyCanExecuteChanged();
+            return;
+        }
+
+        _ = RefreshPreviewAsync(text, editBoxes, editParty, version, cancellation.Token);
+    }
+
+    private async Task RefreshPreviewAsync(
+        string text,
+        bool editBoxes,
+        bool editParty,
+        long version,
+        CancellationToken cancellationToken)
     {
         try
         {
-            AffectedCount = BuildPlan(Instructions)?.Changes.Count ?? 0;
+            await Task.Delay(150, cancellationToken);
+            var count = await Task.Run(
+                () => BuildPlan(text, editBoxes, editParty)?.Changes.Count ?? 0,
+                cancellationToken);
+
+            PostToUi(() =>
+            {
+                if (_disposed || cancellationToken.IsCancellationRequested
+                    || version != Volatile.Read(ref _previewVersion))
+                    return;
+
+                AffectedCount = count;
+                ResetBatchCommand.NotifyCanExecuteChanged();
+            });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // A newer edit or undo/redo request superseded this preview.
         }
         catch
         {
-            AffectedCount = 0;
+            PostToUi(() =>
+            {
+                if (_disposed || cancellationToken.IsCancellationRequested
+                    || version != Volatile.Read(ref _previewVersion))
+                    return;
+
+                AffectedCount = 0;
+                ResetBatchCommand.NotifyCanExecuteChanged();
+            });
         }
     }
 
-    private int GetWritableTargetCount() => GetTargetSlots().Count(entry => entry.Pokemon.Species != 0 && entry.Slot.CanWriteTo(_sav));
+    private void CancelPreview() => _previewCancellation?.Cancel();
 
-    private BatchEditPlan? BuildPlan(string text)
+    private void PostToUi(Action action)
+    {
+        if (_uiDispatcher is null || _uiDispatcher.CheckAccess())
+            action();
+        else
+            _uiDispatcher.Post(action);
+    }
+
+    private int GetWritableTargetCount() => GetTargetSlots(EditBoxes, EditParty)
+        .Count(entry => entry.Pokemon.Species != 0 && entry.Slot.CanWriteTo(_sav));
+
+    private BatchEditPlan? BuildPlan(string text, bool editBoxes, bool editParty)
     {
         if (string.IsNullOrWhiteSpace(text))
             return null;
@@ -277,26 +388,28 @@ public partial class BatchEditorViewModel : ViewModelBase
 
         var editor = new EntityBatchProcessor();
         var changes = new List<PlannedChange>();
-        foreach (var target in GetTargetSlots())
+        foreach (var target in GetTargetSlots(editBoxes, editParty))
         {
             if (target.Pokemon.Species == 0 || !target.Slot.CanWriteTo(_sav))
                 continue;
 
+            var original = target.Pokemon.Clone();
+            original.RefreshChecksum();
             var working = target.Pokemon.Clone();
             var modified = false;
             foreach (var set in sets)
                 modified |= editor.Process(working, set.Filters, set.Instructions);
 
-            if (modified)
+            if (modified && !working.Data.SequenceEqual(original.Data))
                 changes.Add(new PlannedChange(target.Slot, working));
         }
 
         return new BatchEditPlan(sets, editor, changes);
     }
 
-    private IEnumerable<SlotEntry> GetTargetSlots()
+    private IEnumerable<SlotEntry> GetTargetSlots(bool editBoxes, bool editParty)
     {
-        if (EditBoxes)
+        if (editBoxes)
         {
             for (var box = 0; box < _sav.BoxCount; box++)
             {
@@ -308,7 +421,7 @@ public partial class BatchEditorViewModel : ViewModelBase
             }
         }
 
-        if (EditParty)
+        if (editParty)
         {
             for (var slot = 0; slot < _sav.PartyCount; slot++)
             {
@@ -334,4 +447,16 @@ public partial class BatchEditorViewModel : ViewModelBase
     private sealed record SlotEntry(ISlotInfo Slot, PKM Pokemon);
     private sealed record PlannedChange(ISlotInfo Slot, PKM Pokemon);
     private sealed record BatchEditPlan(StringInstructionSet[] Sets, EntityBatchProcessor Editor, List<PlannedChange> Changes);
+
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+        Interlocked.Increment(ref _previewVersion);
+        CancelPreview();
+        _previewCancellation?.Dispose();
+        _undoRedo.StateChanged -= OnUndoRedoStateChanged;
+    }
 }

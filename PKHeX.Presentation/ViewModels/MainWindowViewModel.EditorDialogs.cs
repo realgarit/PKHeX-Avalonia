@@ -60,7 +60,7 @@ public partial class MainWindowViewModel
     private async Task OpenBatchEditorAsync()
     {
         if (CurrentSave is null) return;
-        var vm = new BatchEditorViewModel(CurrentSave, _dialogService, _undoRedo);
+        var vm = new BatchEditorViewModel(CurrentSave, _dialogService, _undoRedo, _uiDispatcher);
         vm.BatchEditCompleted += OnBatchEditCompleted;
         try
         {
@@ -69,6 +69,7 @@ public partial class MainWindowViewModel
         finally
         {
             vm.BatchEditCompleted -= OnBatchEditCompleted;
+            vm.Dispose();
         }
     }
 
