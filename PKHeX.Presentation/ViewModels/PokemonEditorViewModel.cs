@@ -17,6 +17,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private readonly IWindowService _windowService;
     private readonly bool _haXMode;
     private bool _isLoading; // Flag to prevent modifying _pk during load
+    private bool _abilitySelectionChanged;
 
     // Data sources (mostly filtered by SaveFile context)
     [ObservableProperty] private IReadOnlyList<ComboItem> _speciesList;
@@ -183,6 +184,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     private void LoadFromPKM()
     {
+        _abilitySelectionChanged = false;
         _isLoading = true;
         try
         {
@@ -391,6 +393,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         if (_isLoading) return;
         RecalculateStats();
         UpdateAbilityList();
+        _abilitySelectionChanged = true;
         UpdateFormArgument();
         UpdateSprite();
     }
@@ -433,7 +436,12 @@ public partial class PokemonEditorViewModel : ViewModelBase
     partial void OnNicknameChanged(string value) { if (!_isLoading) Validate(); }
     partial void OnLevelChanged(int value) { if (!_isLoading) { Exp = Experience.GetEXP((byte)value, _pk.PersonalInfo.EXPGrowth); RecalculateStats(); Validate(); OnPropertyChanged(nameof(CanHyperTrain)); } }
     partial void OnNatureChanged(int value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
-    partial void OnAbilityChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnAbilityChanged(int value)
+    {
+        if (_isLoading) return;
+        _abilitySelectionChanged = true;
+        Validate();
+    }
     partial void OnHeldItemChanged(int value) { if (!_isLoading) Validate(); }
     partial void OnBallChanged(int value) { if (!_isLoading) Validate(); }
     partial void OnGenderChanged(int value) { if (!_isLoading) Validate(); }
@@ -451,6 +459,24 @@ public partial class PokemonEditorViewModel : ViewModelBase
         Ability = AbilityList.Any(a => a.Value == currentAbility)
             ? currentAbility
             : AbilityList.Count > 0 ? AbilityList[0].Value : 0;
+    }
+
+    /// <summary>
+    /// Keeps the stored ability slot in sync with the selected ability ID.
+    ///
+    /// Gen 6+ legality validation treats these as a pair. HaX mode can expose
+    /// IDs outside the current species' personal data, so those values remain
+    /// direct assignments instead of being rejected or remapped.
+    /// </summary>
+    private void ApplyAbility()
+    {
+        var abilityIndex = _pk.PersonalInfo.GetIndexOfAbility(Ability);
+        if (abilityIndex >= 0)
+            _pk.RefreshAbility(abilityIndex);
+        else
+            _pk.Ability = Ability;
+
+        AbilityNumber = _pk.AbilityNumber;
     }
 
     private void UpdateFormList(bool preserveSelection = true)
@@ -521,7 +547,10 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _pk.Stat_Level = (byte)Level;
         _pk.StatAlignment = (Nature)StatAlignment;
         _pk.Nature = (Nature)Nature;
-        _pk.Ability = Ability;
+        if (_abilitySelectionChanged)
+            ApplyAbility();
+        else
+            _pk.Ability = Ability;
         _pk.HeldItem = HeldItem;
         _pk.Ball = (byte)Ball;
         _pk.Gender = (byte)Gender;
@@ -685,6 +714,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         RecalculateStats();
         UpdateFormList();
         UpdateAbilityList();
+        _abilitySelectionChanged = true;
         UpdateFormArgument();
         UpdateSprite(); // sets _pk.Species so the new growth rate is used below
         UpdateTitle();
