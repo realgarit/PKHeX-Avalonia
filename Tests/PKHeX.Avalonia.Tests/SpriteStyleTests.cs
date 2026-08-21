@@ -83,6 +83,20 @@ public class SpriteStyleTests
         Assert.False(shiny!.Bytes.SequenceEqual(normal!.Bytes));
     }
 
+    [Theory]
+    [InlineData(738)] // Vikavolt
+    [InlineData(760)] // Bewear
+    public void Loader_Artwork_TransferredSpeciesShinyDoesNotFallBackToNormal(ushort species)
+    {
+        var loader = new SpriteLoader { Style = SpriteStyle.Artwork };
+        using var shiny = loader.GetSprite(species, 0, 0, 0, true, EntityContext.Gen9);
+        using var normal = loader.GetSprite(species, 0, 0, 0, false, EntityContext.Gen9);
+
+        Assert.NotNull(shiny);
+        Assert.NotNull(normal);
+        Assert.False(shiny!.Bytes.SequenceEqual(normal!.Bytes), $"Artwork shiny sprite for species {species} fell back to the normal artwork.");
+    }
+
     [Fact]
     public void Loader_Classic_MissingGen9Species_ReturnsNull()
     {

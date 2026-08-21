@@ -206,6 +206,7 @@ WinForms UI changes, version bump, PR, and auto-merge once CI is green — is en
 ## Working notes
 
 <!-- Any agent: append short dated notes here (YYYY-MM-DD — note). Prune notes when stale or once folded into the sections above. -->
+- 2026-08-21 — GitHub issue #215 reproduces a Discord report where Artwork-mode shiny Bewear and Vikavolt used normal-color artwork because `a_760s.png`/`a_738s.png` are not bundled; `SpriteLoader` now prefers the available classic shiny sprite before falling back to normal artwork. UI version is 1.45.2, with focused coverage in `SpriteStyleTests`.
 - 2026-08-21 — GitHub issue #213 reproduces a Discord report where changing a Gen 7 egg Pokémon's ability in the Avalonia editor changed the ability ID but left `AbilityNumber` stale, causing `Ability mismatch for encounter`; `PokemonEditorViewModel.ApplyAbility()` now pairs known IDs with Core `RefreshAbility`, with regression coverage for Jangmo-o → Soundproof and Beldum → Metagross hidden-to-normal edits. UI version is 1.45.1.
 - 2026-08-21 — PKHaX support on branch feat/illegal-mode-hax: Avalonia startup now uses Core StartupUtil (--HaX/-HaX or persisted ForceHaXOnLaunch) to set runtime-only AppSettings.IsHaXMode. The mode propagates through filtered species/move/item/ability sources, editable six stored battle stats, full inventory item IDs and HaX quantities, persistent title/status warnings, and suppressed legality overlays in box/party/editor views. UI version is 1.45.0; focused HaX tests pass (5), Avalonia (2,493), architecture (5), and Core (449 + 1 existing skip).
 
