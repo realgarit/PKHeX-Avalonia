@@ -231,7 +231,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 InventoryEditor = new InventoryEditorViewModel(sav, _spriteRenderer, IsHaXMode);
                 EventFlagsEditor = new EventFlagsEditorViewModel(sav);
                 MysteryGiftEditor = new MysteryGiftEditorViewModel(sav, _dialogService, _giftRecordProvider);
-                BatchEditor = new BatchEditorViewModel(sav, _dialogService);
+                BatchEditor = new BatchEditorViewModel(sav, _dialogService, _undoRedo);
                 BatchEditor.BatchEditCompleted += OnBatchEditCompleted;
             }
             catch (Exception ex)

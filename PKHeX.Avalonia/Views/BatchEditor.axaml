@@ -10,11 +10,14 @@
             <!-- Header -->
             <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
                 <TextBlock Text="{loc:Loc BatchEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                <Button Content="{loc:Loc BatchEditor_RunBatchButton}"
-                        Command="{Binding RunBatchCommand}"
-                        Classes="accent"
-                        HorizontalAlignment="Right"
-                        Padding="16,8" />
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                    <TextBlock Text="{loc:Loc BatchEditor_AffectedCountLabel}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding AffectedCount}" VerticalAlignment="Center" MinWidth="24" />
+                    <Button Content="{loc:Loc BatchEditor_RunBatchButton}"
+                            Command="{Binding RunBatchCommand}"
+                            Classes="accent"
+                            Padding="16,8" />
+                </StackPanel>
             </DockPanel>
 
             <!-- Target Selection -->
@@ -109,10 +112,14 @@
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,4">
                     <TextBlock Text="{loc:Loc BatchEditor_InstructionsHeader}" FontWeight="SemiBold" />
-                    <Button Content="{loc:Loc BatchEditor_ClearButton}"
-                            Command="{Binding ClearInstructionsCommand}"
-                            HorizontalAlignment="Right"
-                            Padding="8,2" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                        <Button Content="{loc:Loc BatchEditor_ResetButton}"
+                                Command="{Binding ResetBatchCommand}"
+                                Padding="8,2" />
+                        <Button Content="{loc:Loc BatchEditor_ClearButton}"
+                                Command="{Binding ClearInstructionsCommand}"
+                                Padding="8,2" />
+                    </StackPanel>
                 </DockPanel>
                 <Border Classes="section-card"
                         CornerRadius="4">

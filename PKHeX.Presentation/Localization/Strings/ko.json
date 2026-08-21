@@ -461,6 +461,8 @@
   "BatchEditor_AddModifyButton": "+ 수정",
   "BatchEditor_ResultsHeader": "결과",
   "BatchEditor_InstructionsHeader": "명령어",
+  "BatchEditor_AffectedCountLabel": "영향받는 슬롯:",
+  "BatchEditor_ResetButton": "초기화",
   "BatchEditor_ClearButton": "지우기",
   "BatchEditor_InstructionsWatermark": "여기에 일괄 명령어를 입력하세요...\n예시:\n=Species=25\n.Shiny=Star",
   "BattlePassEditor_NotAvailableTitle": "배틀 패스 편집기를 사용할 수 없음",
