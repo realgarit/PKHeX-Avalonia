@@ -121,6 +121,7 @@ public partial class App : global::Avalonia.Application
         services.AddSingleton<ISpriteRenderer, AvaloniaSpriteRenderer>();
         services.AddSingleton<IClipboardService, ClipboardService>();
         services.AddSingleton<IQrCodeService, QrCodeService>();
+        services.AddSingleton<IUiDispatcher, AvaloniaUiDispatcher>();
         services.AddSingleton<IAppLifetime, AppLifetimeService>();
         services.AddSingleton<ThemeService>();
         services.AddSingleton<IThemeService>(sp => sp.GetRequiredService<ThemeService>());

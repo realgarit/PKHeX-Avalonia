@@ -60,9 +60,17 @@ public partial class MainWindowViewModel
     private async Task OpenBatchEditorAsync()
     {
         if (CurrentSave is null) return;
-        var vm = new BatchEditorViewModel(CurrentSave, _dialogService);
+        var vm = new BatchEditorViewModel(CurrentSave, _dialogService, _undoRedo, _uiDispatcher);
         vm.BatchEditCompleted += OnBatchEditCompleted;
-        await _windowService.ShowDialogAsync(vm, T("Dialog_BatchEditor"));
+        try
+        {
+            await _windowService.ShowDialogAsync(vm, T("Dialog_BatchEditor"));
+        }
+        finally
+        {
+            vm.BatchEditCompleted -= OnBatchEditCompleted;
+            vm.Dispose();
+        }
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]

@@ -461,6 +461,8 @@
   "BatchEditor_AddModifyButton": "+ Modifica",
   "BatchEditor_ResultsHeader": "Risultati",
   "BatchEditor_InstructionsHeader": "Istruzioni",
+  "BatchEditor_AffectedCountLabel": "Slot interessati:",
+  "BatchEditor_ResetButton": "Reimposta",
   "BatchEditor_ClearButton": "Cancella",
   "BatchEditor_InstructionsWatermark": "Inserisci qui le istruzioni batch...\nEsempio:\n=Species=25\n.Shiny=Star",
   "BattlePassEditor_NotAvailableTitle": "Editor Battle Pass non disponibile",

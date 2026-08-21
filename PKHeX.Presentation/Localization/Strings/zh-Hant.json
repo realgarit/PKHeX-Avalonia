@@ -461,6 +461,8 @@
   "BatchEditor_AddModifyButton": "+ 修改",
   "BatchEditor_ResultsHeader": "結果",
   "BatchEditor_InstructionsHeader": "指令",
+  "BatchEditor_AffectedCountLabel": "受影響的欄位：",
+  "BatchEditor_ResetButton": "重設",
   "BatchEditor_ClearButton": "清除",
   "BatchEditor_InstructionsWatermark": "在此輸入批次指令...\n範例：\n=Species=25\n.Shiny=Star",
   "BattlePassEditor_NotAvailableTitle": "無法使用戰鬥通行證編輯器",
