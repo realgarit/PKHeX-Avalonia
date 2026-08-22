@@ -34,26 +34,22 @@ public partial class BoxViewer : UserControl
         if (!e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
             return;
         
-        var modifiers = e.KeyModifiers;
-        
-        if (modifiers.HasFlag(KeyModifiers.Control))
+        switch (SlotClickActionResolver.Resolve(e.KeyModifiers))
         {
-            // Ctrl+Click = View
-            vm.ViewSlotCommand.Execute(slot);
-            e.Handled = true;
+            case SlotClickAction.View:
+                vm.ViewSlotCommand.Execute(slot);
+                break;
+            case SlotClickAction.Set:
+                vm.SetSlotCommand.Execute(slot);
+                break;
+            case SlotClickAction.Delete:
+                vm.DeleteSlotCommand.Execute(slot);
+                break;
+            default:
+                return;
         }
-        else if (modifiers.HasFlag(KeyModifiers.Shift))
-        {
-            // Shift+Click = Set
-            vm.SetSlotCommand.Execute(slot);
-            e.Handled = true;
-        }
-        else if (modifiers.HasFlag(KeyModifiers.Alt))
-        {
-            // Alt+Click = Delete
-            vm.DeleteSlotCommand.Execute(slot);
-            e.Handled = true;
-        }
+
+        e.Handled = true;
         // Normal click without modifiers - let Click event handle it for selection
     }
 

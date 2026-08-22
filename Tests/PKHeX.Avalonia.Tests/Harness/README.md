@@ -74,7 +74,7 @@ under full-suite `dotnet test` (the same class of flake PR #171 fixed in `SlotCl
 
 - **Modifier-clicks and double-tap.** Headless mouse input does not merge keyboard-modifier state
   (Ctrl/Shift/Alt) into the pointer event's `KeyModifiers`, nor synthesize click-count, so the box
-  viewer's Ctrl/Shift/Alt+Click (view/set/delete) and double-tap (activate) gestures cannot be driven
+  viewer's Ctrl/Shift/Alt/Option+Click (view/set/delete) and double-tap (activate) gestures cannot be driven
   by the mouse. Use their keyboard equivalents instead (Ctrl+C/V/Delete key bindings, Enter to
   activate), which route identically to the same commands.
 - **Native drag-and-drop initiation.** `DragDrop.DoDragDropAsync` (used by `BoxViewer`/`PartyViewer`
