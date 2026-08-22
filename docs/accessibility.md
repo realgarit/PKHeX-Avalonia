@@ -35,7 +35,7 @@ once to enter it, then use:
 | `Enter` / `Space` | Activate the selected slot (loads it into the Pokémon editor) |
 | `Ctrl+C` | View: load the selected slot's Pokémon into the editor (same as Ctrl+Click) |
 | `Ctrl+V` | Set: write the Pokémon currently in the editor into the selected slot (same as Shift+Click) |
-| `Delete` | Clear the selected slot (same as Alt+Click) |
+| `Delete` | Clear the selected slot (same as Alt/Option+Click) |
 | `Ctrl+F` | Open the Search & Seek tool |
 | `F3` / `Shift+F3` | Seek to the next / previous match |
 

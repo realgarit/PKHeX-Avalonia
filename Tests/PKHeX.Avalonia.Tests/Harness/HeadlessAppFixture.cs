@@ -283,7 +283,7 @@ public sealed class HeadlessAppFixture : IDisposable
     /// nav button's <c>Command</c>) — deterministically, with no dependency on the flaky headless input or
     /// composition-scene machinery.
     /// </para>
-    /// It still does not synthesize modifier state or click-count, so modifier-clicks (Ctrl/Shift/Alt+Click)
+    /// It still does not synthesize modifier state or click-count, so modifier-clicks (Ctrl/Shift/Alt/Option+Click)
     /// and double-tap remain keyboard-only — see Harness/README.md.
     /// </remarks>
     public void Click(Control control)
