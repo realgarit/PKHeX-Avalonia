@@ -29,6 +29,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly ILiveHexService _liveHexService;
     private readonly ILivingDexService _livingDexService;
     private readonly IGiftRecordProvider _giftRecordProvider;
+    private readonly IUiDispatcher? _uiDispatcher;
     private readonly UpdateCheckCoordinator _updateCoordinator;
 
     // Captured on the UI thread at construction so update-check continuations (which may complete on
@@ -115,7 +116,8 @@ public partial class MainWindowViewModel : ViewModelBase
         IAutoLegalityService autoLegalityService,
         ILiveHexService liveHexService,
         ILivingDexService livingDexService,
-        IGiftRecordProvider giftRecordProvider)
+        IGiftRecordProvider giftRecordProvider,
+        IUiDispatcher? uiDispatcher = null)
     {
         _saveFileService = saveFileService;
         _dialogService = dialogService;
@@ -135,6 +137,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _liveHexService = liveHexService;
         _livingDexService = livingDexService;
         _giftRecordProvider = giftRecordProvider;
+        _uiDispatcher = uiDispatcher;
 
         // Mirror the coordinator's status-bar notification (raised by either the startup check or a
         // manual "Check for Updates" from the Settings/About dialogs) into the bound property.
@@ -191,6 +194,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         // Dismiss any modeless tool windows (e.g. the box seek tool) bound to the previous save.
         _windowService.CloseAllTools();
+        DisposeBatchEditor();
         _boxReport = null;
         _legalityAudit = null;
         _autoLegalityMod = null;
@@ -231,7 +235,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 InventoryEditor = new InventoryEditorViewModel(sav, _spriteRenderer, IsHaXMode);
                 EventFlagsEditor = new EventFlagsEditorViewModel(sav);
                 MysteryGiftEditor = new MysteryGiftEditorViewModel(sav, _dialogService, _giftRecordProvider);
-                BatchEditor = new BatchEditorViewModel(sav, _dialogService);
+                BatchEditor = new BatchEditorViewModel(sav, _dialogService, _undoRedo, _uiDispatcher);
                 BatchEditor.BatchEditCompleted += OnBatchEditCompleted;
             }
             catch (Exception ex)
@@ -270,12 +274,18 @@ public partial class MainWindowViewModel : ViewModelBase
             EventFlagsEditor = null;
             MysteryGiftEditor = null;
 
-            if (BatchEditor is not null)
-            {
-                BatchEditor.BatchEditCompleted -= OnBatchEditCompleted;
-                BatchEditor = null;
-            }
+            DisposeBatchEditor();
         }
+    }
+
+    private void DisposeBatchEditor()
+    {
+        if (BatchEditor is null)
+            return;
+
+        BatchEditor.BatchEditCompleted -= OnBatchEditCompleted;
+        BatchEditor.Dispose();
+        BatchEditor = null;
     }
 
     /// <summary>

@@ -61,6 +61,7 @@ public partial class MainWindowViewModel
 
         BoxViewer?.RefreshCurrentBox();
         PartyViewer?.RefreshParty();
+        BatchEditor?.RefreshExternalState();
     }
 
     private void OnBoxViewSlot(int box, int slot)
@@ -81,6 +82,7 @@ public partial class MainWindowViewModel
         }
         CurrentSave.SetBoxSlotAtIndex(pk, box, slot);
         BoxViewer?.RefreshCurrentBox();
+        BatchEditor?.RefreshExternalState();
     }
 
     private void OnBoxDeleteSlot(int box, int slot)
@@ -89,6 +91,7 @@ public partial class MainWindowViewModel
         if (CurrentSave.GetBoxSlotAtIndex(box, slot).Species == 0) return;
         CurrentSave.SetBoxSlotAtIndex(CurrentSave.BlankPKM, box, slot);
         BoxViewer?.RefreshCurrentBox();
+        BatchEditor?.RefreshExternalState();
     }
 
     private void OnPartyViewSlot(int slot)
@@ -109,6 +112,7 @@ public partial class MainWindowViewModel
         }
         CurrentSave.SetPartySlotAtIndex(pk, slot);
         PartyViewer.RefreshParty();
+        BatchEditor?.RefreshExternalState();
     }
 
     /// <summary>

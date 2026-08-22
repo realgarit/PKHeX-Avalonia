@@ -461,6 +461,8 @@
   "BatchEditor_AddModifyButton": "+ Modifier",
   "BatchEditor_ResultsHeader": "Résultats",
   "BatchEditor_InstructionsHeader": "Instructions",
+  "BatchEditor_AffectedCountLabel": "Emplacements concernés :",
+  "BatchEditor_ResetButton": "Réinitialiser",
   "BatchEditor_ClearButton": "Effacer",
   "BatchEditor_InstructionsWatermark": "Entrez les instructions par lots ici...\nExemple :\n=Species=25\n.Shiny=Star",
   "BattlePassEditor_NotAvailableTitle": "Éditeur de Passeport de combat non disponible",

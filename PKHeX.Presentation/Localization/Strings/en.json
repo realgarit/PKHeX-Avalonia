@@ -461,6 +461,8 @@
   "BatchEditor_AddModifyButton": "+ Modify",
   "BatchEditor_ResultsHeader": "Results",
   "BatchEditor_InstructionsHeader": "Instructions",
+  "BatchEditor_AffectedCountLabel": "Affected slots:",
+  "BatchEditor_ResetButton": "Reset",
   "BatchEditor_ClearButton": "Clear",
   "BatchEditor_InstructionsWatermark": "Enter batch instructions here...\nExample:\n=Species=25\n.Shiny=Star",
   "BattlePassEditor_NotAvailableTitle": "Battle Pass Editor not available",

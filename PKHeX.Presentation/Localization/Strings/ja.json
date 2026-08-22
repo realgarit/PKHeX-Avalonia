@@ -461,6 +461,8 @@
   "BatchEditor_AddModifyButton": "+ 修正",
   "BatchEditor_ResultsHeader": "結果",
   "BatchEditor_InstructionsHeader": "命令",
+  "BatchEditor_AffectedCountLabel": "対象スロット:",
+  "BatchEditor_ResetButton": "リセット",
   "BatchEditor_ClearButton": "クリア",
   "BatchEditor_InstructionsWatermark": "ここにバッチ命令を入力してください...\n例:\n=Species=25\n.Shiny=Star",
   "BattlePassEditor_NotAvailableTitle": "バトルパスエディタは利用できません",

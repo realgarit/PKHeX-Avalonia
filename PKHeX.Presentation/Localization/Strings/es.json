@@ -461,6 +461,8 @@
   "BatchEditor_AddModifyButton": "+ Modificar",
   "BatchEditor_ResultsHeader": "Resultados",
   "BatchEditor_InstructionsHeader": "Instrucciones",
+  "BatchEditor_AffectedCountLabel": "Espacios afectados:",
+  "BatchEditor_ResetButton": "Restablecer",
   "BatchEditor_ClearButton": "Borrar",
   "BatchEditor_InstructionsWatermark": "Introduce aquí las instrucciones del lote...\nEjemplo:\n=Species=25\n.Shiny=Star",
   "BattlePassEditor_NotAvailableTitle": "El editor de Pase de Batalla no está disponible",

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using PKHeX.Core;
 
 namespace PKHeX.Application.Services;
@@ -35,6 +37,9 @@ public sealed class UndoRedoService
     public event EventHandler? StateChanged;
     public event Action<ISlotInfo>? UndoPerformed;
     public event Action<ISlotInfo>? RedoPerformed;
+
+    /// <summary>Identifies a native Core-backed batch that can be reset while it remains the latest edit.</summary>
+    public sealed class BatchToken;
 
     private void SetChangeCount(int value)
     {
@@ -92,6 +97,56 @@ public sealed class UndoRedoService
         SetChangeCount(_changeCount + 1);
     }
 
+    /// <summary>
+    /// Applies several slot writes as one Core-backed undo operation. If the action throws, Core rolls
+    /// the save back to the state captured before the action and no history entry is created.
+    /// </summary>
+    public BatchToken? ApplyBatch(IEnumerable<ISlotInfo> slots, Action<IReadOnlyList<ISlotInfo>> action)
+    {
+        if (_sav is null || _changelog is null)
+            throw new InvalidOperationException("Undo/redo has not been initialized with a save file.");
+
+        var affected = slots.Distinct().ToArray();
+        if (affected.Length == 0)
+            return null;
+        if (affected.Any(slot => !slot.CanWriteTo(_sav)))
+            return null;
+
+        using var change = _changelog.Begin(affected);
+        action(affected);
+        change.Commit();
+
+        var token = new BatchToken();
+        _undoStack.Push(new CoreBatchUnit(token));
+        _redoStack.Clear();
+        SetChangeCount(_changeCount + 1);
+        return token;
+    }
+
+    /// <summary>Returns whether <paramref name="token"/> is still the latest undoable operation.</summary>
+    public bool CanUndoBatch(BatchToken token) => _changelog?.CanUndo == true
+        && _undoStack.TryPeek(out var unit)
+        && unit is CoreBatchUnit batch
+        && ReferenceEquals(batch.Token, token);
+
+    /// <summary>
+    /// Reverts a batch only when it is still the latest operation. The reverted operation moves to the
+    /// redo stack, preserving coherent application history for the main Undo/Redo commands.
+    /// </summary>
+    public bool TryUndoBatch(BatchToken token)
+    {
+        if (!CanUndoBatch(token) || _changelog is null)
+            return false;
+
+        var unit = _undoStack.Pop();
+        foreach (var info in _changelog.Undo())
+            UndoPerformed?.Invoke(info);
+
+        _redoStack.Push(unit);
+        SetChangeCount(_changeCount + 1);
+        return true;
+    }
+
     public void AddChange(ISlotInfo info)
     {
         if (_pendingBatch is { } batch && _sav is not null)
@@ -120,7 +175,7 @@ public sealed class UndoRedoService
         if (_sav is null || _undoStack.Count == 0) return;
 
         var unit = _undoStack.Pop();
-        if (unit is SingleUnit)
+        if (unit is SingleUnit or CoreBatchUnit)
         {
             if (_changelog is null || !_changelog.CanUndo) return;
             foreach (var info in _changelog.Undo())
@@ -144,7 +199,7 @@ public sealed class UndoRedoService
         if (_sav is null || _redoStack.Count == 0) return;
 
         var unit = _redoStack.Pop();
-        if (unit is SingleUnit)
+        if (unit is SingleUnit or CoreBatchUnit)
         {
             if (_changelog is null || !_changelog.CanRedo) return;
             foreach (var info in _changelog.Redo())
@@ -171,6 +226,12 @@ public sealed class UndoRedoService
     {
         public static readonly SingleUnit Instance = new();
         private SingleUnit() { }
+    }
+
+    /// <summary>Marker for a native Core composite change, which shares the regular undo/redo path.</summary>
+    private sealed class CoreBatchUnit(BatchToken token) : UndoUnit
+    {
+        public BatchToken Token { get; } = token;
     }
 
     /// <summary>A batched change: its own independent before/after snapshot per slot (see class remarks).</summary>
