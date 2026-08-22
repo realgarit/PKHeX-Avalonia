@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using Avalonia.VisualTree;
 using PKHeX.Avalonia.Services;
 using PKHeX.Presentation.Models;
 using PKHeX.Presentation.ViewModels;
@@ -16,6 +17,10 @@ public partial class BoxViewer : UserControl
     {
         InitializeComponent();
 
+        // Button handles PointerPressed internally before normal handlers see it. Listen during the
+        // tunnel phase so modifier actions run before Button consumes the press and raises Click.
+        AddHandler(InputElement.PointerPressedEvent, OnSlotPointerPressed, RoutingStrategies.Tunnel, handledEventsToo: true);
+
         // Focus the control when it becomes visible for keyboard navigation
         AttachedToVisualTree += (_, _) => Focus();
     }
@@ -25,7 +30,8 @@ public partial class BoxViewer : UserControl
 
     private void OnSlotPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (sender is not Button { Tag: SlotData slot } || DataContext is not BoxViewerViewModel vm)
+        var button = FindSlotButton(e.Source as Visual);
+        if (button?.Tag is not SlotData slot || DataContext is not BoxViewerViewModel vm)
             return;
         
         _dragStartPoint = e.GetPosition(this);
@@ -51,6 +57,17 @@ public partial class BoxViewer : UserControl
 
         e.Handled = true;
         // Normal click without modifiers - let Click event handle it for selection
+    }
+
+    private static Button? FindSlotButton(Visual? source)
+    {
+        for (var visual = source; visual is not null; visual = visual.GetVisualParent())
+        {
+            if (visual is Button button)
+                return button;
+        }
+
+        return null;
     }
 
     private async void OnSlotPointerMoved(object? sender, PointerEventArgs e)

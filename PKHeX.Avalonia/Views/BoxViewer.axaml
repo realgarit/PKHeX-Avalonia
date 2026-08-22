@@ -106,7 +106,6 @@
                                     Height="NaN"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
-                                    PointerPressed="OnSlotPointerPressed"
                                     PointerMoved="OnSlotPointerMoved"
                                     DragDrop.AllowDrop="True"
                                     DragDrop.Drop="OnSlotDrop"
