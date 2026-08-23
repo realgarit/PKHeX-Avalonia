@@ -1,5 +1,6 @@
 using System.Reflection;
 using Moq;
+using PKHeX.Application.Abstractions;
 using PKHeX.Core;
 using PKHeX.Presentation.ViewModels;
 using Xunit;
@@ -15,14 +16,14 @@ namespace PKHeX.Avalonia.Tests;
 /// </summary>
 public class SlotOperationsTests
 {
-    private static MainWindowViewModel CreateViewModel(Mock<IDialogService> dialogServiceMock)
+    private static MainWindowViewModel CreateViewModel(Mock<IDialogService> dialogServiceMock, ISlotService? slotService = null)
     {
         return new MainWindowViewModel(
             new Mock<ISaveFileGateway>().Object,
             dialogServiceMock.Object,
             new Mock<IWindowService>().Object,
             new Mock<ISpriteRenderer>().Object,
-            new Mock<ISlotService>().Object,
+            slotService ?? new Mock<ISlotService>().Object,
             new Mock<IClipboardService>().Object,
             new Mock<IQrCodeService>().Object,
             UpdateTestDoubles.Coordinator(),
@@ -78,5 +79,27 @@ public class SlotOperationsTests
         Assert.True(converted || rejected);
         if (rejected)
             dialogServiceMock.Verify(d => d.ShowErrorAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+    }
+
+    [Fact]
+    public void MovingPartyPokemonToAnEmptyBoxCompactsTheRemainingParty()
+    {
+        var sav = new SAV6XY();
+        sav.SetPartySlotAtIndex(new PK6 { Species = 1 }, 0);
+        sav.SetPartySlotAtIndex(new PK6 { Species = 2 }, 1);
+        sav.SetPartySlotAtIndex(new PK6 { Species = 3 }, 2);
+
+        var slotService = new SlotService();
+        var dialogService = new Mock<IDialogService>();
+        var vm = CreateViewModel(dialogService, slotService);
+        vm.CurrentSave = sav;
+
+        slotService.RequestMove(SlotLocation.FromParty(0), SlotLocation.FromBox(0, 0), clone: false);
+
+        Assert.Equal(2, sav.PartyCount);
+        Assert.Equal(2, sav.GetPartySlotAtIndex(0).Species);
+        Assert.Equal(3, sav.GetPartySlotAtIndex(1).Species);
+        Assert.Equal(0, sav.GetPartySlotAtIndex(2).Species);
+        Assert.Equal(1, sav.GetBoxSlotAtIndex(0, 0).Species);
     }
 }

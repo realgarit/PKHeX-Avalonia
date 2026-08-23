@@ -25,8 +25,8 @@ public class FilterableComboBox : AutoCompleteBox
 
     private bool _syncing;
 
-    // Without this, the control's style key defaults to FilterableComboBox and the
-    // Fluent AutoCompleteBox control theme never applies — the control renders empty.
+    // Reuse Fluent's AutoCompleteBox template; the surrounding views provide the
+    // explicit chevron affordance without replacing the text-entry template.
     protected override Type StyleKeyOverride => typeof(AutoCompleteBox);
 
     public FilterableComboBox()

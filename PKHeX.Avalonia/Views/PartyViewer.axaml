@@ -21,7 +21,28 @@
     <Border Padding="16" Classes="view-container">
         <DockPanel>
             <!-- Header -->
-            <TextBlock DockPanel.Dock="Top" Text="{loc:Loc PartyViewer_Title}" FontWeight="SemiBold" FontSize="18" Margin="0,0,0,12" />
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="*,44" Margin="0,0,0,12">
+                <TextBlock Grid.Column="0"
+                           Text="{loc:Loc PartyViewer_Title}"
+                           FontWeight="SemiBold"
+                           FontSize="18"
+                           VerticalAlignment="Center" />
+                <Button Grid.Column="1"
+                        Content="←"
+                        Command="{Binding MoveToBoxCommand}"
+                        CommandParameter="{Binding SelectedSlot}"
+                        ToolTip.Tip="{loc:Loc Slot_MoveSelectedToBoxTooltip}"
+                        AutomationProperties.Name="Move selected Pokémon to Box"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        FontSize="18"
+                        IsVisible="{Binding CanMoveToBox}"
+                        IsEnabled="{Binding SelectedSlot.IsEmpty, Converter={StaticResource ObjectFalseConverter}}" />
+            </Grid>
 
             <!-- Footer -->
             <TextBlock DockPanel.Dock="Bottom"
@@ -64,6 +85,11 @@
                                         <MenuItem Header="{loc:Loc PartyViewer_SetMenuItem}"
                                                   Command="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).SetSlotCommand}"
                                                   CommandParameter="{Binding}" />
+                                        <MenuItem Header="{loc:Loc Slot_MoveToBoxMenuItem}"
+                                                  Command="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).MoveToBoxCommand}"
+                                                  CommandParameter="{Binding}"
+                                                  IsVisible="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).CanMoveToBox}"
+                                                  IsEnabled="{Binding !IsEmpty}" />
                                         <Separator />
                                         <MenuItem Header="{loc:Loc PartyViewer_DeleteMenuItem}"
                                                   Command="{Binding $parent[UserControl].((vm:PartyViewerViewModel)DataContext).DeleteSlotCommand}"

@@ -89,8 +89,15 @@ public partial class PokemonEditorViewModel
     }
 
     [RelayCommand]
-    private void SuggestRelearnMoves()
+    private async Task SuggestRelearnMoves()
     {
+        if (!await _dialogService.ShowConfirmationAsync(
+                LocalizedStrings.Instance["PokemonEditor_SuggestMovesConfirmTitle"],
+                LocalizedStrings.Instance["PokemonEditor_SuggestRelearnMovesConfirmMessage"],
+                LocalizedStrings.Instance["Common_OK"],
+                LocalizedStrings.Instance["Common_Cancel"]))
+            return;
+
         var pk = PreparePKM();
         var la = new LegalityAnalysis(pk, _sav.Personal);
         pk.SetRelearnMoves(la);
@@ -106,8 +113,15 @@ public partial class PokemonEditorViewModel
     }
 
     [RelayCommand]
-    private void SuggestCurrentMoves()
+    private async Task SuggestCurrentMoves()
     {
+        if (!await _dialogService.ShowConfirmationAsync(
+                LocalizedStrings.Instance["PokemonEditor_SuggestMovesConfirmTitle"],
+                LocalizedStrings.Instance["PokemonEditor_SuggestCurrentMovesConfirmMessage"],
+                LocalizedStrings.Instance["Common_OK"],
+                LocalizedStrings.Instance["Common_Cancel"]))
+            return;
+
         var pk = PreparePKM();
         pk.SetMoveset(false);
         

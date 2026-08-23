@@ -1,4 +1,5 @@
 using Moq;
+using PKHeX.Application.Abstractions;
 using PKHeX.Avalonia.Services;
 using PKHeX.Presentation.ViewModels;
 using PKHeX.Core;
@@ -123,6 +124,52 @@ public class BoxViewerTests(ITestOutputHelper output)
 
         Assert.Equal(1, vm.Slots[0].Species); // box 1 shows Bulbasaur
         output.WriteLine("BoxViewer: switching boxes updates slots ✓");
+    }
+
+    [Fact]
+    public void BoxViewer_MoveToPartyRequestsFirstEmptyPartySlot()
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 25 }, 0, 4);
+        var slotService = new SlotService();
+        SlotLocation? source = null;
+        SlotLocation? destination = null;
+        var clone = true;
+        slotService.MoveRequested += (from, to, isClone) =>
+        {
+            source = from;
+            destination = to;
+            clone = isClone;
+        };
+
+        var vm = new BoxViewerViewModel(sav, SpriteMock().Object, slotService);
+        vm.MoveToPartyCommand.Execute(vm.Slots[4]);
+
+        Assert.True(source.HasValue);
+        Assert.False(source.Value.IsParty);
+        Assert.Equal(4, source.Value.Slot);
+        Assert.True(destination.HasValue);
+        Assert.True(destination.Value.IsParty);
+        Assert.Equal(0, destination.Value.Slot);
+        Assert.False(clone);
+    }
+
+    [Fact]
+    public void BoxViewer_DoesNotOfferPartyMoveForLgpeStorage()
+    {
+        var sav = new SAV7b();
+        sav.SetBoxSlotAtIndex(new PB7 { Species = 25 }, 0, 0);
+        var slotService = new SlotService();
+        var requestRaised = false;
+        slotService.MoveRequested += (_, _, _) => requestRaised = true;
+
+        var vm = new BoxViewerViewModel(sav, SpriteMock().Object, slotService);
+
+        Assert.False(vm.CanMoveToParty);
+        var exception = Record.Exception(() => vm.MoveToPartyCommand.Execute(vm.Slots[0]));
+
+        Assert.Null(exception);
+        Assert.False(requestRaised);
     }
 
     [Theory]

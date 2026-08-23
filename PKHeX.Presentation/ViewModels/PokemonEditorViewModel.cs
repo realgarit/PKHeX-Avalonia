@@ -55,6 +55,14 @@ public partial class PokemonEditorViewModel : ViewModelBase
         new ComboItem("Genderless", 2)
     ];
 
+    /// <summary>
+    /// Gender choices valid for the edited Pokémon. Form-gender-specific species (such as
+    /// Meowstic) cannot be genderless; trainer gender fields still use <see cref="GenderList"/>.
+    /// </summary>
+    public IReadOnlyList<ComboItem> PokemonGenderList => SpeciesCategory.IsFormGenderSpecific((ushort)Species)
+        ? [GenderList[0], GenderList[1]]
+        : GenderList;
+
     // Dynamic lists
     [ObservableProperty]
     private ObservableCollection<ComboItem> _abilityList = [];
@@ -333,6 +341,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
             OnPropertyChanged(nameof(HasHyperTraining));
             OnPropertyChanged(nameof(CanHyperTrain));
             OnPropertyChanged(nameof(Tsv));
+            OnPropertyChanged(nameof(PokemonGenderList));
             UpdateFormArgument();
 
             // Misc
@@ -415,11 +424,18 @@ public partial class PokemonEditorViewModel : ViewModelBase
     partial void OnFormChanged(int value)
     {
         if (_isLoading) return;
+        if (SpeciesCategory.IsFormGenderSpecific((ushort)Species) && value >= 0)
+        {
+            var formGender = value & 1;
+            if (Gender != formGender)
+                Gender = formGender;
+        }
         RecalculateStats();
         UpdateAbilityList();
         _abilitySelectionChanged = true;
         UpdateFormArgument();
         UpdateSprite();
+        Validate();
     }
 
     partial void OnIsShinyChanged(bool value)
@@ -536,7 +552,30 @@ public partial class PokemonEditorViewModel : ViewModelBase
     }
     partial void OnHeldItemChanged(int value) { if (!_isLoading) Validate(); }
     partial void OnBallChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnGenderChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnGenderChanged(int value)
+    {
+        if (_isLoading)
+            return;
+
+        if (SpeciesCategory.IsFormGenderSpecific((ushort)Species))
+        {
+            if (value is not (0 or 1))
+            {
+                // These species have no genderless representation. Normalize an external or
+                // stale Genderless selection back to the gender represented by the current form.
+                Gender = Form & 1;
+                return;
+            }
+
+            // The low bit identifies the gender for form lists that contain additional variants;
+            // preserve that variant while switching between male and female.
+            var targetForm = Form >= 2 && FormList.Any(f => f.Value == value + 2) ? value + 2 : value;
+            if (Form != targetForm)
+                Form = targetForm;
+        }
+
+        Validate();
+    }
 
     private void UpdateAbilityList(bool preserveSelection = true)
     {
@@ -589,12 +628,20 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
         FormList = newList;
 
-        if (_isLoading || !preserveSelection) return;
-
-        Form = FormList.Any(f => f.Value == currentForm)
+        // During a load, preserve the value assigned from the PKM even though the caller marks
+        // the list as non-preserving to suppress normal species-change side effects. Outside a
+        // load, preserveSelection retains the user's current form when the list is rebuilt.
+        var selectedForm = (preserveSelection || _isLoading) && FormList.Any(f => f.Value == currentForm)
             ? currentForm
             : FormList.Count > 0 ? FormList[0].Value : 0;
 
+        // Avalonia's ComboBox binds its selected item after ItemsSource changes. During a load,
+        // Form already has the right numeric value, so assigning the same value would not raise
+        // PropertyChanged and the newly-created list would remain visually unselected.
+        if (Form == selectedForm)
+            OnPropertyChanged(nameof(Form));
+        else
+            Form = selectedForm;
     }
 
     /// <summary>Re-renders the editor preview sprite (e.g. after the sprite style changes).</summary>
@@ -824,5 +871,6 @@ public partial class PokemonEditorViewModel : ViewModelBase
         UpdateTitle();
         OnPropertyChanged(nameof(ExpPercent));
         OnPropertyChanged(nameof(CanOpenTechRecord));
+        OnPropertyChanged(nameof(PokemonGenderList));
     }
 }
