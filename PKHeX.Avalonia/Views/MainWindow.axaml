@@ -216,9 +216,13 @@
 
             <!-- Save Loaded State: WinForms-style layout -->
             <!-- Left: PKMEditor (persistent side panel) | Right: SAVEditor (tabs with Box/Party/Trainer/etc) -->
-            <Grid IsVisible="{Binding HasSave}" ColumnDefinitions="520,*">
+            <Grid IsVisible="{Binding HasSave}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" MinWidth="420" MaxWidth="520" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <!-- Left Panel: PKM Editor (520px) -->
+            <!-- Left Panel: PKM Editor (responsive 420–520px) -->
             <Border Grid.Column="0"
                     Background="{DynamicResource ThemeBackgroundBaseBrush}"
                     BorderThickness="0,0,1,0"

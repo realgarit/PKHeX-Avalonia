@@ -279,7 +279,7 @@
                                    Margin="2,0,2,0" />
                         <Border Classes="section-card"
                                 CornerRadius="4" Padding="8">
-                            <Grid ColumnDefinitions="40,*,*,*,*,*" RowDefinitions="Auto,Auto,4,Auto,Auto,Auto,Auto,Auto,Auto">
+                            <Grid ColumnDefinitions="40,*,*,*,*,Auto" RowDefinitions="Auto,Auto,4,Auto,Auto,Auto,Auto,Auto,Auto">
                                 <!-- Headers -->
                                 <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Text="{loc:Loc StatsHyperTrained}" FontWeight="Bold" Opacity="0.6" HorizontalAlignment="Center" Margin="0,0,0,2" />
                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{loc:Loc PokemonEditor_ColStat}" FontWeight="Bold" Opacity="0.6" HorizontalAlignment="Left" />
@@ -299,6 +299,7 @@
                                             AutomationProperties.Name="Clear all EVs" />
                                 </StackPanel>
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="{loc:Loc PokemonEditor_ColTotal}" FontWeight="Bold" Opacity="0.6" HorizontalAlignment="Center" />
+                                <TextBlock Grid.Row="1" Grid.Column="5" Text="{loc:Loc StatsHyperTrained}" FontWeight="Bold" Opacity="0.6" HorizontalAlignment="Center" />
 
                                 <!-- HP -->
                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="{loc:Loc PokemonEditor_StatHp}" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -307,7 +308,7 @@
                                 <NumericUpDown Grid.Row="3" Grid.Column="3" Value="{Binding EvHP}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="HP EV" />
                                 <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding Stat_HP}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
                                 <NumericUpDown Grid.Row="3" Grid.Column="4" Value="{Binding HaXStatHP}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatHp}" />
-                                <CheckBox Grid.Row="3" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedHP, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <CheckBox Grid.Row="3" Grid.Column="5" IsChecked="{Binding HyperTrainedHP, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding HyperTrainedHpAutomationName}" />
 
                                 <!-- Atk -->
                                 <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Loc PokemonEditor_StatAtk}" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -316,7 +317,7 @@
                                 <NumericUpDown Grid.Row="4" Grid.Column="3" Value="{Binding EvATK}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Attack EV" />
                                 <TextBlock Grid.Row="4" Grid.Column="4" Text="{Binding Stat_ATK}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
                                 <NumericUpDown Grid.Row="4" Grid.Column="4" Value="{Binding HaXStatATK}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatAtk}" />
-                                <CheckBox Grid.Row="4" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedATK, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <CheckBox Grid.Row="4" Grid.Column="5" IsChecked="{Binding HyperTrainedATK, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding HyperTrainedAtkAutomationName}" />
 
                                 <!-- Def -->
                                 <TextBlock Grid.Row="5" Grid.Column="0" Text="{loc:Loc PokemonEditor_StatDef}" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -325,7 +326,7 @@
                                 <NumericUpDown Grid.Row="5" Grid.Column="3" Value="{Binding EvDEF}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Defense EV" />
                                 <TextBlock Grid.Row="5" Grid.Column="4" Text="{Binding Stat_DEF}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
                                 <NumericUpDown Grid.Row="5" Grid.Column="4" Value="{Binding HaXStatDEF}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatDef}" />
-                                <CheckBox Grid.Row="5" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedDEF, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <CheckBox Grid.Row="5" Grid.Column="5" IsChecked="{Binding HyperTrainedDEF, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding HyperTrainedDefAutomationName}" />
 
                                 <!-- SpA -->
                                 <TextBlock Grid.Row="6" Grid.Column="0" Text="{loc:Loc PokemonEditor_StatSpa}" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -334,7 +335,7 @@
                                 <NumericUpDown Grid.Row="6" Grid.Column="3" Value="{Binding EvSPA}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Special Attack EV" />
                                 <TextBlock Grid.Row="6" Grid.Column="4" Text="{Binding Stat_SPA}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
                                 <NumericUpDown Grid.Row="6" Grid.Column="4" Value="{Binding HaXStatSPA}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatSpa}" />
-                                <CheckBox Grid.Row="6" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedSPA, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <CheckBox Grid.Row="6" Grid.Column="5" IsChecked="{Binding HyperTrainedSPA, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding HyperTrainedSpaAutomationName}" />
 
                                 <!-- SpD -->
                                 <TextBlock Grid.Row="7" Grid.Column="0" Text="{loc:Loc PokemonEditor_StatSpd}" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -343,7 +344,7 @@
                                 <NumericUpDown Grid.Row="7" Grid.Column="3" Value="{Binding EvSPD}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Special Defense EV" />
                                 <TextBlock Grid.Row="7" Grid.Column="4" Text="{Binding Stat_SPD}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
                                 <NumericUpDown Grid.Row="7" Grid.Column="4" Value="{Binding HaXStatSPD}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatSpd}" />
-                                <CheckBox Grid.Row="7" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedSPD, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <CheckBox Grid.Row="7" Grid.Column="5" IsChecked="{Binding HyperTrainedSPD, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding HyperTrainedSpdAutomationName}" />
 
                                 <!-- Spe -->
                                 <TextBlock Grid.Row="8" Grid.Column="0" Text="{loc:Loc PokemonEditor_StatSpe}" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -352,7 +353,7 @@
                                 <NumericUpDown Grid.Row="8" Grid.Column="3" Value="{Binding EvSPE}" Minimum="0" Maximum="252" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" AutomationProperties.Name="Speed EV" />
                                 <TextBlock Grid.Row="8" Grid.Column="4" Text="{Binding Stat_SPE}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsHaXMode}" />
                                 <NumericUpDown Grid.Row="8" Grid.Column="4" Value="{Binding HaXStatSPE}" Minimum="0" Maximum="65535" FormatString="0" Classes="compact" HorizontalAlignment="Stretch" Margin="2" IsVisible="{Binding IsHaXMode}" AutomationProperties.Name="{loc:Loc PokemonEditor_StatSpe}" />
-                                <CheckBox Grid.Row="8" Grid.Column="5" Content="{loc:Loc StatsHyperTrained}" IsChecked="{Binding HyperTrainedSPE, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <CheckBox Grid.Row="8" Grid.Column="5" IsChecked="{Binding HyperTrainedSPE, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding HyperTrainedSpeAutomationName}" />
                             </Grid>
                         </Border>
                       </StackPanel>
@@ -391,7 +392,10 @@
                                 </StackPanel>
                                 <StackPanel Grid.Column="2" IsVisible="{Binding HasMetDate}">
                                     <TextBlock Text="{loc:Loc PokemonEditor_MetDate}" FontWeight="SemiBold" Margin="0,0,0,4" VerticalAlignment="Center" />
-                                    <CalendarDatePicker SelectedDate="{Binding MetDate}" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                                    <CalendarDatePicker SelectedDate="{Binding MetDate}" SelectedDateFormat="Long"
+                                                        Watermark="{loc:Loc PokemonEditor_SelectDate}"
+                                                        ToolTip.Tip="{loc:Loc PokemonEditor_SelectDate}"
+                                                        HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Grid>
 
@@ -408,7 +412,10 @@
                             <!-- Egg Date -->
                             <StackPanel>
                                 <TextBlock Text="{loc:Loc PokemonEditor_EggDate}" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                <CalendarDatePicker SelectedDate="{Binding EggDate}" HorizontalAlignment="Stretch" />
+                                <CalendarDatePicker SelectedDate="{Binding EggDate}" SelectedDateFormat="Long"
+                                                    Watermark="{loc:Loc PokemonEditor_SelectDate}"
+                                                    ToolTip.Tip="{loc:Loc PokemonEditor_SelectDate}"
+                                                    HorizontalAlignment="Stretch" />
                             </StackPanel>
 
                             <CheckBox Content="{loc:Loc PokemonEditor_FatefulEncounter}" IsChecked="{Binding IsFatefulEncounter}" />
@@ -565,7 +572,7 @@
                             <!-- Original Trainer Card -->
                             <Border Classes="section-card"
                                     CornerRadius="4" Padding="8">
-                                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto">
+                                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{loc:Loc PokemonEditor_OriginalTrainer}" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
                                     
                                     <StackPanel Grid.Row="1" Grid.Column="0">
@@ -597,6 +604,46 @@
                                                    Opacity="0.6" Text="{Binding Tsv, StringFormat='TSV: {0}'}"
                                                    AutomationProperties.Name="Trainer Shiny Value" />
                                     </Grid>
+
+                                    <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,8,0,0">
+                                        <TextBlock Text="{loc:Loc MemoryEditor_OtFriendship}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <NumericUpDown Value="{Binding OriginalTrainerFriendship}" Minimum="0" Maximum="255" FormatString="0" ShowButtonSpinner="False"
+                                                       AutomationProperties.Name="{loc:Loc MemoryEditor_OtFriendship}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Latest Handling Trainer Card -->
+                            <Border IsVisible="{Binding CanEditHandlingTrainer}" Classes="section-card"
+                                    CornerRadius="4" Padding="8">
+                                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{loc:Loc MemoryEditor_HandlingTrainer}" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
+
+                                    <StackPanel Grid.Row="1" Grid.Column="0">
+                                        <TextBlock Text="{loc:Loc PokemonEditor_Name}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBox Text="{Binding HandlingTrainerName}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" Grid.Column="2">
+                                        <TextBlock Text="{loc:Loc PokemonEditor_Gender}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <ComboBox ItemsSource="{Binding GenderList}"
+                                                  SelectedValue="{Binding HandlingTrainerGender}" SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="2" Grid.Column="0">
+                                        <TextBlock Text="{loc:Loc MemoryEditor_HtFriendship}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <NumericUpDown Value="{Binding HandlingTrainerFriendship}" Minimum="0" Maximum="255" FormatString="0" ShowButtonSpinner="False"
+                                                       AutomationProperties.Name="{loc:Loc MemoryEditor_HtFriendship}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="2" Grid.Column="2">
+                                        <TextBlock Text="{loc:Loc PokemonEditor_CurrentHandler}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <ComboBox ItemsSource="{Binding HandlerList}"
+                                                  SelectedValue="{Binding CurrentHandler}" SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch"
+                                                  AutomationProperties.Name="{loc:Loc PokemonEditor_CurrentHandler}" />
+                                    </StackPanel>
                                 </Grid>
                             </Border>
 
@@ -610,10 +657,13 @@
                                             <TextBlock Text="{loc:Loc PokemonEditor_Pid}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                             <Grid ColumnDefinitions="*,Auto">
                                                 <TextBox Grid.Column="0" Text="{Binding Pid}" FontFamily="Consolas" Height="32" VerticalContentAlignment="Center" Margin="0,0,4,0" />
-                                                <Button Grid.Column="1" Command="{Binding RerollPidCommand}" Content="🎲" Width="34" Height="32"
+                                                <Button Grid.Column="1" Command="{Binding RerollPidCommand}" Width="34" Height="32"
                                                         FontSize="12" Padding="0"
+                                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                                         ToolTip.Tip="{loc:Loc PokemonEditor_RerollPidTooltip}"
-                                                        AutomationProperties.Name="Re-roll PID" />
+                                                        AutomationProperties.Name="Re-roll PID">
+                                                    <TextBlock Text="🎲" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Button>
                                             </Grid>
                                         </StackPanel>
                                         <StackPanel Margin="4,0,0,0">
@@ -622,27 +672,29 @@
                                         </StackPanel>
                                     </UniformGrid>
 
-                                    <Grid ColumnDefinitions="*,8,*,8,*">
-                                        <StackPanel Grid.Column="0">
+                                    <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,Auto">
+                                        <StackPanel Grid.Row="0" Grid.Column="0">
                                             <TextBlock Text="{loc:Loc PokemonEditor_Exp}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                             <NumericUpDown Value="{Binding Exp}" Minimum="0" Maximum="16400000" FormatString="0" ShowButtonSpinner="False"
                                                            AutomationProperties.Name="Experience Points" />
                                         </StackPanel>
-                                        <StackPanel Grid.Column="2">
+                                        <StackPanel Grid.Row="0" Grid.Column="2">
                                             <TextBlock Text="{loc:Loc PokemonEditor_Friendship}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                             <NumericUpDown Value="{Binding Happiness}" Minimum="0" Maximum="255" FormatString="0" ShowButtonSpinner="False"
                                                            AutomationProperties.Name="Friendship" />
                                         </StackPanel>
-                                        <StackPanel Grid.Column="4">
+                                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,8,0,0">
                                             <TextBlock Text="{loc:Loc PokemonEditor_Pkrs}" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                            <Grid ColumnDefinitions="*,2,*">
-                                                <NumericUpDown Grid.Column="0" Value="{Binding PkrsDays}" Minimum="0" Maximum="15" FormatString="0" ShowButtonSpinner="False"
+                                            <Grid ColumnDefinitions="*,8,*">
+                                                <NumericUpDown Grid.Column="0" Value="{Binding PkrsDays}" Minimum="0" Maximum="15" FormatString="0" ShowButtonSpinner="False" MinWidth="56"
                                                                AutomationProperties.Name="Pokérus Days Remaining" />
-                                                <NumericUpDown Grid.Column="2" Value="{Binding PkrsStrain}" Minimum="0" Maximum="15" FormatString="0" ShowButtonSpinner="False"
+                                                <NumericUpDown Grid.Column="2" Value="{Binding PkrsStrain}" Minimum="0" Maximum="15" FormatString="0" ShowButtonSpinner="False" MinWidth="56"
                                                                AutomationProperties.Name="Pokérus Strain" />
                                             </Grid>
-                                            <CheckBox IsChecked="{Binding IsPokerusInfected, Mode=TwoWay}" Content="{loc:Loc MiscPokerusInfected}" Margin="0,4,0,0" />
-                                            <CheckBox IsChecked="{Binding IsPokerusCured, Mode=TwoWay}" Content="{loc:Loc MiscPokerusCured}" />
+                                            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
+                                                <CheckBox IsChecked="{Binding IsPokerusInfected, Mode=TwoWay}" Content="{loc:Loc MiscPokerusInfected}" />
+                                                <CheckBox IsChecked="{Binding IsPokerusCured, Mode=TwoWay}" Content="{loc:Loc MiscPokerusCured}" />
+                                            </StackPanel>
                                         </StackPanel>
                                     </Grid>
                                 </StackPanel>
