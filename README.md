@@ -7,15 +7,30 @@
 ![Release](https://img.shields.io/github/v/release/realgarit/PKHeX-Avalonia?label=Latest%20Release)
 ![Latest tag](https://img.shields.io/github/v/tag/realgarit/PKHeX-Avalonia?label=Latest%20Tag)
 ![Downloads](https://img.shields.io/github/downloads/realgarit/PKHeX-Avalonia/total?label=Downloads)
+[![Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/DY2SWKsV75)
 
 A cross-platform port of [PKHeX](https://github.com/kwsch/PKHeX), the classic Pokémon save editor,
 built with Avalonia so it runs on **Windows**, **macOS**, and **Linux**.
 
-**[Download](#download) · [Project Structure](#project-structure) · [Features](#features) · [Building from Source](#building-from-source) · [Documentation](#documentation) · [Screenshots](#screenshots) · [Credits](#credits)**
+**[Download](#download) · [Community](#community) · [Project Structure](#project-structure) · [Features](#features) · [Building from Source](#building-from-source) · [Documentation](#documentation) · [Screenshots](#screenshots) · [Credits](#credits)**
 
 </div>
 
 ---
+
+## Community
+
+<div align="center">
+
+<a href="https://discord.gg/DY2SWKsV75"><img src="https://img.shields.io/badge/Join%20the%20PKHeX--Avalonia%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join the PKHeX-Avalonia Discord"></a>
+
+<p><strong>Support · bug reports · testing · feedback</strong><br>
+One community for Windows, macOS, and Linux users.</p>
+
+</div>
+
+When asking for help, include your operating system and version, device model, app version, game/save
+type, and the exact problem. Please keep backups of your save files and never upload private data.
 
 ## Download
 

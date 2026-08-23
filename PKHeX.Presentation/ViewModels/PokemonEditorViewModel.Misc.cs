@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -257,6 +258,18 @@ public partial class PokemonEditorViewModel
 
     [ObservableProperty]
     private int _currentHandler;
+
+    /// <summary>
+    /// Gen 6 and later entities retain the original trainer and latest handling trainer
+    /// separately. Older formats do not expose editable handler storage.
+    /// </summary>
+    public bool CanEditHandlingTrainer => _pk.Format >= 6;
+
+    public IReadOnlyList<ComboItem> HandlerList =>
+    [
+        new ComboItem(LocalizedStrings.Instance["PokemonEditor_OriginalTrainer"], 0),
+        new ComboItem(LocalizedStrings.Instance["MemoryEditor_HandlingTrainer"], 1),
+    ];
     
     [ObservableProperty]
     private int _abilityNumber;
@@ -335,6 +348,45 @@ public partial class PokemonEditorViewModel
     public int Tsv => (int)_pk.TSV;
 
     partial void OnOriginalTrainerGenderChanged(int value) { if (!_isLoading) Validate(); }
+
+    partial void OnOriginalTrainerFriendshipChanged(int value)
+    {
+        if (_isLoading) return;
+        _pk.OriginalTrainerFriendship = (byte)value;
+        if (CurrentHandler == 0)
+            Happiness = value;
+        Validate();
+    }
+
+    partial void OnHandlingTrainerNameChanged(string value) { if (!_isLoading) Validate(); }
+    partial void OnHandlingTrainerGenderChanged(int value) { if (!_isLoading) Validate(); }
+
+    partial void OnHandlingTrainerFriendshipChanged(int value)
+    {
+        if (_isLoading) return;
+        _pk.HandlingTrainerFriendship = (byte)value;
+        if (CurrentHandler != 0)
+            Happiness = value;
+        Validate();
+    }
+
+    partial void OnCurrentHandlerChanged(int value)
+    {
+        if (_isLoading) return;
+        _pk.CurrentHandler = (byte)value;
+        Happiness = value == 0 ? OriginalTrainerFriendship : HandlingTrainerFriendship;
+        Validate();
+    }
+
+    partial void OnHappinessChanged(int value)
+    {
+        if (_isLoading) return;
+        if (CurrentHandler == 0)
+            OriginalTrainerFriendship = value;
+        else
+            HandlingTrainerFriendship = value;
+        Validate();
+    }
 
     partial void OnTrainerIDChanged(long value)
     {

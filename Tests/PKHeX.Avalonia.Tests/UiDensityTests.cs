@@ -32,9 +32,57 @@ public class UiDensityTests
             "<Border\\s+DockPanel.Dock=\"Bottom\"[^>]*>",
             RegexOptions.Singleline);
 
-        Assert.Contains("ColumnDefinitions=\"520,*\"", mainWindow);
+        Assert.Contains("<ColumnDefinition Width=\"2*\" MinWidth=\"420\" MaxWidth=\"520\" />", mainWindow);
+        Assert.DoesNotContain("ColumnDefinitions=\"520,*\"", mainWindow);
         Assert.True(statusBar.Success, "Status bar Border was not found.");
         Assert.Contains("Padding=\"8,4\"", statusBar.Value);
+    }
+
+    [Fact]
+    public void PokemonEditor_UsesACompactHyperTrainingColumn()
+    {
+        var pokemonEditor = ReadSourceFile("Views", "PokemonEditor.axaml");
+
+        Assert.Contains("ColumnDefinitions=\"40,*,*,*,*,Auto\"", pokemonEditor);
+        Assert.Contains("Grid.Row=\"1\" Grid.Column=\"5\" Text=\"{loc:Loc StatsHyperTrained}\"", pokemonEditor);
+        Assert.DoesNotContain("Content=\"{loc:Loc StatsHyperTrained}\"", pokemonEditor);
+    }
+
+    [Fact]
+    public void PokemonEditor_UsesReadableDatePickers()
+    {
+        var pokemonEditor = ReadSourceFile("Views", "PokemonEditor.axaml");
+
+        Assert.Equal(2, Regex.Matches(pokemonEditor, "SelectedDateFormat=\"Long\"").Count);
+        Assert.Equal(2, Regex.Matches(pokemonEditor, "Watermark=\"{loc:Loc PokemonEditor_SelectDate}\"").Count);
+    }
+
+    [Fact]
+    public void PokemonEditor_PokerusFieldsShareAFullWidthRow()
+    {
+        var pokemonEditor = ReadSourceFile("Views", "PokemonEditor.axaml");
+
+        Assert.Contains("Grid.Row=\"1\" Grid.Column=\"0\" Grid.ColumnSpan=\"3\"", pokemonEditor);
+        Assert.Contains("ColumnDefinitions=\"*,8,*\"", pokemonEditor);
+    }
+
+    [Fact]
+    public void PokemonEditor_PidRerollGlyphIsExplicitlyCentered()
+    {
+        var pokemonEditor = ReadSourceFile("Views", "PokemonEditor.axaml");
+
+        Assert.Contains("<TextBlock Text=\"🎲\"", pokemonEditor);
+        Assert.Contains("HorizontalContentAlignment=\"Center\" VerticalContentAlignment=\"Center\"", pokemonEditor);
+    }
+
+    [Fact]
+    public void PokemonEditor_ExposesHandlingTrainerFields()
+    {
+        var pokemonEditor = ReadSourceFile("Views", "PokemonEditor.axaml");
+
+        Assert.Contains("IsVisible=\"{Binding CanEditHandlingTrainer}\"", pokemonEditor);
+        Assert.Contains("Text=\"{Binding HandlingTrainerName}\"", pokemonEditor);
+        Assert.Contains("SelectedValue=\"{Binding CurrentHandler}\"", pokemonEditor);
     }
 
     [Fact]

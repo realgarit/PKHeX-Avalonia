@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
@@ -182,5 +183,23 @@ public class FilterableComboBoxTests
         // control -> VM: selecting a card pushes the value back and it lands as a ushort.
         control.SelectedItem = new ComboItem("Ivysaur", 2);
         Assert.Equal((ushort)2, vm.SelectedSpecies);
+    }
+
+    [AvaloniaFact]
+    public void FocusingControl_OpensTheFullItemList()
+    {
+        var control = new FilterableComboBox { ItemsSource = Items(), MinimumPopulateDelay = TimeSpan.Zero };
+        var populatedCount = 0;
+        control.Populated += (_, e) => populatedCount = e.Data.Cast<object>().Count();
+        control.SelectedValue = 2;
+        var window = new Window { Content = control, Width = 200, Height = 60 };
+        window.Show();
+
+        Dispatcher.UIThread.RunJobs();
+        Assert.True(control.Focus());
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.True(control.IsDropDownOpen);
+        Assert.Equal(3, populatedCount);
     }
 }

@@ -28,6 +28,26 @@ public partial class PokemonEditorViewModel : ViewModelBase
     [ObservableProperty] private IReadOnlyList<ComboItem> _originGameList;
     [ObservableProperty] private IReadOnlyList<ComboItem> _relearnMoveDataSource;
     [ObservableProperty] private IReadOnlyList<ComboItem> _languageList;
+
+    public string HyperTrainedHpAutomationName => GetHyperTrainedAutomationName("PokemonEditor_StatHp");
+    public string HyperTrainedAtkAutomationName => GetHyperTrainedAutomationName("PokemonEditor_StatAtk");
+    public string HyperTrainedDefAutomationName => GetHyperTrainedAutomationName("PokemonEditor_StatDef");
+    public string HyperTrainedSpaAutomationName => GetHyperTrainedAutomationName("PokemonEditor_StatSpa");
+    public string HyperTrainedSpdAutomationName => GetHyperTrainedAutomationName("PokemonEditor_StatSpd");
+    public string HyperTrainedSpeAutomationName => GetHyperTrainedAutomationName("PokemonEditor_StatSpe");
+
+    private static string GetHyperTrainedAutomationName(string statKey) =>
+        $"{LocalizedStrings.Instance["StatsHyperTrained"]} {LocalizedStrings.Instance[statKey]}";
+
+    private void NotifyHyperTrainedAutomationNames()
+    {
+        OnPropertyChanged(nameof(HyperTrainedHpAutomationName));
+        OnPropertyChanged(nameof(HyperTrainedAtkAutomationName));
+        OnPropertyChanged(nameof(HyperTrainedDefAutomationName));
+        OnPropertyChanged(nameof(HyperTrainedSpaAutomationName));
+        OnPropertyChanged(nameof(HyperTrainedSpdAutomationName));
+        OnPropertyChanged(nameof(HyperTrainedSpeAutomationName));
+    }
     
     public IReadOnlyList<ComboItem> GenderList { get; } = [
         new ComboItem("Male", 0),
@@ -40,6 +60,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private ObservableCollection<ComboItem> _abilityList = [];
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasForms))]
     private ObservableCollection<ComboItem> _formList = [];
 
     [ObservableProperty]
@@ -177,6 +198,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         OriginGameList = filtered.Games;
         RelearnMoveDataSource = filtered.Relearn;
         LanguageList = GameInfo.Sources.LanguageDataSource(_sav.Generation, _sav.Context);
+        NotifyHyperTrainedAutomationNames();
 
         // Notify that the PKM name etc might have changed
         LoadFromPKM();
@@ -292,6 +314,12 @@ public partial class PokemonEditorViewModel : ViewModelBase
             EggDate = _pk.EggMetDate is { } ed && ed.Year > 1900 && ed.Year < 2200
                 ? ed.ToDateTime(TimeOnly.MinValue)
                 : null;
+
+            OriginalTrainerFriendship = _pk.OriginalTrainerFriendship;
+            HandlingTrainerFriendship = _pk.HandlingTrainerFriendship;
+            CurrentHandler = _pk.CurrentHandler;
+            HandlingTrainerName = _pk.HandlingTrainerName;
+            HandlingTrainerGender = _pk.HandlingTrainerGender;
             
             _isLoading = false;
 
@@ -306,12 +334,6 @@ public partial class PokemonEditorViewModel : ViewModelBase
             OnPropertyChanged(nameof(CanHyperTrain));
             OnPropertyChanged(nameof(Tsv));
             UpdateFormArgument();
-
-            OriginalTrainerFriendship = _pk.OriginalTrainerFriendship;
-            HandlingTrainerFriendship = _pk.HandlingTrainerFriendship;
-            CurrentHandler = _pk.CurrentHandler;
-            HandlingTrainerName = _pk.HandlingTrainerName;
-            HandlingTrainerGender = _pk.HandlingTrainerGender;
 
             // Misc
             AbilityNumber = _pk.AbilityNumber;
@@ -383,6 +405,8 @@ public partial class PokemonEditorViewModel : ViewModelBase
         UpdateSprite();
         Validate();
         LoadRibbons();
+        OnPropertyChanged(nameof(CanEditHandlingTrainer));
+        OnPropertyChanged(nameof(HandlerList));
     }
 
     [ObservableProperty]
@@ -433,7 +457,75 @@ public partial class PokemonEditorViewModel : ViewModelBase
         }
     }
 
-    partial void OnNicknameChanged(string value) { if (!_isLoading) Validate(); }
+    private void SetNicknameState(bool isNicknamed)
+    {
+        _pk.IsNicknamed = isNicknamed;
+        if (IsNicknamed == isNicknamed)
+            return;
+
+        _isLoading = true;
+        IsNicknamed = isNicknamed;
+        _isLoading = false;
+    }
+
+    private void UpdateDefaultNickname()
+    {
+        _pk.Species = (ushort)Species;
+        _pk.Language = Language;
+        var nickname = _pk.ClearNickname() ?? string.Empty;
+
+        _isLoading = true;
+        Nickname = nickname;
+        IsNicknamed = false;
+        _isLoading = false;
+    }
+
+    private void ApplyNicknameEdit()
+    {
+        _pk.Species = (ushort)Species;
+        _pk.Language = Language;
+        var nickname = Nickname ?? string.Empty;
+
+        if (nickname.Length == 0)
+        {
+            UpdateDefaultNickname();
+            return;
+        }
+
+        _pk.SetNickname(nickname);
+        SetNicknameState(SpeciesName.IsNicknamedAnyLanguage((ushort)Species, nickname, _pk.Context));
+    }
+
+    partial void OnNicknameChanged(string value)
+    {
+        if (_isLoading) return;
+        ApplyNicknameEdit();
+        Validate();
+    }
+
+    partial void OnIsNicknamedChanged(bool value)
+    {
+        if (_isLoading) return;
+        if (value)
+        {
+            _pk.Nickname = Nickname ?? string.Empty;
+            _pk.IsNicknamed = true;
+        }
+        else
+        {
+            UpdateDefaultNickname();
+        }
+        Validate();
+    }
+
+    partial void OnLanguageChanged(int value)
+    {
+        if (_isLoading) return;
+        _pk.Language = value;
+        if (!IsNicknamed)
+            UpdateDefaultNickname();
+        Validate();
+    }
     partial void OnLevelChanged(int value) { if (!_isLoading) { Exp = Experience.GetEXP((byte)value, _pk.PersonalInfo.EXPGrowth); RecalculateStats(); Validate(); OnPropertyChanged(nameof(CanHyperTrain)); } }
     partial void OnNatureChanged(int value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
     partial void OnAbilityChanged(int value)
@@ -482,7 +574,11 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private void UpdateFormList(bool preserveSelection = true)
     {
         var currentForm = Form;
-        var forms = FormConverter.GetFormList((ushort)Species, GameInfo.Strings.Types, GameInfo.Strings.forms, GameInfo.GenderSymbolASCII, _sav.Context);
+        var species = (ushort)Species;
+        var hasFormSelection = FormInfo.HasFormSelection(_sav.Personal.GetFormEntry(species, 0), species, _pk.Format);
+        var forms = hasFormSelection
+            ? FormConverter.GetFormList(species, GameInfo.Strings.Types, GameInfo.Strings.forms, GameInfo.GenderSymbolASCII, _sav.Context)
+            : [];
 
         var newList = new ObservableCollection<ComboItem>();
         for (int i = 0; i < forms.Length; i++)
@@ -499,7 +595,6 @@ public partial class PokemonEditorViewModel : ViewModelBase
             ? currentForm
             : FormList.Count > 0 ? FormList[0].Value : 0;
 
-        OnPropertyChanged(nameof(HasForms));
     }
 
     /// <summary>Re-renders the editor preview sprite (e.g. after the sprite style changes).</summary>
@@ -543,7 +638,9 @@ public partial class PokemonEditorViewModel : ViewModelBase
     {
         _pk.Species = (ushort)Species;
         _pk.Form = (byte)Form;
-        _pk.Nickname = Nickname;
+        _pk.Language = Language;
+        _pk.Nickname = Nickname ?? string.Empty;
+        _pk.IsNicknamed = IsNicknamed;
         _pk.Stat_Level = (byte)Level;
         _pk.StatAlignment = (Nature)StatAlignment;
         _pk.Nature = (Nature)Nature;
@@ -596,6 +693,11 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
         _pk.OriginalTrainerName = OriginalTrainerName;
         _pk.OriginalTrainerGender = (byte)OriginalTrainerGender;
+        _pk.OriginalTrainerFriendship = (byte)OriginalTrainerFriendship;
+        _pk.HandlingTrainerName = HandlingTrainerName;
+        _pk.HandlingTrainerGender = (byte)HandlingTrainerGender;
+        _pk.HandlingTrainerFriendship = (byte)HandlingTrainerFriendship;
+        _pk.CurrentHandler = (byte)CurrentHandler;
         _pk.DisplayTID = (uint)TrainerID;
         _pk.DisplaySID = (uint)Sid;
         _pk.CurrentFriendship = (byte)Happiness;
@@ -711,6 +813,8 @@ public partial class PokemonEditorViewModel : ViewModelBase
     partial void OnSpeciesChanged(int value)
     {
         if (_isLoading) return;
+        if (!IsNicknamed)
+            UpdateDefaultNickname();
         RecalculateStats();
         UpdateFormList();
         UpdateAbilityList();

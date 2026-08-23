@@ -2,6 +2,7 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using PKHeX.Core;
 
@@ -37,6 +38,46 @@ public class FilterableComboBox : AutoCompleteBox
         MaxDropDownHeight = 300;
 
         SelectionChanged += OnSelectionChanged;
+        GotFocus += OnGotFocus;
+        DropDownClosed += OnDropDownClosed;
+    }
+
+    private void OnGotFocus(object? sender, GotFocusEventArgs e)
+    {
+        if (ItemsSource is null || IsDropDownOpen)
+            return;
+
+        // AutoCompleteBox filters against its current text. Clear that transient filter so a
+        // click/focus behaves like the familiar PKHeX combo box and exposes every item immediately.
+        _syncing = true;
+        try
+        {
+            Text = string.Empty;
+        }
+        finally
+        {
+            _syncing = false;
+        }
+
+        IsDropDownOpen = true;
+    }
+
+    private void OnDropDownClosed(object? sender, EventArgs e)
+    {
+        var expected = FindComboItem(SelectedValue);
+        if (expected is null || Text == expected.Text)
+            return;
+
+        _syncing = true;
+        try
+        {
+            SelectedItem = expected;
+            Text = expected.Text;
+        }
+        finally
+        {
+            _syncing = false;
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
