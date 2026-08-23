@@ -16,6 +16,7 @@ public partial class PartyViewerViewModel : ViewModelBase
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly ISlotService? _slotService;
     private readonly IDialogService? _dialogService;
+    private readonly Func<int> _getCurrentBox;
     private readonly bool _haXMode;
 
     [ObservableProperty]
@@ -34,13 +35,15 @@ public partial class PartyViewerViewModel : ViewModelBase
     public event Action<int>? ViewSlotRequested;
     public event Action<int>? SetSlotRequested;
     public event Action<int>? DeleteSlotRequested;
+    public bool CanMoveToBox => _sav.HasBox;
 
-    public PartyViewerViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, ISlotService? slotService = null, IDialogService? dialogService = null, bool haXMode = false)
+    public PartyViewerViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, ISlotService? slotService = null, IDialogService? dialogService = null, bool haXMode = false, Func<int>? getCurrentBox = null)
     {
         _sav = sav;
         _spriteRenderer = spriteRenderer;
         _slotService = slotService;
         _dialogService = dialogService;
+        _getCurrentBox = getCurrentBox ?? (() => 0);
         _haXMode = haXMode;
         LoadParty();
     }
@@ -92,6 +95,7 @@ public partial class PartyViewerViewModel : ViewModelBase
         
         // Restore selection position (clamped to valid range)
         SelectedIndex = Math.Clamp(previousIndex, 0, Slots.Count - 1);
+        OnPropertyChanged(nameof(SelectedSlot));
     }
 
     [RelayCommand]
@@ -165,7 +169,40 @@ public partial class PartyViewerViewModel : ViewModelBase
         else
             DeleteSlotRequested?.Invoke(slot.Slot);
     }
-    
+
+    /// <summary>
+    /// Moves a Party Pokémon into the first empty slot in the currently displayed Box. This is
+    /// the inverse of the Box viewer's cross-tab move action.
+    /// </summary>
+    [RelayCommand]
+    private async Task MoveToBox(PartySlotData? slot)
+    {
+        if (slot is null || slot.IsEmpty || _slotService is null || !_sav.HasBox || _sav.BoxCount <= 0)
+            return;
+
+        var currentBox = Math.Clamp(_getCurrentBox(), 0, _sav.BoxCount - 1);
+        var destination = -1;
+        for (var i = 0; i < _sav.BoxSlotCount; i++)
+        {
+            if (_sav.GetBoxSlotAtIndex(currentBox, i).Species == 0)
+            {
+                destination = i;
+                break;
+            }
+        }
+
+        if (destination < 0)
+        {
+            if (_dialogService is not null)
+                await _dialogService.ShowErrorAsync(
+                    LocalizedStrings.Instance["Slot_NoEmptyBoxTitle"],
+                    LocalizedStrings.Instance["Slot_NoEmptyBoxMessage"]);
+            return;
+        }
+
+        _slotService.RequestMove(SlotLocation.FromParty(slot.Slot), SlotLocation.FromBox(currentBox, destination), clone: false);
+    }
+
     /// <summary>
     /// Gets the PKM at the specified slot.
     /// </summary>

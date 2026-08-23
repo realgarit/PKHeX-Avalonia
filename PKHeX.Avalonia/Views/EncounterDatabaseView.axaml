@@ -15,9 +15,16 @@
             <Grid ColumnDefinitions="*,Auto">
                 <StackPanel Grid.Column="0" Spacing="4">
                     <TextBlock Text="{loc:Loc EncounterDatabaseView_Species}" FontWeight="SemiBold" FontSize="12" />
-                    <controls:FilterableComboBox ItemsSource="{Binding SpeciesList}"
-                              SelectedValue="{Binding SelectedSpecies}"
-                              AutomationProperties.Name="Species" />
+                    <Grid>
+                        <controls:FilterableComboBox ItemsSource="{Binding SpeciesList}"
+                                  SelectedValue="{Binding SelectedSpecies}"
+                                  Padding="8,0,30,0"
+                                  AutomationProperties.Name="Species" />
+                        <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
+                              Width="12" Height="6" Stretch="Fill"
+                              HorizontalAlignment="Right" VerticalAlignment="Center"
+                              Margin="0,0,10,0" IsHitTestVisible="False" />
+                    </Grid>
                 </StackPanel>
                 <Button Grid.Column="1" Content="{loc:Loc EncounterDatabaseView_Search}" Command="{Binding SearchCommand}" Margin="12,0,0,0" Padding="16,8" VerticalAlignment="Bottom" Classes="accent" />
             </Grid>

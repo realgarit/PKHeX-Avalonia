@@ -32,7 +32,7 @@
         <DockPanel>
             <!-- Box Navigation Header -->
             <Border DockPanel.Dock="Top" Classes="card" Padding="0" Margin="0,0,0,12">
-                <Grid ColumnDefinitions="48,*,48,44" Height="44">
+                <Grid ColumnDefinitions="48,*,48,44,44" Height="44">
                     <Button Grid.Column="0"
                             Content="◀"
                             Command="{Binding PreviousBoxCommand}"
@@ -78,6 +78,22 @@
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             FontSize="16" />
+
+                    <Button Grid.Column="4"
+                            Content="→"
+                            Command="{Binding MoveToPartyCommand}"
+                            CommandParameter="{Binding SelectedSlot}"
+                            ToolTip.Tip="{loc:Loc Slot_MoveSelectedToPartyTooltip}"
+                            AutomationProperties.Name="Move selected Pokémon to Party"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            FontSize="18"
+                            IsVisible="{Binding CanMoveToParty}"
+                            IsEnabled="{Binding SelectedSlot.IsEmpty, Converter={StaticResource ObjectFalseConverter}}" />
                 </Grid>
             </Border>
 
@@ -124,6 +140,11 @@
                                         <MenuItem Header="{loc:Loc BoxViewer_SetMenuItem}"
                                                   Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).SetSlotCommand}"
                                                   CommandParameter="{Binding}" />
+                                        <MenuItem Header="{loc:Loc Slot_MoveToPartyMenuItem}"
+                                                  Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).MoveToPartyCommand}"
+                                                  CommandParameter="{Binding}"
+                                                  IsVisible="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).CanMoveToParty}"
+                                                  IsEnabled="{Binding !IsEmpty}" />
                                         <Separator />
                                         <MenuItem Header="{loc:Loc BoxViewer_DeleteMenuItem}"
                                                   Command="{Binding $parent[UserControl].((vm:BoxViewerViewModel)DataContext).DeleteSlotCommand}"

@@ -540,6 +540,27 @@
         <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
     </Style>
 
+    <!-- Pokémon editor sidebar: compact, left-aligned tabs with a clear selected surface. -->
+    <Style Selector="TabControl.editor-tabs TabItem.editor-tab">
+        <Setter Property="MinWidth" Value="116" />
+        <Setter Property="Padding" Value="12,9" />
+        <Setter Property="Margin" Value="0,2,8,2" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:selected">
+        <Setter Property="Background" Value="{DynamicResource ThemeAccentGlowBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
     <!-- ─────────────────────────────────────────────────────────────────────────
          ComboBox Transitions
          ───────────────────────────────────────────────────────────────────────── -->

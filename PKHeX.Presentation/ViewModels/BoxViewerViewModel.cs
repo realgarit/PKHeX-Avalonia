@@ -40,6 +40,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
 
     public int BoxCount => _sav.BoxCount;
     public int SlotsPerBox => _sav.BoxSlotCount;
+    public bool CanMoveToParty => _sav.HasParty;
 
     /// <summary>
     /// The slot under the current keyboard/selection cursor, used to drive
@@ -132,6 +133,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
 
         // Restore selection position (clamped to valid range)
         SelectedIndex = Math.Clamp(previousIndex, 0, Math.Max(0, Slots.Count - 1));
+        OnPropertyChanged(nameof(SelectedSlot));
     }
 
     [RelayCommand]
@@ -247,7 +249,49 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
         else
             DeleteSlotRequested?.Invoke(CurrentBox, slot.Slot);
     }
-    
+
+    /// <summary>
+    /// Moves a box Pokémon into the first empty Party slot. This provides a discoverable
+    /// cross-tab operation because the Box and Party grids cannot be dragged simultaneously.
+    /// </summary>
+    [RelayCommand]
+    private async Task MoveToParty(SlotData? slot)
+    {
+        if (slot is null || slot.IsEmpty || _slotService is null || !_sav.HasParty)
+            return;
+
+        var destination = -1;
+        for (var i = 0; i < 6; i++)
+        {
+            PKM partySlot;
+            try
+            {
+                partySlot = _sav.GetPartySlotAtIndex(i);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                continue;
+            }
+
+            if (partySlot.Species == 0)
+            {
+                destination = i;
+                break;
+            }
+        }
+
+        if (destination < 0)
+        {
+            if (_dialogService is not null)
+                await _dialogService.ShowErrorAsync(
+                    LocalizedStrings.Instance["Slot_NoEmptyPartyTitle"],
+                    LocalizedStrings.Instance["Slot_NoEmptyPartyMessage"]);
+            return;
+        }
+
+        _slotService.RequestMove(SlotLocation.FromBox(CurrentBox, slot.Slot), SlotLocation.FromParty(destination), clone: false);
+    }
+
     public PKM GetSlotPKM(int slot) => _sav.GetBoxSlotAtIndex(CurrentBox, slot);
 
     public void SetSlotPKM(int slot, PKM pk)

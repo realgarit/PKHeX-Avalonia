@@ -71,7 +71,8 @@ public class UiDensityTests
     {
         var pokemonEditor = ReadSourceFile("Views", "PokemonEditor.axaml");
 
-        Assert.Contains("<TextBlock Text=\"🎲\"", pokemonEditor);
+        Assert.Contains("<Border Width=\"18\" Height=\"18\"", pokemonEditor);
+        Assert.Equal(5, Regex.Matches(pokemonEditor, "<Ellipse Canvas.Left=").Count);
         Assert.Contains("HorizontalContentAlignment=\"Center\" VerticalContentAlignment=\"Center\"", pokemonEditor);
     }
 

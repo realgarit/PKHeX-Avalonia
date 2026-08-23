@@ -1,4 +1,5 @@
 using Moq;
+using PKHeX.Application.Abstractions;
 using PKHeX.Avalonia.Services;
 using PKHeX.Presentation.ViewModels;
 using PKHeX.Core;
@@ -190,5 +191,36 @@ public class PartyViewerTests(ITestOutputHelper output)
 
         Assert.Equal(7, result.Species);
         output.WriteLine($"GetSlotPKM(0): Species={result.Species} (Squirtle) ✓");
+    }
+
+    [Fact]
+    public void PartyViewer_MoveToBoxUsesTheCurrentlyDisplayedBox()
+    {
+        var sav = new SAV6XY();
+        const int currentBox = 2;
+        sav.SetPartySlotAtIndex(new PK6 { Species = 25 }, 0);
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 1 }, currentBox, 0);
+        var slotService = new SlotService();
+        SlotLocation? source = null;
+        SlotLocation? destination = null;
+        var clone = true;
+        slotService.MoveRequested += (from, to, isClone) =>
+        {
+            source = from;
+            destination = to;
+            clone = isClone;
+        };
+
+        var vm = new PartyViewerViewModel(sav, SpriteMock().Object, slotService, getCurrentBox: () => currentBox);
+        vm.MoveToBoxCommand.Execute(vm.Slots[0]);
+
+        Assert.True(source.HasValue);
+        Assert.True(source.Value.IsParty);
+        Assert.Equal(0, source.Value.Slot);
+        Assert.True(destination.HasValue);
+        Assert.False(destination.Value.IsParty);
+        Assert.Equal(currentBox, destination.Value.Box);
+        Assert.Equal(1, destination.Value.Slot);
+        Assert.False(clone);
     }
 }

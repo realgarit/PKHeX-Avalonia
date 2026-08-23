@@ -29,6 +29,16 @@ public partial class MainWindowViewModel
     {
         if (CurrentSave is null) return;
 
+        // A party has no sparse slots: moving a member into an empty box slot must compact the
+        // remaining party, otherwise SaveFile.SetPartySlotAtIndex(blank, index) lowers PartyCount
+        // and hides every member after the removed one.
+        if (source.IsParty && !CurrentSave.HasParty)
+            return;
+        if (destination.IsParty && !CurrentSave.HasParty)
+            return;
+        if (!destination.IsParty && !CurrentSave.HasBox)
+            return;
+
         var pkSource = source.IsParty
             ? CurrentSave.GetPartySlotAtIndex(source.Slot)
             : CurrentSave.GetBoxSlotAtIndex(source.Box, source.Slot);
@@ -47,6 +57,16 @@ public partial class MainWindowViewModel
             var pkDest = destination.IsParty
                 ? CurrentSave.GetPartySlotAtIndex(destination.Slot)
                 : CurrentSave.GetBoxSlotAtIndex(destination.Box, destination.Slot);
+
+            if (source.IsParty && !destination.IsParty && pkDest.Species == 0)
+            {
+                CurrentSave.SetBoxSlotAtIndex(pkSource, destination.Box, destination.Slot);
+                CurrentSave.DeletePartySlot(source.Slot);
+                BoxViewer?.RefreshCurrentBox();
+                PartyViewer?.RefreshParty();
+                BatchEditor?.RefreshExternalState();
+                return;
+            }
 
             if (source.IsParty)
                 CurrentSave.SetPartySlotAtIndex(pkDest, source.Slot);
