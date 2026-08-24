@@ -16,7 +16,10 @@ namespace PKHeX.Avalonia.Tests;
 /// </summary>
 public class SlotOperationsTests
 {
-    private static MainWindowViewModel CreateViewModel(Mock<IDialogService> dialogServiceMock, ISlotService? slotService = null)
+    private static MainWindowViewModel CreateViewModel(
+        Mock<IDialogService> dialogServiceMock,
+        ISlotService? slotService = null,
+        UndoRedoService? undoRedo = null)
     {
         return new MainWindowViewModel(
             new Mock<ISaveFileGateway>().Object,
@@ -31,7 +34,7 @@ public class SlotOperationsTests
             new AppSettings(),
             new FakeSettingsStore(),
             new Mock<IThemeService>().Object,
-            new UndoRedoService(),
+            undoRedo ?? new UndoRedoService(),
             new LanguageService(),
             new Mock<IAutoLegalityService>().Object,
             new Mock<PKHeX.Application.Abstractions.LiveHex.ILiveHexService>().Object,
@@ -90,9 +93,11 @@ public class SlotOperationsTests
         sav.SetPartySlotAtIndex(new PK6 { Species = 3 }, 2);
 
         var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
         var dialogService = new Mock<IDialogService>();
-        var vm = CreateViewModel(dialogService, slotService);
+        var vm = CreateViewModel(dialogService, slotService, undoRedo);
         vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
 
         slotService.RequestMove(SlotLocation.FromParty(0), SlotLocation.FromBox(0, 0), clone: false);
 
@@ -101,5 +106,95 @@ public class SlotOperationsTests
         Assert.Equal(3, sav.GetPartySlotAtIndex(1).Species);
         Assert.Equal(0, sav.GetPartySlotAtIndex(2).Species);
         Assert.Equal(1, sav.GetBoxSlotAtIndex(0, 0).Species);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void MovingOrCopyingBoxPokemonToPartyIsOneUndoableAtomicChange(bool clone)
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 25 }, 0, 0);
+
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var vm = CreateViewModel(new Mock<IDialogService>(), slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        slotService.RequestMove(SlotLocation.FromBox(0, 0), SlotLocation.FromParty(0), clone);
+
+        Assert.Equal(1, undoRedo.ChangeCount);
+        Assert.True(undoRedo.CanUndo);
+        Assert.Equal(25, sav.GetPartySlotAtIndex(0).Species);
+        Assert.Equal(clone ? 25 : 0, sav.GetBoxSlotAtIndex(0, 0).Species);
+
+        undoRedo.Undo();
+
+        Assert.True(undoRedo.CanRedo);
+        Assert.Equal(0, sav.GetPartySlotAtIndex(0).Species);
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 0).Species);
+
+        undoRedo.Redo();
+
+        Assert.True(undoRedo.CanUndo);
+        Assert.Equal(25, sav.GetPartySlotAtIndex(0).Species);
+        Assert.Equal(clone ? 25 : 0, sav.GetBoxSlotAtIndex(0, 0).Species);
+    }
+
+    [Fact]
+    public void MovingPartyPokemonToEmptyBoxIsAtomicAndUndoRestoresCompactedParty()
+    {
+        var sav = new SAV6XY();
+        sav.SetPartySlotAtIndex(new PK6 { Species = 1 }, 0);
+        sav.SetPartySlotAtIndex(new PK6 { Species = 2 }, 1);
+        sav.SetPartySlotAtIndex(new PK6 { Species = 3 }, 2);
+
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var vm = CreateViewModel(new Mock<IDialogService>(), slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        slotService.RequestMove(SlotLocation.FromParty(0), SlotLocation.FromBox(0, 0), clone: false);
+
+        Assert.Equal(1, undoRedo.ChangeCount);
+        Assert.Equal(2, sav.GetPartySlotAtIndex(0).Species);
+        Assert.Equal(3, sav.GetPartySlotAtIndex(1).Species);
+        Assert.Equal(0, sav.GetPartySlotAtIndex(2).Species);
+        Assert.Equal(1, sav.GetBoxSlotAtIndex(0, 0).Species);
+
+        undoRedo.Undo();
+
+        Assert.Equal(1, sav.GetPartySlotAtIndex(0).Species);
+        Assert.Equal(2, sav.GetPartySlotAtIndex(1).Species);
+        Assert.Equal(3, sav.GetPartySlotAtIndex(2).Species);
+        Assert.Equal(0, sav.GetBoxSlotAtIndex(0, 0).Species);
+
+        undoRedo.Redo();
+
+        Assert.Equal(2, sav.GetPartySlotAtIndex(0).Species);
+        Assert.Equal(3, sav.GetPartySlotAtIndex(1).Species);
+        Assert.Equal(0, sav.GetPartySlotAtIndex(2).Species);
+        Assert.Equal(1, sav.GetBoxSlotAtIndex(0, 0).Species);
+    }
+
+    [Fact]
+    public void UnsupportedLgpePartyTransferLeavesSaveAndUndoHistoryUnchanged()
+    {
+        var sav = new SAV7b();
+        sav.SetBoxSlotAtIndex(new PB7 { Species = 25 }, 0, 0);
+
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var vm = CreateViewModel(new Mock<IDialogService>(), slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        slotService.RequestMove(SlotLocation.FromBox(0, 0), SlotLocation.FromParty(0), clone: false);
+
+        Assert.Equal(0, undoRedo.ChangeCount);
+        Assert.False(undoRedo.CanUndo);
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 0).Species);
     }
 }
