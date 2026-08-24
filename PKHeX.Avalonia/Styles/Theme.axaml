@@ -576,7 +576,64 @@
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
     </Style>
 
-    <Style Selector="controls|FilterableComboBox">
+    <!-- FilterableComboBox resolves its style key to AutoCompleteBox so it can reuse Fluent's
+         native control theme; keep the shared geometry on that resolved key. -->
+    <Style Selector="AutoCompleteBox">
+        <!-- Keep all filterable fields on Fluent's native geometry while making the editable
+             presenter explicit. The inherited InnerRightContent slot carries the chevron. -->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="PART_LayoutRoot">
+                    <TextBox Name="PART_TextBox"
+                             Watermark="{TemplateBinding Watermark}"
+                             Width="{TemplateBinding Width}"
+                             Foreground="{TemplateBinding Foreground}"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}"
+                             CaretIndex="{TemplateBinding CaretIndex, Mode=TwoWay}"
+                             ClearSelectionOnLostFocus="{TemplateBinding ClearSelectionOnLostFocus}"
+                             Padding="{TemplateBinding Padding}"
+                             Margin="0"
+                             HorizontalContentAlignment="Left"
+                             TextAlignment="Left"
+                             DataValidationErrors.Errors="{TemplateBinding (DataValidationErrors.Errors)}"
+                             MaxLength="{TemplateBinding MaxLength}"
+                             InnerLeftContent="{TemplateBinding InnerLeftContent}"
+                             InnerRightContent="{TemplateBinding InnerRightContent}" />
+                    <Popup Name="PART_Popup"
+                           WindowManagerAddShadowHint="False"
+                           MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                           MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                           IsLightDismissEnabled="True"
+                           PlacementTarget="{TemplateBinding}">
+                        <Border Name="PART_SuggestionsContainer"
+                                Padding="{DynamicResource AutoCompleteListMargin}"
+                                BorderThickness="{DynamicResource AutoCompleteListBorderThemeThickness}"
+                                BorderBrush="{DynamicResource AutoCompleteBoxSuggestionsListBorderBrush}"
+                                Background="{DynamicResource AutoCompleteBoxSuggestionsListBackground}"
+                                CornerRadius="{DynamicResource OverlayCornerRadius}">
+                            <ListBox Name="PART_SelectingItemsControl"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     ItemTemplate="{TemplateBinding ItemTemplate}"
+                                     Margin="{DynamicResource AutoCompleteListPadding}"
+                                     ScrollViewer.IsScrollChainingEnabled="False" />
+                        </Border>
+                    </Popup>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="InnerRightContent">
+            <Template>
+                <Path Data="M 0,0 L 12,0 L 6,6 Z"
+                      Fill="{DynamicResource ThemeTextSecondaryBrush}"
+                      Width="12" Height="6" Stretch="Fill"
+                      HorizontalAlignment="Right" VerticalAlignment="Center"
+                      Margin="0,0,10,0" IsHitTestVisible="False" />
+            </Template>
+        </Setter>
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="BorderBrush" Duration="0:0:0.12" />
@@ -584,8 +641,12 @@
         </Setter>
     </Style>
 
-    <Style Selector="controls|FilterableComboBox:pointerover">
+    <Style Selector="AutoCompleteBox:pointerover">
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="AutoCompleteBox /template/ TextBox#PART_TextBox">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════════════════════════

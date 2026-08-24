@@ -133,16 +133,9 @@
                                     <!-- Species -->
                                     <StackPanel Grid.Row="1" Grid.Column="0">
                                         <TextBlock Text="{loc:Loc PokemonEditor_Species}" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                        <Grid>
-                                            <controls:FilterableComboBox ItemsSource="{Binding SpeciesList}"
-                                                      SelectedValue="{Binding Species}" HorizontalAlignment="Stretch"
-                                                      Padding="8,0,30,0"
-                                                      AutomationProperties.Name="Species" />
-                                            <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                                                  Width="12" Height="6" Stretch="Fill"
-                                                  HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  Margin="0,0,10,0" IsHitTestVisible="False" />
-                                        </Grid>
+                                        <controls:FilterableComboBox ItemsSource="{Binding SpeciesList}"
+                                                  SelectedValue="{Binding Species}" HorizontalAlignment="Stretch"
+                                                  AutomationProperties.Name="Species" />
                                     </StackPanel>
 
                                     <!-- Nickname -->
@@ -255,16 +248,9 @@
 
                                     <StackPanel Grid.Row="1" Grid.Column="0">
                                         <TextBlock Text="{loc:Loc PokemonEditor_HeldItem}" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                        <Grid>
-                                            <controls:FilterableComboBox ItemsSource="{Binding ItemList}"
-                                                      SelectedValue="{Binding HeldItem}" HorizontalAlignment="Stretch"
-                                                      Padding="8,0,30,0"
-                                                      AutomationProperties.Name="Held Item" />
-                                            <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                                                  Width="12" Height="6" Stretch="Fill"
-                                                  HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  Margin="0,0,10,0" IsHitTestVisible="False" />
-                                        </Grid>
+                                        <controls:FilterableComboBox ItemsSource="{Binding ItemList}"
+                                                  SelectedValue="{Binding HeldItem}" HorizontalAlignment="Stretch"
+                                                  AutomationProperties.Name="Held Item" />
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="1" Grid.Column="2">
@@ -455,16 +441,9 @@
                                     <!-- Move 1 -->
                                     <Border Classes="section-card" Padding="8">
                                         <Grid RowDefinitions="Auto,12,Auto">
-                                            <Grid Grid.Row="0">
-                                                <controls:FilterableComboBox ItemsSource="{Binding MoveList}"
-                                                          SelectedValue="{Binding Move1}" HorizontalAlignment="Stretch"
-                                                          Padding="8,0,30,0"
-                                                          AutomationProperties.Name="Move 1" />
-                                            <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                                                  Width="12" Height="6" Stretch="Fill"
-                                                  HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  Margin="0,0,10,0" IsHitTestVisible="False" />
-                                            </Grid>
+                                            <controls:FilterableComboBox Grid.Row="0" ItemsSource="{Binding MoveList}"
+                                                      SelectedValue="{Binding Move1}" HorizontalAlignment="Stretch"
+                                                      AutomationProperties.Name="Move 1" />
                                             
                                             <Grid Grid.Row="2" ColumnDefinitions="Auto,*,8,Auto,*">
                                                 <TextBlock Grid.Column="0" Text="{loc:Loc PokemonEditor_Pp}" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
@@ -481,16 +460,9 @@
                                     <!-- Move 2 -->
                                     <Border Classes="section-card" Padding="8">
                                         <Grid RowDefinitions="Auto,12,Auto">
-                                            <Grid Grid.Row="0">
-                                                <controls:FilterableComboBox ItemsSource="{Binding MoveList}"
-                                                          SelectedValue="{Binding Move2}" HorizontalAlignment="Stretch"
-                                                          Padding="8,0,30,0"
-                                                          AutomationProperties.Name="Move 2" />
-                                            <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                                                  Width="12" Height="6" Stretch="Fill"
-                                                  HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  Margin="0,0,10,0" IsHitTestVisible="False" />
-                                            </Grid>
+                                            <controls:FilterableComboBox Grid.Row="0" ItemsSource="{Binding MoveList}"
+                                                      SelectedValue="{Binding Move2}" HorizontalAlignment="Stretch"
+                                                      AutomationProperties.Name="Move 2" />
                                             
                                             <Grid Grid.Row="2" ColumnDefinitions="Auto,*,8,Auto,*">
                                                 <TextBlock Grid.Column="0" Text="{loc:Loc PokemonEditor_Pp}" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
@@ -507,16 +479,9 @@
                                     <!-- Move 3 -->
                                     <Border Classes="section-card" Padding="8">
                                         <Grid RowDefinitions="Auto,12,Auto">
-                                            <Grid Grid.Row="0">
-                                                <controls:FilterableComboBox ItemsSource="{Binding MoveList}"
-                                                          SelectedValue="{Binding Move3}" HorizontalAlignment="Stretch"
-                                                          Padding="8,0,30,0"
-                                                          AutomationProperties.Name="Move 3" />
-                                            <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                                                  Width="12" Height="6" Stretch="Fill"
-                                                  HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  Margin="0,0,10,0" IsHitTestVisible="False" />
-                                            </Grid>
+                                            <controls:FilterableComboBox Grid.Row="0" ItemsSource="{Binding MoveList}"
+                                                      SelectedValue="{Binding Move3}" HorizontalAlignment="Stretch"
+                                                      AutomationProperties.Name="Move 3" />
                                             
                                             <Grid Grid.Row="2" ColumnDefinitions="Auto,*,8,Auto,*">
                                                 <TextBlock Grid.Column="0" Text="{loc:Loc PokemonEditor_Pp}" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
@@ -533,16 +498,9 @@
                                     <!-- Move 4 -->
                                     <Border Classes="section-card" Padding="8">
                                         <Grid RowDefinitions="Auto,12,Auto">
-                                            <Grid Grid.Row="0">
-                                                <controls:FilterableComboBox ItemsSource="{Binding MoveList}"
-                                                          SelectedValue="{Binding Move4}" HorizontalAlignment="Stretch"
-                                                          Padding="8,0,30,0"
-                                                          AutomationProperties.Name="Move 4" />
-                                            <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                                                  Width="12" Height="6" Stretch="Fill"
-                                                  HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                  Margin="0,0,10,0" IsHitTestVisible="False" />
-                                            </Grid>
+                                            <controls:FilterableComboBox Grid.Row="0" ItemsSource="{Binding MoveList}"
+                                                      SelectedValue="{Binding Move4}" HorizontalAlignment="Stretch"
+                                                      AutomationProperties.Name="Move 4" />
                                             
                                             <Grid Grid.Row="2" ColumnDefinitions="Auto,*,8,Auto,*">
                                                 <TextBlock Grid.Column="0" Text="{loc:Loc PokemonEditor_Pp}" Margin="0,0,6,0" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
@@ -575,43 +533,22 @@
                                 </Grid>
 
                                 <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,4,Auto">
-                                    <Grid Grid.Row="0" Grid.Column="0">
-                                        <controls:FilterableComboBox ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove1}"
-                                                  HorizontalAlignment="Stretch" Padding="8,0,30,0"
-                                                  AutomationProperties.Name="Relearn Move 1" />
-                                        <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                                              Width="12" Height="6" Stretch="Fill"
-                                              HorizontalAlignment="Right" VerticalAlignment="Center"
-                                              Margin="0,0,10,0" IsHitTestVisible="False" />
-                                    </Grid>
-                                    <Grid Grid.Row="0" Grid.Column="2">
-                                        <controls:FilterableComboBox ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove2}"
-                                                  HorizontalAlignment="Stretch" Padding="8,0,30,0"
-                                                  AutomationProperties.Name="Relearn Move 2" />
-                                        <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                                              Width="12" Height="6" Stretch="Fill"
-                                              HorizontalAlignment="Right" VerticalAlignment="Center"
-                                              Margin="0,0,10,0" IsHitTestVisible="False" />
-                                    </Grid>
-
-                                    <Grid Grid.Row="2" Grid.Column="0">
-                                        <controls:FilterableComboBox ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove3}"
-                                                  HorizontalAlignment="Stretch" Padding="8,0,30,0"
-                                                  AutomationProperties.Name="Relearn Move 3" />
-                                        <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                                              Width="12" Height="6" Stretch="Fill"
-                                              HorizontalAlignment="Right" VerticalAlignment="Center"
-                                              Margin="0,0,10,0" IsHitTestVisible="False" />
-                                    </Grid>
-                                    <Grid Grid.Row="2" Grid.Column="2">
-                                        <controls:FilterableComboBox ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove4}"
-                                                  HorizontalAlignment="Stretch" Padding="8,0,30,0"
-                                                  AutomationProperties.Name="Relearn Move 4" />
-                                        <Path Data="M 0,0 L 12,0 L 6,6 Z" Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                                              Width="12" Height="6" Stretch="Fill"
-                                              HorizontalAlignment="Right" VerticalAlignment="Center"
-                                              Margin="0,0,10,0" IsHitTestVisible="False" />
-                                    </Grid>
+                                    <controls:FilterableComboBox Grid.Row="0" Grid.Column="0"
+                                              ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove1}"
+                                              HorizontalAlignment="Stretch"
+                                              AutomationProperties.Name="Relearn Move 1" />
+                                    <controls:FilterableComboBox Grid.Row="0" Grid.Column="2"
+                                              ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove2}"
+                                              HorizontalAlignment="Stretch"
+                                              AutomationProperties.Name="Relearn Move 2" />
+                                    <controls:FilterableComboBox Grid.Row="2" Grid.Column="0"
+                                              ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove3}"
+                                              HorizontalAlignment="Stretch"
+                                              AutomationProperties.Name="Relearn Move 3" />
+                                    <controls:FilterableComboBox Grid.Row="2" Grid.Column="2"
+                                              ItemsSource="{Binding RelearnMoveDataSource}" SelectedValue="{Binding RelearnMove4}"
+                                              HorizontalAlignment="Stretch"
+                                              AutomationProperties.Name="Relearn Move 4" />
                                 </Grid>
                             </StackPanel>
 
