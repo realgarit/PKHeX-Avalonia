@@ -1,6 +1,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using Moq;
 using PKHeX.Application.Abstractions;
@@ -130,5 +131,41 @@ public class SlotDragTransferTests(ITestOutputHelper output)
 
         Assert.Null(SlotDragTransfer.TryGet(transfer, currentSession));
         Assert.Equal(staleSession, SlotDragTransfer.TryGet(transfer, staleSession)!.SessionId);
+    }
+
+    [Fact]
+    public void HasCustomPayload_RemainsTrueForStalePayloadWithFileItem()
+    {
+        var staleSession = Guid.NewGuid();
+        var currentSession = Guid.NewGuid();
+        var transfer = SlotDragTransfer.Create(new SlotDragData(SlotLocation.FromBox(0, 0), staleSession));
+        transfer.Add(DataTransferItem.CreateFile(Mock.Of<IStorageFile>()));
+
+        Assert.True(SlotDragTransfer.HasCustomPayload(transfer));
+        Assert.Null(SlotDragTransfer.TryGet(transfer, currentSession));
+    }
+
+    [Theory]
+    [InlineData(false, DragDropEffects.Move)]
+    [InlineData(true, DragDropEffects.Copy)]
+    public void GetDropEffect_UsesCtrlForClone(bool ctrlPressed, DragDropEffects expected)
+    {
+        var source = SlotLocation.FromBox(0, 0);
+        var destination = SlotLocation.FromBox(0, 1);
+        var modifiers = ctrlPressed ? KeyModifiers.Control : KeyModifiers.None;
+
+        var effect = SlotDragTransfer.GetDropEffect(new SlotDragData(source), destination, modifiers);
+
+        Assert.Equal(expected, effect);
+    }
+
+    [Fact]
+    public void GetDropEffect_ReturnsNoneForTheSourceSlot()
+    {
+        var source = SlotLocation.FromParty(2);
+
+        Assert.Equal(
+            DragDropEffects.None,
+            SlotDragTransfer.GetDropEffect(new SlotDragData(source), source, KeyModifiers.Control));
     }
 }

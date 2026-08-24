@@ -89,6 +89,20 @@ internal static class SlotDragTransfer
         return data is not null && data.SessionId == expectedSessionId ? data : null;
     }
 
+    /// <summary>Returns whether a transfer contains a PKHeX slot payload, even if its session is stale.</summary>
+    public static bool HasCustomPayload(IDataTransfer? transfer) => transfer?.TryGetValue(Format) is not null;
+
+    /// <summary>Maps a valid slot payload and pointer modifiers to the operation the drop will perform.</summary>
+    public static DragDropEffects GetDropEffect(SlotDragData data, SlotLocation destination, KeyModifiers modifiers)
+    {
+        if (data.Source.Equals(destination))
+            return DragDropEffects.None;
+
+        return modifiers.HasFlag(KeyModifiers.Control)
+            ? DragDropEffects.Copy
+            : DragDropEffects.Move;
+    }
+
     private static string Serialize(SlotDragData data)
         => $"{data.SessionId:N}:{(data.Source.IsParty ? 1 : 0)}:{data.Source.Box}:{data.Source.Slot}";
 

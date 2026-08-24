@@ -113,9 +113,13 @@ public partial class BoxViewer : UserControl
         var data = SlotDragTransfer.TryGet(e.DataTransfer, vm.SessionId);
         if (data != null)
         {
-            e.DragEffects = data.Source.Equals(destSlot.Location)
-                ? DragDropEffects.None
-                : DragDropEffects.Move;
+            e.DragEffects = SlotDragTransfer.GetDropEffect(data, destSlot.Location, e.KeyModifiers);
+        }
+        else if (SlotDragTransfer.HasCustomPayload(e.DataTransfer))
+        {
+            // A stale in-app payload may also carry an exported file. Never reinterpret it as an
+            // OS file drop after a save switch; the session token must win.
+            e.DragEffects = DragDropEffects.None;
         }
         else if (e.DataTransfer.TryGetFiles() is { Length: > 0 })
         {
@@ -139,6 +143,13 @@ public partial class BoxViewer : UserControl
         if (data != null)
         {
             vm.RequestMoveCommand.Execute((data, destSlot, e.KeyModifiers.HasFlag(KeyModifiers.Control)));
+            e.Handled = true;
+            return;
+        }
+
+        if (SlotDragTransfer.HasCustomPayload(e.DataTransfer))
+        {
+            // Ignore stale/invalid in-app payloads, including payloads that also contain a file.
             e.Handled = true;
             return;
         }
