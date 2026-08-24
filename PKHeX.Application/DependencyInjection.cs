@@ -11,7 +11,6 @@ public static class DependencyInjection
     {
         services.AddSingleton<LanguageService>();
         services.AddSingleton<UndoRedoService>();
-        services.AddSingleton<ISlotService, SlotService>();
         // Workflow use cases (PKHeX.Application.UseCases) are stateless and constructed at call sites.
         return services;
     }

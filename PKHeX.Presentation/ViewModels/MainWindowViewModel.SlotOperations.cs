@@ -25,9 +25,16 @@ public partial class MainWindowViewModel
         else OnBoxDeleteSlot(location.Box, location.Slot);
     }
 
-    private async void OnMoveRequested(SlotLocation source, SlotLocation destination, bool clone)
+    private void OnMoveRequested(SlotLocation source, SlotLocation destination, bool clone)
+        => _ = MoveSlotAsync(source, destination, clone);
+
+    private async Task MoveSlotAsync(SlotLocation source, SlotLocation destination, bool clone)
     {
         if (CurrentSave is null || source.Equals(destination))
+            return;
+
+        var sessionId = _slotService.SessionId;
+        if (sessionId == Guid.Empty || !_slotService.IsCurrentSession(sessionId))
             return;
 
         if (!IsValidSlot(CurrentSave, source) || !IsValidSlot(CurrentSave, destination))
@@ -64,12 +71,19 @@ public partial class MainWindowViewModel
         // another save while a native dialog was visible.
         if (clone && pkDest.Species != 0)
         {
+            var sourceSnapshot = CaptureSlotBytes(pkSource);
+            var destinationSnapshot = CaptureSlotBytes(pkDest);
             var confirmed = await _dialogService.ShowConfirmationAsync(
                 T("Slot_OverwriteTitle"),
                 T("Slot_OverwriteMessage"),
                 T("Common_OK"),
                 T("Common_Cancel"));
-            if (!confirmed || !ReferenceEquals(CurrentSave, sav))
+            if (!confirmed || !ReferenceEquals(CurrentSave, sav) || !_slotService.IsCurrentSession(sessionId))
+                return;
+
+            pkSource = ReadSlot(sav, source);
+            pkDest = ReadSlot(sav, destination);
+            if (!HasSameSlotBytes(pkSource, sourceSnapshot) || !HasSameSlotBytes(pkDest, destinationSnapshot))
                 return;
         }
 
@@ -113,6 +127,57 @@ public partial class MainWindowViewModel
         BatchEditor?.RefreshExternalState();
     }
 
+    private async Task OnReplaceRequested(SlotLocation destination, PKM replacement)
+    {
+        if (CurrentSave is not { } sav || !IsValidSlot(sav, destination))
+            return;
+
+        var sessionId = _slotService.SessionId;
+        if (sessionId == Guid.Empty || !_slotService.IsCurrentSession(sessionId))
+            return;
+
+        var destinationInfo = CreateSlotInfo(sav, destination);
+        if (!destinationInfo.CanWriteTo(sav)
+            || destinationInfo.CanWriteTo(sav, replacement) != WriteBlockedMessage.None)
+        {
+            return;
+        }
+
+        var existing = ReadSlot(sav, destination);
+        if (existing.Species != 0)
+        {
+            var destinationSnapshot = CaptureSlotBytes(existing);
+            var confirmed = await _dialogService.ShowConfirmationAsync(
+                T("Slot_OverwriteTitle"),
+                T("Slot_OverwriteMessage"),
+                T("Common_OK"),
+                T("Common_Cancel"));
+            if (!confirmed || !ReferenceEquals(CurrentSave, sav) || !_slotService.IsCurrentSession(sessionId))
+                return;
+
+            existing = ReadSlot(sav, destination);
+            if (!HasSameSlotBytes(existing, destinationSnapshot))
+                return;
+        }
+
+        try
+        {
+            var token = _undoRedo.ApplyBatch([destinationInfo], _ =>
+                WriteSlot(sav, destination, replacement.Clone()));
+            if (token is null)
+                return;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Trace.TraceWarning($"Atomic slot replacement failed: {ex.Message}");
+            return;
+        }
+
+        BoxViewer?.RefreshCurrentBox();
+        PartyViewer?.RefreshParty();
+        BatchEditor?.RefreshExternalState();
+    }
+
     private static bool IsValidSlot(SaveFile sav, SlotLocation location) => location.IsParty
         ? sav.HasParty && location.Slot >= 0 && location.Slot < 6
         : sav.HasBox
@@ -126,6 +191,10 @@ public partial class MainWindowViewModel
     private static PKM ReadSlot(SaveFile sav, SlotLocation location) => location.IsParty
         ? sav.GetPartySlotAtIndex(location.Slot)
         : sav.GetBoxSlotAtIndex(location.Box, location.Slot);
+
+    private static byte[] CaptureSlotBytes(PKM slot) => slot.Data.ToArray();
+
+    private static bool HasSameSlotBytes(PKM slot, byte[] snapshot) => slot.Data.SequenceEqual(snapshot);
 
     private static void WriteSlot(SaveFile sav, SlotLocation location, PKM pk)
     {

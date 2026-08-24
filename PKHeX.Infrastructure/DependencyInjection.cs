@@ -25,6 +25,7 @@ public static class DependencyInjection
         services.AddSingleton<ILivingDexService, LivingDexService>();
         services.AddSingleton<ISaveBackupService, SaveBackupService>();
         services.AddSingleton<IGiftRecordProvider, GiftRecordProvider>();
+        services.AddSingleton<ISlotService, SlotService>();
         return services;
     }
 }

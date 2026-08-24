@@ -144,4 +144,17 @@ public class AutoLegalityServiceTests
         Assert.NotNull(resolved);
         Assert.IsType<AutoLegalityService>(resolved);
     }
+
+    [Fact]
+    public void SlotService_IsRegisteredInInfrastructure()
+    {
+        var services = new ServiceCollection();
+        services.AddApplication();
+        Assert.DoesNotContain(services, descriptor => descriptor.ServiceType == typeof(ISlotService));
+
+        services.AddInfrastructure();
+        using var provider = services.BuildServiceProvider();
+
+        Assert.IsType<SlotService>(provider.GetRequiredService<ISlotService>());
+    }
 }

@@ -76,6 +76,42 @@ public class LayoutTests
         }
     }
 
+    [AvaloniaFact]
+    public void PokemonEditor_StatsHeadersDoNotOverlapAtMinimumShellWidth()
+    {
+        var pkm = new PK9 { Species = 25 };
+        var save = new SAV9SV();
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, save);
+        var view = new PokemonEditor { DataContext = vm };
+        var window = new Window { Content = view, Width = 360, Height = 620 };
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+
+        var tabs = view.GetVisualDescendants().OfType<TabControl>().Single();
+        tabs.SelectedIndex = 1;
+        Dispatcher.UIThread.RunJobs();
+        view.Measure(new Size(360, 620));
+        view.Arrange(new Rect(0, 0, 360, 620));
+        Dispatcher.UIThread.RunJobs();
+
+        var names = new[]
+        {
+            "StatsHeaderStat", "StatsHeaderBase", "StatsHeaderIVs",
+            "StatsHeaderEVs", "StatsHeaderTotal", "StatsHeaderHyperTraining",
+        };
+        var headers = names.Select(name => view.FindControl<TextBlock>(name)).ToArray();
+        Assert.All(headers, Assert.NotNull);
+
+        for (var i = 1; i < headers.Length; i++)
+        {
+            var previous = headers[i - 1]!;
+            var current = headers[i]!;
+            Assert.True(
+                previous.Bounds.Right <= current.Bounds.Left,
+                $"{names[i - 1]} ({previous.Bounds}) overlaps {names[i]} ({current.Bounds}).");
+        }
+    }
+
 
     [AvaloniaFact]
     public void Verify_RTC3Editor_Layout()

@@ -542,12 +542,15 @@
 
     <!-- Pokémon editor sidebar: compact, left-aligned tabs with a clear selected surface. -->
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab">
-        <Setter Property="MinWidth" Value="116" />
-        <Setter Property="Padding" Value="12,9" />
-        <Setter Property="Margin" Value="0,2,8,2" />
+        <Setter Property="MinWidth" Value="96" />
+        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="Margin" Value="0,2,6,2" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="3,0,0,0" />
     </Style>
 
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:pointerover">
@@ -556,9 +559,41 @@
     </Style>
 
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:selected">
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentGlowBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderThickness" Value="3,0,0,0" />
         <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+    </Style>
+
+    <!-- Main save workspace tabs: compact enough to keep all destinations discoverable, with a
+         quiet red baseline that is visually distinct from the editor's vertical section spine. -->
+    <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab">
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0,0,0,2" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:selected">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -683,6 +718,12 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="4" />
+    </Style>
+
+    <!-- Stats table override: the main editor deliberately remains usable in a 360px pane. -->
+    <Style Selector="NumericUpDown.stats-number">
+        <Setter Property="MinWidth" Value="38" />
+        <Setter Property="FontSize" Value="12" />
     </Style>
 
     <!-- Form Field: Standard sizing for form layouts -->

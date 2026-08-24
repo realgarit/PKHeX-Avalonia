@@ -49,6 +49,17 @@ public class SlotOperationsTests
         method!.Invoke(vm, [box, slot]);
     }
 
+    private static Task InvokeMoveSlotAsync(
+        MainWindowViewModel vm,
+        SlotLocation source,
+        SlotLocation destination,
+        bool clone)
+    {
+        var method = typeof(MainWindowViewModel).GetMethod("MoveSlotAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.NotNull(method);
+        return Assert.IsAssignableFrom<Task>(method!.Invoke(vm, [source, destination, clone]));
+    }
+
     [Fact]
     public void OnBoxSetSlot_with_foreign_format_pkm_does_not_throw()
     {
@@ -301,5 +312,153 @@ public class SlotOperationsTests
         Assert.Equal(0, undoRedo.ChangeCount);
         Assert.False(undoRedo.CanUndo);
         Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 0).Species);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task ConfirmedCopyAbortsWhenEitherSlotChangesDuringPrompt(bool changeSource)
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 25 }, 0, 0);
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 1 }, 0, 1);
+
+        var confirmation = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var dialogService = new Mock<IDialogService>();
+        dialogService
+            .Setup(d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(confirmation.Task);
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var vm = CreateViewModel(dialogService, slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        var operation = InvokeMoveSlotAsync(
+            vm,
+            SlotLocation.FromBox(0, 0),
+            SlotLocation.FromBox(0, 1),
+            clone: true);
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 4 }, 0, changeSource ? 0 : 1);
+        confirmation.SetResult(true);
+        await operation;
+
+        Assert.Equal(changeSource ? 4 : 25, sav.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(changeSource ? 1 : 4, sav.GetBoxSlotAtIndex(0, 1).Species);
+        Assert.Equal(0, undoRedo.ChangeCount);
+    }
+
+    [Fact]
+    public async Task ConfirmedCopyAbortsWhenSaveSessionChangesDuringPrompt()
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 25 }, 0, 0);
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 1 }, 0, 1);
+
+        var confirmation = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var dialogService = new Mock<IDialogService>();
+        dialogService
+            .Setup(d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(confirmation.Task);
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var vm = CreateViewModel(dialogService, slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        var operation = InvokeMoveSlotAsync(
+            vm,
+            SlotLocation.FromBox(0, 0),
+            SlotLocation.FromBox(0, 1),
+            clone: true);
+        slotService.ResetSession();
+        confirmation.SetResult(true);
+        await operation;
+
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(1, sav.GetBoxSlotAtIndex(0, 1).Species);
+        Assert.Equal(0, undoRedo.ChangeCount);
+    }
+
+    [Fact]
+    public async Task ExternalReplacementIntoOccupiedSlotRequiresConfirmationAndIsUndoable()
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 1 }, 0, 0);
+
+        var dialogService = new Mock<IDialogService>();
+        dialogService
+            .Setup(d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(true);
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var vm = CreateViewModel(dialogService, slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        await slotService.RequestReplaceAsync(
+            slotService.SessionId,
+            SlotLocation.FromBox(0, 0),
+            new PK6 { Species = 25 });
+
+        dialogService.Verify(
+            d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+            Times.Once);
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(1, undoRedo.ChangeCount);
+
+        undoRedo.Undo();
+        Assert.Equal(1, sav.GetBoxSlotAtIndex(0, 0).Species);
+    }
+
+    [Fact]
+    public async Task CancellingExternalReplacementPreservesOccupiedSlotAndHistory()
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 1 }, 0, 0);
+
+        var dialogService = new Mock<IDialogService>();
+        dialogService
+            .Setup(d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(false);
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var vm = CreateViewModel(dialogService, slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        await slotService.RequestReplaceAsync(
+            slotService.SessionId,
+            SlotLocation.FromBox(0, 0),
+            new PK6 { Species = 25 });
+
+        Assert.Equal(1, sav.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(0, undoRedo.ChangeCount);
+    }
+
+    [Fact]
+    public async Task ExternalReplacementIntoEmptySlotSkipsConfirmationAndIsUndoable()
+    {
+        var sav = new SAV6XY();
+        var dialogService = new Mock<IDialogService>();
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var vm = CreateViewModel(dialogService, slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        await slotService.RequestReplaceAsync(
+            slotService.SessionId,
+            SlotLocation.FromBox(0, 0),
+            new PK6 { Species = 25 });
+
+        dialogService.Verify(
+            d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+            Times.Never);
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(1, undoRedo.ChangeCount);
+
+        undoRedo.Undo();
+        Assert.Equal(0, sav.GetBoxSlotAtIndex(0, 0).Species);
     }
 }

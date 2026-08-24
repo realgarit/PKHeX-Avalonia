@@ -50,13 +50,17 @@ public partial class PartyViewerViewModel : ViewModelBase
         _sav = sav;
         _spriteRenderer = spriteRenderer;
         _slotService = slotService;
-        _sessionId = slotService?.SessionId ?? Guid.Empty;
+        var sessionId = slotService?.SessionId ?? Guid.Empty;
+        _sessionId = sessionId == Guid.Empty ? Guid.NewGuid() : sessionId;
         _windowService = windowService;
         _dialogService = dialogService;
         _getCurrentBox = getCurrentBox ?? (() => 0);
         _haXMode = haXMode;
         LoadParty();
     }
+
+    private bool IsSessionCurrent() => _slotService is null
+        || (_sessionId != Guid.Empty && _slotService.IsCurrentSession(_sessionId));
 
     partial void OnSelectedIndexChanged(int value)
     {
@@ -120,7 +124,7 @@ public partial class PartyViewerViewModel : ViewModelBase
     [RelayCommand]
     private void ActivateSlot()
     {
-        if (SelectedIndex < 0 || SelectedIndex >= Slots.Count)
+        if (!IsSessionCurrent() || SelectedIndex < 0 || SelectedIndex >= Slots.Count)
             return;
 
         var slot = Slots[SelectedIndex];
@@ -146,16 +150,20 @@ public partial class PartyViewerViewModel : ViewModelBase
 
     /// <summary>Opens (or focuses) this Party viewer as a modeless workspace.</summary>
     [RelayCommand]
-    private void OpenDetachedTool() => _windowService?.ShowTool(this, LocalizedStrings.Instance["Tab_Party"]);
+    private void OpenDetachedTool()
+    {
+        if (IsSessionCurrent())
+            _windowService?.ShowTool(this, LocalizedStrings.Instance["Tab_Party"]);
+    }
     
     [RelayCommand]
     private void ViewSlot(PartySlotData? slot)
     {
-        if (slot is null || slot.IsEmpty)
+        if (slot is null || slot.IsEmpty || !IsSessionCurrent())
             return;
         
         if (_slotService is not null)
-            _slotService.RequestView(SlotLocation.FromParty(slot.Slot));
+            _slotService.RequestView(_sessionId, SlotLocation.FromParty(slot.Slot));
         else
             ViewSlotRequested?.Invoke(slot.Slot);
     }
@@ -163,11 +171,11 @@ public partial class PartyViewerViewModel : ViewModelBase
     [RelayCommand]
     private void SetSlot(PartySlotData? slot)
     {
-        if (slot is null)
+        if (slot is null || !IsSessionCurrent())
             return;
         
         if (_slotService is not null)
-            _slotService.RequestSet(SlotLocation.FromParty(slot.Slot));
+            _slotService.RequestSet(_sessionId, SlotLocation.FromParty(slot.Slot));
         else
             SetSlotRequested?.Invoke(slot.Slot);
     }
@@ -175,11 +183,11 @@ public partial class PartyViewerViewModel : ViewModelBase
     [RelayCommand]
     private void DeleteSlot(PartySlotData? slot)
     {
-        if (slot is null || slot.IsEmpty)
+        if (slot is null || slot.IsEmpty || !IsSessionCurrent())
             return;
         
         if (_slotService is not null)
-            _slotService.RequestDelete(SlotLocation.FromParty(slot.Slot));
+            _slotService.RequestDelete(_sessionId, SlotLocation.FromParty(slot.Slot));
         else
             DeleteSlotRequested?.Invoke(slot.Slot);
     }
@@ -191,7 +199,7 @@ public partial class PartyViewerViewModel : ViewModelBase
     [RelayCommand]
     private async Task MoveToBox(PartySlotData? slot)
     {
-        if (slot is null || slot.IsEmpty || _slotService is null || !_sav.HasBox || _sav.BoxCount <= 0)
+        if (slot is null || slot.IsEmpty || _slotService is null || !_sav.HasBox || _sav.BoxCount <= 0 || !IsSessionCurrent())
             return;
 
         var currentBox = Math.Clamp(_getCurrentBox(), 0, _sav.BoxCount - 1);
@@ -214,7 +222,7 @@ public partial class PartyViewerViewModel : ViewModelBase
             return;
         }
 
-        _slotService.RequestMove(SlotLocation.FromParty(slot.Slot), SlotLocation.FromBox(currentBox, destination), clone: false);
+        _slotService.RequestMove(_sessionId, SlotLocation.FromParty(slot.Slot), SlotLocation.FromBox(currentBox, destination), clone: false);
     }
 
     /// <summary>
@@ -230,6 +238,9 @@ public partial class PartyViewerViewModel : ViewModelBase
     /// </summary>
     public void SetSlotPKM(int slot, PKM pk)
     {
+        if (!IsSessionCurrent())
+            return;
+
         _sav.SetPartySlotAtIndex(pk, slot);
         RefreshParty();
     }
@@ -237,7 +248,10 @@ public partial class PartyViewerViewModel : ViewModelBase
     [RelayCommand]
     private void RequestMove((SlotDragData data, PartySlotData dest, bool clone) param)
     {
-        _slotService?.RequestMove(param.data.SessionId, param.data.Source, param.dest.Location, param.clone);
+        if (_slotService is null || !IsSessionCurrent() || param.data.SessionId != SessionId)
+            return;
+
+        _slotService.RequestMove(param.data.SessionId, param.data.Source, param.dest.Location, param.clone);
     }
 
     /// <summary>Raised when a dropped OS file turns out to be a save file, so the host can open it.</summary>
@@ -250,7 +264,7 @@ public partial class PartyViewerViewModel : ViewModelBase
     /// </summary>
     public async Task HandleFileDropAsync(IReadOnlyList<string> paths, int targetSlot)
     {
-        if (paths.Count == 0)
+        if (paths.Count == 0 || !IsSessionCurrent())
             return;
 
         if (paths.Count == 1)
@@ -259,10 +273,14 @@ public partial class PartyViewerViewModel : ViewModelBase
             switch (result.Kind)
             {
                 case EntityFileDropKind.SaveFile:
-                    SaveFileDropRequested?.Invoke(paths[0]);
+                    if (IsSessionCurrent())
+                        SaveFileDropRequested?.Invoke(paths[0]);
                     return;
                 case EntityFileDropKind.Entity:
-                    SetSlotPKM(targetSlot, result.Entity!);
+                    if (_slotService is not null)
+                        await _slotService.RequestReplaceAsync(_sessionId, SlotLocation.FromParty(targetSlot), result.Entity!);
+                    else
+                        SetSlotPKM(targetSlot, result.Entity!);
                     return;
                 default:
                     if (_dialogService is not null)
@@ -283,6 +301,9 @@ public partial class PartyViewerViewModel : ViewModelBase
         var slot = 0;
         foreach (var pk in candidates)
         {
+            if (!IsSessionCurrent())
+                break;
+
             while (slot < Slots.Count && !Slots[slot].IsEmpty)
                 slot++;
             if (slot >= Slots.Count)

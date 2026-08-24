@@ -42,6 +42,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(HasSave))]
     [NotifyPropertyChangedFor(nameof(WindowTitle))]
     [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(CurrentSaveFileName))]
+    [NotifyPropertyChangedFor(nameof(CurrentSavePath))]
     [NotifyCanExecuteChangedFor(nameof(SaveFileCommand))]
     [NotifyCanExecuteChangedFor(nameof(SaveFileAsCommand))]
     [NotifyCanExecuteChangedFor(nameof(CloseFileCommand))]
@@ -73,6 +75,14 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool CanUndo => _undoRedo.CanUndo;
     public bool CanRedo => _undoRedo.CanRedo;
     public bool IsHaXMode => _settings.IsHaXMode;
+
+    /// <summary>Full path of the active save, when it came from or has been written to disk.</summary>
+    public string? CurrentSavePath => CurrentSave is null ? null : _saveFileService.CurrentPath;
+
+    /// <summary>Compact active-save identity for the status bar.</summary>
+    public string? CurrentSaveFileName => CurrentSavePath is { Length: > 0 } path
+        ? Path.GetFileName(path)
+        : null;
 
     public string WindowTitle
     {
@@ -152,6 +162,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _slotService.SetRequested += OnSetRequested;
         _slotService.DeleteRequested += OnDeleteRequested;
         _slotService.MoveRequested += OnMoveRequested;
+        _slotService.ReplaceRequested += OnReplaceRequested;
 
         _undoRedo.StateChanged += (_, _) =>
         {
@@ -184,6 +195,7 @@ public partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(string.Empty);
         CurrentPokemonEditor?.RefreshLanguage();
         BoxViewer?.RefreshCurrentBox();
+        PartyViewer?.RefreshParty();
         TrainerEditor?.RefreshLanguage();
         InventoryEditor?.RefreshLanguage();
         MysteryGiftEditor?.RefreshLocalization();

@@ -70,7 +70,9 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
         vm.IsPokerusInfected = true;
 
         var view = new PokemonEditor { DataContext = vm };
-        var window = new Window { Content = view, Width = 760, Height = 520 };
+        // Match the minimum width of the editor pane in MainWindow so this capture is a meaningful
+        // regression artifact for the compact headers and Hyper Training column.
+        var window = new Window { Content = view, Width = 360, Height = 620 };
         window.Show();
         PumpToStableLayout(window);
 

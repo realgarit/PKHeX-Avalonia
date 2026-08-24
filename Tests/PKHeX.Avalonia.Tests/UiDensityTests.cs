@@ -32,7 +32,7 @@ public class UiDensityTests
             "<Border\\s+DockPanel.Dock=\"Bottom\"[^>]*>",
             RegexOptions.Singleline);
 
-        Assert.Contains("<ColumnDefinition Width=\"2*\" MinWidth=\"420\" MaxWidth=\"520\" />", mainWindow);
+        Assert.Contains("<ColumnDefinition Width=\"380\" MinWidth=\"360\" MaxWidth=\"480\" />", mainWindow);
         Assert.DoesNotContain("ColumnDefinitions=\"520,*\"", mainWindow);
         Assert.True(statusBar.Success, "Status bar Border was not found.");
         Assert.Contains("Padding=\"8,4\"", statusBar.Value);
@@ -43,8 +43,10 @@ public class UiDensityTests
     {
         var pokemonEditor = ReadSourceFile("Views", "PokemonEditor.axaml");
 
-        Assert.Contains("ColumnDefinitions=\"40,*,*,*,*,Auto\"", pokemonEditor);
-        Assert.Contains("Grid.Row=\"1\" Grid.Column=\"5\" Text=\"{loc:Loc StatsHyperTrained}\"", pokemonEditor);
+        Assert.Contains("ColumnDefinitions=\"32,30,42,42,30,26\"", pokemonEditor);
+        Assert.Contains("x:Name=\"StatsHeaderHyperTraining\"", pokemonEditor);
+        Assert.Contains("Text=\"{loc:Loc PokemonEditor_ColHyperTrainingShort}\"", pokemonEditor);
+        Assert.Contains("Classes=\"compact stats-number\"", pokemonEditor);
         Assert.DoesNotContain("Content=\"{loc:Loc StatsHyperTrained}\"", pokemonEditor);
     }
 

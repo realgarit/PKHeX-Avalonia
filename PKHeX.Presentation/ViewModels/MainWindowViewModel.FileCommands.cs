@@ -97,6 +97,11 @@ public partial class MainWindowViewModel
         var success = await _saveFileService.SaveFileAsync(path);
         if (!success)
             await _dialogService.ShowErrorAsync(T("Common_Error"), T("File_FailedToSaveFile"));
+        else
+        {
+            OnPropertyChanged(nameof(CurrentSavePath));
+            OnPropertyChanged(nameof(CurrentSaveFileName));
+        }
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]

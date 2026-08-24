@@ -239,18 +239,36 @@ public sealed class DetachedWorkspaceTests
     }
 
     [Fact]
-    public void SlotService_RejectsMoveRequestsFromPreviousSession()
+    public void SlotService_RejectsAllRequestsFromPreviousSession()
     {
         var service = new SlotService();
         var staleSession = service.SessionId;
+        var viewCount = 0;
+        var setCount = 0;
+        var deleteCount = 0;
         var moveCount = 0;
+        service.ViewRequested += _ => viewCount++;
+        service.SetRequested += _ => setCount++;
+        service.DeleteRequested += _ => deleteCount++;
         service.MoveRequested += (_, _, _) => moveCount++;
 
         service.ResetSession();
+        service.RequestView(staleSession, SlotLocation.FromBox(0, 0));
+        service.RequestSet(staleSession, SlotLocation.FromBox(0, 0));
+        service.RequestDelete(staleSession, SlotLocation.FromBox(0, 0));
         service.RequestMove(staleSession, SlotLocation.FromBox(0, 0), SlotLocation.FromParty(0), false);
+        Assert.Equal(0, viewCount);
+        Assert.Equal(0, setCount);
+        Assert.Equal(0, deleteCount);
         Assert.Equal(0, moveCount);
 
+        service.RequestView(service.SessionId, SlotLocation.FromBox(0, 0));
+        service.RequestSet(service.SessionId, SlotLocation.FromBox(0, 0));
+        service.RequestDelete(service.SessionId, SlotLocation.FromBox(0, 0));
         service.RequestMove(service.SessionId, SlotLocation.FromBox(0, 0), SlotLocation.FromParty(0), false);
+        Assert.Equal(1, viewCount);
+        Assert.Equal(1, setCount);
+        Assert.Equal(1, deleteCount);
         Assert.Equal(1, moveCount);
     }
 
@@ -268,6 +286,46 @@ public sealed class DetachedWorkspaceTests
         Assert.Equal(originalSession, originalPayload.SessionId);
         Assert.NotEqual(originalSession, slotService.SessionId);
         Assert.Null(SlotDragTransfer.TryGet(SlotDragTransfer.Create(originalPayload), slotService.SessionId));
+    }
+
+    [Fact]
+    public void PreviousSessionViewersRejectCommandsAndDirectMutations()
+    {
+        var save = new SAV6XY();
+        save.SetBoxSlotAtIndex(new PK6 { Species = 25 }, 0, 0);
+        save.SetPartySlotAtIndex(new PK6 { Species = 1 }, 0);
+
+        var service = new SlotService();
+        var windows = new NoopWindowService();
+        var box = new BoxViewerViewModel(save, Mock.Of<ISpriteRenderer>(), service, windows);
+        var party = new PartyViewerViewModel(save, Mock.Of<ISpriteRenderer>(), service, windowService: windows);
+        var requestCount = 0;
+        service.ViewRequested += _ => requestCount++;
+        service.SetRequested += _ => requestCount++;
+        service.DeleteRequested += _ => requestCount++;
+        service.MoveRequested += (_, _, _) => requestCount++;
+
+        service.ResetSession();
+
+        box.ViewSlotCommand.Execute(box.Slots[0]);
+        box.SetSlotCommand.Execute(box.Slots[0]);
+        box.DeleteSlotCommand.Execute(box.Slots[0]);
+        box.RequestMoveCommand.Execute((box.CreateDragData(0), box.Slots[1], false));
+        box.OpenDetachedToolCommand.Execute(null);
+        box.SetSlotPKM(0, new PK6 { Species = 4 });
+        box.ClearSlot(0);
+
+        party.ViewSlotCommand.Execute(party.Slots[0]);
+        party.SetSlotCommand.Execute(party.Slots[0]);
+        party.DeleteSlotCommand.Execute(party.Slots[0]);
+        party.RequestMoveCommand.Execute((party.CreateDragData(0), party.Slots[1], false));
+        party.OpenDetachedToolCommand.Execute(null);
+        party.SetSlotPKM(0, new PK6 { Species = 4 });
+
+        Assert.Equal(0, requestCount);
+        Assert.Empty(windows.ShownTools);
+        Assert.Equal(25, save.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(1, save.GetPartySlotAtIndex(0).Species);
     }
 
     private static void ExecuteCommand(object target, string propertyName)

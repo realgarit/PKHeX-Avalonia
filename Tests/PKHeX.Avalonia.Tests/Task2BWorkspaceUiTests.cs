@@ -2,13 +2,19 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using Avalonia.Headless.XUnit;
+using Avalonia.Input;
+using Avalonia.VisualTree;
+using PKHeX.Avalonia.Controls;
+using PKHeX.Avalonia.Tests.Harness;
+using PKHeX.Core;
 
 namespace PKHeX.Avalonia.Tests;
 
 /// <summary>
-/// Static acceptance coverage for the Task 2B workspace affordances. The headless test backend can
-/// verify the XAML/code contract and localization catalogs, while the real desktop double-click and
-/// native tool-window lifetime remain an explicit native-platform test boundary.
+/// Headless acceptance coverage for the Task 2B workspace affordances. Native desktop tool-window
+/// lifetime remains a platform test boundary, but routed header gestures and command wiring are
+/// exercised through the fully composed MainWindow.
 /// </summary>
 public sealed class Task2BWorkspaceUiTests
 {
@@ -16,25 +22,17 @@ public sealed class Task2BWorkspaceUiTests
     public void MainWindow_Offers_TabDoubleClick_AndLocalizedAccessibleWorkspaceCommands()
     {
         var mainWindow = ReadRepositoryFile("PKHeX.Avalonia/Views/MainWindow.axaml");
-        var codeBehind = ReadRepositoryFile("PKHeX.Avalonia/Views/MainWindow.axaml.cs");
         var boxViewer = ReadRepositoryFile("PKHeX.Avalonia/Views/BoxViewer.axaml");
         var partyViewer = ReadRepositoryFile("PKHeX.Avalonia/Views/PartyViewer.axaml");
 
-        Assert.Contains("DoubleTapped=\"OnBoxTabDoubleTapped\"", mainWindow);
-        Assert.Contains("DoubleTapped=\"OnPartyTabDoubleTapped\"", mainWindow);
-        Assert.DoesNotContain(" Tapped=\"OnBoxTabDoubleTapped\"", mainWindow);
-        Assert.DoesNotContain(" Tapped=\"OnPartyTabDoubleTapped\"", mainWindow);
+        Assert.Contains("DoubleTapCommandBorder Command=\"{Binding OpenBoxWorkspaceCommand}\"", mainWindow);
+        Assert.Contains("DoubleTapCommandBorder Command=\"{Binding OpenPartyWorkspaceCommand}\"", mainWindow);
+        Assert.DoesNotContain("OnBoxTabDoubleTapped", mainWindow);
+        Assert.DoesNotContain("OnPartyTabDoubleTapped", mainWindow);
         Assert.Contains("Command=\"{Binding OpenBoxWorkspaceCommand}\"", mainWindow);
         Assert.Contains("Command=\"{Binding OpenPartyWorkspaceCommand}\"", mainWindow);
         Assert.Contains("AutomationProperties.Name=\"{loc:Loc Menu_Tools_OpenBoxWorkspace}\"", mainWindow);
         Assert.Contains("AutomationProperties.Name=\"{loc:Loc Menu_Tools_OpenPartyWorkspace}\"", mainWindow);
-
-        Assert.Contains("OpenBoxWorkspaceCommand.Execute(null)", codeBehind);
-        Assert.Contains("OpenPartyWorkspaceCommand.Execute(null)", codeBehind);
-        Assert.Contains("IsInsideViewer<BoxViewer>(e.Source)", codeBehind);
-        Assert.Contains("IsInsideViewer<PartyViewer>(e.Source)", codeBehind);
-        Assert.Contains("for (var visual = source as Visual; visual is not null; visual = visual.GetVisualParent())", codeBehind);
-        Assert.Contains("if (visual is TViewer)", codeBehind);
 
         // The tab-level double-tap handlers must not replace the existing slot-level gesture.
         Assert.Contains("DoubleTapped=\"OnSlotDoubleTapped\"", boxViewer);
@@ -59,6 +57,26 @@ public sealed class Task2BWorkspaceUiTests
             AssertLocalized(root, "Menu_Tools_OpenBoxWorkspace", catalog!);
             AssertLocalized(root, "Menu_Tools_OpenPartyWorkspace", catalog!);
         }
+    }
+
+    [AvaloniaFact]
+    public void RoutedHeaderDoubleTaps_OpenTheExactLiveBoxAndPartyWorkspaces()
+    {
+        using var app = new HeadlessAppFixture();
+        app.LoadSaveInstance(new SAV6XY());
+
+        var headers = app.Window.GetVisualDescendants().OfType<DoubleTapCommandBorder>().ToArray();
+        var boxHeader = Assert.Single(headers, header =>
+            ReferenceEquals(header.Command, app.ViewModel.OpenBoxWorkspaceCommand));
+        var partyHeader = Assert.Single(headers, header =>
+            ReferenceEquals(header.Command, app.ViewModel.OpenPartyWorkspaceCommand));
+
+        boxHeader.RaiseEvent(new TappedEventArgs(InputElement.DoubleTappedEvent, null!));
+        partyHeader.RaiseEvent(new TappedEventArgs(InputElement.DoubleTappedEvent, null!));
+
+        Assert.Equal(2, app.Windows.ActiveToolCount);
+        Assert.Contains(app.Windows.ShownTools, tool => ReferenceEquals(tool.ViewModel, app.BoxViewer));
+        Assert.Contains(app.Windows.ShownTools, tool => ReferenceEquals(tool.ViewModel, app.ViewModel.PartyViewer));
     }
 
     private static void AssertLocalized(JsonElement root, string key, string catalog)

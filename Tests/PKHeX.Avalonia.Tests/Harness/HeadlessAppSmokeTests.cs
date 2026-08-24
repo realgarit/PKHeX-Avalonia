@@ -150,7 +150,12 @@ public sealed class HeadlessAppSmokeTests(ITestOutputHelper output)
         }
 
         using var app = new HeadlessAppFixture();
-        app.LoadSaveInstance(HeadlessSaveFixtures.CreatePopulatedEmeraldSave());
+        app.Window.Width = 1024;
+        app.Window.Height = 720;
+        var saveDirectory = SaveFileFixture.FindSaveFilesPath();
+        Assert.NotNull(saveDirectory);
+        app.LoadSave(Path.Combine(saveDirectory!, "gen9a_legendsza.main"));
+        app.Pump();
 
         var dir = Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR")
                   ?? Path.Combine(Path.GetTempPath(), "pkhex-headless-frames");
