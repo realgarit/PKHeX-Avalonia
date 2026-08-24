@@ -102,6 +102,14 @@ public class LayoutTests
         var headers = names.Select(name => view.FindControl<TextBlock>(name)).ToArray();
         Assert.All(headers, Assert.NotNull);
 
+        var statsGrid = Assert.IsType<Grid>(headers[0]!.Parent);
+        statsGrid.Measure(new Size(220, 620));
+        statsGrid.Arrange(new Rect(0, 0, 220, 620));
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.True(headers[0]!.Bounds.Width >= 40, $"Stat header was only {headers[0]!.Bounds.Width}px wide.");
+        Assert.True(headers[1]!.Bounds.Width >= 40, $"Base header was only {headers[1]!.Bounds.Width}px wide.");
+
         for (var i = 1; i < headers.Length; i++)
         {
             var previous = headers[i - 1]!;

@@ -43,7 +43,7 @@ public class UiDensityTests
     {
         var pokemonEditor = ReadSourceFile("Views", "PokemonEditor.axaml");
 
-        Assert.Contains("ColumnDefinitions=\"32,30,42,42,30,26\"", pokemonEditor);
+        Assert.Contains("ColumnDefinitions=\"40,40,42,42,30,26\"", pokemonEditor);
         Assert.Contains("x:Name=\"StatsHeaderHyperTraining\"", pokemonEditor);
         Assert.Contains("Text=\"{loc:Loc PokemonEditor_ColHyperTrainingShort}\"", pokemonEditor);
         Assert.Contains("Classes=\"compact stats-number\"", pokemonEditor);

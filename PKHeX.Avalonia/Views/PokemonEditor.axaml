@@ -279,7 +279,7 @@
                                    Margin="2,0,2,0" />
                         <Border Classes="section-card"
                                 CornerRadius="4" Padding="8">
-                            <Grid ColumnDefinitions="32,30,42,42,30,26" RowDefinitions="Auto,Auto,4,Auto,Auto,Auto,Auto,Auto,Auto">
+                            <Grid ColumnDefinitions="40,40,42,42,30,26" RowDefinitions="Auto,Auto,4,Auto,Auto,Auto,Auto,Auto,Auto">
                                 <!-- Actions stay above the compact column labels so they never compete
                                      with IV/EV headers for horizontal space. -->
                                 <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Margin="0,0,0,4">

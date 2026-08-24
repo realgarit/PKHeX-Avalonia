@@ -41,7 +41,8 @@ public sealed class ResponsiveShellTests
         using var app = new HeadlessAppFixture();
         app.Window.Width = 1024;
         app.Window.Height = 720;
-        app.LoadSaveInstance(new SAV6XY(), @"C:\Saves\pokemon-x-main");
+        var savePath = Path.Combine(Path.DirectorySeparatorChar.ToString(), "Saves", "pokemon-x-main");
+        app.LoadSaveInstance(new SAV6XY(), savePath);
         app.Pump();
 
         var editor = app.FindByName<Border>("EditorPane");
@@ -52,7 +53,7 @@ public sealed class ResponsiveShellTests
         Assert.InRange(editor!.Bounds.Width, 360, 480);
         Assert.True(workspace!.Bounds.Width >= 560, $"Workspace was only {workspace.Bounds.Width}px wide.");
         Assert.Equal("pokemon-x-main", app.ViewModel.CurrentSaveFileName);
-        Assert.Equal(@"C:\Saves\pokemon-x-main", app.ViewModel.CurrentSavePath);
+        Assert.Equal(savePath, app.ViewModel.CurrentSavePath);
     }
 
     private static string ReadSourceFile(params string[] relativePath)
