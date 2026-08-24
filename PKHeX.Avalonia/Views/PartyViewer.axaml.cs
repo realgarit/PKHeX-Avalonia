@@ -91,7 +91,7 @@ public partial class PartyViewer : UserControl
             // and the native drag session fails to start. Payload preparation must be synchronous.
             var pk = vm.GetSlotPKM(slot.Slot);
             var storageProvider = TopLevel.GetTopLevel(this)?.StorageProvider;
-            var data = SlotDragTransfer.Create(new SlotDragData(slot.Location), pk, storageProvider);
+            var data = SlotDragTransfer.Create(vm.CreateDragData(slot.Slot), pk, storageProvider);
 
             await DragDrop.DoDragDropAsync(e, data, DragDropEffects.Move | DragDropEffects.Copy);
         }
@@ -107,10 +107,10 @@ public partial class PartyViewer : UserControl
 
     private void OnSlotDragOver(object? sender, DragEventArgs e)
     {
-        if (sender is not Button button || button.Tag is not PartySlotData destSlot)
+        if (sender is not Button button || button.Tag is not PartySlotData destSlot || DataContext is not PartyViewerViewModel vm)
             return;
 
-        var data = SlotDragTransfer.TryGet(e.DataTransfer);
+        var data = SlotDragTransfer.TryGet(e.DataTransfer, vm.SessionId);
         if (data != null)
         {
             e.DragEffects = data.Source.Equals(destSlot.Location)
@@ -135,7 +135,7 @@ public partial class PartyViewer : UserControl
             return;
 
         // In-app move/clone between box/party slots (existing behavior).
-        var data = SlotDragTransfer.TryGet(e.DataTransfer);
+        var data = SlotDragTransfer.TryGet(e.DataTransfer, vm.SessionId);
         if (data != null)
         {
             vm.RequestMoveCommand.Execute((data, destSlot, e.KeyModifiers.HasFlag(KeyModifiers.Control)));

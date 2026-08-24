@@ -14,6 +14,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly ISlotService? _slotService;
+    private readonly Guid _sessionId;
     private readonly IWindowService? _windowService;
     private readonly IDialogService? _dialogService;
     private readonly bool _haXMode;
@@ -41,6 +42,12 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     public int BoxCount => _sav.BoxCount;
     public int SlotsPerBox => _sav.BoxSlotCount;
     public bool CanMoveToParty => _sav.HasParty;
+    /// <summary>
+    /// The immutable save-session identity captured when this viewer was created. A viewer from a
+    /// previous save must keep its original token so its detached drag payloads cannot become valid
+    /// again after the shared slot service starts a new session.
+    /// </summary>
+    public Guid SessionId => _sessionId;
 
     /// <summary>
     /// The slot under the current keyboard/selection cursor, used to drive
@@ -62,6 +69,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
         _sav = sav;
         _spriteRenderer = spriteRenderer;
         _slotService = slotService;
+        _sessionId = slotService?.SessionId ?? Guid.Empty;
         _windowService = windowService;
         _dialogService = dialogService;
         _haXMode = haXMode;
@@ -73,6 +81,10 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     /// <summary>Opens (or focuses) the modeless seek tool window.</summary>
     [RelayCommand]
     private void OpenSeekTool() => _windowService?.ShowTool(Seek, LocalizedStrings.Instance["BoxViewer_SearchSeekTitle"]);
+
+    /// <summary>Opens (or focuses) this Box viewer as a modeless workspace.</summary>
+    [RelayCommand]
+    private void OpenDetachedTool() => _windowService?.ShowTool(this, LocalizedStrings.Instance["Tab_Box"]);
 
     partial void OnSelectedIndexChanged(int value)
     {
@@ -294,6 +306,9 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
 
     public PKM GetSlotPKM(int slot) => _sav.GetBoxSlotAtIndex(CurrentBox, slot);
 
+    /// <summary>Creates a session-bound payload for a slot in the current box.</summary>
+    public SlotDragData CreateDragData(int slot) => new(SlotLocation.FromBox(CurrentBox, slot), SessionId);
+
     public void SetSlotPKM(int slot, PKM pk)
     {
         _sav.SetBoxSlotAtIndex(pk, CurrentBox, slot);
@@ -309,7 +324,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     [RelayCommand]
     private void RequestMove((SlotDragData data, SlotData dest, bool clone) param)
     {
-        _slotService?.RequestMove(param.data.Source, param.dest.Location, param.clone);
+        _slotService?.RequestMove(param.data.SessionId, param.data.Source, param.dest.Location, param.clone);
     }
 
     /// <summary>Raised when a dropped OS file turns out to be a save file, so the host can open it.</summary>

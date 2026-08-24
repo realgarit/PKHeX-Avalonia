@@ -54,6 +54,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(OpenLivingDexGeneratorCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenBackupManagerCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenSaveDiffCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenBoxWorkspaceCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenPartyWorkspaceCommand))]
     [NotifyCanExecuteChangedFor(nameof(UndoCommand))]
     [NotifyCanExecuteChangedFor(nameof(RedoCommand))]
     private SaveFile? _currentSave;
@@ -194,6 +196,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         // Dismiss any modeless tool windows (e.g. the box seek tool) bound to the previous save.
         _windowService.CloseAllTools();
+        _slotService.ResetSession();
         DisposeBatchEditor();
         _boxReport = null;
         _legalityAudit = null;
@@ -224,7 +227,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 boxViewer.SaveFileDropRequested += OnSaveFileDropRequested;
                 BoxViewer = boxViewer;
 
-                var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer, _slotService, _dialogService, IsHaXMode, () => BoxViewer?.CurrentBox ?? 0);
+                var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer, _slotService, _dialogService, IsHaXMode, () => BoxViewer?.CurrentBox ?? 0, _windowService);
                 partyViewer.SlotActivated += OnPartySlotActivated;
                 partyViewer.ViewSlotRequested += OnPartyViewSlot;
                 partyViewer.SetSlotRequested += OnPartySetSlot;

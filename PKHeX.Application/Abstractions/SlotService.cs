@@ -22,6 +22,12 @@ public readonly struct SlotLocation
 public interface ISlotService
 {
     /// <summary>
+    /// Gets the save-session token attached to in-app drag payloads. A new save or a closed save
+    /// receives a new token so payloads from the previous session cannot mutate the new save.
+    /// </summary>
+    Guid SessionId { get; }
+
+    /// <summary>
     /// Gets the currently held PKM in the "clipboard" for Set operations.
     /// </summary>
     PKM? ClipboardPKM { get; }
@@ -75,6 +81,17 @@ public interface ISlotService
     /// Triggers a move request between two slots.
     /// </summary>
     void RequestMove(SlotLocation source, SlotLocation destination, bool clone);
+
+    /// <summary>Invalidates drag payloads from the current save session.</summary>
+    void ResetSession();
+
+    /// <summary>Returns whether a drag payload belongs to the currently active save session.</summary>
+    bool IsCurrentSession(Guid sessionId);
+
+    /// <summary>
+    /// Triggers a move request only when the payload belongs to the current save session.
+    /// </summary>
+    void RequestMove(Guid sessionId, SlotLocation source, SlotLocation destination, bool clone);
 }
 
 /// <summary>
@@ -82,6 +99,8 @@ public interface ISlotService
 /// </summary>
 public class SlotService : ISlotService
 {
+    public Guid SessionId { get; private set; } = Guid.NewGuid();
+
     public PKM? ClipboardPKM { get; private set; }
     
     public event Action<SlotLocation>? ViewRequested;
@@ -115,7 +134,15 @@ public class SlotService : ISlotService
     }
 
     public void RequestMove(SlotLocation source, SlotLocation destination, bool clone)
+        => MoveRequested?.Invoke(source, destination, clone);
+
+    public void RequestMove(Guid sessionId, SlotLocation source, SlotLocation destination, bool clone)
     {
-        MoveRequested?.Invoke(source, destination, clone);
+        if (IsCurrentSession(sessionId))
+            RequestMove(source, destination, clone);
     }
+
+    public void ResetSession() => SessionId = Guid.NewGuid();
+
+    public bool IsCurrentSession(Guid sessionId) => sessionId != Guid.Empty && sessionId == SessionId;
 }

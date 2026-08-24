@@ -180,6 +180,111 @@ public class SlotOperationsTests
     }
 
     [Fact]
+    public void CopyingIntoOccupiedSlot_RequiresConfirmationAndCancelPreservesBothSlots()
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 25 }, 0, 0);
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 1 }, 0, 1);
+
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var dialogService = new Mock<IDialogService>();
+        dialogService
+            .Setup(d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(false);
+        var vm = CreateViewModel(dialogService, slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        slotService.RequestMove(SlotLocation.FromBox(0, 0), SlotLocation.FromBox(0, 1), clone: true);
+
+        dialogService.Verify(
+            d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+            Times.Once);
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(1, sav.GetBoxSlotAtIndex(0, 1).Species);
+        Assert.Equal(0, undoRedo.ChangeCount);
+    }
+
+    [Fact]
+    public void CopyingIntoOccupiedSlot_AppliesAsOneUndoableChangeAfterConfirmation()
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 25 }, 0, 0);
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 1 }, 0, 1);
+
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var dialogService = new Mock<IDialogService>();
+        dialogService
+            .Setup(d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(true);
+        var vm = CreateViewModel(dialogService, slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        slotService.RequestMove(SlotLocation.FromBox(0, 0), SlotLocation.FromBox(0, 1), clone: true);
+
+        dialogService.Verify(
+            d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+            Times.Once);
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 1).Species);
+        Assert.Equal(1, undoRedo.ChangeCount);
+
+        undoRedo.Undo();
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(1, sav.GetBoxSlotAtIndex(0, 1).Species);
+    }
+
+    [Fact]
+    public void CopyingIntoEmptySlot_DoesNotPromptForConfirmation()
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 25 }, 0, 0);
+
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var dialogService = new Mock<IDialogService>();
+        var vm = CreateViewModel(dialogService, slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        slotService.RequestMove(SlotLocation.FromBox(0, 0), SlotLocation.FromBox(0, 1), clone: true);
+
+        dialogService.Verify(
+            d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+            Times.Never);
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 1).Species);
+        Assert.Equal(1, undoRedo.ChangeCount);
+    }
+
+    [Fact]
+    public void MovingBetweenOccupiedSlots_SwapsWithoutConfirmation()
+    {
+        var sav = new SAV6XY();
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 25 }, 0, 0);
+        sav.SetBoxSlotAtIndex(new PK6 { Species = 1 }, 0, 1);
+
+        var slotService = new SlotService();
+        var undoRedo = new UndoRedoService();
+        var dialogService = new Mock<IDialogService>();
+        var vm = CreateViewModel(dialogService, slotService, undoRedo);
+        vm.CurrentSave = sav;
+        undoRedo.Initialize(sav);
+
+        slotService.RequestMove(SlotLocation.FromBox(0, 0), SlotLocation.FromBox(0, 1), clone: false);
+
+        dialogService.Verify(
+            d => d.ShowConfirmationAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
+            Times.Never);
+        Assert.Equal(1, sav.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(25, sav.GetBoxSlotAtIndex(0, 1).Species);
+        Assert.Equal(1, undoRedo.ChangeCount);
+    }
+
+    [Fact]
     public void UnsupportedLgpePartyTransferLeavesSaveAndUndoHistoryUnchanged()
     {
         var sav = new SAV7b();

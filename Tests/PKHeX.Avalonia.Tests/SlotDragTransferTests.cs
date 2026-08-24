@@ -119,4 +119,16 @@ public class SlotDragTransferTests(ITestOutputHelper output)
         Assert.Null(SlotDragTransfer.TryGet(null));
         output.WriteLine("TryGet: null transfer returns null, no exception ✓");
     }
+
+    [Fact]
+    public void TryGet_ExpectedSession_RejectsPayloadFromAnotherSave()
+    {
+        var source = SlotLocation.FromBox(0, 0);
+        var staleSession = Guid.NewGuid();
+        var currentSession = Guid.NewGuid();
+        var transfer = SlotDragTransfer.Create(new SlotDragData(source, staleSession));
+
+        Assert.Null(SlotDragTransfer.TryGet(transfer, currentSession));
+        Assert.Equal(staleSession, SlotDragTransfer.TryGet(transfer, staleSession)!.SessionId);
+    }
 }

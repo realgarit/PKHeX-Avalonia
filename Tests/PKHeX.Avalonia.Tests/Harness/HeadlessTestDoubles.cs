@@ -58,9 +58,15 @@ public sealed class RecordingDialogService : IDialogService
 /// </summary>
 public sealed class NoopWindowService : IWindowService
 {
+    private readonly HashSet<object> _openTools = [];
+
     public List<(object ViewModel, string Title)> ShownDialogs { get; } = [];
     public List<(object ViewModel, string Title)> ShownTools { get; } = [];
+    public List<object> FocusedTools { get; } = [];
+    public IReadOnlyCollection<object> ActiveTools => _openTools;
+    public object? FocusedTool { get; private set; }
     public int CloseAllToolsCount { get; private set; }
+    public int ActiveToolCount => _openTools.Count;
 
     public Task ShowDialogAsync(object viewModel, string title)
     {
@@ -68,6 +74,23 @@ public sealed class NoopWindowService : IWindowService
         return Task.CompletedTask;
     }
 
-    public void ShowTool(object viewModel, string title) => ShownTools.Add((viewModel, title));
-    public void CloseAllTools() => CloseAllToolsCount++;
+    public void ShowTool(object viewModel, string title)
+    {
+        var alreadyOpen = !_openTools.Add(viewModel);
+        FocusedTool = viewModel;
+        if (alreadyOpen)
+        {
+            FocusedTools.Add(viewModel);
+            return;
+        }
+
+        ShownTools.Add((viewModel, title));
+    }
+
+    public void CloseAllTools()
+    {
+        _openTools.Clear();
+        FocusedTool = null;
+        CloseAllToolsCount++;
+    }
 }

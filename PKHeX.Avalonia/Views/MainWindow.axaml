@@ -31,6 +31,13 @@
             <MenuItem Header="{loc:Loc Menu_Tools}">
                 <MenuItem Header="{loc:Loc Menu_Tools_SaveHandlerTroubleshooter}" Command="{Binding OpenSaveHandlerTroubleshooterCommand}" />
                 <Separator />
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenBoxWorkspace}"
+                          Command="{Binding OpenBoxWorkspaceCommand}"
+                          AutomationProperties.Name="{loc:Loc Menu_Tools_OpenBoxWorkspace}" />
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenPartyWorkspace}"
+                          Command="{Binding OpenPartyWorkspaceCommand}"
+                          AutomationProperties.Name="{loc:Loc Menu_Tools_OpenPartyWorkspace}" />
+                <Separator />
                 <MenuItem Header="{loc:Loc Menu_Tools_Showdown}">
                     <MenuItem Header="{loc:Loc Menu_Showdown_ImportSet}" Command="{Binding ImportShowdownCommand}" InputGesture="Ctrl+T" />
                     <MenuItem Header="{loc:Loc Menu_Showdown_ExportSet}" Command="{Binding ExportShowdownCommand}" InputGesture="Ctrl+Shift+T" />
@@ -240,10 +247,10 @@
 
                 <!-- Right Panel: SAV Editor (Box, Party, Trainer, etc.) -->
                 <TabControl Grid.Column="1" Margin="0">
-                    <TabItem Header="{loc:Loc Tab_Box}">
+                    <TabItem Header="{loc:Loc Tab_Box}" DoubleTapped="OnBoxTabDoubleTapped">
                         <views:BoxViewer DataContext="{Binding BoxViewer}" />
                     </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Party}">
+                    <TabItem Header="{loc:Loc Tab_Party}" DoubleTapped="OnPartyTabDoubleTapped">
                         <views:PartyViewer DataContext="{Binding PartyViewer}" />
                     </TabItem>
                     <TabItem Header="{loc:Loc Tab_Trainer}">

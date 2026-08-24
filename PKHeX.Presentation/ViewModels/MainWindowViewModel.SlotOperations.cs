@@ -25,7 +25,7 @@ public partial class MainWindowViewModel
         else OnBoxDeleteSlot(location.Box, location.Slot);
     }
 
-    private void OnMoveRequested(SlotLocation source, SlotLocation destination, bool clone)
+    private async void OnMoveRequested(SlotLocation source, SlotLocation destination, bool clone)
     {
         if (CurrentSave is null || source.Equals(destination))
             return;
@@ -57,6 +57,21 @@ public partial class MainWindowViewModel
         if (!clone && !(source.IsParty && !destination.IsParty && pkDest.Species == 0)
             && sourceInfo.CanWriteTo(sav, pkDest) != WriteBlockedMessage.None)
             return;
+
+        // Copying onto an occupied destination discards the destination entity. Moves/swaps keep
+        // both entities, and copies/moves into empty slots are safe, so only this destructive case
+        // asks for confirmation. Re-check the save identity after awaiting in case the user opened
+        // another save while a native dialog was visible.
+        if (clone && pkDest.Species != 0)
+        {
+            var confirmed = await _dialogService.ShowConfirmationAsync(
+                T("Slot_OverwriteTitle"),
+                T("Slot_OverwriteMessage"),
+                T("Common_OK"),
+                T("Common_Cancel"));
+            if (!confirmed || !ReferenceEquals(CurrentSave, sav))
+                return;
+        }
 
         try
         {

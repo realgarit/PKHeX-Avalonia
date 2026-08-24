@@ -15,6 +15,8 @@ public partial class PartyViewerViewModel : ViewModelBase
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly ISlotService? _slotService;
+    private readonly Guid _sessionId;
+    private readonly IWindowService? _windowService;
     private readonly IDialogService? _dialogService;
     private readonly Func<int> _getCurrentBox;
     private readonly bool _haXMode;
@@ -36,12 +38,20 @@ public partial class PartyViewerViewModel : ViewModelBase
     public event Action<int>? SetSlotRequested;
     public event Action<int>? DeleteSlotRequested;
     public bool CanMoveToBox => _sav.HasBox;
+    /// <summary>
+    /// The immutable save-session identity captured when this viewer was created. A viewer from a
+    /// previous save must keep its original token so its detached drag payloads cannot become valid
+    /// again after the shared slot service starts a new session.
+    /// </summary>
+    public Guid SessionId => _sessionId;
 
-    public PartyViewerViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, ISlotService? slotService = null, IDialogService? dialogService = null, bool haXMode = false, Func<int>? getCurrentBox = null)
+    public PartyViewerViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, ISlotService? slotService = null, IDialogService? dialogService = null, bool haXMode = false, Func<int>? getCurrentBox = null, IWindowService? windowService = null)
     {
         _sav = sav;
         _spriteRenderer = spriteRenderer;
         _slotService = slotService;
+        _sessionId = slotService?.SessionId ?? Guid.Empty;
+        _windowService = windowService;
         _dialogService = dialogService;
         _getCurrentBox = getCurrentBox ?? (() => 0);
         _haXMode = haXMode;
@@ -133,6 +143,10 @@ public partial class PartyViewerViewModel : ViewModelBase
     }
 
     public void RefreshParty() => LoadParty();
+
+    /// <summary>Opens (or focuses) this Party viewer as a modeless workspace.</summary>
+    [RelayCommand]
+    private void OpenDetachedTool() => _windowService?.ShowTool(this, LocalizedStrings.Instance["Tab_Party"]);
     
     [RelayCommand]
     private void ViewSlot(PartySlotData? slot)
@@ -208,6 +222,9 @@ public partial class PartyViewerViewModel : ViewModelBase
     /// </summary>
     public PKM GetSlotPKM(int slot) => _sav.GetPartySlotAtIndex(slot);
 
+    /// <summary>Creates a session-bound payload for a slot in the current party.</summary>
+    public SlotDragData CreateDragData(int slot) => new(SlotLocation.FromParty(slot), SessionId);
+
     /// <summary>
     /// Sets the PKM at the specified party slot and refreshes the display.
     /// </summary>
@@ -220,7 +237,7 @@ public partial class PartyViewerViewModel : ViewModelBase
     [RelayCommand]
     private void RequestMove((SlotDragData data, PartySlotData dest, bool clone) param)
     {
-        _slotService?.RequestMove(param.data.Source, param.dest.Location, param.clone);
+        _slotService?.RequestMove(param.data.SessionId, param.data.Source, param.dest.Location, param.clone);
     }
 
     /// <summary>Raised when a dropped OS file turns out to be a save file, so the host can open it.</summary>
