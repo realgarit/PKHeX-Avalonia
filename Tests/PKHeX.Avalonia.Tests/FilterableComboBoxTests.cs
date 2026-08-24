@@ -30,17 +30,16 @@ public class FilterableComboBoxTests
     ];
 
     /// <summary>
-    /// Regression guard for the invisible-control bug: <see cref="FilterableComboBox"/> subclasses
-    /// <see cref="AutoCompleteBox"/>, so without a <c>StyleKeyOverride</c> its style key would default
-    /// to <c>FilterableComboBox</c> and the Fluent <see cref="AutoCompleteBox"/> ControlTheme would never
-    /// apply — the control would render with no chrome. Assert the override points at the base type.
+    /// Regression guard for the scoped geometry style: <see cref="FilterableComboBox"/> subclasses
+    /// <see cref="AutoCompleteBox"/> but must keep its concrete style key so its chevron/template
+    /// cannot alter the plain <see cref="AutoCompleteBox"/> used by BatchEditor.
     /// </summary>
     // Must be [AvaloniaFact], not [Fact]: it constructs a FilterableComboBox (an AvaloniaObject),
     // whose ctor calls Dispatcher.VerifyAccess(). Once any headless test has established the UI-thread
     // dispatcher, constructing a control on a plain xUnit worker thread throws "Call from invalid
     // thread" — a latent, test-order-dependent failure surfaced by adding more [AvaloniaFact] tests.
     [AvaloniaFact]
-    public void StyleKeyOverride_IsAutoCompleteBox()
+    public void StyleKeyOverride_IsFilterableComboBox()
     {
         var control = new FilterableComboBox();
 
@@ -49,14 +48,13 @@ public class FilterableComboBoxTests
         Assert.NotNull(prop);
 
         var styleKey = prop!.GetValue(control);
-        Assert.Equal(typeof(AutoCompleteBox), styleKey);
+        Assert.Equal(typeof(FilterableComboBox), styleKey);
     }
 
     /// <summary>
     /// Stronger end-to-end guard: once attached to a themed headless window and laid out, the control
-    /// must resolve the Fluent <see cref="AutoCompleteBox"/> ControlTheme and receive a non-null
-    /// <see cref="TemplatedControl.Template"/>. Before the <c>StyleKeyOverride</c> fix this was null,
-    /// which is what made the combo render empty/invisible at runtime.
+    /// must resolve the shared FilterableComboBox template and receive a non-null
+    /// <see cref="TemplatedControl.Template"/>.
     /// </summary>
     [AvaloniaFact]
     public void AttachedToThemedWindow_ResolvesAutoCompleteBoxTemplate()

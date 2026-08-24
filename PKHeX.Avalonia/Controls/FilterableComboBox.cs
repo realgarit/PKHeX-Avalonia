@@ -25,9 +25,9 @@ public class FilterableComboBox : AutoCompleteBox
 
     private bool _syncing;
 
-    // Reuse Fluent's AutoCompleteBox template; the surrounding views provide the
-    // explicit chevron affordance without replacing the text-entry template.
-    protected override Type StyleKeyOverride => typeof(AutoCompleteBox);
+    // Use a concrete style key so FilterableComboBox's shared geometry cannot alter plain
+    // AutoCompleteBox instances, such as the Batch Editor's search field.
+    protected override Type StyleKeyOverride => typeof(FilterableComboBox);
 
     public FilterableComboBox()
     {

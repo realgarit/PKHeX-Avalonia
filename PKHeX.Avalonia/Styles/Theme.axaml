@@ -576,11 +576,12 @@
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
     </Style>
 
-    <!-- FilterableComboBox resolves its style key to AutoCompleteBox so it can reuse Fluent's
-         native control theme; keep the shared geometry on that resolved key. -->
-    <Style Selector="AutoCompleteBox">
+    <!-- FilterableComboBox has its own style key so this shared geometry cannot leak into the
+         plain AutoCompleteBox used by BatchEditor. -->
+    <Style Selector="controls|FilterableComboBox">
         <!-- Keep all filterable fields on Fluent's native geometry while making the editable
              presenter explicit. The inherited InnerRightContent slot carries the chevron. -->
+        <Setter Property="Padding" Value="10,6,6,5" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid Name="PART_LayoutRoot">
@@ -641,11 +642,11 @@
         </Setter>
     </Style>
 
-    <Style Selector="AutoCompleteBox:pointerover">
+    <Style Selector="controls|FilterableComboBox:pointerover">
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
     </Style>
 
-    <Style Selector="AutoCompleteBox /template/ TextBox#PART_TextBox">
+    <Style Selector="controls|FilterableComboBox /template/ TextBox#PART_TextBox">
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
