@@ -24,7 +24,7 @@ internal static class SlotDragTransfer
     public static DataTransfer Create(SlotDragData data)
     {
         var transfer = new DataTransfer();
-        transfer.Add(DataTransferItem.Create(Format, Serialize(data.Source)));
+        transfer.Add(DataTransferItem.Create(Format, Serialize(data)));
         return transfer;
     }
 
@@ -74,27 +74,61 @@ internal static class SlotDragTransfer
     /// <summary>Reads the slot data back from a drop, or null if it isn't present/valid.</summary>
     public static SlotDragData? TryGet(IDataTransfer? transfer)
     {
-        if (transfer?.TryGetValue(Format) is { } raw && TryDeserialize(raw, out var source))
-            return new SlotDragData(source);
+        if (transfer?.TryGetValue(Format) is { } raw && TryDeserialize(raw, out var data))
+            return data;
         return null;
     }
 
-    private static string Serialize(SlotLocation loc)
-        => $"{(loc.IsParty ? 1 : 0)}:{loc.Box}:{loc.Slot}";
-
-    private static bool TryDeserialize(string raw, out SlotLocation source)
+    /// <summary>
+    /// Reads the payload only when it belongs to the supplied save session. This keeps stale native
+    /// drag data from reaching a viewer after the active save has changed.
+    /// </summary>
+    public static SlotDragData? TryGet(IDataTransfer? transfer, Guid expectedSessionId)
     {
-        source = default;
+        var data = TryGet(transfer);
+        return data is not null && data.SessionId == expectedSessionId ? data : null;
+    }
+
+    /// <summary>Returns whether a transfer contains a PKHeX slot payload, even if its session is stale.</summary>
+    public static bool HasCustomPayload(IDataTransfer? transfer) => transfer?.TryGetValue(Format) is not null;
+
+    /// <summary>Maps a valid slot payload and pointer modifiers to the operation the drop will perform.</summary>
+    public static DragDropEffects GetDropEffect(SlotDragData data, SlotLocation destination, KeyModifiers modifiers)
+    {
+        if (data.Source.Equals(destination))
+            return DragDropEffects.None;
+
+        return modifiers.HasFlag(KeyModifiers.Control)
+            ? DragDropEffects.Copy
+            : DragDropEffects.Move;
+    }
+
+    private static string Serialize(SlotDragData data)
+        => $"{data.SessionId:N}:{(data.Source.IsParty ? 1 : 0)}:{data.Source.Box}:{data.Source.Slot}";
+
+    private static bool TryDeserialize(string raw, out SlotDragData data)
+    {
+        data = default!;
         var parts = raw.Split(':');
-        if (parts.Length != 3
-            || !int.TryParse(parts[0], out var isParty)
-            || !int.TryParse(parts[1], out var box)
-            || !int.TryParse(parts[2], out var slot))
+        var offset = 0;
+        var sessionId = Guid.Empty;
+        if (parts.Length == 4)
+        {
+            if (!Guid.TryParseExact(parts[0], "N", out sessionId))
+                return false;
+            offset = 1;
+        }
+
+        if (parts.Length != offset + 3
+            || !int.TryParse(parts[offset], out var isParty)
+            || !int.TryParse(parts[offset + 1], out var box)
+            || !int.TryParse(parts[offset + 2], out var slot))
         {
             return false;
         }
 
-        source = new SlotLocation { Box = box, Slot = slot, IsParty = isParty != 0 };
+        var source = new SlotLocation { Box = box, Slot = slot, IsParty = isParty != 0 };
+        data = new SlotDragData(source, sessionId);
         return true;
     }
 }

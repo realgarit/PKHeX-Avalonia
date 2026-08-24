@@ -22,6 +22,12 @@ public readonly struct SlotLocation
 public interface ISlotService
 {
     /// <summary>
+    /// Gets the save-session token attached to in-app drag payloads. A new save or a closed save
+    /// receives a new token so payloads from the previous session cannot mutate the new save.
+    /// </summary>
+    Guid SessionId { get; }
+
+    /// <summary>
     /// Gets the currently held PKM in the "clipboard" for Set operations.
     /// </summary>
     PKM? ClipboardPKM { get; }
@@ -45,6 +51,9 @@ public interface ISlotService
     /// Event fired when a PKM should be moved/swapped between slots.
     /// </summary>
     event Action<SlotLocation, SlotLocation, bool>? MoveRequested;
+
+    /// <summary>Event fired when an imported entity should replace a slot.</summary>
+    event Func<SlotLocation, PKM, Task>? ReplaceRequested;
     
     /// <summary>
     /// Sets the clipboard PKM for future Set operations.
@@ -60,62 +69,42 @@ public interface ISlotService
     /// Triggers a view request for the given slot.
     /// </summary>
     void RequestView(SlotLocation location);
+
+    /// <summary>Triggers a view request only for the current save session.</summary>
+    void RequestView(Guid sessionId, SlotLocation location);
     
     /// <summary>
     /// Triggers a set request for the given slot.
     /// </summary>
     void RequestSet(SlotLocation location);
+
+    /// <summary>Triggers a set request only for the current save session.</summary>
+    void RequestSet(Guid sessionId, SlotLocation location);
     
     /// <summary>
     /// Triggers a delete request for the given slot.
     /// </summary>
     void RequestDelete(SlotLocation location);
 
+    /// <summary>Triggers a delete request only for the current save session.</summary>
+    void RequestDelete(Guid sessionId, SlotLocation location);
+
     /// <summary>
     /// Triggers a move request between two slots.
     /// </summary>
     void RequestMove(SlotLocation source, SlotLocation destination, bool clone);
-}
 
-/// <summary>
-/// Default implementation of ISlotService.
-/// </summary>
-public class SlotService : ISlotService
-{
-    public PKM? ClipboardPKM { get; private set; }
-    
-    public event Action<SlotLocation>? ViewRequested;
-    public event Action<SlotLocation>? SetRequested;
-    public event Action<SlotLocation>? DeleteRequested;
-    public event Action<SlotLocation, SlotLocation, bool>? MoveRequested;
-    
-    public void SetClipboard(PKM pk)
-    {
-        ClipboardPKM = pk.Clone();
-    }
-    
-    public void ClearClipboard()
-    {
-        ClipboardPKM = null;
-    }
-    
-    public void RequestView(SlotLocation location)
-    {
-        ViewRequested?.Invoke(location);
-    }
-    
-    public void RequestSet(SlotLocation location)
-    {
-        SetRequested?.Invoke(location);
-    }
-    
-    public void RequestDelete(SlotLocation location)
-    {
-        DeleteRequested?.Invoke(location);
-    }
+    /// <summary>Invalidates drag payloads from the current save session.</summary>
+    void ResetSession();
 
-    public void RequestMove(SlotLocation source, SlotLocation destination, bool clone)
-    {
-        MoveRequested?.Invoke(source, destination, clone);
-    }
+    /// <summary>Returns whether a drag payload belongs to the currently active save session.</summary>
+    bool IsCurrentSession(Guid sessionId);
+
+    /// <summary>
+    /// Triggers a move request only when the payload belongs to the current save session.
+    /// </summary>
+    void RequestMove(Guid sessionId, SlotLocation source, SlotLocation destination, bool clone);
+
+    /// <summary>Requests an imported entity replacement only for the current save session.</summary>
+    Task RequestReplaceAsync(Guid sessionId, SlotLocation destination, PKM replacement);
 }

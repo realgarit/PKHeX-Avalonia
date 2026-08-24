@@ -14,6 +14,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly ISlotService? _slotService;
+    private readonly Guid _sessionId;
     private readonly IWindowService? _windowService;
     private readonly IDialogService? _dialogService;
     private readonly bool _haXMode;
@@ -41,6 +42,12 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     public int BoxCount => _sav.BoxCount;
     public int SlotsPerBox => _sav.BoxSlotCount;
     public bool CanMoveToParty => _sav.HasParty;
+    /// <summary>
+    /// The immutable save-session identity captured when this viewer was created. A viewer from a
+    /// previous save must keep its original token so its detached drag payloads cannot become valid
+    /// again after the shared slot service starts a new session.
+    /// </summary>
+    public Guid SessionId => _sessionId;
 
     /// <summary>
     /// The slot under the current keyboard/selection cursor, used to drive
@@ -52,6 +59,9 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     int IBoxNavigator.CurrentSlot => SelectedIndex;
     void IBoxNavigator.NavigateTo(int box, int slot)
     {
+        if (!IsSessionCurrent())
+            return;
+
         if (box != CurrentBox)
             LoadBox(box);
         SelectedIndex = slot;
@@ -62,6 +72,8 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
         _sav = sav;
         _spriteRenderer = spriteRenderer;
         _slotService = slotService;
+        var sessionId = slotService?.SessionId ?? Guid.Empty;
+        _sessionId = sessionId == Guid.Empty ? Guid.NewGuid() : sessionId;
         _windowService = windowService;
         _dialogService = dialogService;
         _haXMode = haXMode;
@@ -70,9 +82,24 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
         LoadBox(0);
     }
 
+    private bool IsSessionCurrent() => _slotService is null
+        || (_sessionId != Guid.Empty && _slotService.IsCurrentSession(_sessionId));
+
     /// <summary>Opens (or focuses) the modeless seek tool window.</summary>
     [RelayCommand]
-    private void OpenSeekTool() => _windowService?.ShowTool(Seek, LocalizedStrings.Instance["BoxViewer_SearchSeekTitle"]);
+    private void OpenSeekTool()
+    {
+        if (IsSessionCurrent())
+            _windowService?.ShowTool(Seek, LocalizedStrings.Instance["BoxViewer_SearchSeekTitle"]);
+    }
+
+    /// <summary>Opens (or focuses) this Box viewer as a modeless workspace.</summary>
+    [RelayCommand]
+    private void OpenDetachedTool()
+    {
+        if (IsSessionCurrent())
+            _windowService?.ShowTool(this, LocalizedStrings.Instance["Tab_Box"]);
+    }
 
     partial void OnSelectedIndexChanged(int value)
     {
@@ -197,7 +224,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     [RelayCommand]
     private void ActivateSlot()
     {
-        if (SelectedIndex < 0 || SelectedIndex >= Slots.Count)
+        if (!IsSessionCurrent() || SelectedIndex < 0 || SelectedIndex >= Slots.Count)
             return;
 
         var slot = Slots[SelectedIndex];
@@ -217,11 +244,11 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     [RelayCommand]
     private void ViewSlot(SlotData? slot)
     {
-        if (slot is null || slot.IsEmpty)
+        if (slot is null || slot.IsEmpty || !IsSessionCurrent())
             return;
         
         if (_slotService is not null)
-            _slotService.RequestView(SlotLocation.FromBox(CurrentBox, slot.Slot));
+            _slotService.RequestView(_sessionId, SlotLocation.FromBox(CurrentBox, slot.Slot));
         else
             ViewSlotRequested?.Invoke(CurrentBox, slot.Slot);
     }
@@ -229,11 +256,11 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     [RelayCommand]
     private void SetSlot(SlotData? slot)
     {
-        if (slot is null)
+        if (slot is null || !IsSessionCurrent())
             return;
         
         if (_slotService is not null)
-            _slotService.RequestSet(SlotLocation.FromBox(CurrentBox, slot.Slot));
+            _slotService.RequestSet(_sessionId, SlotLocation.FromBox(CurrentBox, slot.Slot));
         else
             SetSlotRequested?.Invoke(CurrentBox, slot.Slot);
     }
@@ -241,11 +268,11 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     [RelayCommand]
     private void DeleteSlot(SlotData? slot)
     {
-        if (slot is null || slot.IsEmpty)
+        if (slot is null || slot.IsEmpty || !IsSessionCurrent())
             return;
         
         if (_slotService is not null)
-            _slotService.RequestDelete(SlotLocation.FromBox(CurrentBox, slot.Slot));
+            _slotService.RequestDelete(_sessionId, SlotLocation.FromBox(CurrentBox, slot.Slot));
         else
             DeleteSlotRequested?.Invoke(CurrentBox, slot.Slot);
     }
@@ -257,7 +284,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     [RelayCommand]
     private async Task MoveToParty(SlotData? slot)
     {
-        if (slot is null || slot.IsEmpty || _slotService is null || !_sav.HasParty)
+        if (slot is null || slot.IsEmpty || _slotService is null || !_sav.HasParty || !IsSessionCurrent())
             return;
 
         var destination = -1;
@@ -289,19 +316,29 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
             return;
         }
 
-        _slotService.RequestMove(SlotLocation.FromBox(CurrentBox, slot.Slot), SlotLocation.FromParty(destination), clone: false);
+        if (IsSessionCurrent())
+            _slotService.RequestMove(_sessionId, SlotLocation.FromBox(CurrentBox, slot.Slot), SlotLocation.FromParty(destination), clone: false);
     }
 
     public PKM GetSlotPKM(int slot) => _sav.GetBoxSlotAtIndex(CurrentBox, slot);
 
+    /// <summary>Creates a session-bound payload for a slot in the current box.</summary>
+    public SlotDragData CreateDragData(int slot) => new(SlotLocation.FromBox(CurrentBox, slot), SessionId);
+
     public void SetSlotPKM(int slot, PKM pk)
     {
+        if (!IsSessionCurrent())
+            return;
+
         _sav.SetBoxSlotAtIndex(pk, CurrentBox, slot);
         RefreshCurrentBox();
     }
 
     public void ClearSlot(int slot)
     {
+        if (!IsSessionCurrent())
+            return;
+
         _sav.SetBoxSlotAtIndex(_sav.BlankPKM, CurrentBox, slot);
         RefreshCurrentBox();
     }
@@ -309,7 +346,10 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     [RelayCommand]
     private void RequestMove((SlotDragData data, SlotData dest, bool clone) param)
     {
-        _slotService?.RequestMove(param.data.Source, param.dest.Location, param.clone);
+        if (_slotService is null || !IsSessionCurrent() || param.data.SessionId != SessionId)
+            return;
+
+        _slotService.RequestMove(param.data.SessionId, param.data.Source, param.dest.Location, param.clone);
     }
 
     /// <summary>Raised when a dropped OS file turns out to be a save file, so the host can open it.</summary>
@@ -322,7 +362,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     /// </summary>
     public async Task HandleFileDropAsync(IReadOnlyList<string> paths, int targetSlot)
     {
-        if (paths.Count == 0)
+        if (paths.Count == 0 || !IsSessionCurrent())
             return;
 
         if (paths.Count == 1)
@@ -331,10 +371,14 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
             switch (result.Kind)
             {
                 case EntityFileDropKind.SaveFile:
-                    SaveFileDropRequested?.Invoke(paths[0]);
+                    if (IsSessionCurrent())
+                        SaveFileDropRequested?.Invoke(paths[0]);
                     return;
                 case EntityFileDropKind.Entity:
-                    SetSlotPKM(targetSlot, result.Entity!);
+                    if (_slotService is not null)
+                        await _slotService.RequestReplaceAsync(_sessionId, SlotLocation.FromBox(CurrentBox, targetSlot), result.Entity!);
+                    else
+                        SetSlotPKM(targetSlot, result.Entity!);
                     return;
                 default:
                     if (_dialogService is not null)

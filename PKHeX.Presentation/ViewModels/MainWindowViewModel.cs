@@ -42,6 +42,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(HasSave))]
     [NotifyPropertyChangedFor(nameof(WindowTitle))]
     [NotifyPropertyChangedFor(nameof(StatusText))]
+    [NotifyPropertyChangedFor(nameof(CurrentSaveFileName))]
+    [NotifyPropertyChangedFor(nameof(CurrentSavePath))]
     [NotifyCanExecuteChangedFor(nameof(SaveFileCommand))]
     [NotifyCanExecuteChangedFor(nameof(SaveFileAsCommand))]
     [NotifyCanExecuteChangedFor(nameof(CloseFileCommand))]
@@ -54,6 +56,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(OpenLivingDexGeneratorCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenBackupManagerCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenSaveDiffCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenBoxWorkspaceCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenPartyWorkspaceCommand))]
     [NotifyCanExecuteChangedFor(nameof(UndoCommand))]
     [NotifyCanExecuteChangedFor(nameof(RedoCommand))]
     private SaveFile? _currentSave;
@@ -71,6 +75,14 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool CanUndo => _undoRedo.CanUndo;
     public bool CanRedo => _undoRedo.CanRedo;
     public bool IsHaXMode => _settings.IsHaXMode;
+
+    /// <summary>Full path of the active save, when it came from or has been written to disk.</summary>
+    public string? CurrentSavePath => CurrentSave is null ? null : _saveFileService.CurrentPath;
+
+    /// <summary>Compact active-save identity for the status bar.</summary>
+    public string? CurrentSaveFileName => CurrentSavePath is { Length: > 0 } path
+        ? Path.GetFileName(path)
+        : null;
 
     public string WindowTitle
     {
@@ -150,6 +162,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _slotService.SetRequested += OnSetRequested;
         _slotService.DeleteRequested += OnDeleteRequested;
         _slotService.MoveRequested += OnMoveRequested;
+        _slotService.ReplaceRequested += OnReplaceRequested;
 
         _undoRedo.StateChanged += (_, _) =>
         {
@@ -182,6 +195,7 @@ public partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(string.Empty);
         CurrentPokemonEditor?.RefreshLanguage();
         BoxViewer?.RefreshCurrentBox();
+        PartyViewer?.RefreshParty();
         TrainerEditor?.RefreshLanguage();
         InventoryEditor?.RefreshLanguage();
         MysteryGiftEditor?.RefreshLocalization();
@@ -194,6 +208,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         // Dismiss any modeless tool windows (e.g. the box seek tool) bound to the previous save.
         _windowService.CloseAllTools();
+        _slotService.ResetSession();
         DisposeBatchEditor();
         _boxReport = null;
         _legalityAudit = null;
@@ -224,7 +239,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 boxViewer.SaveFileDropRequested += OnSaveFileDropRequested;
                 BoxViewer = boxViewer;
 
-                var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer, _slotService, _dialogService, IsHaXMode, () => BoxViewer?.CurrentBox ?? 0);
+                var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer, _slotService, _dialogService, IsHaXMode, () => BoxViewer?.CurrentBox ?? 0, _windowService);
                 partyViewer.SlotActivated += OnPartySlotActivated;
                 partyViewer.ViewSlotRequested += OnPartyViewSlot;
                 partyViewer.SetSlotRequested += OnPartySetSlot;

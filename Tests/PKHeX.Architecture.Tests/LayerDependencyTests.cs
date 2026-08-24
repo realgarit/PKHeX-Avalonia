@@ -1,5 +1,6 @@
 using NetArchTest.Rules;
 using PKHeX.Application;
+using PKHeX.Application.Abstractions;
 using PKHeX.Infrastructure;
 using PKHeX.Presentation;
 
@@ -41,6 +42,14 @@ public class LayerDependencyTests
             .HaveDependencyOnAny("Avalonia", "SkiaSharp", "PKHeX.Infrastructure", "PKHeX.Avalonia")
             .GetResult();
         Assert.True(result.IsSuccessful, Describe(result));
+    }
+
+    [Fact]
+    public void SlotService_contract_and_implementation_are_in_their_expected_layers()
+    {
+        Assert.Equal(App, typeof(ISlotService).Assembly);
+        Assert.Equal(Infra, typeof(SlotService).Assembly);
+        Assert.DoesNotContain(App.GetTypes(), type => type.Name == nameof(SlotService) && !type.IsInterface);
     }
 
     private static string Describe(TestResult r) =>

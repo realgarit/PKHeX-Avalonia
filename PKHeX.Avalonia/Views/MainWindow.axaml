@@ -2,13 +2,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
         xmlns:views="using:PKHeX.Avalonia.Views"
+        xmlns:controls="using:PKHeX.Avalonia.Controls"
         xmlns:loc="using:PKHeX.Avalonia.Localization"
         x:Class="PKHeX.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="{Binding WindowTitle}"
         Icon="/Assets/Icons/icon.ico"
-        Width="1100" Height="650"
-        MinWidth="900" MinHeight="500"
+        Width="1024" Height="720"
+        MinWidth="900" MinHeight="560"
         DragDrop.AllowDrop="True"
         DragDrop.Drop="OnWindowDrop">
 
@@ -30,6 +31,13 @@
             </MenuItem>
             <MenuItem Header="{loc:Loc Menu_Tools}">
                 <MenuItem Header="{loc:Loc Menu_Tools_SaveHandlerTroubleshooter}" Command="{Binding OpenSaveHandlerTroubleshooterCommand}" />
+                <Separator />
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenBoxWorkspace}"
+                          Command="{Binding OpenBoxWorkspaceCommand}"
+                          AutomationProperties.Name="{loc:Loc Menu_Tools_OpenBoxWorkspace}" />
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenPartyWorkspace}"
+                          Command="{Binding OpenPartyWorkspaceCommand}"
+                          AutomationProperties.Name="{loc:Loc Menu_Tools_OpenPartyWorkspace}" />
                 <Separator />
                 <MenuItem Header="{loc:Loc Menu_Tools_Showdown}">
                     <MenuItem Header="{loc:Loc Menu_Showdown_ImportSet}" Command="{Binding ImportShowdownCommand}" InputGesture="Ctrl+T" />
@@ -170,10 +178,23 @@
                 BorderThickness="0,1,0,0"
                 Padding="8,4">
             <Grid ColumnDefinitions="*,Auto">
-                <TextBlock Grid.Column="0"
-                           Text="{Binding StatusText}"
-                           Foreground="{DynamicResource ThemeTextSecondaryBrush}"
-                           FontSize="12" />
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="7">
+                    <TextBlock x:CompileBindings="False"
+                               Text="{Binding CurrentSaveFileName}"
+                               IsVisible="{Binding CurrentSaveFileName, Converter={x:Static ObjectConverters.IsNotNull}}"
+                               ToolTip.Tip="{Binding CurrentSavePath}"
+                               Foreground="{DynamicResource ThemeTextPrimaryBrush}"
+                               FontWeight="SemiBold"
+                               FontSize="12" />
+                    <TextBlock x:CompileBindings="False"
+                               Text="·"
+                               IsVisible="{Binding CurrentSaveFileName, Converter={x:Static ObjectConverters.IsNotNull}}"
+                               Foreground="{DynamicResource ThemeTextMutedBrush}"
+                               FontSize="12" />
+                    <TextBlock Text="{Binding StatusText}"
+                               Foreground="{DynamicResource ThemeTextSecondaryBrush}"
+                               FontSize="12" />
+                </StackPanel>
 
                 <!-- Non-intrusive update notification: only visible when a newer, non-skipped release exists. -->
                 <Border Grid.Column="1" x:CompileBindings="False"
@@ -218,12 +239,13 @@
             <!-- Left: PKMEditor (persistent side panel) | Right: SAVEditor (tabs with Box/Party/Trainer/etc) -->
             <Grid IsVisible="{Binding HasSave}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" MinWidth="420" MaxWidth="520" />
+                    <ColumnDefinition Width="380" MinWidth="360" MaxWidth="480" />
+                    <ColumnDefinition Width="8" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
             <!-- Left Panel: PKM Editor (responsive 420–520px) -->
-            <Border Grid.Column="0"
+            <Border x:Name="EditorPane" Grid.Column="0"
                     Background="{DynamicResource ThemeBackgroundBaseBrush}"
                     BorderThickness="0,0,1,0"
                     BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
@@ -238,15 +260,29 @@
                 </ContentControl>
             </Border>
 
+                <GridSplitter Grid.Column="1"
+                              Classes="pane-splitter shell-divider"
+                              AutomationProperties.Name="{loc:Loc MainWindow_ResizeEditor}" />
+
                 <!-- Right Panel: SAV Editor (Box, Party, Trainer, etc.) -->
-                <TabControl Grid.Column="1" Margin="0">
-                    <TabItem Header="{loc:Loc Tab_Box}">
+                <TabControl x:Name="WorkspacePane" Grid.Column="2" Margin="0" Classes="workspace-tabs">
+                    <TabItem Classes="workspace-tab">
+                        <TabItem.Header>
+                            <controls:DoubleTapCommandBorder Command="{Binding OpenBoxWorkspaceCommand}">
+                                <TextBlock Text="{loc:Loc Tab_Box}" />
+                            </controls:DoubleTapCommandBorder>
+                        </TabItem.Header>
                         <views:BoxViewer DataContext="{Binding BoxViewer}" />
                     </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Party}">
+                    <TabItem Classes="workspace-tab">
+                        <TabItem.Header>
+                            <controls:DoubleTapCommandBorder Command="{Binding OpenPartyWorkspaceCommand}">
+                                <TextBlock Text="{loc:Loc Tab_Party}" />
+                            </controls:DoubleTapCommandBorder>
+                        </TabItem.Header>
                         <views:PartyViewer DataContext="{Binding PartyViewer}" />
                     </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Trainer}">
+                    <TabItem Header="{loc:Loc Tab_Trainer}" Classes="workspace-tab">
                         <ContentControl Content="{Binding TrainerEditor}">
                             <ContentControl.ContentTemplate>
                                 <DataTemplate DataType="vm:TrainerEditorViewModel">
@@ -255,7 +291,7 @@
                             </ContentControl.ContentTemplate>
                         </ContentControl>
                     </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Inventory}">
+                    <TabItem Header="{loc:Loc Tab_Inventory}" Classes="workspace-tab">
                         <ContentControl Content="{Binding InventoryEditor}">
                             <ContentControl.ContentTemplate>
                                 <DataTemplate DataType="vm:InventoryEditorViewModel">
@@ -264,7 +300,7 @@
                             </ContentControl.ContentTemplate>
                         </ContentControl>
                     </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Events}">
+                    <TabItem Header="{loc:Loc Tab_Events}" Classes="workspace-tab">
                         <ContentControl Content="{Binding EventFlagsEditor}">
                             <ContentControl.ContentTemplate>
                                 <DataTemplate DataType="vm:EventFlagsEditorViewModel">
@@ -273,7 +309,7 @@
                             </ContentControl.ContentTemplate>
                         </ContentControl>
                     </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Gifts}">
+                    <TabItem Header="{loc:Loc Tab_Gifts}" Classes="workspace-tab">
                         <ContentControl Content="{Binding MysteryGiftEditor}">
                             <ContentControl.ContentTemplate>
                                 <DataTemplate DataType="vm:MysteryGiftEditorViewModel">
@@ -282,7 +318,7 @@
                             </ContentControl.ContentTemplate>
                         </ContentControl>
                     </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Batch}">
+                    <TabItem Header="{loc:Loc Tab_Batch}" Classes="workspace-tab">
                         <ContentControl Content="{Binding BatchEditor}">
                             <ContentControl.ContentTemplate>
                                 <DataTemplate DataType="vm:BatchEditorViewModel">

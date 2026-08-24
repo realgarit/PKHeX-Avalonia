@@ -26,62 +26,182 @@ public partial class MainWindowViewModel
     }
 
     private void OnMoveRequested(SlotLocation source, SlotLocation destination, bool clone)
+        => _ = MoveSlotAsync(source, destination, clone);
+
+    private async Task MoveSlotAsync(SlotLocation source, SlotLocation destination, bool clone)
     {
-        if (CurrentSave is null) return;
+        if (CurrentSave is null || source.Equals(destination))
+            return;
+
+        var sessionId = _slotService.SessionId;
+        if (sessionId == Guid.Empty || !_slotService.IsCurrentSession(sessionId))
+            return;
+
+        if (!IsValidSlot(CurrentSave, source) || !IsValidSlot(CurrentSave, destination))
+            return;
 
         // A party has no sparse slots: moving a member into an empty box slot must compact the
         // remaining party, otherwise SaveFile.SetPartySlotAtIndex(blank, index) lowers PartyCount
         // and hides every member after the removed one.
-        if (source.IsParty && !CurrentSave.HasParty)
-            return;
-        if (destination.IsParty && !CurrentSave.HasParty)
-            return;
-        if (!destination.IsParty && !CurrentSave.HasBox)
+        var sav = CurrentSave;
+        var sourceInfo = CreateSlotInfo(sav, source);
+        var destinationInfo = CreateSlotInfo(sav, destination);
+
+        var pkSource = ReadSlot(sav, source);
+
+        if (pkSource.Species == 0)
             return;
 
-        var pkSource = source.IsParty
-            ? CurrentSave.GetPartySlotAtIndex(source.Slot)
-            : CurrentSave.GetBoxSlotAtIndex(source.Box, source.Slot);
+        var pkDest = ReadSlot(sav, destination);
 
-        if (pkSource.Species == 0) return;
+        // Do not start a Core capture unless both slots are writable and every entity that will be
+        // written is accepted by its destination. ApplyBatch then guarantees that a later write
+        // failure restores the complete pre-operation state and creates no history entry.
+        if (!sourceInfo.CanWriteTo(sav) || !destinationInfo.CanWriteTo(sav))
+            return;
+        if (destinationInfo.CanWriteTo(sav, pkSource) != WriteBlockedMessage.None)
+            return;
+        if (!clone && !(source.IsParty && !destination.IsParty && pkDest.Species == 0)
+            && sourceInfo.CanWriteTo(sav, pkDest) != WriteBlockedMessage.None)
+            return;
 
-        if (clone)
+        // Copying onto an occupied destination discards the destination entity. Moves/swaps keep
+        // both entities, and copies/moves into empty slots are safe, so only this destructive case
+        // asks for confirmation. Re-check the save identity after awaiting in case the user opened
+        // another save while a native dialog was visible.
+        if (clone && pkDest.Species != 0)
         {
-            if (destination.IsParty)
-                CurrentSave.SetPartySlotAtIndex(pkSource.Clone(), destination.Slot);
-            else
-                CurrentSave.SetBoxSlotAtIndex(pkSource.Clone(), destination.Box, destination.Slot);
-        }
-        else
-        {
-            var pkDest = destination.IsParty
-                ? CurrentSave.GetPartySlotAtIndex(destination.Slot)
-                : CurrentSave.GetBoxSlotAtIndex(destination.Box, destination.Slot);
-
-            if (source.IsParty && !destination.IsParty && pkDest.Species == 0)
-            {
-                CurrentSave.SetBoxSlotAtIndex(pkSource, destination.Box, destination.Slot);
-                CurrentSave.DeletePartySlot(source.Slot);
-                BoxViewer?.RefreshCurrentBox();
-                PartyViewer?.RefreshParty();
-                BatchEditor?.RefreshExternalState();
+            var sourceSnapshot = CaptureSlotBytes(pkSource);
+            var destinationSnapshot = CaptureSlotBytes(pkDest);
+            var confirmed = await _dialogService.ShowConfirmationAsync(
+                T("Slot_OverwriteTitle"),
+                T("Slot_OverwriteMessage"),
+                T("Common_OK"),
+                T("Common_Cancel"));
+            if (!confirmed || !ReferenceEquals(CurrentSave, sav) || !_slotService.IsCurrentSession(sessionId))
                 return;
-            }
 
-            if (source.IsParty)
-                CurrentSave.SetPartySlotAtIndex(pkDest, source.Slot);
-            else
-                CurrentSave.SetBoxSlotAtIndex(pkDest, source.Box, source.Slot);
+            pkSource = ReadSlot(sav, source);
+            pkDest = ReadSlot(sav, destination);
+            if (!HasSameSlotBytes(pkSource, sourceSnapshot) || !HasSameSlotBytes(pkDest, destinationSnapshot))
+                return;
+        }
 
-            if (destination.IsParty)
-                CurrentSave.SetPartySlotAtIndex(pkSource, destination.Slot);
-            else
-                CurrentSave.SetBoxSlotAtIndex(pkSource, destination.Box, destination.Slot);
+        try
+        {
+            var token = _undoRedo.ApplyBatch([sourceInfo, destinationInfo], _ =>
+            {
+                if (clone)
+                {
+                    WriteSlot(sav, destination, pkSource.Clone());
+                    return;
+                }
+
+                if (source.IsParty && !destination.IsParty && pkDest.Species == 0)
+                {
+                    // Preserve the established party-compaction behavior. A blank party write is
+                    // not equivalent for every save format: DeletePartySlot removes the member and
+                    // shifts the remaining party entries left.
+                    WriteSlot(sav, destination, pkSource.Clone());
+                    sav.DeletePartySlot(source.Slot);
+                    return;
+                }
+
+                WriteSlot(sav, source, pkDest.Clone());
+                WriteSlot(sav, destination, pkSource.Clone());
+            });
+
+            if (token is null)
+                return;
+        }
+        catch (Exception ex)
+        {
+            // ApplyBatch disposes its Core Change before the exception reaches this handler, so a
+            // partial source/destination write is rolled back and cannot duplicate or lose data.
+            System.Diagnostics.Trace.TraceWarning($"Atomic slot move failed: {ex.Message}");
+            return;
         }
 
         BoxViewer?.RefreshCurrentBox();
         PartyViewer?.RefreshParty();
         BatchEditor?.RefreshExternalState();
+    }
+
+    private async Task OnReplaceRequested(SlotLocation destination, PKM replacement)
+    {
+        if (CurrentSave is not { } sav || !IsValidSlot(sav, destination))
+            return;
+
+        var sessionId = _slotService.SessionId;
+        if (sessionId == Guid.Empty || !_slotService.IsCurrentSession(sessionId))
+            return;
+
+        var destinationInfo = CreateSlotInfo(sav, destination);
+        if (!destinationInfo.CanWriteTo(sav)
+            || destinationInfo.CanWriteTo(sav, replacement) != WriteBlockedMessage.None)
+        {
+            return;
+        }
+
+        var existing = ReadSlot(sav, destination);
+        if (existing.Species != 0)
+        {
+            var destinationSnapshot = CaptureSlotBytes(existing);
+            var confirmed = await _dialogService.ShowConfirmationAsync(
+                T("Slot_OverwriteTitle"),
+                T("Slot_OverwriteMessage"),
+                T("Common_OK"),
+                T("Common_Cancel"));
+            if (!confirmed || !ReferenceEquals(CurrentSave, sav) || !_slotService.IsCurrentSession(sessionId))
+                return;
+
+            existing = ReadSlot(sav, destination);
+            if (!HasSameSlotBytes(existing, destinationSnapshot))
+                return;
+        }
+
+        try
+        {
+            var token = _undoRedo.ApplyBatch([destinationInfo], _ =>
+                WriteSlot(sav, destination, replacement.Clone()));
+            if (token is null)
+                return;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Trace.TraceWarning($"Atomic slot replacement failed: {ex.Message}");
+            return;
+        }
+
+        BoxViewer?.RefreshCurrentBox();
+        PartyViewer?.RefreshParty();
+        BatchEditor?.RefreshExternalState();
+    }
+
+    private static bool IsValidSlot(SaveFile sav, SlotLocation location) => location.IsParty
+        ? sav.HasParty && location.Slot >= 0 && location.Slot < 6
+        : sav.HasBox
+          && location.Box >= 0 && location.Box < sav.BoxCount
+          && location.Slot >= 0 && location.Slot < sav.BoxSlotCount;
+
+    private static ISlotInfo CreateSlotInfo(SaveFile sav, SlotLocation location) => location.IsParty
+        ? new SlotInfoParty(location.Slot)
+        : new SlotInfoBox(location.Box, location.Slot, sav);
+
+    private static PKM ReadSlot(SaveFile sav, SlotLocation location) => location.IsParty
+        ? sav.GetPartySlotAtIndex(location.Slot)
+        : sav.GetBoxSlotAtIndex(location.Box, location.Slot);
+
+    private static byte[] CaptureSlotBytes(PKM slot) => slot.Data.ToArray();
+
+    private static bool HasSameSlotBytes(PKM slot, byte[] snapshot) => slot.Data.SequenceEqual(snapshot);
+
+    private static void WriteSlot(SaveFile sav, SlotLocation location, PKM pk)
+    {
+        if (location.IsParty)
+            sav.SetPartySlotAtIndex(pk, location.Slot);
+        else
+            sav.SetBoxSlotAtIndex(pk, location.Box, location.Slot);
     }
 
     private void OnBoxViewSlot(int box, int slot)

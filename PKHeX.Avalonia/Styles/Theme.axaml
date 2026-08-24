@@ -542,12 +542,15 @@
 
     <!-- Pokémon editor sidebar: compact, left-aligned tabs with a clear selected surface. -->
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab">
-        <Setter Property="MinWidth" Value="116" />
-        <Setter Property="Padding" Value="12,9" />
-        <Setter Property="Margin" Value="0,2,8,2" />
+        <Setter Property="MinWidth" Value="96" />
+        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="Margin" Value="0,2,6,2" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="3,0,0,0" />
     </Style>
 
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:pointerover">
@@ -556,9 +559,41 @@
     </Style>
 
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:selected">
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentGlowBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderThickness" Value="3,0,0,0" />
         <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+    </Style>
+
+    <!-- Main save workspace tabs: compact enough to keep all destinations discoverable, with a
+         quiet red baseline that is visually distinct from the editor's vertical section spine. -->
+    <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab">
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0,0,0,2" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:selected">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -576,7 +611,65 @@
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
     </Style>
 
+    <!-- FilterableComboBox has its own style key so this shared geometry cannot leak into the
+         plain AutoCompleteBox used by BatchEditor. -->
     <Style Selector="controls|FilterableComboBox">
+        <!-- Keep all filterable fields on Fluent's native geometry while making the editable
+             presenter explicit. The inherited InnerRightContent slot carries the chevron. -->
+        <Setter Property="Padding" Value="10,6,6,5" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="PART_LayoutRoot">
+                    <TextBox Name="PART_TextBox"
+                             Watermark="{TemplateBinding Watermark}"
+                             Width="{TemplateBinding Width}"
+                             Foreground="{TemplateBinding Foreground}"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             CornerRadius="{TemplateBinding CornerRadius}"
+                             CaretIndex="{TemplateBinding CaretIndex, Mode=TwoWay}"
+                             ClearSelectionOnLostFocus="{TemplateBinding ClearSelectionOnLostFocus}"
+                             Padding="{TemplateBinding Padding}"
+                             Margin="0"
+                             HorizontalContentAlignment="Left"
+                             TextAlignment="Left"
+                             DataValidationErrors.Errors="{TemplateBinding (DataValidationErrors.Errors)}"
+                             MaxLength="{TemplateBinding MaxLength}"
+                             InnerLeftContent="{TemplateBinding InnerLeftContent}"
+                             InnerRightContent="{TemplateBinding InnerRightContent}" />
+                    <Popup Name="PART_Popup"
+                           WindowManagerAddShadowHint="False"
+                           MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                           MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                           IsLightDismissEnabled="True"
+                           PlacementTarget="{TemplateBinding}">
+                        <Border Name="PART_SuggestionsContainer"
+                                Padding="{DynamicResource AutoCompleteListMargin}"
+                                BorderThickness="{DynamicResource AutoCompleteListBorderThemeThickness}"
+                                BorderBrush="{DynamicResource AutoCompleteBoxSuggestionsListBorderBrush}"
+                                Background="{DynamicResource AutoCompleteBoxSuggestionsListBackground}"
+                                CornerRadius="{DynamicResource OverlayCornerRadius}">
+                            <ListBox Name="PART_SelectingItemsControl"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     ItemTemplate="{TemplateBinding ItemTemplate}"
+                                     Margin="{DynamicResource AutoCompleteListPadding}"
+                                     ScrollViewer.IsScrollChainingEnabled="False" />
+                        </Border>
+                    </Popup>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="InnerRightContent">
+            <Template>
+                <Path Data="M 0,0 L 12,0 L 6,6 Z"
+                      Fill="{DynamicResource ThemeTextSecondaryBrush}"
+                      Width="12" Height="6" Stretch="Fill"
+                      HorizontalAlignment="Right" VerticalAlignment="Center"
+                      Margin="0,0,10,0" IsHitTestVisible="False" />
+            </Template>
+        </Setter>
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="BorderBrush" Duration="0:0:0.12" />
@@ -586,6 +679,10 @@
 
     <Style Selector="controls|FilterableComboBox:pointerover">
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="controls|FilterableComboBox /template/ TextBox#PART_TextBox">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════════════════════════
@@ -621,6 +718,12 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="4" />
+    </Style>
+
+    <!-- Stats table override: the main editor deliberately remains usable in a 360px pane. -->
+    <Style Selector="NumericUpDown.stats-number">
+        <Setter Property="MinWidth" Value="38" />
+        <Setter Property="FontSize" Value="12" />
     </Style>
 
     <!-- Form Field: Standard sizing for form layouts -->
