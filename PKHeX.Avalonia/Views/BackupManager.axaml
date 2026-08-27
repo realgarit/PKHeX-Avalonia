@@ -24,15 +24,27 @@
             </DockPanel>
         </Border>
 
-        <DataGrid ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}"
-                  CanUserSortColumns="True" IsReadOnly="True" CanUserResizeColumns="True"
-                  GridLinesVisibility="All" BorderThickness="1"
-                  BorderBrush="{DynamicResource ThemeBorderBrush}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="{loc:Loc BackupManager_TimestampHeader}" Binding="{Binding Timestamp}" Width="180"/>
-                <DataGridTextColumn Header="{loc:Loc BackupManager_SizeHeader}" Binding="{Binding Size}" Width="100"/>
-                <DataGridTextColumn Header="{loc:Loc BackupManager_FileHeader}" Binding="{Binding FileName}" Width="*"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Panel>
+            <DataGrid ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}"
+                      CanUserSortColumns="True" IsReadOnly="True" CanUserResizeColumns="True"
+                      GridLinesVisibility="All" BorderThickness="1"
+                      BorderBrush="{DynamicResource ThemeBorderBrush}"
+                      IsVisible="{Binding !IsEmpty}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{loc:Loc BackupManager_TimestampHeader}" Binding="{Binding Timestamp}" Width="180"/>
+                    <DataGridTextColumn Header="{loc:Loc BackupManager_SizeHeader}" Binding="{Binding Size}" Width="100"/>
+                    <DataGridTextColumn Header="{loc:Loc BackupManager_FileHeader}" Binding="{Binding FileName}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <TextBlock Text="{loc:Loc BackupManager_NoBackupsYet}"
+                       IsVisible="{Binding IsEmpty}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource ThemeTextMutedBrush}"
+                       TextWrapping="Wrap"
+                       MaxWidth="360"
+                       TextAlignment="Center" />
+        </Panel>
     </DockPanel>
 </UserControl>

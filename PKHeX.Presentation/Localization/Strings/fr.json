@@ -272,6 +272,7 @@
   "BackupManager_RestoreCompleteMessage": "La sauvegarde a été restaurée et rechargée.",
   "BackupManager_DeleteBackupTitle": "Supprimer la sauvegarde",
   "BackupManager_DeleteConfirm": "Supprimer la sauvegarde du {0} ? Cette action est irréversible.",
+  "BackupManager_NoBackupsYet": "Aucune sauvegarde pour l'instant. Une sauvegarde est créée automatiquement à chaque enregistrement.",
   "BlockEditor_ExportErrorTitle": "Erreur d'exportation",
   "BlockEditor_ImportErrorTitle": "Erreur d'importation",
   "BlockEditor_SizeMismatch": "Taille de bloc incompatible. Attendu {0} octets, reçu {1} octets.",

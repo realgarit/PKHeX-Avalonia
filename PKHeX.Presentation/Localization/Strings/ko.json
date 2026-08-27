@@ -272,6 +272,7 @@
   "BackupManager_RestoreCompleteMessage": "백업이 복원되어 다시 불러왔습니다.",
   "BackupManager_DeleteBackupTitle": "백업 삭제",
   "BackupManager_DeleteConfirm": "{0}의 백업을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+  "BackupManager_NoBackupsYet": "아직 백업이 없습니다. 저장할 때마다 자동으로 백업이 생성됩니다.",
   "BlockEditor_ExportErrorTitle": "내보내기 오류",
   "BlockEditor_ImportErrorTitle": "가져오기 오류",
   "BlockEditor_SizeMismatch": "블록 크기가 일치하지 않습니다. 예상 {0}바이트, 실제 {1}바이트.",

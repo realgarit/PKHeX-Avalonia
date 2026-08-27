@@ -272,6 +272,7 @@
   "BackupManager_RestoreCompleteMessage": "The backup has been restored and reloaded.",
   "BackupManager_DeleteBackupTitle": "Delete Backup",
   "BackupManager_DeleteConfirm": "Delete the backup from {0}? This cannot be undone.",
+  "BackupManager_NoBackupsYet": "No backups yet. A backup is created automatically each time you save.",
   "BlockEditor_ExportErrorTitle": "Export Error",
   "BlockEditor_ImportErrorTitle": "Import Error",
   "BlockEditor_SizeMismatch": "Block size mismatch. Expected {0} bytes, got {1} bytes.",

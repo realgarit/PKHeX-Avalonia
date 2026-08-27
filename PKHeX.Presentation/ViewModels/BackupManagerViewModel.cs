@@ -24,10 +24,18 @@ public partial class BackupManagerViewModel : ViewModelBase
     private ObservableCollection<BackupEntryRow> _backups = [];
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RestoreSelectedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteSelectedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RevealSelectedCommand))]
     private BackupEntryRow? _selectedBackup;
 
     [ObservableProperty]
     private string _statusText = string.Empty;
+
+    /// <summary>True once a save file is open and its backup list has been fetched but is empty
+    /// (as opposed to backups being disabled entirely because no save is open yet).</summary>
+    [ObservableProperty]
+    private bool _isEmpty;
 
     /// <summary>Raised after a successful restore so the host can refresh any other open editors/tools.</summary>
     public event Action? Restored;
@@ -49,6 +57,7 @@ public partial class BackupManagerViewModel : ViewModelBase
         {
             Backups = [];
             StatusText = LocalizedStrings.Instance["BackupManager_SaveFirst"];
+            IsEmpty = false;
             return;
         }
 
@@ -59,9 +68,12 @@ public partial class BackupManagerViewModel : ViewModelBase
         StatusText = result.Warnings.Count == 0
             ? LocalizedStrings.Instance.Format("BackupManager_BackupCount", Backups.Count)
             : LocalizedStrings.Instance.Format("BackupManager_BackupCountWithWarnings", Backups.Count, result.Warnings.Count, string.Join("; ", result.Warnings));
+        IsEmpty = Backups.Count == 0;
     }
 
-    [RelayCommand]
+    private bool CanActOnSelection => SelectedBackup is not null;
+
+    [RelayCommand(CanExecute = nameof(CanActOnSelection))]
     private async Task RestoreSelectedAsync()
     {
         if (SelectedBackup is null)
@@ -150,7 +162,7 @@ public partial class BackupManagerViewModel : ViewModelBase
         await _dialogService.ShowInformationAsync(LocalizedStrings.Instance["BackupManager_RestoreCompleteTitle"], LocalizedStrings.Instance["BackupManager_RestoreCompleteMessage"]);
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanActOnSelection))]
     private async Task DeleteSelectedAsync()
     {
         if (SelectedBackup is null)
@@ -166,7 +178,7 @@ public partial class BackupManagerViewModel : ViewModelBase
         Refresh();
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanActOnSelection))]
     private void RevealSelected()
     {
         if (SelectedBackup is null)
