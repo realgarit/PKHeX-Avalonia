@@ -309,11 +309,11 @@ public class ComprehensiveTests
         var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
         
         vm.Move1 = 33; // Tackle
+        vm.PpUps1 = 3; // recalculates Pp1 to the new max (issue #226); explicit edit below overrides it
         vm.Pp1 = 35;
-        vm.PpUps1 = 3;
-        
+
         var result = vm.PreparePKM();
-        
+
         Assert.Equal(35, result.Move1_PP);
         Assert.Equal(3, result.Move1_PPUps);
     }
@@ -489,6 +489,9 @@ public class ComprehensiveTests
             "Species", "Form", "Ability", "Level", "TargetPKM", "Nature", "Gender",
             "EggLocation", "MetLocation", "MetLevel", "OriginalTrainerGender", "Ball",
             "RelearnMove1", "RelearnMove2", "RelearnMove3", "RelearnMove4",
+            // Recalculated as a side effect of Move/PpUps changes (issue #226), so independently
+            // fuzzing them in isolation from the field that derives them isn't meaningful here.
+            "Pp1", "Pp2", "Pp3", "Pp4",
             "StatHPCurrent", "StatHPMax", "Valid", "Version", "StatAlignment", "HpType",
             "IsPokerusInfected", "IsPokerusCured", "AbilityNumber", "Id32", "IsNicknamed",
             "StatusCondition", "HandlingTrainerName", "HandlingTrainerGender",
