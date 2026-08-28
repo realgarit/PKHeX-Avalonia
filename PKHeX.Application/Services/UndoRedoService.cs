@@ -18,6 +18,17 @@ namespace PKHeX.Application.Services;
 /// tracked entirely on this side instead: each group entry captures its own before/after snapshot per slot
 /// and is undone/redone by writing those snapshots back directly, so one <see cref="Undo"/> reverts the whole
 /// group no matter how Core stacks the individual entries.
+///
+/// <para>
+/// <b>Thread affinity: call every member on the UI thread.</b> This type has no synchronization of its
+/// own, and its <see cref="StateChanged"/>, <see cref="UndoPerformed"/>, and <see cref="RedoPerformed"/>
+/// events are raised synchronously on the calling thread straight into UI-bound listeners (command
+/// <c>CanExecuteChanged</c>, box/party refreshes). It also has no ownership of the <see cref="SaveFile"/>
+/// it mutates, which the UI thread reads concurrently. Calling from a worker thread previously produced
+/// Avalonia's "Call from invalid thread" and raced the save's box buffer (issue #262). Offload the
+/// expensive work that <i>computes</i> a change, then apply and record it here on the UI thread — the
+/// split <c>BatchEditorViewModel</c> and <c>LivingDexGeneratorViewModel</c> both use.
+/// </para>
 /// </remarks>
 public sealed class UndoRedoService
 {

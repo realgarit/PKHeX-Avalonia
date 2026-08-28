@@ -69,6 +69,11 @@ public partial class LivingDexGeneratorViewModel : ViewModelBase
         StatusMessage = "Generating a legal Pokémon for every species in this game…";
         _cts = new CancellationTokenSource();
 
+        // Set the moment placement starts writing, and cleared again only once we know it wrote
+        // nothing. Anything that reaches the finally block with this still set may have left entities
+        // in the boxes, so the host is told to refresh even on the failure paths (issue #262).
+        var boxesMayHaveChanged = false;
+
         try
         {
             var options = new LivingDexOptions(IncludeForms, SetShiny);
@@ -92,7 +97,18 @@ public partial class LivingDexGeneratorViewModel : ViewModelBase
                 return;
             }
 
-            var placement = await Task.Run(() => _placement.TryPlace(_sav, result.Pokemon, startBox, _undoRedo), token);
+            token.ThrowIfCancellationRequested();
+
+            // Placement runs on the UI thread deliberately (issue #262). It mutates the save's box
+            // buffer and closes an UndoRedoService batch whose StateChanged event drives UI-bound
+            // command state; doing that from a Task.Run worker both raced the UI thread's reads of the
+            // same buffer and made Avalonia throw "Call from invalid thread". Only the expensive
+            // generation above is offloaded - the same split BatchEditorViewModel already uses (build
+            // the plan off-thread, commit it on the UI thread). Placement is a few hundred buffer
+            // writes with no legality work, so it is imperceptible next to generation.
+            boxesMayHaveChanged = true;
+            var placement = _placement.TryPlace(_sav, result.Pokemon, startBox, _undoRedo);
+            boxesMayHaveChanged = placement.Status == LivingDexPlacementStatus.Success;
 
             if (placement.Status == LivingDexPlacementStatus.InsufficientSpace)
             {
@@ -106,18 +122,28 @@ public partial class LivingDexGeneratorViewModel : ViewModelBase
             StatusMessage = $"Placed {placement.PlacedCount} legal Pokémon starting at "
                 + $"\"{BoxNames.ElementAtOrDefault(startBox) ?? $"Box {startBox + 1}"}\".";
             ReportSkipped(result);
-            BoxesUpdated?.Invoke();
         }
         catch (OperationCanceledException)
         {
+            // Only reachable before placement begins: TryPlace takes no token and cannot be cancelled.
             StatusMessage = "Generation cancelled. No changes were made.";
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Unexpected error: {ex.Message}";
+            // TryPlace writes slot by slot, so a failure partway leaves entities already in the boxes.
+            // Say so instead of implying nothing happened; the whole attempt is still one undo step.
+            StatusMessage = boxesMayHaveChanged
+                ? $"Placement failed partway through: {ex.Message} Some Pokémon were already written to the boxes - use Undo to revert them."
+                : $"Unexpected error: {ex.Message}";
         }
         finally
         {
+            // Exactly one refresh on every path that may have written to the boxes, success or not.
+            // Before #262 this only ran on success, so a mid-placement failure left the box view
+            // showing empty slots over a save that had actually been modified.
+            if (boxesMayHaveChanged)
+                BoxesUpdated?.Invoke();
+
             IsRunning = false;
             Progress = 0;
             _cts = null;

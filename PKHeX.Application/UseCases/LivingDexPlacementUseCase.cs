@@ -79,16 +79,31 @@ public sealed class LivingDexPlacementUseCase
             return LivingDexPlacementResult.Refuse(requiredSlots: pokemon.Count, availableSlots: contiguous);
 
         undoRedo?.BeginBatch();
-        for (var i = 0; i < pokemon.Count; i++)
+        try
         {
-            var index = startIndex + i;
-            var box = index / slotsPerBox;
-            var slot = index % slotsPerBox;
+            for (var i = 0; i < pokemon.Count; i++)
+            {
+                var index = startIndex + i;
+                var box = index / slotsPerBox;
+                var slot = index % slotsPerBox;
 
-            undoRedo?.AddChange(new SlotInfoBox(box, slot, sav));
-            sav.SetBoxSlotAtIndex(pokemon[i], box, slot);
+                undoRedo?.AddChange(new SlotInfoBox(box, slot, sav));
+                sav.SetBoxSlotAtIndex(pokemon[i], box, slot);
+            }
         }
-        undoRedo?.EndBatch();
+        finally
+        {
+            // Core writes box slots straight into the box buffer (SetBoxSlotAtIndex -> SetBoxSlot ->
+            // WriteSlotStored) and never touches SaveFileState, so nothing else marks the save dirty
+            // for a Living Dex fill. Set it here, and set it even when a write threw partway: at that
+            // point earlier slots are already written, and under-reporting a modified save is the
+            // dangerous direction.
+            sav.State.Edited = true;
+
+            // Always close the batch. Leaving it open after a mid-loop failure would silently absorb
+            // the next unrelated edit into this dead group, and the partial writes must stay undoable.
+            undoRedo?.EndBatch();
+        }
 
         return LivingDexPlacementResult.Ok(pokemon.Count);
     }
