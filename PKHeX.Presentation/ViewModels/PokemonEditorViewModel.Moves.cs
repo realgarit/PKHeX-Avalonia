@@ -162,12 +162,32 @@ public partial class PokemonEditorViewModel
         LoadFromPKM();
     }
 
-    partial void OnMove1Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnMove2Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnMove3Changed(int value) { if (!_isLoading) Validate(); }
-    partial void OnMove4Changed(int value) { if (!_isLoading) Validate(); }
+    partial void OnMove1Changed(int value) { if (!_isLoading) { Pp1 = GetRecalculatedPp(value, PpUps1); Validate(); } }
+    partial void OnMove2Changed(int value) { if (!_isLoading) { Pp2 = GetRecalculatedPp(value, PpUps2); Validate(); } }
+    partial void OnMove3Changed(int value) { if (!_isLoading) { Pp3 = GetRecalculatedPp(value, PpUps3); Validate(); } }
+    partial void OnMove4Changed(int value) { if (!_isLoading) { Pp4 = GetRecalculatedPp(value, PpUps4); Validate(); } }
+    partial void OnPpUps1Changed(int value) { if (!_isLoading) { Pp1 = GetRecalculatedPp(Move1, value); Validate(); } }
+    partial void OnPpUps2Changed(int value) { if (!_isLoading) { Pp2 = GetRecalculatedPp(Move2, value); Validate(); } }
+    partial void OnPpUps3Changed(int value) { if (!_isLoading) { Pp3 = GetRecalculatedPp(Move3, value); Validate(); } }
+    partial void OnPpUps4Changed(int value) { if (!_isLoading) { Pp4 = GetRecalculatedPp(Move4, value); Validate(); } }
     partial void OnRelearnMove1Changed(int value) { if (!_isLoading) Validate(); }
     partial void OnRelearnMove2Changed(int value) { if (!_isLoading) Validate(); }
     partial void OnRelearnMove3Changed(int value) { if (!_isLoading) Validate(); }
     partial void OnRelearnMove4Changed(int value) { if (!_isLoading) Validate(); }
+
+    /// <summary>
+    /// Recalculates a move slot's current PP from its move ID and PP Ups, mirroring the semantics of
+    /// <see cref="PKM.HealPPIndex"/>. Called whenever a move or its PP Ups change so the previous
+    /// move's (or PP Up count's) current PP is never left stale — which fails legality when the new
+    /// maximum differs from the old one.
+    /// </summary>
+    private int GetRecalculatedPp(int move, int ppUps)
+    {
+        // Move 0 (None) must always heal to 0 PP. Most PP tables already return a base PP of 0 for
+        // move ID 0, but not every context's table guarantees that, so it is handled explicitly here.
+        if (move == 0 || _pk is null)
+            return 0;
+
+        return _pk.GetMovePP((ushort)move, ppUps);
+    }
 }

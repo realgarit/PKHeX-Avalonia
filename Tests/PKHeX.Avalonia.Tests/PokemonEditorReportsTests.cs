@@ -313,4 +313,142 @@ public class PokemonEditorReportsTests
         Assert.True(strain.Bounds.Width > 0);
         Assert.True(days.Bounds.Right < strain.Bounds.Left, $"Pokérus fields overlap: {days.Bounds} / {strain.Bounds}");
     }
+
+    [Fact]
+    public void ChangingAMoveWithADifferentBasePp_RecalculatesThatSlotsCurrentPp()
+    {
+        var sav = new SAV6XY();
+        const int oldMove = 33;
+        const int newMove = 76;
+        var pkm = new PK6
+        {
+            Species = 25,
+            Language = (int)LanguageID.English,
+            Move1 = oldMove,
+            Move1_PP = 5,
+            Move1_PPUps = 0,
+        };
+        var oldMax = pkm.GetMovePP((ushort)oldMove, 0);
+        var newMax = pkm.GetMovePP((ushort)newMove, 0);
+        Assert.NotEqual(oldMax, newMax); // sanity: the two moves must actually differ in base PP
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+
+        vm.Move1 = newMove;
+
+        Assert.Equal(newMax, vm.Pp1);
+    }
+
+    [Fact]
+    public void ChangingPpUps_RecalculatesThatSlotsCurrentPp()
+    {
+        var sav = new SAV6XY();
+        const int move = 45;
+        var pkm = new PK6
+        {
+            Species = 25,
+            Language = (int)LanguageID.English,
+            Move2 = move,
+            Move2_PP = 10,
+            Move2_PPUps = 0,
+        };
+        var expected = pkm.GetMovePP((ushort)move, 3);
+        Assert.NotEqual(10, expected); // sanity: raising PP Ups must actually change the max
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+
+        vm.PpUps2 = 3;
+
+        Assert.Equal(expected, vm.Pp2);
+    }
+
+    [Fact]
+    public void LoadingAPokemonWithDamagedPp_KeepsTheReducedPpUntilTheUserChangesSomething()
+    {
+        var sav = new SAV6XY();
+        const int move = 33;
+        var pkm = new PK6
+        {
+            Species = 25,
+            Language = (int)LanguageID.English,
+            Move1 = move,
+            Move1_PPUps = 0,
+        };
+        var fullPp = pkm.GetMovePP((ushort)move, 0);
+        Assert.True(fullPp > 1); // sanity: there must be room to simulate a used PP below the max
+        pkm.Move1_PP = fullPp - 1;
+
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+
+        Assert.Equal(fullPp - 1, vm.Pp1);
+    }
+
+    [Fact]
+    public void ClearingAMoveToNone_ZeroesThatSlotsCurrentPp()
+    {
+        var sav = new SAV6XY();
+        var pkm = new PK6
+        {
+            Species = 25,
+            Language = (int)LanguageID.English,
+            Move3 = 45,
+            Move3_PP = 10,
+            Move3_PPUps = 2,
+        };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+
+        vm.Move3 = 0;
+
+        Assert.Equal(0, vm.Pp3);
+    }
+
+    [Fact]
+    public void ChangingOneMoveSlot_DoesNotAffectTheOtherSlotsCurrentPp()
+    {
+        var sav = new SAV6XY();
+        var pkm = new PK6
+        {
+            Species = 25,
+            Language = (int)LanguageID.English,
+            Move1 = 33, Move1_PP = 5, Move1_PPUps = 0,
+            Move2 = 45, Move2_PP = 10, Move2_PPUps = 1,
+            Move3 = 76, Move3_PP = 15, Move3_PPUps = 0,
+            Move4 = 92, Move4_PP = 8, Move4_PPUps = 2,
+        };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+
+        vm.Move1 = 10;
+
+        Assert.Equal(pkm.GetMovePP(10, 0), vm.Pp1);
+        Assert.Equal(10, vm.Pp2);
+        Assert.Equal(15, vm.Pp3);
+        Assert.Equal(8, vm.Pp4);
+    }
+
+    [Fact]
+    public void ManuallyEditingCurrentPpAfterSelectingAMove_PersistsTheDamagedValue()
+    {
+        var sav = new SAV6XY();
+        const int move = 33;
+        var pkm = new PK6
+        {
+            Species = 25,
+            Language = (int)LanguageID.English,
+        };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+
+        vm.Move1 = move; // recalculates Pp1 to the full max for the selected move
+        var fullPp = vm.Pp1;
+        Assert.True(fullPp > 1); // sanity: there must be room to simulate battle damage below the max
+
+        vm.Pp1 = fullPp - 8; // user hand-enters a damaged current PP (e.g. after battle), below the recalculated max
+        Assert.NotEqual(fullPp, vm.Pp1);
+
+        // An unrelated field edit re-runs Validate() the same way normal use would; it must not
+        // silently re-derive and clobber the manually-entered PP.
+        vm.Nickname = "Damaged";
+
+        var result = vm.PreparePKM();
+
+        Assert.Equal(fullPp - 8, vm.Pp1);
+        Assert.Equal(fullPp - 8, result.Move1_PP);
+    }
 }
