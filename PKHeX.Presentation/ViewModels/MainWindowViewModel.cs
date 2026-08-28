@@ -164,11 +164,15 @@ public partial class MainWindowViewModel : ViewModelBase
         _slotService.MoveRequested += OnMoveRequested;
         _slotService.ReplaceRequested += OnReplaceRequested;
 
-        _undoRedo.StateChanged += (_, _) =>
+        // Marshalled (issue #262): NotifyCanExecuteChanged reaches the Undo/Redo MenuItems, which read
+        // an AvaloniaProperty and therefore assert UI-thread access. UndoRedoService is a shared
+        // singleton with no thread affinity of its own, so any caller that closes a change off the UI
+        // thread would otherwise take the whole shell down with "Call from invalid thread".
+        _undoRedo.StateChanged += (_, _) => PostToUi(() =>
         {
             UndoCommand.NotifyCanExecuteChanged();
             RedoCommand.NotifyCanExecuteChanged();
-        };
+        });
         _undoRedo.UndoPerformed += OnUndoRedoPerformed;
         _undoRedo.RedoPerformed += OnUndoRedoPerformed;
 
@@ -316,6 +320,21 @@ public partial class MainWindowViewModel : ViewModelBase
             action();
         else
             _uiContext.Post(_ => action(), null);
+    }
+
+    /// <summary>
+    /// Runs <paramref name="action"/> on the UI thread, inline when already there. Mirrors
+    /// <c>BatchEditorViewModel.PostToUi</c> and goes through the <see cref="IUiDispatcher"/> port, so
+    /// Presentation stays framework-free. Deliberately separate from <see cref="RunOnUiThread"/> above,
+    /// which predates the port and still serves the update-check notification; consolidating the two is
+    /// left to its own change.
+    /// </summary>
+    private void PostToUi(Action action)
+    {
+        if (_uiDispatcher is null || _uiDispatcher.CheckAccess())
+            action();
+        else
+            _uiDispatcher.Post(action);
     }
 
     /// <summary>

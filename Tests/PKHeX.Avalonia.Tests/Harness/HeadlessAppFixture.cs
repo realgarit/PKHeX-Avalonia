@@ -57,7 +57,12 @@ public sealed class HeadlessAppFixture : IDisposable
     /// <summary>The main box viewer once a save is loaded, or <see langword="null"/>.</summary>
     public BoxViewerViewModel? BoxViewer => ViewModel.BoxViewer;
 
-    public HeadlessAppFixture()
+    /// <param name="configureOverrides">
+    /// Optional extra DI registrations, applied last so they win over both the production wiring and
+    /// the two host doubles below. Use it to swap a long-running production service for a fast stub
+    /// (e.g. <c>ILivingDexService</c>) while keeping the rest of the object graph real.
+    /// </param>
+    public HeadlessAppFixture(Action<IServiceCollection>? configureOverrides = null)
     {
         Dialogs = new RecordingDialogService();
         Windows = new NoopWindowService();
@@ -73,6 +78,7 @@ public sealed class HeadlessAppFixture : IDisposable
                 // Registered last, so DI's last-wins resolution replaces the production host services.
                 svc.AddSingleton<IDialogService>(Dialogs);
                 svc.AddSingleton<IWindowService>(Windows);
+                configureOverrides?.Invoke(svc);
             });
 
         Gateway = Services.GetRequiredService<ISaveFileGateway>();
