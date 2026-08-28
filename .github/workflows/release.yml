@@ -31,6 +31,7 @@ on:
     # a packaging or signing change does change what ships.
     paths-ignore:
       - '**/*.md'
+      - '*.md'
       - 'docs/**'
       - '.claude/**'
       - '.codex/**'
