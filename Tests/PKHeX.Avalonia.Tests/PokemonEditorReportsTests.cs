@@ -422,4 +422,33 @@ public class PokemonEditorReportsTests
         Assert.Equal(15, vm.Pp3);
         Assert.Equal(8, vm.Pp4);
     }
+
+    [Fact]
+    public void ManuallyEditingCurrentPpAfterSelectingAMove_PersistsTheDamagedValue()
+    {
+        var sav = new SAV6XY();
+        const int move = 33;
+        var pkm = new PK6
+        {
+            Species = 25,
+            Language = (int)LanguageID.English,
+        };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+
+        vm.Move1 = move; // recalculates Pp1 to the full max for the selected move
+        var fullPp = vm.Pp1;
+        Assert.True(fullPp > 1); // sanity: there must be room to simulate battle damage below the max
+
+        vm.Pp1 = fullPp - 8; // user hand-enters a damaged current PP (e.g. after battle), below the recalculated max
+        Assert.NotEqual(fullPp, vm.Pp1);
+
+        // An unrelated field edit re-runs Validate() the same way normal use would; it must not
+        // silently re-derive and clobber the manually-entered PP.
+        vm.Nickname = "Damaged";
+
+        var result = vm.PreparePKM();
+
+        Assert.Equal(fullPp - 8, vm.Pp1);
+        Assert.Equal(fullPp - 8, result.Move1_PP);
+    }
 }
