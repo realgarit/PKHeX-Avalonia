@@ -1,6 +1,7 @@
 <!--
 PR body template for the sync-upstream-core skill.
-Fill every <PLACEHOLDER>, drop the "<Version>" line and the second commit if <Version> didn't change,
+Fill every <PLACEHOLDER>, drop the "<Version>" line and the second commit if <Version> didn't change.
+Never fill in a UIVersion bump - CI owns that.
 write the filled result to /tmp/pr-body.md, then: gh pr create --body-file /tmp/pr-body.md
 -->
 ## Summary
@@ -24,8 +25,8 @@ Syncs `PKHeX.Core` 1:1 with upstream [kwsch/PKHeX](https://github.com/kwsch/PKHe
 
 ### Housekeeping
 - `last-synced-sha.txt` → `<NEW_SHORT>`
-- `UIVersion` `<OLD_UI>` → `<NEW_UI>`
 - `<Version>` `<OLD_VER>` → `<NEW_VER>`  <!-- drop this line if unchanged -->
+- `UIVersion` untouched — CI bumps it from this PR's `sync:` title after merge
 
 ## Verification
 - ✅ `dotnet build PKHeX.sln -c Release` — 0 warnings, 0 errors

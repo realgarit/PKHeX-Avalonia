@@ -1,6 +1,6 @@
 ---
 name: sync-upstream-core
-description: Use when a "PKHeX.Core Sync Required" issue is open (the daily auto-generated sync-labeled issue) and PKHeX.Core must be brought 1:1 with upstream kwsch/PKHeX, propagated to the Avalonia layer, version-bumped, and shipped as a merged PR. Keywords - PKHeX.Core sync, upstream sync, kwsch/PKHeX, last-synced-sha, UIVersion bump.
+description: Use when a "PKHeX.Core Sync Required" issue is open (the daily auto-generated sync-labeled issue) and PKHeX.Core must be brought 1:1 with upstream kwsch/PKHeX, propagated to the Avalonia layer, and shipped as a merged PR. Keywords - PKHeX.Core sync, upstream sync, kwsch/PKHeX, last-synced-sha.
 ---
 
 # Sync Upstream PKHeX.Core
@@ -10,8 +10,9 @@ description: Use when a "PKHeX.Core Sync Required" issue is open (the daily auto
 Brings the vendored `PKHeX.Core/` to **byte-for-byte parity** with upstream
 [kwsch/PKHeX](https://github.com/kwsch/PKHeX) at the SHA named in a `sync` issue,
 fixes any Avalonia-layer call sites the upstream change touched, **reviews upstream's
-non-Core (WinForms UI / sprite) changes for Avalonia frontend-parity gaps**, bumps the
-version, opens a PR, and **auto-merges once CI is green**.
+non-Core (WinForms UI / sprite) changes for Avalonia frontend-parity gaps**, opens a PR,
+and **auto-merges once CI is green**. The release version is *not* set here — CI bumps
+`<UIVersion>` from this PR's `sync:` title after the merge lands.
 
 **Core principle:** `PKHeX.Core` is a 1:1 mirror of upstream. We never edit it to make
 things compile — upstream API changes are absorbed by editing **consumers only**.
@@ -44,7 +45,7 @@ N="${1:-$(gh issue list --label sync --state open --json number --jq '.[0].numbe
 1. **Never edit `PKHeX.Core/`** except by mirroring upstream. A build error is fixed in `PKHeX.Application` / `PKHeX.Presentation` / `PKHeX.Infrastructure` / `PKHeX.Avalonia` / `Tests` — never in Core. If a "fix" seems to need a Core edit, you've misdiagnosed.
 2. **No direct pushes to `main`.** Everything goes through the sync branch + PR.
 3. **Auto-merge is gated.** Merge only when ALL pass: `diff`=0, `dotnet build` clean, `dotnet test` green, **and CI green**. Any failure → stop, report, leave PR open.
-4. **Preserve fork-only fields** in `Directory.Build.props`: `Company/Authors/Copyright = Realgar` and `<UIVersion>`. Only the `<Version>` *value* mirrors upstream.
+4. **Preserve fork-only fields** in `Directory.Build.props`: `Company/Authors/Copyright = Realgar` and `<UIVersion>`. Only the `<Version>` *value* mirrors upstream. **Never edit `<UIVersion>`** - CI owns it (Hard Rule 4 in `AGENTS.md`); the release workflow bumps it from this PR's `sync:` title after merge.
 5. **Use the full 40-char SHA** in `last-synced-sha.txt` (the daily checker compares it exactly).
 6. **Build-green ≠ feature-parity.** A passing build only means no consumer *broke*. Upstream UI/feature changes the Avalonia frontend should adopt are surfaced by the **Frontend Parity Review** (step 5) and tracked as separate `frontend-parity` issues — they never block the Core sync's auto-merge.
 
@@ -165,17 +166,24 @@ old thin "Avalonia-layer changes: None" line). If the range has zero non-Core co
 ```bash
 printf '%s\n' "$LATEST_SHA" > .github/upstream-sync/last-synced-sha.txt
 
-# UIVersion: +1 patch
-CUR=$(grep -oE '<UIVersion>[^<]+' Directory.Build.props | sed 's/<UIVersion>//')
-NEW=$(echo "$CUR" | awk -F. '{printf "%d.%d.%d",$1,$2,$3+1}')
-
 # <Version>: mirror upstream's value at this SHA (usually unchanged)
 UPVER=$(curl -s "https://raw.githubusercontent.com/kwsch/PKHeX/$LATEST_SHA/Directory.Build.props" \
         | grep -oE '<Version>[^<]+' | sed 's/<Version>//')
 ```
 
-Then **edit `Directory.Build.props`**: set `<UIVersion>` to `$NEW`; set `<Version>` to `$UPVER`
-**only if it differs** from the current value. Leave `Company/Authors/Copyright` untouched.
+Then **edit `Directory.Build.props`**: set `<Version>` to `$UPVER` **only if it differs** from the
+current value. Leave `Company/Authors/Copyright` untouched.
+
+**Do NOT touch `<UIVersion>`.** CI owns it since 2026-08-28: `.github/workflows/release.yml`
+resolves the next version from the highest existing `v*` git tag and bumps, tags and publishes in
+one run after this PR merges. A `sync:` PR title maps to a patch bump. `git diff` on
+`Directory.Build.props` should show the `<Version>` line only, or nothing at all.
+
+To see exactly what CI will compute, without releasing anything:
+
+```bash
+gh workflow run release.yml --ref "chore/sync-pkhex-core-$SHORT" -f dry_run=true
+```
 
 ### 7 — Verify (all three are gates)
 
@@ -188,18 +196,18 @@ diff -rq -x bin -x obj PKHeX.Core /tmp/pkhex-upstream/PKHeX.Core   # nothing => 
 ### 8 — Commit, push, PR
 
 Commit in the established style (one sync commit; add a second `chore: align <Version>` commit
-only if `<Version>` changed):
+only if `<Version>` changed). Keep the `sync:` prefix - the release workflow reads it to pick the bump:
 
 ```bash
 git add -A
-git commit -m "sync: upstream PKHeX.Core to $SHORT and bump to $NEW" -m "<body: ported commits, consumer changes, housekeeping, Closes #$N>"
+git commit -m "sync: upstream PKHeX.Core to $SHORT" -m "<body: ported commits, consumer changes, housekeeping, Closes #$N>"
 git push -u origin "chore/sync-pkhex-core-$SHORT"
 ```
 
 Fill `pr-template.md` (same directory) and open the PR — the body **must** contain `Closes #$N`:
 
 ```bash
-gh pr create --title "sync: upstream PKHeX.Core to $SHORT + bump $NEW" --body-file /tmp/pr-body.md
+gh pr create --title "sync: upstream PKHeX.Core to $SHORT" --body-file /tmp/pr-body.md
 PR=$(gh pr view --json number --jq .number)
 ```
 
@@ -233,7 +241,7 @@ same background watch after a short wait — checks take a moment to register.
 |---|---|
 | Upstream | `kwsch/PKHeX`, folder `PKHeX.Core` |
 | Branch | `chore/sync-pkhex-core-<short7>` |
-| Version file | `Directory.Build.props` → `<UIVersion>` (+1 patch), `<Version>` (mirror upstream) |
+| Version file | `Directory.Build.props` → `<Version>` only (mirror upstream). `<UIVersion>` is CI-owned - never edit it |
 | SHA file | `.github/upstream-sync/last-synced-sha.txt` (full 40-char SHA) |
 | Build/test | `dotnet build/test PKHeX.sln -c Release` |
 | Merge | `gh pr merge <PR> --merge --delete-branch` |
@@ -244,6 +252,8 @@ same background watch after a short wait — checks take a moment to register.
 - **Foreground-waiting on CI** — blocks for minutes and times out; use a background watch.
 - **Merging on red** — auto-merge is gated on green CI only.
 - **Squashing** — use `--merge`; the repo uses merge commits.
+- **Bumping `<UIVersion>`** — CI owns it since 2026-08-28; a hand-edit double-increments and can silently collide with a concurrent PR.
+- **Dropping the `sync:` prefix from the PR title** — the release workflow classifies the bump from that prefix; an untyped title falls back to patch and says so in the run log.
 - **Bumping `<Version>` blindly** — only when upstream's `<Version>` actually changed.
 - **Short SHA in `last-synced-sha.txt`** — must be the full 40-char SHA or the daily checker re-fires.
 - **Overwriting `Company/Authors/Copyright`** — those are fork-only; mirror just the `<Version>` value.

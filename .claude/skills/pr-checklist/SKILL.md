@@ -1,6 +1,6 @@
 ---
 name: pr-checklist
-description: Use before opening a pull request in PKHeX-Avalonia, or when asked to check a branch/diff is PR-ready — verifies UIVersion was bumped correctly, no PKHeX.Core edits snuck in, and upstream UI changes have frontend-parity coverage.
+description: Use before opening a pull request in PKHeX-Avalonia, or when asked to check a branch/diff is PR-ready — verifies UIVersion was NOT hand-edited (CI owns the bump), no PKHeX.Core edits snuck in, the PR title carries the conventional-commit prefix CI reads, and upstream UI changes have frontend-parity coverage.
 ---
 
 # PR Checklist
@@ -11,19 +11,46 @@ Three checks this repo needs on every PR that a clean `dotnet build` won't catch
 
 ## The 3 Checks
 
-### 1. UIVersion bumped, by change type
+### 1. `<UIVersion>` NOT hand-edited — and the PR title carries the bump
+
+**Inverted on 2026-08-28: CI owns the version bump. A manual `<UIVersion>` change is now an ERROR.**
 
 ```bash
 git diff main...HEAD -- Directory.Build.props
 ```
 
-- Any user-facing change (fix, feature, chore, dep bump) → `<UIVersion>` in `Directory.Build.props` must have moved.
-- The bump size follows SemVer **by change type**, not a flat +1:
-  - **MAJOR** — breaking changes
-  - **MINOR** — new editors/tools/capabilities
-  - **PATCH** — fixes, refactors, chores, dep bumps, routine `PKHeX.Core` syncs
-- The top-level `<Version>` (date-stamped, e.g. `26.05.05`) tracks upstream `PKHeX.Core` — do NOT bump that one; only `<UIVersion>`.
-- No diff to `Directory.Build.props` at all on a user-facing PR = missing bump, fix before opening.
+- Expected output for an ordinary PR: **empty**.
+- Any `<UIVersion>` line in that diff → **fail the check**. Revert it:
+  `git checkout origin/main -- Directory.Build.props` (or drop just that hunk if the PR
+  legitimately changes `<Version>`).
+- Why: every PR used to read the current value and add one. Four PRs branched off 1.48.3 on
+  2026-08-28 and each wrote the byte-identical 1.48.4 line, so git auto-merged all four with
+  **zero conflict** — four fixes under one version, and three of them never triggered a release
+  at all. `.github/workflows/release.yml` now derives the next version from the highest existing
+  `v*` git tag and bumps, tags and publishes in one run.
+- The top-level `<Version>` (date-stamped, e.g. `26.05.05`) tracks upstream `PKHeX.Core` and is
+  still hand-set — but only inside a `chore/sync-pkhex-core-*` PR.
+
+**The PR title is now the version input.** CI reads its conventional-commit prefix:
+
+| Title prefix / signal | Bump |
+|---|---|
+| `feat:` | MINOR |
+| `fix:` `chore:` `deps:` `refactor:` `docs:` `test:` `ci:` `build:` `perf:` `style:` `sync:` `revert:` | PATCH |
+| `!` in the prefix (`feat!:`) **or** a `breaking` label on the PR | MAJOR |
+| anything else | PATCH (logged loudly as `default:`) |
+
+So an unprefixed or mistyped title silently ships a patch. Check the title before opening:
+
+```bash
+gh pr create --title "fix: <what changed>" ...   # prefix is mandatory
+```
+
+Preview exactly what CI will compute, without releasing anything:
+
+```bash
+gh workflow run release.yml --ref <your-branch> -f dry_run=true
+```
 
 ### 2. No PKHeX.Core edits (unless this is a sync PR)
 
@@ -47,7 +74,8 @@ Only applies when this PR is an upstream `PKHeX.Core` sync (branch `chore/sync-p
 
 | Check | Command | Pass condition |
 |---|---|---|
-| UIVersion bumped | `git diff main...HEAD -- Directory.Build.props` | `<UIVersion>` changed, by correct SemVer type |
+| UIVersion NOT hand-edited | `git diff main...HEAD -- Directory.Build.props` | Empty — CI owns `<UIVersion>` |
+| PR title has a conventional prefix | read the title you are about to use | `feat:`/`fix:`/`chore:`/... — it selects the bump |
 | No Core edits | `git diff main...HEAD --stat -- PKHeX.Core/` | Empty (unless sync PR) |
 | Frontend parity | Check PR body / `frontend-parity` issues | Reviewed if this is a sync PR |
 
@@ -55,7 +83,8 @@ Only applies when this PR is an upstream `PKHeX.Core` sync (branch `chore/sync-p
 
 | Mistake | Fix |
 |---|---|
-| Bumping `<Version>` instead of `<UIVersion>` | `<Version>` mirrors upstream's date stamp — never hand-edit it outside a sync |
-| Flat +1 patch bump for a new feature | New editors/tools/capabilities are MINOR, not PATCH |
+| Bumping `<UIVersion>` by hand | CI owns it since 2026-08-28. Revert the line; the release workflow bumps from the tag set |
+| Bumping `<Version>` | `<Version>` mirrors upstream's date stamp — never hand-edit it outside a sync |
+| Untyped PR title ("Update editor") | CI cannot classify it and defaults to PATCH — a new editor needs `feat:` to get a MINOR |
 | Editing `PKHeX.Core` to fix a compile error after an upstream change | Port the fix into the consuming layer instead — see the `sync-upstream-core` skill's "Core principle" |
 | Opening a sync PR without a Frontend Parity Review note | Re-run step 5 of `sync-upstream-core` before opening |

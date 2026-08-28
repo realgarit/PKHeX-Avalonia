@@ -68,7 +68,8 @@ Sync automation:
   the SHA file fit together.
 - Syncing from that issue mirrors the upstream `PKHeX.Core` folder byte-for-byte, ports any
   resulting API changes into the Avalonia layers (never into Core itself), updates
-  `last-synced-sha.txt` to the new commit, bumps `UIVersion`, and ships the result as a normal PR.
+  `last-synced-sha.txt` to the new commit, and ships the result as a normal PR titled `sync: ...`
+  (CI bumps `UIVersion` from that prefix after the merge — the PR itself must not touch it).
 
 ## PKHeX.AutoMod: vendored, not mirrored
 
@@ -87,18 +88,57 @@ rationale (USB dependency out of scope, dead 3DS code, compile-time coupling tha
 byte-for-byte rule) is documented in
 [`PKHeX.Infrastructure/LiveHex/NOTICE.LiveHeX.md`](../PKHeX.Infrastructure/LiveHex/NOTICE.LiveHeX.md).
 
-## UIVersion (SemVer) convention
+## UIVersion (SemVer) convention — CI owns the bump
 
 `Directory.Build.props`'s `<UIVersion>` tracks Avalonia-layer releases independently of
-`PKHeX.Core`'s own `<Version>`. Bump it on every PR, by change type:
+`PKHeX.Core`'s own `<Version>`.
 
-| Change type | Bump |
+**Do not edit `<UIVersion>` in a pull request.** `.github/workflows/release.yml` owns it. On every
+push to `main` it resolves the next version, writes it into `Directory.Build.props`, commits, tags
+and publishes — all in one run.
+
+The bump size still follows SemVer by change type, but the change type is now read from the merged
+**PR title's conventional-commit prefix**:
+
+| PR title prefix / signal | Bump |
 |---|---|
-| `feat` (new feature) | minor |
-| `fix` / `chore` / `refactor` / dependency update | patch |
-| breaking change | major |
+| `feat:` | minor |
+| `fix:` `chore:` `deps:` `refactor:` `docs:` `test:` `ci:` `build:` `perf:` `style:` `sync:` `revert:` | patch |
+| `!` in the prefix (`feat!:`), or a `breaking` label on the PR | major |
+| anything else | patch (logged in the run as `default:`) |
 
-`release.yml` triggers a release build on a push to `main` that changes `<UIVersion>`.
+### Why the tag, not the file
+
+The next version is computed from the **highest existing `v*` git tag**, never from
+`Directory.Build.props`. Reading the file is what broke on 2026-08-28: four PRs each branched off
+1.48.3, each computed "patch + 1" = 1.48.4, and each wrote the byte-identical line — so git
+auto-merged all four with **zero conflict**. Four distinct fixes shipped under one version, and
+because the workflow then triggered on `paths: [Directory.Build.props]`, the three later merges
+produced no net change to that file and never triggered a release at all. A conflict-resolution
+rule cannot help, because no conflict ever occurs. A tag either exists on the remote or it does
+not, and `git push --atomic` makes claiming one a single server-side check.
+
+Bump, tag, build and publish happen in **one** run: a `GITHUB_TOKEN` push does not trigger
+downstream workflows, so a second run can never be relied on to pick the bump commit up.
+
+### Previewing a release without cutting one
+
+`workflow_dispatch` takes a `dry_run` boolean (default `true`). It resolves and prints the PR, the
+matched rule, the current tag and the next version, then stops before writing, committing, tagging
+or releasing:
+
+```bash
+gh workflow run release.yml --ref <branch> -f dry_run=true
+gh run watch "$(gh run list --workflow=release.yml --limit 1 --json databaseId --jq '.[0].databaseId')"
+```
+
+The classification and arithmetic live in `.github/scripts/resolve-release-version.sh`, which runs
+identically on a runner and on your machine:
+
+```bash
+REPO=realgarit/PKHeX-Avalonia HEAD_SHA=$(git rev-parse origin/main) \
+  bash .github/scripts/resolve-release-version.sh
+```
 
 ## Localization contribution guide
 

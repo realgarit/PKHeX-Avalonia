@@ -6,7 +6,7 @@
   and platform config directories.
 - **[development.md](development.md)** — build/test/run, the Clean Architecture layer map and
   dependency rules, the PKHeX.Core 1:1 mirror policy and sync automation, PKHeX.AutoMod vendoring,
-  the UIVersion SemVer convention, and the test suite overview.
+  the CI-owned UIVersion SemVer convention, and the test suite overview.
 - **[accessibility.md](accessibility.md)** — keyboard shortcuts and screen-reader notes.
 - **[packaging.md](packaging.md)** — how release installers/packages are built, signed, and
   distributed per platform.

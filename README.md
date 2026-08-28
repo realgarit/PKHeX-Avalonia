@@ -158,7 +158,7 @@ policy, and the test suite overview.
 * [`docs/features.md`](docs/features.md) — Auto-Legality Mod, Living Dex, LiveHeX, backup manager,
   legality audit, themes, localization, and more.
 * [`docs/development.md`](docs/development.md) — build/test/run, Clean Architecture layer map,
-  PKHeX.Core sync policy, UIVersion convention, test suite overview.
+  PKHeX.Core sync policy, CI-owned UIVersion convention, test suite overview.
 * [`docs/accessibility.md`](docs/accessibility.md) — keyboard shortcuts and screen-reader notes.
 * [`docs/packaging.md`](docs/packaging.md) — how release installers/packages are built and signed.
 * [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to contribute a UI translation.
