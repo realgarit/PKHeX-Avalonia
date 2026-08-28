@@ -49,6 +49,12 @@ public sealed class AppSettings : IProgramSettings
     {
         if (!string.IsNullOrEmpty(DisplayLanguage))
             GameInfo.CurrentLanguage = DisplayLanguage;
+
+        EntityConverter.AllowIncompatibleConversion = Converter.AllowIncompatibleConversion;
+        EntityConverter.RejuvenateHOME              = Converter.AllowGuessRejuvenateHOME;
+        EntityConverter.VirtualConsoleSourceGen1    = Converter.VirtualConsoleSourceGen1;
+        EntityConverter.VirtualConsoleSourceGen2    = Converter.VirtualConsoleSourceGen2;
+        EntityConverter.RetainMetDateTransfer45     = Converter.RetainMetDateTransfer45;
     }
 
     /// <summary>
