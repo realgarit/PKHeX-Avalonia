@@ -177,6 +177,14 @@
                                     <TextBlock Text="{loc:Loc TrainerEditor_GimmighoulCoins}" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
                                     <NumericUpDown Value="{Binding GimmighoulCoins}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
                                 </StackPanel>
+                                <StackPanel IsVisible="{Binding HasRoyalePoints}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="{loc:Loc TrainerEditor_RoyalePoints}" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding RoyalePoints}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
+                                <StackPanel IsVisible="{Binding HasRoyalePointsInfinite}" Width="140" Margin="0,0,16,12">
+                                    <TextBlock Text="{loc:Loc TrainerEditor_RoyalePointsInfinite}" FontSize="11" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4" />
+                                    <NumericUpDown Value="{Binding RoyalePointsInfinite}" Minimum="0" FormatString="0" ShowButtonSpinner="False" />
+                                </StackPanel>
                              </WrapPanel>
                         </ItemsControl>
                     </StackPanel>
