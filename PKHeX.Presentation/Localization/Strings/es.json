@@ -272,6 +272,7 @@
   "BackupManager_RestoreCompleteMessage": "La copia de seguridad ha sido restaurada y recargada.",
   "BackupManager_DeleteBackupTitle": "Eliminar copia de seguridad",
   "BackupManager_DeleteConfirm": "¿Eliminar la copia de seguridad de {0}? Esto no se puede deshacer.",
+  "BackupManager_NoBackupsYet": "Aún no hay copias de seguridad. Se crea una copia de seguridad automáticamente cada vez que guardas.",
   "BlockEditor_ExportErrorTitle": "Error de exportación",
   "BlockEditor_ImportErrorTitle": "Error de importación",
   "BlockEditor_SizeMismatch": "El tamaño del bloque no coincide. Se esperaban {0} bytes, se obtuvieron {1} bytes.",

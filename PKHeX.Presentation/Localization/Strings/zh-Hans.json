@@ -272,6 +272,7 @@
   "BackupManager_RestoreCompleteMessage": "备份已还原并重新加载。",
   "BackupManager_DeleteBackupTitle": "删除备份",
   "BackupManager_DeleteConfirm": "删除来自 {0} 的备份？此操作无法撤销。",
+  "BackupManager_NoBackupsYet": "暂无备份。每次保存时都会自动创建备份。",
   "BlockEditor_ExportErrorTitle": "导出错误",
   "BlockEditor_ImportErrorTitle": "导入错误",
   "BlockEditor_SizeMismatch": "数据块大小不匹配。期望 {0} 字节，实际 {1} 字节。",

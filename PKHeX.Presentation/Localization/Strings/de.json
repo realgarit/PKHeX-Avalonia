@@ -272,6 +272,7 @@
   "BackupManager_RestoreCompleteMessage": "Das Backup wurde wiederhergestellt und neu geladen.",
   "BackupManager_DeleteBackupTitle": "Backup löschen",
   "BackupManager_DeleteConfirm": "Das Backup vom {0} löschen? Dies kann nicht rückgängig gemacht werden.",
+  "BackupManager_NoBackupsYet": "Noch keine Backups vorhanden. Bei jedem Speichern wird automatisch ein Backup erstellt.",
   "BlockEditor_ExportErrorTitle": "Exportfehler",
   "BlockEditor_ImportErrorTitle": "Importfehler",
   "BlockEditor_SizeMismatch": "Blockgröße stimmt nicht überein. Erwartet {0} Bytes, erhalten {1} Bytes.",

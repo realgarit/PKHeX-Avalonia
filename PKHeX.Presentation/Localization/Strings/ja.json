@@ -272,6 +272,7 @@
   "BackupManager_RestoreCompleteMessage": "バックアップが復元され、再読み込みされました。",
   "BackupManager_DeleteBackupTitle": "バックアップの削除",
   "BackupManager_DeleteConfirm": "{0} のバックアップを削除しますか? この操作は元に戻せません。",
+  "BackupManager_NoBackupsYet": "バックアップはまだありません。保存するたびに自動的にバックアップが作成されます。",
   "BlockEditor_ExportErrorTitle": "エクスポートエラー",
   "BlockEditor_ImportErrorTitle": "インポートエラー",
   "BlockEditor_SizeMismatch": "ブロックサイズが一致しません。期待値は {0} バイトですが、{1} バイトでした。",

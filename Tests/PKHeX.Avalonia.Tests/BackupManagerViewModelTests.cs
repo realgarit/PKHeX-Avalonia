@@ -11,6 +11,11 @@ namespace PKHeX.Avalonia.Tests;
 /// Covers the Backup Manager restore/delete flows required by issue #135: restoring asks for
 /// confirmation, itself creates a pre-restore backup of the current file, and reloads the save;
 /// a corrupt backup is rejected gracefully instead of corrupting the working file.
+///
+/// Also covers issue #256: the Reveal/Delete/Restore commands must be selection-gated via
+/// <c>CanExecute</c> (so the bound buttons disable themselves) instead of silently doing nothing
+/// when clicked with no selection, and the empty-backup-list state must be distinguishable from
+/// the no-save-file-open state.
 /// </summary>
 public sealed class BackupManagerViewModelTests : IDisposable
 {
@@ -157,5 +162,88 @@ public sealed class BackupManagerViewModelTests : IDisposable
         await vm.DeleteSelectedCommand.ExecuteAsync(null);
 
         Assert.True(File.Exists(row.FilePath));
+    }
+
+    [Fact]
+    public void SelectionGatedCommands_ReportCanExecuteFalse_WhenNoBackupSelected()
+    {
+        var vm = new BackupManagerViewModel(_backupService, _saveFileService.Object, _dialogService.Object, _settings);
+
+        Assert.Null(vm.SelectedBackup);
+        Assert.False(vm.RestoreSelectedCommand.CanExecute(null));
+        Assert.False(vm.DeleteSelectedCommand.CanExecute(null));
+        Assert.False(vm.RevealSelectedCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public void SelectionGatedCommands_EnableAndRaiseCanExecuteChanged_WhenBackupSelected()
+    {
+        var row = CreateOneBackup();
+        var vm = new BackupManagerViewModel(_backupService, _saveFileService.Object, _dialogService.Object, _settings);
+
+        var restoreRaised = false;
+        var deleteRaised = false;
+        var revealRaised = false;
+        vm.RestoreSelectedCommand.CanExecuteChanged += (_, _) => restoreRaised = true;
+        vm.DeleteSelectedCommand.CanExecuteChanged += (_, _) => deleteRaised = true;
+        vm.RevealSelectedCommand.CanExecuteChanged += (_, _) => revealRaised = true;
+
+        vm.SelectedBackup = row;
+
+        // This is the notification that actually flips the bound buttons from disabled to enabled.
+        Assert.True(restoreRaised);
+        Assert.True(deleteRaised);
+        Assert.True(revealRaised);
+        Assert.True(vm.RestoreSelectedCommand.CanExecute(null));
+        Assert.True(vm.DeleteSelectedCommand.CanExecute(null));
+        Assert.True(vm.RevealSelectedCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public void SelectionGatedCommands_DisableAndRaiseCanExecuteChanged_WhenSelectionCleared()
+    {
+        var row = CreateOneBackup();
+        var vm = new BackupManagerViewModel(_backupService, _saveFileService.Object, _dialogService.Object, _settings)
+        {
+            SelectedBackup = row,
+        };
+        Assert.True(vm.RestoreSelectedCommand.CanExecute(null));
+
+        var restoreRaised = false;
+        var deleteRaised = false;
+        var revealRaised = false;
+        vm.RestoreSelectedCommand.CanExecuteChanged += (_, _) => restoreRaised = true;
+        vm.DeleteSelectedCommand.CanExecuteChanged += (_, _) => deleteRaised = true;
+        vm.RevealSelectedCommand.CanExecuteChanged += (_, _) => revealRaised = true;
+
+        vm.SelectedBackup = null;
+
+        Assert.True(restoreRaised);
+        Assert.True(deleteRaised);
+        Assert.True(revealRaised);
+        Assert.False(vm.RestoreSelectedCommand.CanExecute(null));
+        Assert.False(vm.DeleteSelectedCommand.CanExecute(null));
+        Assert.False(vm.RevealSelectedCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public void IsEmpty_TrueWhenSaveOpenWithNoBackups_FalseOnceABackupExists()
+    {
+        var vm = new BackupManagerViewModel(_backupService, _saveFileService.Object, _dialogService.Object, _settings);
+        Assert.True(vm.IsEmpty);
+
+        CreateOneBackup();
+        vm.Refresh();
+
+        Assert.False(vm.IsEmpty);
+    }
+
+    [Fact]
+    public void IsEmpty_FalseWhenNoSaveFileOpen()
+    {
+        _saveFileService.SetupGet(s => s.CurrentPath).Returns((string?)null);
+        var vm = new BackupManagerViewModel(_backupService, _saveFileService.Object, _dialogService.Object, _settings);
+
+        Assert.False(vm.IsEmpty);
     }
 }

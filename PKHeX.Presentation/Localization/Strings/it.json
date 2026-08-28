@@ -272,6 +272,7 @@
   "BackupManager_RestoreCompleteMessage": "Il backup è stato ripristinato e ricaricato.",
   "BackupManager_DeleteBackupTitle": "Elimina Backup",
   "BackupManager_DeleteConfirm": "Eliminare il backup del {0}? Questa azione non può essere annullata.",
+  "BackupManager_NoBackupsYet": "Ancora nessun backup. Viene creato automaticamente un backup ogni volta che salvi.",
   "BlockEditor_ExportErrorTitle": "Errore di esportazione",
   "BlockEditor_ImportErrorTitle": "Errore di importazione",
   "BlockEditor_SizeMismatch": "Le dimensioni del blocco non corrispondono. Attesi {0} byte, ricevuti {1} byte.",

@@ -272,6 +272,7 @@
   "BackupManager_RestoreCompleteMessage": "備份已還原並重新載入。",
   "BackupManager_DeleteBackupTitle": "刪除備份",
   "BackupManager_DeleteConfirm": "要刪除來自 {0} 的備份嗎？此動作無法復原。",
+  "BackupManager_NoBackupsYet": "尚無備份。每次儲存時都會自動建立備份。",
   "BlockEditor_ExportErrorTitle": "匯出錯誤",
   "BlockEditor_ImportErrorTitle": "匯入錯誤",
   "BlockEditor_SizeMismatch": "區塊大小不符。預期 {0} 位元組，實際為 {1} 位元組。",
