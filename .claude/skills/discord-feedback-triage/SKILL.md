@@ -61,6 +61,29 @@ For a full audit, also inspect the other visible community channels, such as
 announcements, welcome, introductions, showcase, and off-topic. Do not claim
 that all Discord feedback was checked when only a subset was visible.
 
+### Notification completeness gate
+
+A message-history scan is not a complete Discord scan. After reading the
+channels, inspect the visible server sidebar and Discord Inbox in Chrome:
+
+1. Check server and channel indicators for `unread`, counts, mention markers,
+   and `new` markers.
+2. Open Inbox and inspect both `Unreads` and `Mentions`.
+3. Follow each visible Inbox item to its source channel or thread. Read and
+   classify it before treating the notification as resolved.
+4. Open every flagged visible server channel, including a channel with a
+   `NEW` marker. A `NEW` marker can mean a new channel rather than new
+   feedback, but it must be identified and recorded.
+5. Do not enter DMs or private channels unless the user explicitly includes
+   them. Report an out-of-scope notification instead of inspecting private
+   content.
+
+Only claim a complete scan when the relevant channel history, sidebar state,
+and Inbox state have all been checked. Otherwise report a partial scan and
+name the unresolved indicator. Record the notification result, such as
+`Inbox: Unreads empty; Mentions empty; server NEW marker resolved to welcome
+channel`, with the scan cutoff.
+
 For each candidate message, record in the working result, without persisting
 private save data:
 
@@ -221,6 +244,7 @@ Return a compact ledger with one row per relevant message:
 Also report:
 
 - the last-reviewed cutoff for the next run;
+- the Chrome notification state, including Inbox `Unreads` and `Mentions`;
 - every Discord reply URL or stable locator that was posted;
 - every issue URL that was opened or linked;
 - unresolved questions and external blockers;
@@ -234,6 +258,7 @@ post-action verification.
 | Failure | Required correction |
 | --- | --- |
 | Using the in-app Browser because it is convenient | Stop and return to the authenticated Chrome extension. |
+| Treating channel history as proof that Discord has no notifications | Check sidebar indicators, Inbox `Unreads`, Inbox `Mentions`, and every flagged visible channel. |
 | Selecting an article by index | Re-find it by text, author, timestamp, and message ID. |
 | Replying to a quoted reply instead of its root, or vice versa | Inspect the reply context and verify the composer target. |
 | Opening an issue before checking duplicates | Search open and closed issues first. |
