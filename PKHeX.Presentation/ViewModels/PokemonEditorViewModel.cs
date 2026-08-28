@@ -160,11 +160,43 @@ public partial class PokemonEditorViewModel : ViewModelBase
         LoadFromPKM();
     }
 
-    public void LoadPKM(PKM pk)
+    /// <summary>
+    /// Loads an entity into the editor, adapting it to the open save file's entity format first.
+    /// </summary>
+    /// <remarks>
+    /// Every dropdown in this editor (species, moves, items, balls, abilities) comes from
+    /// <see cref="GameInfo.FilteredSources"/>, which is scoped to the <em>save file</em>. The entity
+    /// being edited therefore has to be in that save's own format, or the editor offers values the
+    /// entity cannot physically store and the write silently truncates.
+    /// <para>
+    /// Sources such as the Encounter Database hand back the encounter's <em>native</em> format
+    /// (<c>IEncounterConvertible.ConvertToPKM</c> returns a <see cref="PK2"/> for a Gen 2 wild slot,
+    /// even when the open save is Gen 7+). <c>PK2.Species</c> is a single byte, so selecting Ambipom
+    /// (424) stored <c>424 &amp; 0xFF</c> = 168 and the preview rendered Ariados while the title said
+    /// Ambipom — GitHub issue #234.
+    /// </para>
+    /// Mirrors upstream PKHeX's <c>PKMEditor.LoadFieldsFromPKM</c> (and the file-import path's
+    /// <c>SaveExtensions.GetCompatible</c>): convert to the save's format, or refuse the load and
+    /// report why rather than editing a foreign-format entity.
+    /// </remarks>
+    /// <returns><see langword="true"/> if the entity was loaded; <see langword="false"/> if it could
+    /// not be adapted to the save's format, in which case the editor keeps its current entity.</returns>
+    public bool LoadPKM(PKM pk)
     {
         ArgumentNullException.ThrowIfNull(pk);
-        _pk = pk.Clone();
+
+        var target = _sav.BlankPKM;
+        if (!EntityConverter.TryMakePKMCompatible(pk, target, out var result, out var compatible))
+        {
+            _ = _dialogService.ShowErrorAsync(
+                LocalizedStrings.Instance["PokemonEditor_ImportFailedTitle"],
+                result.GetDisplayString(pk, target.GetType()));
+            return false;
+        }
+
+        _pk = compatible.Clone(); // Always work on a copy
         LoadFromPKM();
+        return true;
     }
 
     /// <summary>Raised when a dropped OS file turns out to be a save file, so the host can open it.</summary>
