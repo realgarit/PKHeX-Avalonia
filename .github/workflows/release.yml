@@ -1,50 +1,264 @@
 name: Release
 
+# ---------------------------------------------------------------------------
+# CI owns the version bump. PRs must NOT touch <UIVersion>.
+#
+# The old design had every PR hand-edit <UIVersion> and triggered this workflow
+# on `paths: [Directory.Build.props]`. On 2026-08-28 four PRs (#267, #268, #269,
+# #270) each branched off 1.48.3, each computed "patch + 1" = 1.48.4, and each
+# wrote the byte-identical line. Git auto-merged all four with ZERO conflict, so:
+#   * four distinct fixes shipped under one version number, and
+#   * the three later merges produced no NET change to Directory.Build.props,
+#     so the `paths:` filter never fired and no release run even started —
+#     the published v1.48.4 was missing three fixes, including a crash fix.
+# A conflict-resolution rule cannot fix that, because no conflict ever occurs.
+#
+# So: the next version is derived from the highest existing `v*` git tag, never
+# from the file. A tag either exists on the remote or it does not, and
+# `git push --atomic` makes claiming one a single server-side check.
+#
+# Bump, tag, build and publish all happen in ONE run. A GITHUB_TOKEN push does
+# not trigger downstream workflows, so a second run must never be relied on.
+# ---------------------------------------------------------------------------
+
 on:
   push:
     branches: [main]
-    paths:
-      - 'Directory.Build.props'
+    # No `paths:` allow-list — that filter is what suppressed three releases.
+    # Only paths that cannot affect a built artifact are ignored, and
+    # `paths-ignore` skips a push only when EVERY changed file matches.
+    # `.github/workflows/**` and `.github/scripts/**` are deliberately absent:
+    # a packaging or signing change does change what ships.
+    paths-ignore:
+      - '**/*.md'
+      - '*.md'
+      - 'docs/**'
+      - '.claude/**'
+      - '.codex/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/upstream-sync/**'
+      - '.gitattributes'
+      - '.gitignore'
+      - '.editorconfig'
+      - 'LICENSE'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run — resolve and print the next version, then stop before writing, committing, tagging or releasing.'
+        type: boolean
+        default: true
 
 permissions:
-  contents: write
+  contents: write       # push the bump commit + tag to main, publish the release
+  pull-requests: read   # classify the merged PR behind the pushed commit
+
+# Serialize: overlapping merges queue instead of racing for the same version.
+#
+# CAVEAT, deliberately accepted: GitHub cancels a *pending* run when a newer one
+# queues behind an in-progress one, so a burst of merges can collapse into a
+# single release run. That is safe here — the surviving run releases main's tip,
+# which contains every merge, and resolve-release-version.sh takes the STRONGEST
+# bump across every unreleased commit so a coalesced `feat:` still gets a minor.
+# The cost is a skipped version number, never a missing fix.
+concurrency:
+  group: release-version
+  cancel-in-progress: false
 
 jobs:
-  check-version:
+  version:
+    name: Resolve and claim version
     runs-on: ubuntu-latest
+    # Never react to our own bump commit. GitHub already skips workflows for
+    # `[skip ci]` and for GITHUB_TOKEN pushes; these checks are belt-and-braces
+    # for the case where a human or a PAT replays the same commit.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.actor != 'github-actions[bot]' &&
+        github.event.head_commit.author.name != 'github-actions[bot]' &&
+        !contains(github.event.head_commit.message, '[skip ci]') &&
+        !startsWith(github.event.head_commit.message, 'chore(release):')
+      )
     outputs:
-      version: ${{ steps.extract.outputs.version }}
-      should_release: ${{ steps.check_tag.outputs.should_release }}
+      version:     ${{ steps.resolve.outputs.next_version }}
+      tag:         ${{ steps.resolve.outputs.next_tag }}
+      release_sha: ${{ steps.claim.outputs.release_sha }}
+      proceed:     ${{ steps.claim.outputs.proceed }}
     steps:
+      # Always check out the ref that carries this workflow file, so the
+      # workflow and .github/scripts/resolve-release-version.sh are the same
+      # revision. A workflow_dispatch from a feature branch therefore runs that
+      # branch's resolver — while still resolving, and releasing, main.
       - name: Checkout
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Extract UIVersion from Directory.Build.props
-        id: extract
-        shell: bash
-        run: |
-          version=$(grep -oP '(?<=<UIVersion>)[^<]+' Directory.Build.props)
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "Detected UIVersion: $version"
+      - name: Fetch main and tags
+        run: git fetch --force --tags origin '+refs/heads/main:refs/remotes/origin/main'
 
-      - name: Check if tag already exists
-        id: check_tag
-        shell: bash
+      # A push event releases the commit that was pushed. A manual dispatch
+      # always targets main's current tip, whatever branch it was launched from.
+      - name: Determine target commit
+        id: target
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_SHA: ${{ github.sha }}
         run: |
-          if git rev-parse "v${{ steps.extract.outputs.version }}" >/dev/null 2>&1; then
-            echo "Tag v${{ steps.extract.outputs.version }} already exists — skipping release"
-            echo "should_release=false" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            SHA="$(git rev-parse origin/main)"
           else
-            echo "Tag v${{ steps.extract.outputs.version }} does not exist — will release"
-            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            SHA="$PUSH_SHA"
+          fi
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "Target commit: $SHA"
+
+      - name: Resolve next version from the tag set
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ steps.target.outputs.sha }}
+        run: bash .github/scripts/resolve-release-version.sh
+
+      # Every resolved value reaches the shell through `env:`, never through a
+      # `${{ }}` expression inside `run:` — a PR title is attacker-supplied text
+      # and direct interpolation would be a script-injection hole.
+      - name: Summary
+        env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+          EVENT_NAME: ${{ github.event_name }}
+          TARGET_SHA: ${{ steps.target.outputs.sha }}
+          PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
+          PR_TITLE: ${{ steps.resolve.outputs.pr_title }}
+          RULE: ${{ steps.resolve.outputs.rule }}
+          BUMP: ${{ steps.resolve.outputs.bump }}
+          CURRENT_TAG: ${{ steps.resolve.outputs.current_tag }}
+          NEXT_VERSION: ${{ steps.resolve.outputs.next_version }}
+          NEXT_TAG: ${{ steps.resolve.outputs.next_tag }}
+          TAG_EXISTS: ${{ steps.resolve.outputs.tag_exists }}
+          HEAD_ALREADY_TAGGED: ${{ steps.resolve.outputs.head_already_tagged }}
+          SHOULD_RELEASE: ${{ steps.resolve.outputs.should_release }}
+        run: |
+          set -euo pipefail
+          if [ -n "$PR_NUMBER" ]; then
+            pr="#${PR_NUMBER} — ${PR_TITLE}"
+          else
+            pr="_none — classified from the commit subject_"
+          fi
+          {
+            echo "### Release version resolution"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Mode | \`${EVENT_NAME}\` (dry_run=${DRY_RUN}) |"
+            echo "| Target commit | \`${TARGET_SHA}\` |"
+            echo "| Resolved PR | ${pr} |"
+            echo "| Matched rule | \`${RULE}\` |"
+            echo "| Bump | \`${BUMP}\` |"
+            echo "| Current tag | \`${CURRENT_TAG}\` |"
+            echo "| **Next version** | **\`${NEXT_VERSION}\`** |"
+            echo "| Next tag | \`${NEXT_TAG}\` |"
+            echo "| Tag already exists | \`${TAG_EXISTS}\` |"
+            echo "| Head already released | \`${HEAD_ALREADY_TAGGED}\` |"
+            echo "| Should release | \`${SHOULD_RELEASE}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ---------------------------------------------------------------------
+      # Claim the version: write the file, commit it back to main, and create
+      # the tag — as ONE atomic ref update. The tag is the marker that says
+      # "this version is spoken for", so it must land with the commit or not
+      # at all.
+      #
+      # Trade-off, stated plainly: because the tag is claimed BEFORE the build,
+      # a build failure leaves a tag with no release attached, and the next
+      # merge moves on to the following version. That is a skipped number, not
+      # a missing fix. Recover by deleting the orphan tag
+      # (`git push origin :refs/tags/vX.Y.Z`) and re-running, or just let the
+      # next merge publish. The alternative order (build first, tag after)
+      # would tag a tree whose Directory.Build.props does not match the tag.
+      # ---------------------------------------------------------------------
+      - name: Claim version — bump, commit and tag
+        id: claim
+        env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+          NEXT_VERSION: ${{ steps.resolve.outputs.next_version }}
+          NEXT_TAG: ${{ steps.resolve.outputs.next_tag }}
+          SHOULD_RELEASE: ${{ steps.resolve.outputs.should_release }}
+          RULE: ${{ steps.resolve.outputs.rule }}
+          BUMP: ${{ steps.resolve.outputs.bump }}
+          PR_NUMBER: ${{ steps.resolve.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+
+          if [ "${DRY_RUN}" = "true" ]; then
+            echo "::notice::DRY RUN — resolved ${NEXT_TAG} (${BUMP}, rule ${RULE}). Stopping before any write, commit, tag or release."
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            echo "DRY RUN — nothing was written, committed, tagged or released." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
           fi
 
+          if [ "${SHOULD_RELEASE}" != "true" ]; then
+            echo "::notice::Skipping release — see the resolution log above."
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          pushed=false
+          for attempt in 1 2 3; do
+            git fetch --force --tags origin main
+            git reset --hard origin/main
+
+            if git ls-remote --exit-code --tags origin "refs/tags/${NEXT_TAG}" >/dev/null 2>&1; then
+              echo "::error::${NEXT_TAG} appeared on the remote while this run was resolving. Refusing to overwrite a published tag."
+              exit 1
+            fi
+
+            sed -i -E "s#<UIVersion>[^<]*</UIVersion>#<UIVersion>${NEXT_VERSION}</UIVersion>#" Directory.Build.props
+            grep -q "<UIVersion>${NEXT_VERSION}</UIVersion>" Directory.Build.props || {
+              echo "::error::Failed to write <UIVersion>${NEXT_VERSION}</UIVersion> into Directory.Build.props."
+              exit 1
+            }
+
+            if git diff --quiet -- Directory.Build.props; then
+              echo "::warning::Directory.Build.props already reads ${NEXT_VERSION}; tagging main as-is without a bump commit."
+            else
+              git add Directory.Build.props
+              git commit -m "chore(release): set UIVersion to ${NEXT_VERSION} [skip ci]" \
+                         -m "Bumped by .github/workflows/release.yml (${BUMP}, rule: ${RULE}${PR_NUMBER:+, PR #${PR_NUMBER}})." \
+                         -m "Version is derived from the latest git tag, not from this file. Do not hand-edit <UIVersion> in a PR."
+            fi
+
+            RELEASE_SHA="$(git rev-parse HEAD)"
+            git tag -f -a "${NEXT_TAG}" -m "PKHeX-Avalonia ${NEXT_VERSION}" "${RELEASE_SHA}"
+
+            if git push --atomic origin "HEAD:refs/heads/main" "refs/tags/${NEXT_TAG}"; then
+              echo "Pushed ${NEXT_TAG} at ${RELEASE_SHA} together with the bump commit."
+              echo "release_sha=${RELEASE_SHA}" >> "$GITHUB_OUTPUT"
+              pushed=true
+              break
+            fi
+
+            echo "::warning::Atomic push rejected on attempt ${attempt} — nothing landed. Re-basing on the new main tip."
+            git tag -d "${NEXT_TAG}" || true
+            sleep $((attempt * 5))
+          done
+
+          if [ "${pushed}" != "true" ]; then
+            echo "::error::Could not push the bump commit and ${NEXT_TAG} after 3 attempts. No partial state was created."
+            exit 1
+          fi
+
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
+
   build:
-    needs: check-version
-    if: needs.check-version.outputs.should_release == 'true'
+    name: Build ${{ matrix.rid }}
+    needs: version
+    if: needs.version.outputs.proceed == 'true'
     strategy:
       fail-fast: true
       matrix:
@@ -65,8 +279,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      # Build the exact commit that was tagged, not whatever main has drifted
+      # to since. The published artifact and the tag must be the same tree.
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.version.outputs.release_sha }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
@@ -81,7 +299,7 @@ jobs:
           -r ${{ matrix.rid }}
           --self-contained
           -p:PublishSingleFile=true
-          -p:UIVersion=${{ needs.check-version.outputs.version }}
+          -p:UIVersion=${{ needs.version.outputs.version }}
           -o publish
 
       # macOS: ad-hoc sign and zip the .app bundle created by BundleApp MSBuild target
@@ -270,7 +488,7 @@ jobs:
             --appimage-extract-and-run \
             AppDir \
             PKHeX-Avalonia-linux-x64.AppImage
-          
+
           # remove the AppImage tool from the artifact list since we don't need it anymore
           rm appimagetool-x86_64.AppImage
 
@@ -328,7 +546,7 @@ jobs:
         shell: pwsh
         run: |
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" `
-            "/DMyAppVersion=${{ needs.check-version.outputs.version }}" `
+            "/DMyAppVersion=${{ needs.version.outputs.version }}" `
             "/DSourceDir=$(Resolve-Path publish)" `
             "/DOutputDir=$(Get-Location)" `
             "packaging/windows/installer.iss"
@@ -362,20 +580,17 @@ jobs:
           retention-days: 5
 
   release:
-    needs: [check-version, build]
+    name: Publish release
+    needs: [version, build]
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      # The tag already exists — the version job created it atomically with the
+      # bump commit, before anything was built. Nothing here creates refs.
+      - name: Checkout the tagged commit
         uses: actions/checkout@v7
-
-      - name: Create tag
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api repos/${{ github.repository }}/git/refs \
-            -f ref="refs/tags/v${{ needs.check-version.outputs.version }}" \
-            -f sha="${{ github.sha }}"
+        with:
+          ref: ${{ needs.version.outputs.release_sha }}
 
       - name: Download all artifacts
         uses: actions/download-artifact@v8
@@ -388,8 +603,9 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: v${{ needs.check-version.outputs.version }}
-          name: v${{ needs.check-version.outputs.version }}
+          tag_name: ${{ needs.version.outputs.tag }}
+          name: ${{ needs.version.outputs.tag }}
+          target_commitish: ${{ needs.version.outputs.release_sha }}
           generate_release_notes: true
           files: |
             artifacts/**/*.zip

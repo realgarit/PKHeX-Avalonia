@@ -4,10 +4,13 @@ This document covers how `release.yml` builds installers for each platform,
 which secrets unlock real code signing / notarization, and how to submit the
 package-manager templates under `packaging/` once signed builds exist.
 
-Everything described here runs automatically on every release (a push to
-`main` that changes `Directory.Build.props`'s `<UIVersion>`, or a manual
-`workflow_dispatch`). There are no manual signing steps — the workflow signs
-when it can and clearly labels artifacts as unsigned when it can't.
+Everything described here runs automatically on every release. Since 2026-08-28 a release is any
+push to `main` that touches something shippable — CI resolves the next version from the highest
+existing `v*` git tag, writes `<UIVersion>`, commits, tags, builds and publishes in a single run
+(see [`development.md`](development.md#uiversion-semver-convention--ci-owns-the-bump)). A manual
+`workflow_dispatch` with `dry_run=false` does the same for main's current tip; the default
+`dry_run=true` only prints what *would* be released. There are no manual signing steps — the
+workflow signs when it can and clearly labels artifacts as unsigned when it can't.
 
 ## Artifact matrix
 
