@@ -2,6 +2,7 @@
 using Avalonia.Headless.XUnit;
 using Moq;
 using PKHeX.Avalonia.Services;
+using PKHeX.Avalonia.Tests.Fixtures;
 using PKHeX.Presentation.ViewModels;
 using PKHeX.Core;
 using Xunit;
@@ -233,8 +234,76 @@ public class TrainerEditorTests
         // if we use a type that we know typically doesn't have the "Badges" int property exposed *yet* 
         // or if we just use a type that definitely doesn't.
         
-        // However, it's safer to just rely on the first test for positive confirmation. 
+        // However, it's safer to just rely on the first test for positive confirmation.
         // If we want a negative test, we'd need a concrete SaveFile subclass that definitely doesn't have the property.
         // Let's skip the negative test for now unless we are sure about which one lacks it.
+    }
+
+    // Issue #250: ZA Trainer editor renders an empty Currencies section. The ViewModel already
+    // loaded RoyalePoints/RoyalePointsInfinite correctly, but TrainerEditor.axaml had no controls
+    // for them in the Currencies WrapPanel, so the card showed as visible-but-empty.
+
+    [AvaloniaFact]
+    public void ZARoyalePoints_ShouldLoad_FromRealSave()
+    {
+        var dir = SaveFileFixture.FindSaveFilesPath();
+        if (dir is null)
+            return; // Tests/savefiles not present in this environment
+
+        var path = Path.Combine(dir, "gen9a_legendsza.main");
+        var sav = SaveFileFixture.LoadSave(path) as SAV9ZA;
+        if (sav is null)
+            return; // gen9a_legendsza.main not present — run Tests/savefiles/download_saves.sh
+
+        var vm = new TrainerEditorViewModel(sav);
+
+        Assert.True(vm.HasRoyalePoints);
+        Assert.True(vm.HasRoyalePointsInfinite);
+        Assert.True(vm.AnyCurrencyVisible);
+    }
+
+    [AvaloniaFact]
+    public void ZARoyalePoints_ShouldPersist_RoundTrip()
+    {
+        var dir = SaveFileFixture.FindSaveFilesPath();
+        if (dir is null)
+            return; // Tests/savefiles not present in this environment
+
+        var path = Path.Combine(dir, "gen9a_legendsza.main");
+        var sav = SaveFileFixture.LoadSave(path) as SAV9ZA;
+        if (sav is null)
+            return; // gen9a_legendsza.main not present — run Tests/savefiles/download_saves.sh
+
+        // 1. Load ViewModel
+        var vm = new TrainerEditorViewModel(sav);
+        Assert.True(vm.HasRoyalePoints);
+        Assert.True(vm.HasRoyalePointsInfinite);
+
+        // 2. Modify
+        vm.RoyalePoints = 12345;
+        vm.RoyalePointsInfinite = 6789;
+
+        // 3. Save
+        vm.SaveCommand.Execute(null);
+
+        // 4. Verify persistence directly on the SaveFile
+        Assert.Equal(12345u, sav.TicketPointsRoyale);
+        Assert.Equal(6789u, sav.TicketPointsRoyaleInfinite);
+
+        // 5. Verify reload
+        var reloadedVm = new TrainerEditorViewModel(sav);
+        Assert.Equal(12345u, reloadedVm.RoyalePoints);
+        Assert.Equal(6789u, reloadedVm.RoyalePointsInfinite);
+    }
+
+    [AvaloniaFact]
+    public void ZACurrencyFlags_ShouldNotAppear_ForNonZASave()
+    {
+        // SAV3E has no concept of ZA Royale ticket points.
+        var sav = new SAV3E();
+        var vm = new TrainerEditorViewModel(sav);
+
+        Assert.False(vm.HasRoyalePoints);
+        Assert.False(vm.HasRoyalePointsInfinite);
     }
 }
