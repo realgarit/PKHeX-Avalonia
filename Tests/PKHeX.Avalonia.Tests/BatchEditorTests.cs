@@ -376,6 +376,31 @@ public class BatchEditorTests(ITestOutputHelper output)
     }
 
     // -----------------------------------------------------------------------
+    // 11. RunBatch updates the Pokédex (regression: upstream a595033 fixed a
+    //     bug where EntityImportSettings.None disabled UpdateToSaveFile and
+    //     UpdatePokeDex too, not just UpdateRecord - batch-edited Pokemon never
+    //     got marked seen/caught).
+    // -----------------------------------------------------------------------
+
+    [Fact]
+    public async Task BatchEditor_RunBatch_UpdatesPokedex()
+    {
+        var sav = new SAV4Pt();
+        var pk = new PK4 { Species = 1 }; pk.CurrentLevel = 5;
+        sav.SetBoxSlotAtIndex(pk, 0, 0, EntityImportSettings.None); // insert without touching the dex
+        Assert.False(sav.GetCaught(1));
+
+        var vm = new BatchEditorViewModel(sav, DialogMock().Object);
+        vm.Instructions = ".CurrentLevel=50";
+        await WaitForAsync(() => vm.AffectedCount == 1);
+
+        await ((IAsyncRelayCommand)vm.RunBatchCommand).ExecuteAsync(null);
+
+        Assert.True(sav.GetCaught(1));
+        output.WriteLine("RunBatch: Pokedex caught flag updated ✓");
+    }
+
+    // -----------------------------------------------------------------------
     // 10. Operators list contains expected operators
     // -----------------------------------------------------------------------
 

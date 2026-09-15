@@ -194,11 +194,12 @@ public partial class BatchEditorViewModel : ViewModelBase, IDisposable
 
             Results = plan.Editor.GetEditorResults(plan.Sets);
             var undoSlots = GetUndoSlots(plan.Changes);
+            var importSettings = default(EntityImportSettings) with { UpdateRecord = EntityImportOption.Disable };
             var token = _undoRedo.ApplyBatch(undoSlots, _ =>
             {
                 foreach (var change in plan.Changes)
                 {
-                    if (!change.Slot.WriteTo(_sav, change.Pokemon.Clone(), EntityImportSettings.None))
+                    if (!change.Slot.WriteTo(_sav, change.Pokemon.Clone(), importSettings))
                         throw new InvalidOperationException("Unable to write a batch-edited slot.");
                 }
             });
