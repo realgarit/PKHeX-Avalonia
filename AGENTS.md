@@ -1,6 +1,6 @@
 # PKHeX-Avalonia
 
-> Canonical instructions for all coding agents (Claude Code, Codex, GitHub Copilot). Claude loads this via the CLAUDE.md stub.
+> Canonical instructions for all coding agents (Claude Code, Codex, GitHub Copilot). Codex reads this directly; Claude and GitHub Copilot use pointer files when present.
 
 A native Avalonia (11.x) port of [PKHeX](https://github.com/kwsch/PKHeX), the Pokémon save editor —
 cross-platform (Windows/macOS/Linux) instead of WinForms-only. Built on .NET 10 + Avalonia 11.x with
@@ -25,7 +25,7 @@ decoration. Treat them as part of the project's tooling.
    derives the next version from the highest existing `v*` git tag (never from the file), writes it to
    `Directory.Build.props`, commits, tags and publishes in one run on every push to `main`. A manual
    bump in a PR double-increments and can collide silently with a concurrent PR — see the 2026-08-28
-   note in Working notes. `.claude/skills/pr-checklist` flags a hand-edited `<UIVersion>` as an error.
+   note in Working notes. `.agents/skills/pr-checklist` flags a hand-edited `<UIVersion>` as an error.
    **Your PR title is the version input**: `feat:` → minor, `fix`/`chore`/`deps`/`refactor`/`docs`/
    `test`/`ci`/`sync:` → patch, a `breaking` label or `!` in the prefix → major, anything unclassified
    → patch. (Top-level `<Version>` tracks upstream PKHeX.Core — that one is still hand-set, by a sync PR only.)
@@ -144,7 +144,7 @@ A daily workflow checks kwsch/PKHeX against `.github/upstream-sync/last-synced-s
 `PKHeX.Core Sync Required` issue (labeled `sync`) when upstream has moved. The full sync process —
 mirroring Core 1:1, fixing consumer call sites, an Avalonia frontend-parity review of upstream's
 WinForms UI changes, version bump, PR, and auto-merge once CI is green — is encoded in
-`.claude/skills/sync-upstream-core/SKILL.md`. In detail:
+`.agents/skills/sync-upstream-core/SKILL.md`. In detail:
 1. Fetch the latest PKHeX.Core SHA from kwsch/PKHeX
 2. Branch `chore/sync-pkhex-core-<short7>`; mirror `PKHeX.Core/` 1:1
 3. Fix broken call sites in consumers only (never in Core)
@@ -187,7 +187,7 @@ WinForms UI changes, version bump, PR, and auto-merge once CI is green — is en
 
 ## Automation tooling
 
-- `.claude/` hooks, skills, and agents are committed to the repo (AI assistance publicly disclosed).
+- `.claude/` hooks and agents remain committed to the repo for Claude-specific automation (AI assistance publicly disclosed). Shared repository skills are committed under `.agents/skills/` for Codex; `.claude/skills/` is only a compatibility bridge.
 - `.claude/worktrees/`, `.claude/settings.local.json`, `.claude/scheduled_tasks.lock` stay gitignored.
 - Changes to `.claude/` content go through branch + PR like everything else.
 
@@ -206,12 +206,12 @@ WinForms UI changes, version bump, PR, and auto-merge once CI is green — is en
 - **Style preference**: for new features/integrations, lead with the cleanest architecture-correct solution even if it needs a rewrite, rather than an expedient shim (stated explicitly re: Auto Legality Mod support, issue #89).
 - **No planning docs in repo**: never commit superpowers brainstorming specs/plans into repo history or GitHub; keep them outside the repo or unstaged, and rewrite branch history if they slip in.
 - **UI testing via computer-use**: publish the real `.app` bundle (`dotnet publish ... -o <dir>` then `open <dir>/PKHeX.Avalonia.app`) rather than `dotnet run` — only a real bundle can be granted accessibility access (by bundle ID `io.pkhex.avalonia`) and screenshotted; clicks then actuate normally. The app has no CLI file-path launch arg — test saves must be loaded via File > Open, which defaults to `Tests/savefiles/`.
-- **`.claude/` automation is committed** to the repo (reversed from an earlier local-only policy on 2026-07-11, since AI-assisted development is now publicly disclosed): hooks, skills, and agents go through the normal branch+PR flow. `.claude/worktrees/`, `.claude/settings.local.json`, and `.claude/scheduled_tasks.lock` stay gitignored.
+- **`.claude/` automation is committed** to the repo (reversed from an earlier local-only policy on 2026-07-11, since AI-assisted development is now publicly disclosed): hooks and agents go through the normal branch+PR flow; shared skills live under `.agents/skills/` for Codex. `.claude/worktrees/`, `.claude/settings.local.json`, and `.claude/scheduled_tasks.lock` stay gitignored.
 
 ## Cross-agent conventions
 
 - This file (`AGENTS.md`) is the single source of truth for agent instructions in this repo. `CLAUDE.md` and `.github/copilot-instructions.md` are pointers to it — never edit them, never duplicate content into them.
-- Reusable skills live in `.claude/skills/` (one folder per skill with a `SKILL.md`). GitHub Copilot reads that directory natively; Codex sees it via the `.agents/skills` symlink. New skills always go in `.claude/skills/`.
+- Shared repository skills live in `.agents/skills/` (one folder per skill with a `SKILL.md`). Codex scans this location natively. Keep any `.claude/skills/` compatibility bridge pointer-only or generated from this directory; never maintain two independent sources. New shared skills always go in `.agents/skills/`.
 - Claude-specific subagent definitions live in `.claude/agents/`. If you are not Claude Code, you may read them as role/process guidance.
 - Session continuity across tools: before ending substantial work in ANY tool (Claude Code, Codex, Copilot), record durable context — decisions made, gotchas discovered, in-progress state worth resuming — in the "Working notes" section below, or fold it into the relevant section above. This is the shared memory between agents.
 
