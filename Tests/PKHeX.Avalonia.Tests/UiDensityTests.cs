@@ -215,7 +215,7 @@ public class UiDensityTests
 
         Dispatcher.UIThread.RunJobs();
         window.UpdateLayout();
-        var combo = view.GetVisualDescendants().OfType<ComboBox>().Single(combo => combo.ItemCount == 2);
+        var combo = view.GetVisualDescendants().OfType<ComboBox>().Single(combo => combo.SelectedItem is AppDensity);
         Assert.Equal(AppDensity.Compact, combo.SelectedItem);
 
         combo.SelectedItem = AppDensity.Comfortable;

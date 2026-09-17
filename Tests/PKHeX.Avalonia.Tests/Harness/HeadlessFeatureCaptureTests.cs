@@ -252,7 +252,6 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
                      {
                          (AppTheme.Dark, "shell-theme-dark.png"),
                          (AppTheme.Light, "shell-theme-light.png"),
-                         (AppTheme.HighContrast, "shell-theme-high-contrast.png"),
                      })
             {
                 theme.ApplyTheme(variant);

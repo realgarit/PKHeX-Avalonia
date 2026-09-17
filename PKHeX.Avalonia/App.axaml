@@ -6,7 +6,7 @@
     <!--
         RequestedThemeVariant above is only the XAML-time fallback used for the brief window
         before ThemeService.Initialize() runs in App.axaml.cs, which applies the persisted
-        preference (including Light/HighContrast/System) before the main window is created.
+        preference before the main window is created.
         Per-variant palettes live in Styles/Theme.axaml's ThemeDictionaries.
     -->
     <Application.Resources>
@@ -16,19 +16,19 @@
             </ResourceDictionary.MergedDictionaries>
 
             <!--
-                Override FluentTheme accent colors with Pokemon Red. Kept as a single constant
+                Override FluentTheme accent colors with restrained neutral graphite/silver. Kept as a single constant
                 (not a per-theme token) intentionally: this is the app's brand accent, consumed
                 internally by FluentTheme's own built-in controls, and must stay in
                 Application.Resources (not a Style's resources) to reliably take precedence over
                 FluentTheme's own SystemAccentColor* resources.
             -->
-            <Color x:Key="SystemAccentColor">#EF7658</Color>
-            <Color x:Key="SystemAccentColorDark1">#D45A40</Color>
-            <Color x:Key="SystemAccentColorDark2">#A84432</Color>
-            <Color x:Key="SystemAccentColorDark3">#7A3026</Color>
-            <Color x:Key="SystemAccentColorLight1">#F59B7D</Color>
-            <Color x:Key="SystemAccentColorLight2">#F8B49A</Color>
-            <Color x:Key="SystemAccentColorLight3">#FBD0C0</Color>
+            <Color x:Key="SystemAccentColor">#718089</Color>
+            <Color x:Key="SystemAccentColorDark1">#58666E</Color>
+            <Color x:Key="SystemAccentColorDark2">#424E55</Color>
+            <Color x:Key="SystemAccentColorDark3">#2E383E</Color>
+            <Color x:Key="SystemAccentColorLight1">#8F9BA2</Color>
+            <Color x:Key="SystemAccentColorLight2">#AAB3B8</Color>
+            <Color x:Key="SystemAccentColorLight3">#C6CDD1</Color>
 
             <!-- Override Focus Visuals to remove yellow/accent border -->
             <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="Transparent" />

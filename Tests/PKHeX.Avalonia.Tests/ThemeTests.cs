@@ -49,8 +49,37 @@ public class ThemeTests
         Assert.Same(settings, store.Saved);
     }
 
+    [Theory]
+    [InlineData(AppTheme.HighContrast)]
+    [InlineData(AppTheme.System)]
+    public void ThemeService_ApplyTheme_NormalizesLegacyAppearance(AppTheme legacyTheme)
+    {
+        var settings = new AppSettings();
+        var store = new FakeSettingsStore();
+        var service = new ThemeService(settings, store);
+
+        service.ApplyTheme(legacyTheme);
+
+        Assert.Equal(AppTheme.Dark, service.CurrentTheme);
+        Assert.Equal(AppTheme.Dark, settings.Theme.Selected);
+        Assert.Same(settings, store.Saved);
+    }
+
     [Fact]
-    public void SettingsViewModel_Load_DoesNotReapplyTheme()
+    public void ThemeService_Initialize_NormalizesLegacyPersistedAppearance()
+    {
+        var settings = new AppSettings { Theme = new AppSettings.ThemeSettings { Selected = AppTheme.System } };
+        var store = new FakeSettingsStore();
+        var service = new ThemeService(settings, store);
+
+        service.Initialize();
+
+        Assert.Equal(AppTheme.Dark, service.CurrentTheme);
+        Assert.Same(settings, store.Saved);
+    }
+
+    [Fact]
+    public void SettingsViewModel_Load_DoesNotReapplyThemeOrExposeLegacyTheme()
     {
         var settings = new AppSettings { Theme = new AppSettings.ThemeSettings { Selected = AppTheme.HighContrast } };
         var themeServiceMock = new Mock<IThemeService>();
@@ -58,7 +87,10 @@ public class ThemeTests
 
         var vm = new SettingsViewModel(settings, new FakeSettingsStore(), themeServiceMock.Object, new Mock<IUiDensityService>().Object, new PKHeX.Application.Services.LanguageService(), UpdateTestDoubles.Coordinator());
 
-        Assert.Equal(AppTheme.HighContrast, vm.SelectedTheme);
+        Assert.Equal(AppTheme.Dark, vm.SelectedTheme);
+        Assert.Collection(vm.Themes,
+            theme => Assert.Equal(AppTheme.Dark, theme),
+            theme => Assert.Equal(AppTheme.Light, theme));
         themeServiceMock.Verify(t => t.ApplyTheme(It.IsAny<AppTheme>()), Times.Never);
     }
 
