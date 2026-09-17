@@ -28,7 +28,7 @@
 
         <!-- Results Grid — min height so the scroll area is always visible;
              the view's MaxHeight ensures this never grows beyond the screen -->
-        <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+        <Border BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                 BorderThickness="1" CornerRadius="4" MinHeight="200">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Results}">

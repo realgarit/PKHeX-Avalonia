@@ -48,7 +48,7 @@
                        IsVisible="{Binding LegalityReport, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
             <Border Grid.Row="2"
-                    BorderThickness="1" BorderBrush="{DynamicResource ThemeBorderBrush}"
+                    BorderThickness="1" BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                     IsVisible="{Binding LegalityReport, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                 <ScrollViewer>
                     <SelectableTextBlock Text="{Binding LegalityReport}" Padding="8"

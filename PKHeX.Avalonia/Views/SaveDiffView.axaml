@@ -34,7 +34,7 @@
 
         <DataGrid ItemsSource="{Binding Changes}" CanUserSortColumns="True" IsReadOnly="True"
                   CanUserResizeColumns="True" GridLinesVisibility="All" BorderThickness="1"
-                  BorderBrush="{DynamicResource ThemeBorderBrush}">
+                  BorderBrush="{DynamicResource ThemeBorderDefaultBrush}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{loc:Loc SaveDiffView_ColumnCategory}" Binding="{Binding Category}" Width="100"/>
                 <DataGridTextColumn Header="{loc:Loc SaveDiffView_ColumnChange}" Binding="{Binding Description}" Width="200"/>

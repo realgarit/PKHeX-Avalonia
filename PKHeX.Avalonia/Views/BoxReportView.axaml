@@ -25,7 +25,7 @@
         <DataGrid Name="ReportGrid" ItemsSource="{Binding Rows}" SelectedItem="{Binding SelectedRow}"
                   CanUserSortColumns="True" IsReadOnly="True" CanUserResizeColumns="True"
                   GridLinesVisibility="All" BorderThickness="1"
-                  BorderBrush="{DynamicResource ThemeBorderBrush}"
+                  BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                   DoubleTapped="OnRowDoubleTapped"
                   ToolTip.Tip="{loc:Loc BoxReportView_RowTooltip}">
             <DataGrid.Columns>

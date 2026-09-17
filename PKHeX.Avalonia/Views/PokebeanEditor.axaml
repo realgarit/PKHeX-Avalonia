@@ -47,7 +47,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="vm:BeanSlotViewModel">
                                     <Border Margin="4" Padding="12" CornerRadius="4"
-                                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                                            Background="{DynamicResource ThemeBackgroundElevatedBrush}"
                                             MinWidth="180">
                                         <Grid ColumnDefinitions="*,Auto">
                                             <TextBlock Text="{Binding Name}"

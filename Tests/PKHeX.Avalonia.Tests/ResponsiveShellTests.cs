@@ -95,6 +95,19 @@ public sealed class ResponsiveShellTests
         }
     }
 
+    [Fact]
+    public void ViewSurfacesUseSharedThemeTokensInsteadOfLegacyFluentBrushes()
+    {
+        var viewsDirectory = Path.Combine(FindRepoRoot(), "PKHeX.Avalonia", "Views");
+        foreach (var path in Directory.EnumerateFiles(viewsDirectory, "*.axaml"))
+        {
+            var view = File.ReadAllText(path);
+            Assert.DoesNotContain("SystemControl", view);
+            Assert.DoesNotContain("ThemeBorderBrush", view);
+            Assert.DoesNotContain("ThemeAccentBrush", view);
+        }
+    }
+
     [AvaloniaFact]
     public void MainWindow_At1024x720PreservesEditorAndWorkspaceWorkingWidths()
     {

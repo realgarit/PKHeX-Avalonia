@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Headless.XUnit;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -72,6 +74,62 @@ public sealed class NativeControlSystemTests
         Assert.Equal(new Color(0xFF, 0x1D, 0x1D, 0x1D), ((SolidColorBrush)popupBorder!.Background!).Color);
 
         window.Close();
+    }
+
+    [AvaloniaFact]
+    public void UnqualifiedTextControls_UseTheNeutralThemeForeground()
+    {
+        var text = new TextBlock { Text = "Default text" };
+        var radio = new RadioButton { Content = "Choice" };
+        var overlay = new TextBlock { Text = "Overlay text" };
+        overlay.Classes.Add("overlay-text");
+        var window = new Window
+        {
+            Content = new StackPanel { Children = { text, radio, overlay } },
+            Width = 240,
+            Height = 120,
+        };
+
+        window.Show();
+        Pump(window);
+
+        AssertNeutral((SolidColorBrush)text.Foreground!);
+        AssertNeutral((SolidColorBrush)radio.Foreground!);
+        AssertNeutral((SolidColorBrush)overlay.Foreground!);
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void ActionControls_CenterContentOnOneSharedVerticalLine()
+    {
+        var button = new Button { Content = "Save" };
+        var toggle = new ToggleButton { Content = "Workspace" };
+        var checkBox = new CheckBox { Content = "Enabled" };
+        var radio = new RadioButton { Content = "Option" };
+        var window = new Window
+        {
+            Content = new StackPanel { Children = { button, toggle, checkBox, radio } },
+            Width = 260,
+            Height = 160,
+        };
+
+        window.Show();
+        Pump(window);
+
+        Assert.Equal(HorizontalAlignment.Center, button.HorizontalContentAlignment);
+        Assert.Equal(VerticalAlignment.Center, button.VerticalContentAlignment);
+        Assert.Equal(VerticalAlignment.Center, toggle.VerticalContentAlignment);
+        Assert.Equal(VerticalAlignment.Center, checkBox.VerticalContentAlignment);
+        Assert.Equal(VerticalAlignment.Center, radio.VerticalContentAlignment);
+
+        window.Close();
+    }
+
+    private static void AssertNeutral(SolidColorBrush brush)
+    {
+        Assert.Equal(brush.Color.R, brush.Color.G);
+        Assert.Equal(brush.Color.G, brush.Color.B);
     }
 
     [AvaloniaFact]

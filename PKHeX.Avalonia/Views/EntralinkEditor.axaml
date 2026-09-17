@@ -68,7 +68,7 @@
 
         <TabItem Header="{loc:Loc EntralinkEditor_TabEntreeForest}">
             <Grid ColumnDefinitions="250, *">
-                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,1,0" Margin="0,0,10,0">
+                <Border BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,0,1,0" Margin="0,0,10,0">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top" Text="{loc:Loc EntralinkEditor_Areas}" FontWeight="Bold" Margin="5"/>
                         <ListBox ItemsSource="{Binding Areas}" SelectedItem="{Binding SelectedArea}">

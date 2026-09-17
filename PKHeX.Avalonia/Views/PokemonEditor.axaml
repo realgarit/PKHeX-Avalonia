@@ -8,11 +8,6 @@
              Focusable="False"
              KeyboardNavigation.IsTabStop="False">
 
-    <UserControl.Resources>
-        <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="Transparent" />
-        <SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="Transparent" />
-    </UserControl.Resources>
-
     <UserControl.Styles>
         <!-- Keep the editor on the shared neutral focus treatment. -->
         <Style Selector="Border">
@@ -561,7 +556,7 @@
 
                             <!-- Tech Records (Gen 8+) -->
                             <Border IsVisible="{Binding HasTechRecords}" Padding="8,0" Margin="0,8,0,0"
-                                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="0,1,0,0">
+                                    BorderBrush="{DynamicResource ThemeBorderDefaultBrush}" BorderThickness="0,1,0,0">
                                 <StackPanel Spacing="8" Margin="0,8,0,0">
                                     <TextBlock Text="{loc:Loc PokemonEditor_TechRecords}" FontWeight="SemiBold" />
                                     <StackPanel Orientation="Horizontal" Spacing="8">

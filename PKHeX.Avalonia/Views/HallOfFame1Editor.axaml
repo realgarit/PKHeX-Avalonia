@@ -38,7 +38,7 @@
 
             <!-- Right Panel - Team Details -->
             <Border Grid.Column="1"
-                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                    BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                     BorderThickness="1"
                     CornerRadius="4"
                     Padding="10">

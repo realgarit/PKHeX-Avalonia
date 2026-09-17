@@ -25,7 +25,7 @@
                     <DataTemplate DataType="vm:OverworldEventViewModel">
                         <Border Margin="0,0,0,5"
                                 Padding="10"
-                                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                BorderBrush="{DynamicResource ThemeBorderMutedBrush}"
                                 BorderThickness="1"
                                 CornerRadius="4">
                             <Grid ColumnDefinitions="*,Auto">
