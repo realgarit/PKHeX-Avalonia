@@ -399,6 +399,39 @@ public sealed class ResponsiveShellTests
         Assert.DoesNotContain("Grid.Row=\"1\" Grid.Column=\"0\" Text=\"{loc:Loc Misc7Editor_Single}", misc7);
     }
 
+    [Fact]
+    public void ComplexEditors_UseSharedToolHeadersFlatSectionsAndNativeGrids()
+    {
+        var views = new[]
+        {
+            "PokeathlonEditor.axaml",
+            "JoinAvenueEditor.axaml",
+            "GlobalLink5Editor.axaml",
+            "MedalEditorView.axaml",
+            "FashionEditorView.axaml",
+            "DonutEditor.axaml",
+        };
+
+        foreach (var view in views)
+        {
+            var source = ReadSourceFile("Views", view);
+            Assert.DoesNotContain("section-card", source);
+            Assert.Contains("editor-section-padded", source);
+        }
+
+        foreach (var view in new[] { "PokeathlonEditor.axaml", "JoinAvenueEditor.axaml", "GlobalLink5Editor.axaml", "MedalEditorView.axaml" })
+        {
+            var source = ReadSourceFile("Views", view);
+            Assert.Contains("Classes=\"editor-tabs\"", source);
+            Assert.Contains("Classes=\"editor-tab\"", source);
+            Assert.Contains("Classes=\"save-grid\"", source);
+            Assert.Contains("Classes=\"tool-header-stack\"", source);
+        }
+
+        Assert.Contains("Classes=\"save-editor-header\"", ReadSourceFile("Views", "FashionEditorView.axaml"));
+        Assert.Contains("Classes=\"tool-surface\"", ReadSourceFile("Views", "PokeathlonEditor.axaml"));
+    }
+
     [AvaloniaFact]
     public void ToolsMenu_UsesEveryRegisteredCapabilityOnce()
     {
