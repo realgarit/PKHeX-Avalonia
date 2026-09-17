@@ -30,6 +30,19 @@
             <Color x:Key="SystemAccentColorLight2">#ADADAD</Color>
             <Color x:Key="SystemAccentColorLight3">#C7C7C7</Color>
 
+            <!--
+                Appearance accent: deliberately static and achromatic. Fluent's platform accent can
+                otherwise leak into custom PathIcon/Border compositions on a fresh top-level window,
+                producing a yellow or blue cast even when the selected theme dictionary is neutral.
+                Dark and Light still own the surfaces and text contrast; interaction emphasis uses this
+                one product-neutral graphite value in both modes.
+            -->
+            <SolidColorBrush x:Key="PkhexNeutralAccentBrush" Color="#707070" />
+            <SolidColorBrush x:Key="PkhexNeutralAccentHoverBrush" Color="#8A8A8A" />
+            <SolidColorBrush x:Key="PkhexNeutralAccentPressedBrush" Color="#5A5A5A" />
+            <SolidColorBrush x:Key="PkhexNeutralAccentSubtleBrush" Color="#70707030" />
+            <SolidColorBrush x:Key="PkhexNeutralIconBrush" Color="#808080" />
+
             <!-- Override Focus Visuals to remove yellow/accent border -->
             <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="Transparent" />
             <SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="Transparent" />

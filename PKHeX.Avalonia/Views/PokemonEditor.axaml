@@ -194,7 +194,7 @@
                                             <ProgressBar Minimum="0" Maximum="1" Value="{Binding ExpPercent}"
                                                          IsHitTestVisible="False"
                                                          Background="Transparent"
-                                                         Foreground="{DynamicResource ThemeAccentPrimaryBrush}"
+                                                         Foreground="{StaticResource PkhexNeutralAccentBrush}"
                                                          CornerRadius="7"
                                                          MinHeight="0" />
                                         </Border>

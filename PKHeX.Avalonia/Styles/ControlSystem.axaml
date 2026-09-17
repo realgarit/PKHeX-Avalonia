@@ -163,7 +163,7 @@
     </Style>
 
     <Style Selector="ComboBoxItem:selected:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentSecondaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentPressedBrush}" />
         <Setter Property="Foreground" Value="White" />
     </Style>
 
@@ -387,8 +387,8 @@
     </Style>
 
     <Style Selector="ToggleSwitch /template/ Border#SwitchKnobBounds">
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentSecondaryBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentPressedBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <Style Selector="ToggleSwitch /template/ Ellipse#SwitchKnobOn, ToggleSwitch /template/ Ellipse#SwitchKnobOff">
