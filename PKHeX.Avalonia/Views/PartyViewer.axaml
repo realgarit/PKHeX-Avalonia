@@ -148,10 +148,10 @@
                                         </Setter>
                                     </Style>
                                     <Style Selector="Button:pointerover">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+                                        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
                                     </Style>
                                     <Style Selector="Button.selected">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+                                        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
                                         <Setter Property="BorderThickness" Value="2" />
                                     </Style>
                                 </Button.Styles>

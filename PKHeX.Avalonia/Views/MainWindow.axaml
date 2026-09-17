@@ -149,7 +149,7 @@
                         IsVisible="{Binding UpdateNotification, Converter={x:Static ObjectConverters.IsNotNull}}">
                     <StackPanel Orientation="Horizontal" Spacing="8" DataContext="{Binding UpdateNotification}">
                         <TextBlock Text="{Binding Message}"
-                                   Foreground="{DynamicResource ThemeAccentPrimaryBrush}"
+                                   Foreground="{StaticResource PkhexNeutralAccentBrush}"
                                    FontSize="12" VerticalAlignment="Center" />
                         <Button Content="{loc:Loc Update_WhatsNew}" Command="{Binding ShowChangelogCommand}" Padding="8,2" FontSize="11" />
                         <Button Content="{loc:Loc Update_Download}" Command="{Binding DownloadCommand}" Padding="8,2" FontSize="11" />
@@ -205,8 +205,8 @@
                                           AutomationProperties.Name="{loc:Loc Workspace_Pokemon}">
                                 <Grid ColumnDefinitions="Auto,*">
                                     <Border Classes="workspace-nav-icon">
-                                        <!-- Microsoft Fluent UI System Icon: BoxMultiple20Regular. -->
-                                        <PathIcon Data="M13.58 2.38a3 3 0 0 0-2.16 0L7.96 3.71A1.5 1.5 0 0 0 7 5.11v1.1a4 4 0 0 1 1 0v-1.1c0-.2.13-.4.32-.47l3.46-1.33a2 2 0 0 1 1.44 0l3.46 1.33q.31.14.32.47v7.78c0 .2-.13.4-.32.47L14 14.39v.5q0 .3-.07.6l3.1-1.2c.59-.22.97-.78.97-1.4V5.11a1.5 1.5 0 0 0-.96-1.4zm2.51 2.92a.5.5 0 0 0-.64-.3l-2.77 1.07a.5.5 0 0 1-.36 0L9.55 5.01a.5.5 0 1 0-.35.93l2.76 1.07q.54.2 1.08 0l2.76-1.07a.5.5 0 0 0 .3-.64m-5 5a.5.5 0 0 0-.64-.3L7.5 11.15l-2.95-1.13a.5.5 0 0 0-.35.93L7 12.02v2.49a.5.5 0 1 0 1 0v-2.49l2.8-1.08a.5.5 0 0 0 .3-.64M8.58 7.38a3 3 0 0 0-2.16 0L2.96 8.71a1.5 1.5 0 0 0-.96 1.4v4.78c0 .62.38 1.18.96 1.4l3.46 1.33a3 3 0 0 0 2.16 0l3.46-1.33c.58-.22.96-.78.96-1.4v-4.78a1.5 1.5 0 0 0-.96-1.4zm-1.8.93a2 2 0 0 1 1.44 0l3.46 1.33q.31.14.32.47v4.78c0 .2-.13.4-.32.47l-3.46 1.33a2 2 0 0 1-1.44 0l-3.46-1.33a.5.5 0 0 1-.32-.47v-4.78c0-.2.13-.4.32-.47z" />
+                                        <!-- Fluent-style Poké Ball glyph: recognizable storage/editor entry point. -->
+                                        <PathIcon Data="M10 2.25a7.75 7.75 0 1 0 0 15.5 7.75 7.75 0 0 0 0-15.5m0 1.5a6.25 6.25 0 0 1 6.15 5.15h-3.03a3.25 3.25 0 0 0-6.24 0H3.85A6.25 6.25 0 0 1 10 3.75m0 12.5a6.25 6.25 0 0 1-6.15-5.15h3.03a3.25 3.25 0 0 0 6.24 0h3.03A6.25 6.25 0 0 1 10 16.25m0-5a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5" />
                                     </Border>
                                     <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
                                         <TextBlock Text="{loc:Loc Workspace_Pokemon}" Classes="workspace-nav-title" TextWrapping="Wrap" />
@@ -392,16 +392,20 @@
                          title, icon, description, and availability have one owner. -->
                     <Border Classes="reports-surface" IsVisible="{Binding IsReportsWorkspace}">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                            <StackPanel Classes="view-stack">
-                                <StackPanel Spacing="4">
+                            <StackPanel Classes="reports-layout">
+                                <StackPanel Classes="reports-header" Spacing="2">
                                     <TextBlock Text="{loc:Loc Workspace_Reports_Title}" Classes="view-title" />
                                     <TextBlock Text="{loc:Loc Workspace_Reports_Description}" Classes="view-subtitle" TextWrapping="Wrap" />
                                 </StackPanel>
 
-                                <ItemsControl ItemsSource="{Binding ReportToolItems}">
+                                <Border Classes="reports-rule" />
+
+                                <ItemsControl Classes="report-tools"
+                                              HorizontalAlignment="Stretch"
+                                              ItemsSource="{Binding ReportToolItems}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <UniformGrid Columns="2" />
+                                            <UniformGrid Columns="3" />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
@@ -409,14 +413,16 @@
                                             <Button Classes="report-tool-card"
                                                     Command="{Binding Command}"
                                                     AutomationProperties.Name="{Binding Title}">
-                                                <Grid ColumnDefinitions="Auto,*">
+                                                <Grid ColumnDefinitions="Auto,*,Auto">
                                                     <Border Classes="report-tool-icon">
-                                                        <PathIcon Data="{Binding IconData, Converter={StaticResource PathGeometry}}" />
+                                                        <Path Data="{Binding IconData, Converter={StaticResource PathGeometry}}" />
                                                     </Border>
-                                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
-                                                        <TextBlock Text="{Binding Title}" Classes="report-tool-title" />
-                                                        <TextBlock Text="{Binding Description}" Classes="report-tool-description" />
+                                                    <StackPanel Grid.Column="1" Margin="10,0,8,0" Spacing="2" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Title}" Classes="report-tool-title" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{Binding Description}" Classes="report-tool-description" TextTrimming="CharacterEllipsis" />
                                                     </StackPanel>
+                                                    <PathIcon Grid.Column="2" Classes="report-tool-arrow"
+                                                              Data="M7.5 3.5L12 8l-4.5 4.5" />
                                                 </Grid>
                                             </Button>
                                         </DataTemplate>
@@ -468,7 +474,7 @@
                                             AutomationProperties.Name="{Binding Title}">
                                         <Grid ColumnDefinitions="Auto,*">
                                             <Border Classes="launcher-item-icon">
-                                                <PathIcon Data="{Binding IconData, Converter={StaticResource PathGeometry}}" />
+                                                <Path Data="{Binding IconData, Converter={StaticResource PathGeometry}}" />
                                             </Border>
                                             <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
                                                 <TextBlock Text="{Binding Title}" Classes="launcher-item-title" />

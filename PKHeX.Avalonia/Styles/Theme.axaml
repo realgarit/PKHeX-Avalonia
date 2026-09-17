@@ -411,7 +411,7 @@
     </Style>
 
     <Style Selector="Button:focus-visible">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="BorderThickness" Value="2" />
     </Style>
 
@@ -471,27 +471,27 @@
 
     <Style Selector="Button.slot:pointerover">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <!-- Selected State - use the neutral appearance accent -->
     <Style Selector="Button.slot.selected">
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentGlowBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentSubtleBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="ZIndex" Value="10" />
     </Style>
 
     <!-- Focus State - use the neutral appearance accent and keep focus quiet -->
     <Style Selector="Button.slot:focus">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="ZIndex" Value="10" />
     </Style>
 
     <!-- Deep Focus Override -->
     <Style Selector="Button.slot:focus /template/ Border#PART_Border">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <Style Selector="TextBlock.slot-number">
@@ -514,7 +514,7 @@
          Accent Button - Primary action button with gradient
          ───────────────────────────────────────────────────────────────────────── -->
     <Style Selector="Button.accent-gradient">
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentGradient}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentPressedBrush}" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="{DynamicResource UiDensityCardRadius}" />
@@ -630,7 +630,7 @@
 
     <Style Selector="TabControl.pouch-tabs TabItem:selected">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontWeight" Value="SemiBold" />
@@ -638,7 +638,7 @@
 
     <Style Selector="TabControl.pouch-tabs TabItem:selected /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="Height" Value="2" />
         <Setter Property="Margin" Value="0" />
     </Style>
@@ -727,7 +727,7 @@
          Accent Button - Styled primary action button
          ───────────────────────────────────────────────────────────────────────── -->
     <Style Selector="Button.accent">
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentSecondaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentPressedBrush}" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="{DynamicResource UiDensityCardRadius}" />
@@ -736,7 +736,7 @@
     </Style>
 
     <Style Selector="Button.accent:pointerover">
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="Opacity" Value="1" />
     </Style>
 
@@ -752,7 +752,7 @@
     </Style>
 
     <Style Selector="TabItem:selected">
-        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <!-- Pokémon editor section strip: compact, horizontal tabs with one quiet selected rule. -->
@@ -777,7 +777,7 @@
 
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:selected">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontWeight" Value="SemiBold" />
@@ -789,14 +789,14 @@
 
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:selected /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="Height" Value="2" />
         <Setter Property="Margin" Value="0,0,0,0" />
     </Style>
 
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:focus-visible /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <Style Selector="TabControl.editor-tabs /template/ ItemsPresenter#PART_ItemsPresenter">
@@ -840,7 +840,7 @@
     </Style>
 
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:selected">
-        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="Transparent" />
@@ -853,14 +853,14 @@
 
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:selected /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="Height" Value="2" />
         <Setter Property="Margin" Value="0,0,0,0" />
     </Style>
 
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:focus-visible /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <Style Selector="TabControl.workspace-tabs /template/ ItemsPresenter#PART_ItemsPresenter">
@@ -921,7 +921,7 @@
     </Style>
 
     <Style Selector="ComboBox:pointerover">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════════════════════════
@@ -943,7 +943,7 @@
     </Style>
 
     <Style Selector="NumericUpDown:pointerover">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <!-- Compact: Hides spinners, ideal for DataGrid cells and inline editing -->
@@ -1053,7 +1053,7 @@
     </Style>
 
     <Style Selector="Border.ribbon-item:pointerover">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -1068,7 +1068,7 @@
     </Style>
 
     <Style Selector="TextBox:focus">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -1120,7 +1120,7 @@
     </Style>
 
     <Style Selector="GridSplitter.pane-splitter:pointerover /template/ Border > Border">
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════════════════════════
@@ -1153,7 +1153,7 @@
         <Setter Property="Height" Value="44" />
         <Setter Property="Padding" Value="5" />
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="12" />
     </Style>
@@ -1200,7 +1200,7 @@
 
     <Style Selector="Button.header-tool-button:pointerover">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <Style Selector="Button PathIcon">
@@ -1210,7 +1210,7 @@
     </Style>
 
     <Style Selector="Button:pointerover PathIcon">
-        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <Style Selector="Border.welcome-surface">
@@ -1233,7 +1233,7 @@
         <Setter Property="Height" Value="76" />
         <Setter Property="Padding" Value="9" />
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentGlowBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentSubtleBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="22" />
     </Style>
@@ -1281,31 +1281,58 @@
     </Style>
 
     <Style Selector="ToggleButton.workspace-nav-item:checked">
-        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
-        <Setter Property="BorderThickness" Value="3,1,1,1" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
     </Style>
 
+    <Style Selector="ToggleButton.workspace-nav-item:checked:pointerover">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <!-- Fluent's ToggleButton theme paints checked state on its template presenter. Override that
+         presenter as well as the control property so the rail remains outline-only in the actual
+         compositor, including the checked+pointerover state. -->
+    <Style Selector="ToggleButton.workspace-nav-item:checked /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="ToggleButton.workspace-nav-item:checked:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
     <Style Selector="ToggleButton.workspace-nav-item:focus-visible">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <Style Selector="Border.workspace-nav-icon">
-        <Setter Property="Width" Value="28" />
-        <Setter Property="Height" Value="28" />
-        <Setter Property="CornerRadius" Value="7" />
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentGlowBrush}" />
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Border.workspace-nav-icon &gt; PathIcon">
-        <Setter Property="Width" Value="18" />
-        <Setter Property="Height" Value="18" />
-        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralIconBrush}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="ToggleButton.workspace-nav-item:pointerover Border.workspace-nav-icon &gt; PathIcon">
+        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralIconBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.workspace-nav-item:checked Border.workspace-nav-icon &gt; PathIcon">
+        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralIconBrush}" />
     </Style>
 
     <Style Selector="TextBlock.workspace-nav-title">
@@ -1321,10 +1348,20 @@
 
     <Style Selector="Border.reports-surface">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBaseBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="12" />
         <Setter Property="Padding" Value="{DynamicResource UiDensityViewPadding}" />
+    </Style>
+
+    <Style Selector="StackPanel.reports-layout">
+        <Setter Property="Spacing" Value="8" />
+    </Style>
+
+    <Style Selector="StackPanel.reports-header">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="Border.reports-rule">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource ThemeBorderMutedBrush}" />
     </Style>
 
     <Style Selector="TextBlock.view-subtitle">
@@ -1336,33 +1373,51 @@
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="10" />
-        <Setter Property="Padding" Value="14" />
-        <Setter Property="MinHeight" Value="84" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="Margin" Value="0,0,6,6" />
+        <Setter Property="MinHeight" Value="72" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
     </Style>
 
     <Style Selector="Button.report-tool-card:pointerover">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentHoverBrush}" />
     </Style>
 
     <Style Selector="Button.report-tool-card:focus-visible">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="BorderThickness" Value="2" />
     </Style>
 
     <Style Selector="Border.report-tool-icon">
-        <Setter Property="Width" Value="34" />
-        <Setter Property="Height" Value="34" />
-        <Setter Property="CornerRadius" Value="9" />
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentGlowBrush}" />
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 
-    <Style Selector="Border.report-tool-icon &gt; PathIcon">
-        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+    <Style Selector="Border.report-tool-icon &gt; Path">
+        <Setter Property="Stroke" Value="{StaticResource PkhexNeutralIconBrush}" />
+        <Setter Property="Fill" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="1.5" />
+        <Setter Property="Width" Value="19" />
+        <Setter Property="Height" Value="19" />
+        <Setter Property="Stretch" Value="Uniform" />
         <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.report-tool-card:pointerover Border.report-tool-icon &gt; Path">
+        <Setter Property="Stroke" Value="{StaticResource PkhexNeutralIconBrush}" />
+    </Style>
+
+    <Style Selector="PathIcon.report-tool-arrow">
+        <Setter Property="Width" Value="14" />
+        <Setter Property="Height" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextMutedBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
@@ -1434,16 +1489,16 @@
     </Style>
 
     <Style Selector="Border.launcher-panel">
-        <Setter Property="Width" Value="460" />
+        <Setter Property="Width" Value="520" />
         <Setter Property="MaxWidth" Value="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=Window}}" />
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBaseBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="Padding" Value="20" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="14" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Margin" Value="0,72,0,0" />
+        <Setter Property="Margin" Value="0,56,0,0" />
         <Setter Property="BoxShadow" Value="{DynamicResource ThemeShadowLarge}" />
     </Style>
 
@@ -1451,9 +1506,9 @@
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="7" />
-        <Setter Property="Padding" Value="12" />
-        <Setter Property="Margin" Value="0,16,0,0" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="Margin" Value="0,12,0,0" />
     </Style>
 
     <Style Selector="Border.launcher-search-box Path">
@@ -1482,31 +1537,38 @@
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="12,9" />
+        <Setter Property="Padding" Value="10,7" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
 
     <Style Selector="Button.launcher-item:pointerover">
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentGlowBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentSubtleBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <Style Selector="Border.launcher-item-icon">
-        <Setter Property="Width" Value="28" />
-        <Setter Property="Height" Value="28" />
-        <Setter Property="CornerRadius" Value="7" />
-        <Setter Property="Background" Value="{DynamicResource ThemeAccentGlowBrush}" />
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style Selector="Border.launcher-item-icon &gt; PathIcon">
-        <Setter Property="Width" Value="16" />
-        <Setter Property="Height" Value="16" />
-        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+    <Style Selector="Border.launcher-item-icon &gt; Path">
+        <Setter Property="Stroke" Value="{StaticResource PkhexNeutralIconBrush}" />
+        <Setter Property="Fill" Value="Transparent" />
+        <Setter Property="StrokeThickness" Value="1.4" />
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+        <Setter Property="Stretch" Value="Uniform" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.launcher-item:pointerover Border.launcher-item-icon &gt; Path">
+        <Setter Property="Stroke" Value="{DynamicResource ThemeTextPrimaryBrush}" />
     </Style>
 
     <Style Selector="TextBlock.launcher-item-title">

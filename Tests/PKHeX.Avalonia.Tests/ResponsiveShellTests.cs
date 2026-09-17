@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia;
 using Avalonia.Headless.XUnit;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
@@ -24,6 +25,8 @@ public sealed class ResponsiveShellTests
         Assert.Contains("Classes=\"app-header\"", mainWindow);
         Assert.Contains("Classes=\"workspace-rail\"", mainWindow);
         Assert.Contains("Classes=\"reports-surface\"", mainWindow);
+        Assert.Contains("Classes=\"reports-layout\"", mainWindow);
+        Assert.Contains("<UniformGrid Columns=\"3\" />", mainWindow);
         Assert.Contains("SelectedIndex=\"{Binding SelectedWorkspaceIndex, Mode=TwoWay}\"", mainWindow);
         Assert.Contains("Classes=\"pane-splitter shell-divider\"", mainWindow);
         Assert.Contains("Classes=\"workspace-tabs\"", mainWindow);
@@ -40,6 +43,15 @@ public sealed class ResponsiveShellTests
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:selected", theme);
         Assert.Contains("TabControl.editor-tabs TabItem.editor-tab:focus-visible", theme);
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:focus-visible", theme);
+        var selectedRailStyle = System.Text.RegularExpressions.Regex.Match(
+            theme,
+            "<Style Selector=\"ToggleButton\\.workspace-nav-item:checked\">(?<body>.*?)</Style>",
+            System.Text.RegularExpressions.RegexOptions.Singleline);
+        Assert.True(selectedRailStyle.Success);
+        Assert.Contains("Background\" Value=\"Transparent\"", selectedRailStyle.Groups["body"].Value);
+        Assert.Contains("BorderThickness\" Value=\"1\"", selectedRailStyle.Groups["body"].Value);
+        Assert.DoesNotContain("ThemeBackgroundElevatedBrush", selectedRailStyle.Groups["body"].Value);
+        Assert.Contains("ToggleButton.workspace-nav-item:checked /template/ ContentPresenter#PART_ContentPresenter", theme);
         var selectedEditorStyle = System.Text.RegularExpressions.Regex.Match(
             theme,
             "<Style Selector=\"TabControl\\.editor-tabs TabItem\\.editor-tab:selected\">(?<body>.*?)</Style>",
@@ -211,6 +223,56 @@ public sealed class ResponsiveShellTests
         var matches = app.ViewModel.FilteredToolLauncherItems.ToList();
         Assert.Single(matches);
         Assert.Equal("Batch Editor", matches[0].Title);
+    }
+
+    [AvaloniaFact]
+    public void ReportsWorkspace_UsesCompactThreeColumnTilesWithAlignedActions()
+    {
+        using var app = new HeadlessAppFixture();
+        app.Window.Width = 1024;
+        app.Window.Height = 720;
+        app.LoadSaveInstance(new SAV6XY());
+        app.ViewModel.ActiveWorkspace = MainWorkspace.Reports;
+        app.Pump();
+
+        var cards = app.Window.GetVisualDescendants()
+            .OfType<Button>()
+            .Where(button => button.Classes.Contains("report-tool-card") && button.IsVisible)
+            .ToList();
+        var arrows = app.Window.GetVisualDescendants()
+            .OfType<PathIcon>()
+            .Where(icon => icon.Classes.Contains("report-tool-arrow") && icon.IsVisible)
+            .ToList();
+
+        Assert.Equal(5, cards.Count);
+        Assert.Equal(5, arrows.Count);
+        Assert.Equal(3, cards.Take(3)
+            .Select(card => card.TranslatePoint(new Point(0, 0), app.Window)?.X)
+            .Distinct()
+            .Count());
+        Assert.All(cards, card =>
+        {
+            Assert.InRange(card.Bounds.Width, 220, 310);
+            Assert.InRange(card.Bounds.Height, 70, 90);
+            Assert.Equal(VerticalAlignment.Center, card.VerticalContentAlignment);
+        });
+    }
+
+    [Fact]
+    public void AppearanceAccent_IsStaticAndAchromaticAcrossViewStyles()
+    {
+        var app = ReadSourceFile("App.axaml");
+        Assert.Contains("PkhexNeutralAccentBrush", app);
+        Assert.Contains("Color=\"#707070\"", app);
+
+        var avaloniaDirectory = Path.Combine(FindRepoRoot(), "PKHeX.Avalonia");
+        foreach (var path in Directory.EnumerateFiles(avaloniaDirectory, "*.axaml", SearchOption.AllDirectories))
+        {
+            var source = File.ReadAllText(path);
+            Assert.DoesNotContain("DynamicResource ThemeAccentPrimaryBrush", source);
+            Assert.DoesNotContain("DynamicResource ThemeAccentSecondaryBrush", source);
+            Assert.DoesNotContain("DynamicResource ThemeAccentGlowBrush", source);
+        }
     }
 
     [AvaloniaFact]
