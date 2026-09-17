@@ -8,13 +8,20 @@
              mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
              x:Class="PKHeX.Avalonia.Views.Pokedex7Editor"
              x:DataType="vm:Pokedex7EditorViewModel">
-    
-    <Border Padding="16" Classes="view-container">
-        <Grid ColumnDefinitions="280, 16, *" RowDefinitions="*,Auto">
+    <Border Classes="view-container">
+        <Grid ColumnDefinitions="280, 8, *" RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" Grid.Column="2" Classes="save-editor-header">
+                <Button Content="{loc:Loc Pokedex7Editor_SaveEntry}"
+                        Command="{Binding SaveCommand}"
+                        Classes="accent"
+                        MinWidth="100"
+                        HorizontalAlignment="Right"
+                        HorizontalContentAlignment="Center" />
+            </Grid>
             <!-- Entry List -->
-            <Grid Grid.Column="0" RowDefinitions="Auto, 8, *">
+            <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto, 8, *">
                 <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc Pokedex7Editor_SearchSpeciesForm}" AutomationProperties.Name="Search Species/Form" />
-                <Border Grid.Row="2" Classes="section-card" Padding="0">
+                <Border Grid.Row="2" Classes="pokedex-species-list">
                     <ListBox ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry}" Background="Transparent">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="core:ComboItem">
@@ -24,21 +31,18 @@
                     </ListBox>
                 </Border>
             </Grid>
-            
             <!-- Details -->
-            <ScrollViewer Grid.Column="2">
-                <StackPanel Spacing="16">
+            <ScrollViewer Grid.Row="1" Grid.Column="2">
+                <StackPanel Spacing="8">
                     <!-- Entry Flags -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex7Editor_EntryFlags}" FontWeight="SemiBold" Opacity="0.6" />
                             <CheckBox Content="{loc:Loc Pokedex7Editor_Caught}" IsChecked="{Binding Caught}" IsEnabled="{Binding IsCaughtEnabled}" FontWeight="SemiBold" />
-                            
-                            <Grid ColumnDefinitions="*, 16, *" RowDefinitions="Auto, 8, Auto">
+                            <Grid ColumnDefinitions="*, 8, *" RowDefinitions="Auto, 8, Auto">
                                 <!-- Headers -->
                                 <TextBlock Text="{loc:Loc Pokedex7Editor_Seen}" Grid.Column="0" FontWeight="SemiBold" Opacity="0.7" />
                                 <TextBlock Text="{loc:Loc Pokedex7Editor_Displayed}" Grid.Column="2" FontWeight="SemiBold" Opacity="0.7" />
-                                
                                 <!-- Seen Checkboxes -->
                                 <StackPanel Grid.Row="2" Grid.Column="0" Spacing="8">
                                     <CheckBox Content="{loc:Loc Pokedex7Editor_Male}" IsChecked="{Binding SeenMale}" IsEnabled="{Binding CanBeMale}"/>
@@ -46,7 +50,6 @@
                                     <CheckBox Content="{loc:Loc Pokedex7Editor_MaleShiny}" IsChecked="{Binding SeenMaleShiny}" IsEnabled="{Binding CanBeMale}"/>
                                     <CheckBox Content="{loc:Loc Pokedex7Editor_FemaleShiny}" IsChecked="{Binding SeenFemaleShiny}" IsEnabled="{Binding CanBeFemale}"/>
                                 </StackPanel>
-                                
                                 <!-- Displayed Checkboxes -->
                                 <StackPanel Grid.Row="2" Grid.Column="2" Spacing="8">
                                     <CheckBox Content="{loc:Loc Pokedex7Editor_Male}" IsChecked="{Binding DisplayedMale}" IsEnabled="{Binding CanBeMale}"/>
@@ -57,9 +60,8 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                    
                     <!-- Languages -->
-                    <Border IsVisible="{Binding HasLanguages}" Classes="section-card" Padding="12">
+                    <Border IsVisible="{Binding HasLanguages}" Classes="editor-section">
                         <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex7Editor_Languages}" FontWeight="SemiBold" Opacity="0.6" />
                             <WrapPanel Orientation="Horizontal">
@@ -78,10 +80,6 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
-                <Button Content="{loc:Loc Pokedex7Editor_SaveEntry}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center"/>
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

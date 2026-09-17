@@ -9,13 +9,20 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PKHeX.Avalonia.Views.Pokedex4Editor"
              x:DataType="vm:Pokedex4EditorViewModel">
-    
-    <Border Padding="16" Classes="view-container">
-        <Grid ColumnDefinitions="250, 16, *" RowDefinitions="*,Auto">
+    <Border Classes="view-container">
+        <Grid ColumnDefinitions="250, 8, *" RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" Grid.Column="2" Classes="save-editor-header">
+                <Button Content="{loc:Loc Pokedex4Editor_SaveEntry}"
+                        Command="{Binding SaveCommand}"
+                        Classes="accent"
+                        MinWidth="100"
+                        HorizontalAlignment="Right"
+                        HorizontalContentAlignment="Center" />
+            </Grid>
             <!-- Species List -->
-            <Grid Grid.Column="0" RowDefinitions="Auto, 8, *">
+            <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto, 8, *">
                 <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc Pokedex4Editor_SearchSpecies}" AutomationProperties.Name="Search Species" />
-                <Border Grid.Row="2" Classes="section-card" Padding="0">
+                <Border Grid.Row="2" Classes="pokedex-species-list">
                     <ListBox ItemsSource="{Binding Species}" SelectedItem="{Binding SelectedSpecies}" Background="Transparent">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="core:ComboItem">
@@ -25,15 +32,14 @@
                     </ListBox>
                 </Border>
             </Grid>
-            
             <!-- Details -->
-            <ScrollViewer Grid.Column="2">
-                <StackPanel Spacing="16">
+            <ScrollViewer Grid.Row="1" Grid.Column="2">
+                <StackPanel Spacing="8">
                     <!-- Basic Flags & Mode -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex4Editor_EntrySettings}" FontWeight="SemiBold" Opacity="0.6" />
-                            <Grid ColumnDefinitions="*, 16, *">
+                            <Grid ColumnDefinitions="*, 8, *">
                                 <StackPanel Grid.Column="0" Spacing="8">
                                     <CheckBox Content="{loc:Loc Pokedex4Editor_Caught}" IsChecked="{Binding Caught}" FontWeight="SemiBold" />
                                     <CheckBox Content="{loc:Loc Pokedex4Editor_Seen}" IsChecked="{Binding Seen}" />
@@ -45,10 +51,9 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                    
                     <!-- Genders -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex4Editor_GendersOrderMatters}" FontWeight="SemiBold" Opacity="0.6" />
                             <Grid ColumnDefinitions="*, 8, 40, 8, *">
                                 <!-- Unseen -->
@@ -58,13 +63,11 @@
                                         <ListBox ItemsSource="{Binding UnseenGenders}" SelectedItem="{Binding SelectedUnseenGender}" Height="120" />
                                     </Border>
                                 </DockPanel>
-                                
                                 <!-- Move Buttons -->
                                 <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
                                     <Button Content="→" Command="{Binding AddGenderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" AutomationProperties.Name="Add Gender"/>
                                     <Button Content="←" Command="{Binding RemoveGenderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" AutomationProperties.Name="Remove Gender"/>
                                 </StackPanel>
-                                
                                 <!-- Seen -->
                                 <DockPanel Grid.Column="4">
                                     <TextBlock Text="{loc:Loc Pokedex4Editor_Seen}" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0,0,0,4" Opacity="0.7" />
@@ -81,10 +84,9 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                    
                     <!-- Forms -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex4Editor_FormsOrderMatters}" FontWeight="SemiBold" Opacity="0.6" />
                             <Grid ColumnDefinitions="*, 8, 40, 8, *">
                                 <!-- Unseen -->
@@ -94,13 +96,11 @@
                                         <ListBox ItemsSource="{Binding UnseenForms}" SelectedItem="{Binding SelectedUnseenForm}" Height="120" />
                                     </Border>
                                 </DockPanel>
-                                
                                 <!-- Move Buttons -->
                                 <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
                                     <Button Content="→" Command="{Binding AddFormCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" AutomationProperties.Name="Add Form"/>
                                     <Button Content="←" Command="{Binding RemoveFormCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" AutomationProperties.Name="Remove Form"/>
                                 </StackPanel>
-                                
                                 <!-- Seen -->
                                 <DockPanel Grid.Column="4">
                                     <TextBlock Text="{loc:Loc Pokedex4Editor_Seen}" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0,0,0,4" Opacity="0.7" />
@@ -117,9 +117,8 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                    
                     <!-- Languages -->
-                    <Border IsVisible="{Binding HasLanguages}" Classes="section-card" Padding="12">
+                    <Border IsVisible="{Binding HasLanguages}" Classes="editor-section">
                         <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex4Editor_Languages}" FontWeight="SemiBold" Opacity="0.6" />
                             <WrapPanel Orientation="Horizontal">
@@ -135,10 +134,6 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
-                <Button Content="{loc:Loc Pokedex4Editor_SaveEntry}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center"/>
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

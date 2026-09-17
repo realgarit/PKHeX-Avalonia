@@ -52,6 +52,7 @@ public sealed class ResponsiveShellTests
         Assert.Contains("BorderThickness\" Value=\"1\"", selectedRailStyle.Groups["body"].Value);
         Assert.DoesNotContain("ThemeBackgroundElevatedBrush", selectedRailStyle.Groups["body"].Value);
         Assert.Contains("ToggleButton.workspace-nav-item:checked /template/ ContentPresenter#PART_ContentPresenter", theme);
+        Assert.Contains("Border.pokedex-species-list ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter", theme);
         Assert.Contains("Button.auxiliary-list-item /template/ Border#PART_Border", theme);
         var selectedEditorStyle = System.Text.RegularExpressions.Regex.Match(
             theme,
@@ -331,6 +332,37 @@ public sealed class ResponsiveShellTests
         Assert.Contains("Classes=\"database-filter-pane\"", pkmDatabase);
         Assert.Contains("Classes=\"database-results-pane\"", pkmDatabase);
         Assert.Contains("Width=\"80\"", pkmDatabase);
+    }
+
+    [Fact]
+    public void PokedexEditors_UseFlatDetailSurfacesAndTopActions()
+    {
+        var views = new[]
+        {
+            "Pokedex4Editor.axaml",
+            "Pokedex5Editor.axaml",
+            "Pokedex6Editor.axaml",
+            "Pokedex7Editor.axaml",
+            "Pokedex7bEditor.axaml",
+            "Pokedex8Editor.axaml",
+            "Pokedex8bEditor.axaml",
+            "PokedexGen9Editor.axaml",
+            "PokedexLAEditor.axaml",
+            "PokedexSimpleEditor.axaml",
+        };
+
+        foreach (var view in views)
+        {
+            var source = ReadSourceFile("Views", view);
+            Assert.DoesNotContain("section-card", source);
+            Assert.DoesNotContain("Bottom Buttons", source);
+            Assert.Contains("pokedex-species-list", source);
+            Assert.DoesNotContain("ComboBoxItem>{loc:Loc", source);
+        }
+
+        Assert.DoesNotContain("RowDefinitions=\"*,Auto\"", ReadSourceFile("Views", "PokedexGen9Editor.axaml"));
+        Assert.Contains("Classes=\"save-editor-header\"", ReadSourceFile("Views", "PokedexGen9Editor.axaml"));
+        Assert.Contains("Classes=\"save-editor-header\"", ReadSourceFile("Views", "Pokedex7bEditor.axaml"));
     }
 
     [AvaloniaFact]
