@@ -677,6 +677,101 @@
         <Setter Property="MinHeight" Value="{DynamicResource UiDensityDataGridRowHeight}" />
     </Style>
 
+    <!-- Database/detail tools use a full-width neutral surface with an explicit filter rail and a
+         shared native grid contract. The class is additive so inventory keeps its existing layout. -->
+    <Style Selector="Grid.tool-surface">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBaseBrush}" />
+    </Style>
+
+    <Style Selector="DockPanel.tool-surface">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBaseBrush}" />
+    </Style>
+
+    <Style Selector="Border.database-filter-pane">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,1,0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityViewPadding}" />
+    </Style>
+
+    <Style Selector="Border.database-results-pane">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBaseBrush}" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityViewPadding}" />
+    </Style>
+
+    <Style Selector="Border.tool-header">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBaseBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityHeaderPadding}" />
+        <Setter Property="MinHeight" Value="36" />
+    </Style>
+
+    <Style Selector="TextBlock.tool-header-title">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="Border.tool-search-surface">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="10" />
+    </Style>
+
+    <Style Selector="Border.database-results-surface">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+    </Style>
+
+    <Style Selector="Border.tool-result-card">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+    </Style>
+
+    <Style Selector="TextBlock.tool-pane-title">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="TextBlock.tool-field-label">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+    </Style>
+
+    <Style Selector="Button.tool-filter-toggle">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="10,5" />
+    </Style>
+
+    <Style Selector="Border.database-status">
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="Padding" Value="0,8,0,0" />
+    </Style>
+
+    <Style Selector="DataGrid.database-grid">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="RowBackground" Value="Transparent" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+    </Style>
+
     <!-- ─────────────────────────────────────────────────────────────────────────
          View Container - Main background for views (replaces SystemControlBackgroundAltHighBrush)
          ───────────────────────────────────────────────────────────────────────── -->
