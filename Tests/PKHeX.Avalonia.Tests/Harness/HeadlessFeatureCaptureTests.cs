@@ -4,12 +4,15 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using PKHeX.Application.Abstractions;
 using PKHeX.Avalonia.Views;
+using PKHeX.Avalonia.Tests.Fixtures;
 using PKHeX.Core;
 using PKHeX.Presentation.ViewModels;
 using Xunit;
@@ -118,6 +121,114 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
         CaptureOrSkip(window, "pkm-database-scanning.png", "PKM Database scanning state");
     }
 
+    [AvaloniaFact]
+    public void CaptureDensityModes_MainWindow_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        using var app = new HeadlessAppFixture();
+        app.Window.Width = 1024;
+        app.Window.Height = 720;
+        var saveDirectory = SaveFileFixture.FindSaveFilesPath();
+        Assert.NotNull(saveDirectory);
+        var density = app.Services.GetRequiredService<IUiDensityService>();
+        // The declarative application resources already carry the Compact compatibility default.
+        // Capture that initial frame without a same-value resource notification; later mode changes
+        // are captured after the explicit repaint barrier in CaptureDensityMode.
+        app.LoadSave(Path.Combine(saveDirectory!, "gen9a_legendsza.main"));
+
+        try
+        {
+            CaptureCurrentDensity(app, "mainwindow-density-compact.png");
+            CaptureDensityMode(app, density, AppDensity.Comfortable, "mainwindow-density-comfortable.png");
+        }
+        finally
+        {
+            // Do not leave the process-wide resource dictionary in the capture-only mode for any
+            // later opt-in captures running in the same test process.
+            density.ApplyDensity(AppDensity.Compact);
+        }
+    }
+
+    [AvaloniaFact]
+    public void CaptureTaskAwareShellStates_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        using var app = new HeadlessAppFixture();
+        app.Window.Width = 1024;
+        app.Window.Height = 720;
+        var saveDirectory = SaveFileFixture.FindSaveFilesPath();
+        Assert.NotNull(saveDirectory);
+        app.LoadSave(Path.Combine(saveDirectory!, "gen9a_legendsza.main"));
+        app.ClickSlot(0, 0);
+        var boxView = app.Find<BoxViewer>();
+        Assert.NotNull(boxView);
+        app.Focus(boxView!);
+        app.PressKey(PhysicalKey.Enter);
+        app.Pump();
+
+        // Use a fresh top-level surface for every shell state so each visual artifact is a complete
+        // repaint, including the initial Pokémon workspace after the save-loaded tree is realized.
+        app.Pump();
+        CaptureFreshShellState(app, "shell-pokemon.png", "Pokémon workspace");
+
+        app.ViewModel.SelectedWorkspaceIndex = 1;
+        app.Pump();
+        CaptureFreshShellState(app, "shell-party.png", "Party workspace");
+        app.ViewModel.SelectedWorkspaceIndex = 0;
+        app.Pump();
+
+        app.ViewModel.ActiveWorkspace = MainWorkspace.Save;
+        app.Pump();
+        CaptureFreshShellState(app, "shell-save.png", "Save workspace");
+
+        app.ViewModel.ActiveWorkspace = MainWorkspace.Reports;
+        app.Pump();
+        CaptureFreshShellState(app, "shell-reports.png", "Reports workspace");
+
+        app.ViewModel.IsToolLauncherOpen = true;
+        app.Pump();
+        CaptureFreshShellState(app, "shell-launcher.png", "Tool launcher");
+        app.ViewModel.IsToolLauncherOpen = false;
+    }
+
+    [AvaloniaFact]
+    public void CaptureThemeVariants_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        using var app = new HeadlessAppFixture();
+        app.Window.Width = 1024;
+        app.Window.Height = 720;
+        var saveDirectory = SaveFileFixture.FindSaveFilesPath();
+        Assert.NotNull(saveDirectory);
+        app.LoadSave(Path.Combine(saveDirectory!, "gen9a_legendsza.main"));
+
+        var theme = app.Services.GetRequiredService<IThemeService>();
+        try
+        {
+            foreach (var (variant, fileName) in new[]
+                     {
+                         (AppTheme.Dark, "shell-theme-dark.png"),
+                         (AppTheme.Light, "shell-theme-light.png"),
+                         (AppTheme.HighContrast, "shell-theme-high-contrast.png"),
+                     })
+            {
+                theme.ApplyTheme(variant);
+                app.Pump();
+                CaptureFreshShellState(app, fileName, $"{variant} theme");
+            }
+        }
+        finally
+        {
+            theme.ApplyTheme(AppTheme.Dark);
+        }
+    }
+
     private bool SkipWhenCaptureDisabled()
     {
         if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1")
@@ -156,6 +267,104 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
         Assert.True(new FileInfo(path).Length > 0);
         output.WriteLine($"Saved Pokemon editor ({featureLabel}) screenshot to {path}");
         return saved;
+    }
+
+    private void CaptureDensityMode(HeadlessAppFixture app, IUiDensityService density, AppDensity mode, string fileName)
+    {
+        var changed = density.CurrentDensity != mode;
+        if (changed)
+            density.ApplyDensity(mode);
+        var captureWindow = changed
+            ? new MainWindow
+            {
+                DataContext = app.ViewModel,
+                Width = app.Window.Width,
+                Height = app.Window.Height,
+            }
+            : app.Window;
+
+        try
+        {
+            if (changed)
+                captureWindow.Show();
+            app.Pump();
+            // A fresh top-level surface gives Skia a complete repaint after a DynamicResource
+            // replacement. This avoids treating a valid runtime reflow as a partial screenshot.
+            if (changed)
+                PumpToStableLayout(captureWindow);
+
+            var path = Path.Combine(CaptureDirectory(), fileName);
+            var saved = CaptureWindow(captureWindow, path);
+            if (saved is null)
+            {
+                output.WriteLine("Skipped: headless drawing mode produced no frame.");
+                return;
+            }
+
+            Assert.Equal(path, saved);
+            Assert.True(File.Exists(path));
+            Assert.True(new FileInfo(path).Length > 0);
+            output.WriteLine($"Saved {mode} density screenshot to {path}");
+        }
+        finally
+        {
+            if (changed)
+                captureWindow.Close();
+        }
+    }
+
+    private void CaptureCurrentDensity(HeadlessAppFixture app, string fileName)
+    {
+        app.Pump();
+
+        var path = Path.Combine(CaptureDirectory(), fileName);
+        var saved = CaptureWindow(app.Window, path);
+        if (saved is null)
+        {
+            output.WriteLine("Skipped: headless drawing mode produced no frame.");
+            return;
+        }
+
+        Assert.Equal(path, saved);
+        Assert.True(File.Exists(path));
+        Assert.True(new FileInfo(path).Length > 0);
+        output.WriteLine($"Saved initial Compact density screenshot to {path}");
+    }
+
+    private void CaptureFreshShellState(HeadlessAppFixture app, string fileName, string stateLabel)
+    {
+        var window = new MainWindow
+        {
+            DataContext = app.ViewModel,
+            Width = app.Window.Width,
+            Height = app.Window.Height,
+        };
+        window.Show();
+        try
+        {
+            PumpToStableLayout(window);
+            CaptureShellState(window, fileName, stateLabel);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    private void CaptureShellState(Window window, string fileName, string stateLabel)
+    {
+        var path = Path.Combine(CaptureDirectory(), fileName);
+        var saved = CaptureWindow(window, path);
+        if (saved is null)
+        {
+            output.WriteLine("Skipped: headless drawing mode produced no frame.");
+            return;
+        }
+
+        Assert.Equal(path, saved);
+        Assert.True(File.Exists(path));
+        Assert.True(new FileInfo(path).Length > 0);
+        output.WriteLine($"Saved {stateLabel} screenshot to {path}");
     }
 
     private static string? CaptureWindow(Window window, string pngPath)

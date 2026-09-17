@@ -9,6 +9,7 @@
     <UserControl.Resources>
         <conv:SpritePreferenceLabelConverter x:Key="SpritePrefLabel"/>
         <conv:AppThemeLabelConverter x:Key="AppThemeLabel"/>
+        <conv:AppDensityLabelConverter x:Key="AppDensityLabel"/>
     </UserControl.Resources>
 
     <ScrollViewer>
@@ -166,6 +167,23 @@
                             <ComboBox.ItemTemplate>
                                 <DataTemplate x:CompileBindings="False">
                                     <TextBlock Text="{Binding Converter={StaticResource AppThemeLabel}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{loc:Loc Settings_Density}" FontWeight="Medium"/>
+                            <TextBlock Text="{loc:Loc Settings_Density_Desc}"
+                                       FontSize="12" Opacity="0.6" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <ComboBox Grid.Column="1" MinWidth="170" VerticalAlignment="Center"
+                                  ItemsSource="{Binding Densities}"
+                                  SelectedItem="{Binding SelectedDensity}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:CompileBindings="False">
+                                    <TextBlock Text="{Binding Converter={StaticResource AppDensityLabel}}"/>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>

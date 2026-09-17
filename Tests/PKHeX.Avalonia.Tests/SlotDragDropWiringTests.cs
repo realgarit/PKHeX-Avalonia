@@ -85,7 +85,7 @@ public class SlotDragDropWiringTests(ITestOutputHelper output)
         var userControlOpenTag = xml[..xml.IndexOf(">", StringComparison.Ordinal)];
         Assert.DoesNotContain("DragDrop.AllowDrop", userControlOpenTag);
 
-        var borderIndex = xml.IndexOf("<Border Padding=\"6\" Classes=\"view-container\"", StringComparison.Ordinal);
+        var borderIndex = xml.IndexOf("<Border Padding=\"{DynamicResource UiDensitySectionPadding}\" Classes=\"view-container\"", StringComparison.Ordinal);
         Assert.True(borderIndex >= 0, "Expected the editor's outer Border.");
         var borderSlice = xml[borderIndex..Math.Min(xml.Length, borderIndex + 400)];
         Assert.Contains("DragDrop.AllowDrop=\"True\"", borderSlice);

@@ -365,6 +365,7 @@ public sealed class DetachedWorkspaceTests
             new AppSettings(),
             new FakeSettingsStore(),
             new Mock<IThemeService>().Object,
+            new Mock<IUiDensityService>().Object,
             undoRedo,
             new LanguageService(),
             new Mock<IAutoLegalityService>().Object,

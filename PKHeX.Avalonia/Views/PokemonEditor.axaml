@@ -29,13 +29,14 @@
         <!-- AllowDrop lives here (not on the root UserControl): Avalonia's drag/drop target
              resolution requires AllowDrop on the exact innermost hit-test-visible element under
              the pointer, and this Border's Background covers the editor's full visible area. -->
-        <Border Padding="6" Classes="view-container" VerticalAlignment="Stretch"
+        <Border Padding="{DynamicResource UiDensitySectionPadding}" Classes="view-container" VerticalAlignment="Stretch"
                 DragDrop.AllowDrop="True"
                 DragDrop.Drop="OnEditorDrop"
                 DragDrop.DragOver="OnEditorDragOver">
             <Grid RowDefinitions="Auto,*" VerticalAlignment="Stretch">
                 <!-- Header Section -->
-                <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="4,0,4,12">
+                <Border Grid.Row="0" Classes="entity-summary">
+                    <Grid ColumnDefinitions="Auto,*" Margin="4,0,4,0">
                     <!-- Left: Sprite Card -->
                     <Border Grid.Column="0"
                             Background="{DynamicResource ThemeBackgroundCardBrush}"
@@ -113,10 +114,11 @@
                             </Border>
                         </StackPanel>
                     </Grid>
-                </Grid>
+                    </Grid>
+                </Border>
 
                 <!-- Tab Control -->
-                <TabControl Grid.Row="1" Classes="editor-tabs" TabStripPlacement="Left" Focusable="False"
+                <TabControl Grid.Row="1" Classes="editor-tabs" TabStripPlacement="Top" Focusable="False"
                             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                             ClipToBounds="True">
                                     <!-- Main Tab -->
@@ -214,7 +216,7 @@
 
                                         <!-- Stat Alignment (gen8+) -->
                                         <StackPanel IsVisible="{Binding ShowStatAlignment}" Margin="0,8,0,0">
-                                            <TextBlock Text="{loc:Loc PokemonEditor_StatAlignment}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                            <TextBlock Text="{loc:Loc PokemonEditor_StatAlignment}" FontWeight="SemiBold" Margin="0,0,0,4" TextWrapping="Wrap" />
                                             <ComboBox ItemsSource="{Binding NatureList}"
                                                       SelectedValue="{Binding StatAlignment}" SelectedValueBinding="{Binding Value}"
                                                       DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch"

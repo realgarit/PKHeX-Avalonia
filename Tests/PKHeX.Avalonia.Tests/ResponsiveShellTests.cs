@@ -1,7 +1,10 @@
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
+using Avalonia.VisualTree;
 using PKHeX.Avalonia.Tests.Harness;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
+using PKHeX.Presentation.ViewModels;
 
 namespace PKHeX.Avalonia.Tests;
 
@@ -14,15 +17,19 @@ public sealed class ResponsiveShellTests
         var theme = ReadSourceFile("Styles", "Theme.axaml");
 
         Assert.Contains("Width=\"1024\" Height=\"720\"", mainWindow);
-        Assert.Contains("Width=\"380\" MinWidth=\"360\" MaxWidth=\"480\"", mainWindow);
+        Assert.Contains("Width=\"360\" MinWidth=\"320\" MaxWidth=\"440\"", mainWindow);
         Assert.Contains("x:Name=\"EditorPane\"", mainWindow);
         Assert.Contains("x:Name=\"WorkspacePane\"", mainWindow);
+        Assert.Contains("Classes=\"app-header\"", mainWindow);
+        Assert.Contains("Classes=\"workspace-rail\"", mainWindow);
+        Assert.Contains("Classes=\"reports-surface\"", mainWindow);
+        Assert.Contains("SelectedIndex=\"{Binding SelectedWorkspaceIndex, Mode=TwoWay}\"", mainWindow);
         Assert.Contains("Classes=\"pane-splitter shell-divider\"", mainWindow);
         Assert.Contains("Classes=\"workspace-tabs\"", mainWindow);
         Assert.Equal(7, System.Text.RegularExpressions.Regex.Matches(mainWindow, "Classes=\"workspace-tab\"").Count);
 
         Assert.Contains("TabControl.editor-tabs TabItem.editor-tab:selected", theme);
-        Assert.Contains("BorderThickness\" Value=\"3,0,0,0", theme);
+        Assert.Contains("BorderThickness\" Value=\"0,0,0,2", theme);
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:selected", theme);
         Assert.Contains("TabControl.editor-tabs TabItem.editor-tab:focus-visible", theme);
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:focus-visible", theme);
@@ -50,10 +57,78 @@ public sealed class ResponsiveShellTests
 
         Assert.NotNull(editor);
         Assert.NotNull(workspace);
-        Assert.InRange(editor!.Bounds.Width, 360, 480);
-        Assert.True(workspace!.Bounds.Width >= 560, $"Workspace was only {workspace.Bounds.Width}px wide.");
+        Assert.InRange(editor!.Bounds.Width, 320, 440);
+        Assert.True(workspace!.Bounds.Width >= 440, $"Workspace was only {workspace.Bounds.Width}px wide.");
         Assert.Equal("pokemon-x-main", app.ViewModel.CurrentSaveFileName);
         Assert.Equal(savePath, app.ViewModel.CurrentSavePath);
+    }
+
+    [AvaloniaFact]
+    public void SaveWorkspace_ReclaimsEditorRailAtMinimumShellSize()
+    {
+        using var app = new HeadlessAppFixture();
+        app.Window.Width = 1024;
+        app.Window.Height = 720;
+        app.LoadSaveInstance(new SAV6XY());
+
+        app.ViewModel.ActiveWorkspace = MainWorkspace.Save;
+        app.Pump();
+
+        var editor = app.FindByName<Border>("EditorPane");
+        var workspace = app.FindByName<TabControl>("WorkspacePane");
+        Assert.NotNull(editor);
+        Assert.NotNull(workspace);
+        Assert.False(editor!.IsVisible);
+        Assert.True(workspace!.Bounds.Width >= 760, $"Save workspace was only {workspace.Bounds.Width}px wide.");
+        Assert.Equal(2, app.ViewModel.SelectedWorkspaceIndex);
+    }
+
+    [AvaloniaFact]
+    public void ReportsWorkspace_AndToolLauncherHaveRealVisibleSurfaces()
+    {
+        using var app = new HeadlessAppFixture();
+        app.LoadSaveInstance(new SAV6XY());
+
+        app.ViewModel.ActiveWorkspace = MainWorkspace.Reports;
+        app.Pump();
+
+        var reports = app.Window.GetVisualDescendants()
+            .OfType<Border>()
+            .Single(border => border.Classes.Contains("reports-surface"));
+        Assert.True(reports.IsVisible);
+
+        app.ViewModel.OpenToolLauncherCommand.Execute(null);
+        app.Pump();
+
+        var launcher = app.Window.GetVisualDescendants()
+            .OfType<Border>()
+            .Single(border => border.Classes.Contains("launcher-panel"));
+        Assert.True(launcher.IsVisible);
+        Assert.True(app.ViewModel.IsToolLauncherOpen);
+
+        app.ViewModel.ToolSearchText = "batch";
+        var matches = app.ViewModel.FilteredToolLauncherItems.ToList();
+        Assert.Single(matches);
+        Assert.Equal("Batch Editor", matches[0].Title);
+    }
+
+    [AvaloniaFact]
+    public void SaveWorkspace_HidesUnsupportedZaEventAndGiftTabs()
+    {
+        using var app = new HeadlessAppFixture();
+        app.LoadSaveInstance(new SAV9ZA());
+
+        Assert.False(app.ViewModel.IsEventsWorkspace);
+        Assert.False(app.ViewModel.IsGiftsWorkspace);
+
+        app.ViewModel.ActiveWorkspace = MainWorkspace.Save;
+        app.Pump();
+
+        var tabs = app.Window.GetVisualDescendants().OfType<TabItem>().ToList();
+        var events = tabs.Single(tab => Equals(tab.Header, LocalizedStrings.Instance["Tab_Events"]));
+        var gifts = tabs.Single(tab => Equals(tab.Header, LocalizedStrings.Instance["Tab_Gifts"]));
+        Assert.False(events.IsVisible);
+        Assert.False(gifts.IsVisible);
     }
 
     private static string ReadSourceFile(params string[] relativePath)

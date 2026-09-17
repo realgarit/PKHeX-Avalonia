@@ -5,11 +5,11 @@
              x:Class="PKHeX.Avalonia.Views.TrainerEditor"
              x:DataType="vm:TrainerEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="16">
+            <StackPanel Classes="view-stack">
                 <!-- Header -->
-                <TextBlock Text="{loc:Loc TrainerEditor_TrainerInfo}" FontSize="24" FontWeight="SemiBold" Margin="0,0,0,8" />
+                <TextBlock Text="{loc:Loc TrainerEditor_TrainerInfo}" Classes="view-title" Margin="0,0,0,8" />
 
                 <!-- Top Section: 2 Columns -->
                 <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto">

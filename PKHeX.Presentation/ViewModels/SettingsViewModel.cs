@@ -13,6 +13,7 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
     private readonly AppSettings _settings;
     private readonly ISettingsStore _settingsStore;
     private readonly IThemeService _themeService;
+    private readonly IUiDensityService _uiDensityService;
     private readonly LanguageService _languageService;
     private readonly UpdateCheckCoordinator _updateCoordinator;
     private bool _isLoading;
@@ -26,12 +27,14 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         AppSettings settings,
         ISettingsStore settingsStore,
         IThemeService themeService,
+        IUiDensityService uiDensityService,
         LanguageService languageService,
         UpdateCheckCoordinator updateCoordinator)
     {
         _settings = settings;
         _settingsStore = settingsStore;
         _themeService = themeService;
+        _uiDensityService = uiDensityService;
         _languageService = languageService;
         _updateCoordinator = updateCoordinator;
         Load();
@@ -92,12 +95,23 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
     [ObservableProperty] private AppTheme _selectedTheme;
     public IReadOnlyList<AppTheme> Themes { get; } = Enum.GetValues<AppTheme>();
 
+    [ObservableProperty] private AppDensity _selectedDensity;
+    public IReadOnlyList<AppDensity> Densities { get; } = Enum.GetValues<AppDensity>();
+
     partial void OnSelectedThemeChanged(AppTheme value)
     {
         // Apply (and persist) immediately so the picker previews live, without needing Save.
         // Skip during Load(), which sets the initial value from the already-applied preference.
         if (!_isLoading)
             _themeService.ApplyTheme(value);
+    }
+
+    partial void OnSelectedDensityChanged(AppDensity value)
+    {
+        // Apply (and persist) immediately so the picker previews live, matching the theme
+        // preference. Skip during Load(), which reads the already-applied startup value.
+        if (!_isLoading)
+            _uiDensityService.ApplyDensity(value);
     }
 
     private void Load()
@@ -120,6 +134,7 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
 
         SpritePreference = _settings.Sprite.SpritePreference;
         SelectedTheme = _themeService.CurrentTheme;
+        SelectedDensity = _uiDensityService.CurrentDensity;
 
         _isLoading = false;
     }

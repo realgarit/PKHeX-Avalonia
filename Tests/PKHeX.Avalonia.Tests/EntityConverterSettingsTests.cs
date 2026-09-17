@@ -121,6 +121,7 @@ public sealed class EntityConverterSettingsTests : IDisposable
             settings,
             new FakeSettingsStore(),
             new Mock<IThemeService>().Object,
+            new Mock<IUiDensityService>().Object,
             new LanguageService(),
             UpdateTestDoubles.Coordinator());
 

@@ -34,6 +34,7 @@ public class SlotOperationsTests
             new AppSettings(),
             new FakeSettingsStore(),
             new Mock<IThemeService>().Object,
+            new Mock<IUiDensityService>().Object,
             undoRedo ?? new UndoRedoService(),
             new LanguageService(),
             new Mock<IAutoLegalityService>().Object,

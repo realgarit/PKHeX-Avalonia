@@ -56,7 +56,7 @@ public class ThemeTests
         var themeServiceMock = new Mock<IThemeService>();
         themeServiceMock.SetupGet(t => t.CurrentTheme).Returns(AppTheme.HighContrast);
 
-        var vm = new SettingsViewModel(settings, new FakeSettingsStore(), themeServiceMock.Object, new PKHeX.Application.Services.LanguageService(), UpdateTestDoubles.Coordinator());
+        var vm = new SettingsViewModel(settings, new FakeSettingsStore(), themeServiceMock.Object, new Mock<IUiDensityService>().Object, new PKHeX.Application.Services.LanguageService(), UpdateTestDoubles.Coordinator());
 
         Assert.Equal(AppTheme.HighContrast, vm.SelectedTheme);
         themeServiceMock.Verify(t => t.ApplyTheme(It.IsAny<AppTheme>()), Times.Never);
@@ -69,7 +69,7 @@ public class ThemeTests
         var themeServiceMock = new Mock<IThemeService>();
         themeServiceMock.SetupGet(t => t.CurrentTheme).Returns(AppTheme.Dark);
 
-        var vm = new SettingsViewModel(settings, new FakeSettingsStore(), themeServiceMock.Object, new PKHeX.Application.Services.LanguageService(), UpdateTestDoubles.Coordinator());
+        var vm = new SettingsViewModel(settings, new FakeSettingsStore(), themeServiceMock.Object, new Mock<IUiDensityService>().Object, new PKHeX.Application.Services.LanguageService(), UpdateTestDoubles.Coordinator());
 
         vm.SelectedTheme = AppTheme.Light;
 
