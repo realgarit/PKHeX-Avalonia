@@ -581,6 +581,102 @@
         <Setter Property="Margin" Value="0" />
     </Style>
 
+    <!-- Save workspace pages use the same compact header and flat section language as the
+         Pokémon reference editor. Actions stay visible while long forms scroll. -->
+    <Style Selector="Grid.save-editor-header">
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="DockPanel.save-editor-header">
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- Inventory pouch navigation is a generated native TabItem strip, styled consistently with
+         the editor tabs without replacing Avalonia's control template. -->
+    <Style Selector="TabControl.pouch-tabs">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style Selector="TabControl.pouch-tabs /template/ ItemsPresenter#PART_ItemsPresenter">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="TabControl.pouch-tabs /template/ ItemsPresenter#PART_ItemsPresenter &gt; WrapPanel">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.pouch-tabs TabItem">
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="TabControl.pouch-tabs TabItem:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.pouch-tabs TabItem:selected">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TabControl.pouch-tabs TabItem:selected /template/ Border#PART_SelectedPipe">
+        <Setter Property="IsVisible" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Height" Value="2" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <!-- Full-width inventory tables use a calm native grid with compact, centered cells. -->
+    <Style Selector="DataGrid.save-grid">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="RowBackground" Value="Transparent" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+    </Style>
+
+    <Style Selector="DataGrid.save-grid DataGridColumnHeader">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityDataGridCellPadding}" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="DataGrid.save-grid DataGridCell">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityDataGridCellPadding}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="DataGrid.save-grid DataGridRow">
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityDataGridRowHeight}" />
+    </Style>
+
     <!-- ─────────────────────────────────────────────────────────────────────────
          View Container - Main background for views (replaces SystemControlBackgroundAltHighBrush)
          ───────────────────────────────────────────────────────────────────────── -->
@@ -730,6 +826,7 @@
          quiet neutral baseline that is visually distinct from the editor's vertical section spine. -->
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab">
         <Setter Property="Padding" Value="{DynamicResource UiDensityWorkspaceTabPadding}" />
+        <Setter Property="MinHeight" Value="34" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
         <Setter Property="Background" Value="Transparent" />
@@ -746,7 +843,7 @@
         <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
@@ -764,6 +861,20 @@
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:focus-visible /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
         <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs /template/ ItemsPresenter#PART_ItemsPresenter">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs /template/ ItemsPresenter#PART_ItemsPresenter &gt; WrapPanel">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
     </Style>
 
     <!-- Entity status actions share one 26px centerline so Legal/Illegal and Shiny never drift

@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
+using Avalonia.Layout;
 using Avalonia.VisualTree;
 using PKHeX.Avalonia.Tests.Harness;
 using PKHeX.Core;
@@ -147,6 +148,32 @@ public sealed class ResponsiveShellTests
         Assert.False(editor!.IsVisible);
         Assert.True(workspace!.Bounds.Width >= 760, $"Save workspace was only {workspace.Bounds.Width}px wide.");
         Assert.Equal(2, app.ViewModel.SelectedWorkspaceIndex);
+    }
+
+    [AvaloniaFact]
+    public void InventoryWorkspace_UsesCompactPouchTabsAndCenteredTabContent()
+    {
+        using var app = new HeadlessAppFixture();
+        app.LoadSaveInstance(new SAV9SV());
+        app.ViewModel.ActiveWorkspace = MainWorkspace.Save;
+        app.ViewModel.SelectedWorkspaceIndex = 3;
+        app.Pump();
+
+        var pouchTabs = app.Window.GetVisualDescendants()
+            .OfType<TabControl>()
+            .Single(control => control.Classes.Contains("pouch-tabs"));
+        var visibleTabs = pouchTabs.GetVisualDescendants()
+            .OfType<TabItem>()
+            .Where(item => item.IsVisible)
+            .ToList();
+
+        Assert.NotEmpty(visibleTabs);
+        Assert.All(visibleTabs, tab =>
+        {
+            Assert.Equal(13, tab.FontSize);
+            Assert.Equal(VerticalAlignment.Center, tab.VerticalContentAlignment);
+            Assert.InRange(tab.Bounds.Height, 30, 38);
+        });
     }
 
     [AvaloniaFact]

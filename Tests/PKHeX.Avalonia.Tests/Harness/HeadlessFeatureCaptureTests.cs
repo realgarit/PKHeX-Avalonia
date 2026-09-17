@@ -223,6 +223,10 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
         app.Pump();
         CaptureFreshShellState(app, "shell-save.png", "Save workspace");
 
+        app.ViewModel.SelectedWorkspaceIndex = 3;
+        app.Pump();
+        CaptureFreshShellState(app, "shell-inventory.png", "Inventory workspace");
+
         app.ViewModel.ActiveWorkspace = MainWorkspace.Reports;
         app.Pump();
         CaptureFreshShellState(app, "shell-reports.png", "Reports workspace");

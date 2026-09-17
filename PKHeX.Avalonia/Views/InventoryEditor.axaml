@@ -8,7 +8,7 @@
     <Border Classes="view-container">
         <DockPanel>
             <!-- Header -->
-            <DockPanel DockPanel.Dock="Top" Margin="{DynamicResource UiDensityViewSectionMargin}">
+            <DockPanel DockPanel.Dock="Top" Classes="save-editor-header" Margin="{DynamicResource UiDensityViewSectionMargin}">
                 <TextBlock Text="{loc:Loc InventoryEditor_Title}" Classes="view-title" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
                     <Button Content="{loc:Loc InventoryEditor_Reset}" Command="{Binding ResetCommand}" Padding="12,6" />
@@ -17,7 +17,8 @@
             </DockPanel>
 
             <!-- Pouch Tabs -->
-            <TabControl ItemsSource="{Binding Pouches}"
+            <TabControl Classes="pouch-tabs"
+                        ItemsSource="{Binding Pouches}"
                         SelectedItem="{Binding SelectedPouch}">
                 <TabControl.ItemTemplate>
                     <DataTemplate DataType="vm:InventoryPouchViewModel">
@@ -28,7 +29,7 @@
                     <DataTemplate DataType="vm:InventoryPouchViewModel">
                         <DockPanel>
                             <!-- Toolbar -->
-                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,8,0,12">
+                            <StackPanel DockPanel.Dock="Top" Classes="command-bar" Orientation="Horizontal" Spacing="8" Margin="0,6,0,8">
                                 <Button Content="{loc:Loc InventoryEditor_SortByName}"
                                         Command="{Binding $parent[TabControl].((vm:InventoryEditorViewModel)DataContext).SortByNameCommand}"
                                         Padding="8,4" />
@@ -45,12 +46,11 @@
                             </StackPanel>
 
                             <!-- Items List -->
-                            <Border Classes="section-card" CornerRadius="4" Padding="0" ClipToBounds="True">
-                                <DataGrid ItemsSource="{Binding Items}"
+                            <Border Classes="editor-section inventory-grid-surface" ClipToBounds="True">
+                                <DataGrid Classes="save-grid" ItemsSource="{Binding Items}"
                                           AutoGenerateColumns="False"
                                           CanUserResizeColumns="True"
-                                          CanUserSortColumns="False"
-                                          MaxHeight="450">
+                                          CanUserSortColumns="False">
                                     <DataGrid.Columns>
                                         <!-- Icon Column -->
                                         <DataGridTemplateColumn Header="" Width="36">
