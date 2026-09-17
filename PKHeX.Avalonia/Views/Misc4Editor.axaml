@@ -9,17 +9,25 @@
         <vm:Misc4EditorViewModel />
     </Design.DataContext>
 
-    <Border Padding="16" Classes="view-container">
-        <Grid RowDefinitions="*,Auto">
+    <Border Classes="view-container">
+        <Grid RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" Classes="save-editor-header">
+                <Button Content="{loc:Loc Common_Save}"
+                        Command="{Binding SaveCommand}"
+                        Classes="accent"
+                        MinWidth="100"
+                        HorizontalAlignment="Right"
+                        HorizontalContentAlignment="Center" />
+            </Grid>
             <!-- Main Content with TabControl -->
-            <TabControl Grid.Row="0">
+            <TabControl Grid.Row="1" Classes="editor-tabs">
                 <!-- Main Tab -->
-                <TabItem Header="{loc:Loc Misc4Editor_Main}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc Misc4Editor_Main}">
                     <ScrollViewer>
-                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                        <StackPanel Spacing="8" Margin="0,4,0,0">
                             <!-- Currency Section -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc4Editor_Currency}" FontWeight="SemiBold" Opacity="0.6" />
                                     <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto">
                                         <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc Misc4Editor_Coins}" VerticalAlignment="Center" Width="100" />
@@ -67,9 +75,9 @@
                             </Border>
 
                             <!-- Fly Destinations -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
-                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock Text="{loc:Loc Misc4Editor_FlyDestinations}" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
                                         <Button Content="{loc:Loc Misc4Editor_UnlockAll}" Command="{Binding UnlockAllFlyDestinationsCommand}" FontSize="11" Padding="8,4" />
                                     </StackPanel>
@@ -83,7 +91,7 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="vm:FlyDestinationViewModel">
                                                     <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" 
-                                                            CornerRadius="4" Margin="0,0,8,8" Padding="8,4">
+                                                            Margin="0,0,8,8" Padding="8,4">
                                                         <CheckBox Content="{Binding Name}" IsChecked="{Binding IsUnlocked}" 
                                                                   MinWidth="100" />
                                                     </Border>
@@ -98,12 +106,12 @@
                 </TabItem>
 
                 <!-- Walker Tab (HGSS only) -->
-                <TabItem Header="{loc:Loc Misc4Editor_Walker}" IsVisible="{Binding IsWalkerVisible}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc Misc4Editor_Walker}" IsVisible="{Binding IsWalkerVisible}">
                     <ScrollViewer>
-                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                        <StackPanel Spacing="8" Margin="0,4,0,0">
                             <!-- Stats -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc4Editor_PokewalkerStats}" FontWeight="SemiBold" Opacity="0.6" />
                                     <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,8,Auto">
                                         <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc Misc4Editor_Watts}" VerticalAlignment="Center" Width="60" />
@@ -120,9 +128,9 @@
                             </Border>
 
                             <!-- Courses -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
-                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock Text="{loc:Loc Misc4Editor_Courses}" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
                                         <Button Content="{loc:Loc Misc4Editor_UnlockAll}" Command="{Binding UnlockAllWalkerCoursesCommand}" FontSize="11" Padding="8,4" />
                                     </StackPanel>
@@ -135,7 +143,7 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:WalkerCourseViewModel">
                                                 <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" 
-                                                        CornerRadius="4" Margin="0,0,8,8" Padding="8,4">
+                                                        Margin="0,0,8,8" Padding="8,4">
                                                     <CheckBox Content="{Binding Name}" IsChecked="{Binding IsUnlocked}" 
                                                               MinWidth="140" />
                                                 </Border>
@@ -149,22 +157,21 @@
                 </TabItem>
 
                 <!-- Battle Frontier Tab (Pt/HGSS only) -->
-                <TabItem Header="{loc:Loc Misc4Editor_BattleFrontier}" IsVisible="{Binding IsBattleFrontierVisible}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc Misc4Editor_BattleFrontier}" IsVisible="{Binding IsBattleFrontierVisible}">
                     <ScrollViewer>
-                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                        <StackPanel Spacing="8" Margin="0,4,0,0">
                             <!-- Prints -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
-                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock Text="{loc:Loc Misc4Editor_FrontierPrints}" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
                                         <Button Content="{loc:Loc Misc4Editor_GiveAllGold}" Command="{Binding GiveAllPrintsCommand}" FontSize="11" Padding="8,4" />
                                         <Button Content="{loc:Loc Misc4Editor_ClearAll}" Command="{Binding ClearAllPrintsCommand}" FontSize="11" Padding="8,4" />
                                     </StackPanel>
-                                    
                                     <ItemsControl ItemsSource="{Binding FrontierPrints}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:FrontierPrintViewModel">
-                                                <Border Margin="0,0,0,8" Padding="8" Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4">
+                                                <Border Margin="0,0,0,8" Padding="8" Background="{DynamicResource ThemeBackgroundElevatedBrush}">
                                                     <Grid ColumnDefinitions="*,Auto,Auto">
                                                         <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" />
                                                         <TextBlock Grid.Column="1" Text="{Binding StatusText}" Width="100" VerticalAlignment="Center" 
@@ -183,10 +190,6 @@
                 </TabItem>
             </TabControl>
 
-            <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
-                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

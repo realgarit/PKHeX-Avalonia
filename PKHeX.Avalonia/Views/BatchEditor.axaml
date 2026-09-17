@@ -8,7 +8,7 @@
     <Border Classes="view-container">
         <DockPanel>
             <!-- Header -->
-            <DockPanel DockPanel.Dock="Top" Margin="{DynamicResource UiDensityViewSectionMargin}">
+            <DockPanel Classes="save-editor-header" DockPanel.Dock="Top" Margin="{DynamicResource UiDensityViewSectionMargin}">
                 <TextBlock Text="{loc:Loc BatchEditor_Title}" Classes="view-title" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
                     <TextBlock Text="{loc:Loc BatchEditor_AffectedCountLabel}" VerticalAlignment="Center" />
@@ -22,9 +22,7 @@
 
             <!-- Target Selection -->
             <Border DockPanel.Dock="Top"
-                    Classes="section-card"
-                    CornerRadius="4"
-                    Padding="12"
+                    Classes="editor-section"
                     Margin="0,0,0,12">
                 <StackPanel Orientation="Horizontal" Spacing="24">
                     <TextBlock Text="{loc:Loc BatchEditor_EditLabel}" VerticalAlignment="Center" FontWeight="SemiBold" />
@@ -35,9 +33,7 @@
 
             <!-- Quick Actions -->
             <Border DockPanel.Dock="Top"
-                    Classes="section-card"
-                    CornerRadius="4"
-                    Padding="12"
+                    Classes="editor-section"
                     Margin="0,0,0,12">
                 <StackPanel>
                     <TextBlock Text="{loc:Loc BatchEditor_QuickActionsHeader}" FontWeight="SemiBold" Margin="0,0,0,8" />
@@ -52,9 +48,7 @@
 
             <!-- Instruction Builder -->
             <Border DockPanel.Dock="Top"
-                    Classes="section-card"
-                    CornerRadius="4"
-                    Padding="12"
+                    Classes="editor-section"
                     Margin="0,0,0,12">
                 <StackPanel Spacing="8">
                     <TextBlock Text="{loc:Loc BatchEditor_InstructionBuilderHeader}" FontWeight="SemiBold" />
@@ -94,9 +88,7 @@
 
             <!-- Results -->
             <Border DockPanel.Dock="Bottom"
-                    Classes="section-card"
-                    CornerRadius="4"
-                    Padding="12"
+                    Classes="editor-section"
                     Margin="0,12,0,0"
                     Height="80">
                 <StackPanel>
@@ -121,8 +113,8 @@
                                 Padding="8,2" />
                     </StackPanel>
                 </DockPanel>
-                <Border Classes="section-card"
-                        CornerRadius="4">
+                <Border Classes="editor-section"
+                       >
                     <TextBox Text="{Binding Instructions}"
                              AcceptsReturn="True"
                              TextWrapping="Wrap"

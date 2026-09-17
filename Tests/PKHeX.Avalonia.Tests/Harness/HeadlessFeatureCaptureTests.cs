@@ -15,6 +15,7 @@ using PKHeX.Avalonia.Controls;
 using PKHeX.Avalonia.Views;
 using PKHeX.Avalonia.Tests.Fixtures;
 using PKHeX.Core;
+using PKHeX.Infrastructure.GiftRecords;
 using PKHeX.Presentation.Localization;
 using PKHeX.Presentation.ViewModels;
 using Xunit;
@@ -157,6 +158,64 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
         PumpToStableLayout(window);
 
         CaptureOrSkip(window, "pkm-database-scanning.png", "PKM Database scanning state");
+    }
+
+    [AvaloniaFact]
+    public void CaptureAuxiliaryEditorStates_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        var dialog = new Mock<IDialogService>().Object;
+        CaptureAuxiliaryView(
+            new EventFlagsEditor { DataContext = new EventFlagsEditorViewModel(new SAV3E()) },
+            "event-flags-editor.png",
+            960,
+            620,
+            "Event Flags editor");
+        CaptureAuxiliaryView(
+            new MysteryGiftEditor
+            {
+                DataContext = new MysteryGiftEditorViewModel(new SAV9SV(), dialog, new GiftRecordProvider()),
+            },
+            "mystery-gift-editor.png",
+            960,
+            620,
+            "Mystery Gift editor");
+        CaptureAuxiliaryView(
+            new BatchEditor { DataContext = new BatchEditorViewModel(new SAV3E(), dialog) },
+            "batch-editor.png",
+            980,
+            720,
+            "Batch editor");
+        CaptureAuxiliaryView(
+            new Misc3Editor { DataContext = new Misc3EditorViewModel(new SAV3E()) },
+            "misc3-editor.png",
+            800,
+            680,
+            "Gen 3 Misc editor");
+        CaptureAuxiliaryView(
+            new Misc4Editor { DataContext = new Misc4EditorViewModel(new SAV4Pt()) },
+            "misc4-editor.png",
+            800,
+            680,
+            "Gen 4 Misc editor");
+
+        using var host = new HeadlessAppFixture();
+        var saveDirectory = SaveFileFixture.FindSaveFilesPath();
+        Assert.NotNull(saveDirectory);
+        host.LoadSave(Path.Combine(saveDirectory!, "gen9_scarlet.main"));
+        var save = host.Save as SAV9SV
+            ?? throw new InvalidOperationException("The Gen 9 capture save could not be loaded.");
+        CaptureAuxiliaryView(
+            new Misc9Editor
+            {
+                DataContext = new Misc9EditorViewModel(save),
+            },
+            "misc9-editor.png",
+            800,
+            680,
+            "Gen 9 Misc editor");
     }
 
     [AvaloniaFact]
@@ -391,6 +450,32 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
         Assert.True(File.Exists(path));
         Assert.True(new FileInfo(path).Length > 0);
         output.WriteLine($"Saved initial Compact density screenshot to {path}");
+    }
+
+    private void CaptureAuxiliaryView(Control view, string fileName, double width, double height, string stateLabel)
+    {
+        var window = new Window { Content = view, Width = width, Height = height };
+        window.Show();
+        try
+        {
+            PumpToStableLayout(window);
+            var path = Path.Combine(CaptureDirectory(), fileName);
+            var saved = CaptureWindow(window, path);
+            if (saved is null)
+            {
+                output.WriteLine("Skipped: headless drawing mode produced no frame.");
+                return;
+            }
+
+            Assert.Equal(path, saved);
+            Assert.True(File.Exists(path));
+            Assert.True(new FileInfo(path).Length > 0);
+            output.WriteLine($"Saved {stateLabel} screenshot to {path}");
+        }
+        finally
+        {
+            window.Close();
+        }
     }
 
     private void CaptureFreshShellState(HeadlessAppFixture app, string fileName, string stateLabel)

@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.MysteryGiftEditor"
              x:DataType="vm:MysteryGiftEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <!-- Not supported message -->
             <StackPanel VerticalAlignment="Center"
@@ -18,13 +18,13 @@
                 <TextBlock Text="{loc:Loc MysteryGiftEditor_NotAvailableDescription}"
                            HorizontalAlignment="Center"
                            Opacity="0.5"
-                           Margin="0,8,0,0" />
+                           Margin="0,4,0,0" />
             </StackPanel>
 
             <!-- Main editor -->
             <DockPanel IsVisible="{Binding IsSupported}">
                 <!-- Header -->
-                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                <DockPanel Classes="save-editor-header" DockPanel.Dock="Top" Margin="0,0,0,8">
                     <TextBlock Text="{loc:Loc MysteryGiftEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding GiftCountText}"
                                VerticalAlignment="Center"
@@ -37,19 +37,18 @@
                 </DockPanel>
 
                 <!-- Content -->
-                <Grid ColumnDefinitions="*,16,300">
+                <Grid ColumnDefinitions="*,8,300">
                     <!-- Gift List -->
                     <Border Grid.Column="0"
-                            Classes="section-card"
-                            CornerRadius="4">
+                            Classes="editor-section"
+                           >
                         <ScrollViewer>
                             <ItemsControl ItemsSource="{Binding Gifts}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="vm:MysteryGiftSlotViewModel">
-                                        <Button Command="{Binding $parent[ItemsControl].((vm:MysteryGiftEditorViewModel)DataContext).SelectGiftCommand}"
+                                        <Button Classes="auxiliary-list-item"
+                                                Command="{Binding $parent[ItemsControl].((vm:MysteryGiftEditorViewModel)DataContext).SelectGiftCommand}"
                                                 CommandParameter="{Binding}"
-                                                Background="Transparent"
-                                                Padding="12,8"
                                                 HorizontalContentAlignment="Left"
                                                 HorizontalAlignment="Stretch">
                                             <Grid ColumnDefinitions="Auto,*">
@@ -76,13 +75,12 @@
                     </Border>
 
                     <!-- Selected Gift Details -->
-                    <Grid Grid.Column="2" RowDefinitions="*,16,Auto">
+                    <Grid Grid.Column="2" RowDefinitions="*,8,Auto">
                         <!-- Selected Gift Details -->
                         <Border Grid.Row="0"
-                                Classes="section-card"
-                                CornerRadius="4"
-                                Padding="16">
-                            <StackPanel Spacing="16" DataContext="{Binding SelectedGift}">
+                                Classes="editor-section"
+                                Padding="8">
+                            <StackPanel Spacing="8" DataContext="{Binding SelectedGift}">
                                 <TextBlock Text="{loc:Loc MysteryGiftEditor_SelectedGift}"
                                            FontWeight="SemiBold"
                                            FontSize="16" />
@@ -99,7 +97,7 @@
                                            IsVisible="{Binding IsEmpty}" />
 
                                 <!-- Actions -->
-                                <StackPanel Spacing="8" Margin="0,16,0,0">
+                                <StackPanel Spacing="8" Margin="0,8,0,0">
                                     <Button Content="{loc:Loc MysteryGiftEditor_Import}"
                                             Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).ImportGiftCommand}"
                                             HorizontalAlignment="Stretch"
@@ -121,15 +119,14 @@
                         <!-- Received Flags -->
                         <Border Grid.Row="2"
                                 IsVisible="{Binding CanManageFlags}"
-                                Classes="section-card"
-                                CornerRadius="4"
-                                Padding="16"
+                                Classes="editor-section"
+                                Padding="8"
                                 Height="200">
                              <DockPanel>
                                  <TextBlock DockPanel.Dock="Top" Text="{loc:Loc MysteryGiftEditor_ReceivedFlags}" FontWeight="SemiBold" Margin="0,0,0,8"/>
                                  <Button DockPanel.Dock="Bottom" Content="{loc:Loc MysteryGiftEditor_DeleteFlag}"
                                          Command="{Binding DeleteFlagCommand}" 
-                                         HorizontalAlignment="Stretch" Margin="0,8,0,0"/>
+                                         HorizontalAlignment="Stretch" Margin="0,4,0,0"/>
                                  <ListBox ItemsSource="{Binding ReceivedFlags}" SelectedItem="{Binding SelectedReceivedFlag}" 
                                           Background="Transparent"/>
                              </DockPanel>
@@ -156,19 +153,18 @@
                            Margin="0,0,0,12" />
 
                 <!-- Content -->
-                <Grid ColumnDefinitions="*,16,300">
+                <Grid ColumnDefinitions="*,8,300">
                     <!-- Record List -->
                     <Border Grid.Column="0"
-                            Classes="section-card"
-                            CornerRadius="4">
+                            Classes="editor-section"
+                           >
                         <ScrollViewer>
                             <ItemsControl ItemsSource="{Binding Records}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="vm:GiftRecordEntryViewModel">
-                                        <Button Command="{Binding $parent[ItemsControl].((vm:MysteryGiftEditorViewModel)DataContext).SelectRecordCommand}"
+                                        <Button Classes="auxiliary-list-item"
+                                                Command="{Binding $parent[ItemsControl].((vm:MysteryGiftEditorViewModel)DataContext).SelectRecordCommand}"
                                                 CommandParameter="{Binding}"
-                                                Background="Transparent"
-                                                Padding="12,8"
                                                 HorizontalContentAlignment="Left"
                                                 HorizontalAlignment="Stretch">
                                             <Grid ColumnDefinitions="Auto,*">
@@ -197,10 +193,9 @@
                     <Grid Grid.Column="2" RowDefinitions="*,Auto,Auto">
                         <!-- Selected Record Details -->
                         <Border Grid.Row="0"
-                                Classes="section-card"
-                                CornerRadius="4"
-                                Padding="16">
-                            <StackPanel Spacing="16" DataContext="{Binding SelectedRecord}">
+                                Classes="editor-section"
+                                Padding="8">
+                            <StackPanel Spacing="8" DataContext="{Binding SelectedRecord}">
                                 <TextBlock Text="{loc:Loc MysteryGiftEditor_SelectedRecord}"
                                            FontWeight="SemiBold"
                                            FontSize="16" />
@@ -215,7 +210,7 @@
                                            Opacity="0.5"
                                            IsVisible="{Binding IsEmpty}" />
 
-                                <StackPanel Spacing="8" Margin="0,16,0,0">
+                                <StackPanel Spacing="8" Margin="0,8,0,0">
                                     <Button Content="{loc:Loc MysteryGiftEditor_Import}"
                                             Command="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).ImportRecordCommand}"
                                             IsVisible="{Binding $parent[Border].((vm:MysteryGiftEditorViewModel)DataContext).CanImportRecord}"
@@ -239,16 +234,15 @@
                         <!-- Received Flags (BDSP) -->
                         <Border Grid.Row="1"
                                 IsVisible="{Binding CanManageRecordFlags}"
-                                Classes="section-card"
-                                CornerRadius="4"
-                                Padding="16"
+                                Classes="editor-section"
+                                Padding="8"
                                 Height="180"
-                                Margin="0,16,0,0">
+                                Margin="0,8,0,0">
                             <DockPanel>
                                 <TextBlock DockPanel.Dock="Top" Text="{loc:Loc MysteryGiftEditor_ReceivedFlags}" FontWeight="SemiBold" Margin="0,0,0,8" />
                                 <Button DockPanel.Dock="Bottom" Content="{loc:Loc MysteryGiftEditor_DeleteFlag}"
                                         Command="{Binding DeleteRecordFlagCommand}"
-                                        HorizontalAlignment="Stretch" Margin="0,8,0,0" />
+                                        HorizontalAlignment="Stretch" Margin="0,4,0,0" />
                                 <ListBox ItemsSource="{Binding RecordReceivedFlags}" SelectedItem="{Binding SelectedRecordFlag}"
                                          Background="Transparent" />
                             </DockPanel>
@@ -257,10 +251,9 @@
                         <!-- Serial-code lock (BDSP) -->
                         <Border Grid.Row="2"
                                 IsVisible="{Binding HasSerialLock}"
-                                Classes="section-card"
-                                CornerRadius="4"
-                                Padding="16"
-                                Margin="0,16,0,0">
+                                Classes="editor-section"
+                                Padding="8"
+                                Margin="0,8,0,0">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc MysteryGiftEditor_SerialLockTitle}" FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding SerialLockText}" Opacity="0.7" TextWrapping="Wrap" />

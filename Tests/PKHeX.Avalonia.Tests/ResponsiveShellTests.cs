@@ -52,6 +52,7 @@ public sealed class ResponsiveShellTests
         Assert.Contains("BorderThickness\" Value=\"1\"", selectedRailStyle.Groups["body"].Value);
         Assert.DoesNotContain("ThemeBackgroundElevatedBrush", selectedRailStyle.Groups["body"].Value);
         Assert.Contains("ToggleButton.workspace-nav-item:checked /template/ ContentPresenter#PART_ContentPresenter", theme);
+        Assert.Contains("Button.auxiliary-list-item /template/ Border#PART_Border", theme);
         var selectedEditorStyle = System.Text.RegularExpressions.Regex.Match(
             theme,
             "<Style Selector=\"TabControl\\.editor-tabs TabItem\\.editor-tab:selected\">(?<body>.*?)</Style>",
@@ -273,6 +274,31 @@ public sealed class ResponsiveShellTests
             Assert.DoesNotContain("DynamicResource ThemeAccentSecondaryBrush", source);
             Assert.DoesNotContain("DynamicResource ThemeAccentGlowBrush", source);
         }
+    }
+
+    [Fact]
+    public void AuxiliaryEditors_UseFlatSectionsAndOneActionSurface()
+    {
+        var views = new[]
+        {
+            "BatchEditor.axaml",
+            "EventFlagsEditor.axaml",
+            "MysteryGiftEditor.axaml",
+            "Misc3Editor.axaml",
+            "Misc4Editor.axaml",
+            "Misc9Editor.axaml",
+        };
+
+        foreach (var view in views)
+        {
+            var source = ReadSourceFile("Views", view);
+            Assert.Contains("Classes=\"editor-section\"", source);
+            Assert.DoesNotContain("Classes=\"section-card\"", source);
+            Assert.DoesNotContain("<!-- Bottom Buttons -->", source);
+            Assert.Contains("Classes=\"save-editor-header\"", source);
+        }
+
+        Assert.Contains("Classes=\"auxiliary-list-item\"", ReadSourceFile("Views", "MysteryGiftEditor.axaml"));
     }
 
     [AvaloniaFact]

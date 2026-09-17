@@ -9,13 +9,21 @@
         <vm:Misc9EditorViewModel />
     </Design.DataContext>
 
-    <Border Padding="16" Classes="view-container">
-        <Grid RowDefinitions="*,Auto">
-            <ScrollViewer>
-                <StackPanel Spacing="16" Margin="0,8,0,0">
+    <Border Classes="view-container">
+        <Grid RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" Classes="save-editor-header">
+                <Button Content="{loc:Loc Common_Save}"
+                        Command="{Binding SaveCommand}"
+                        Classes="accent"
+                        MinWidth="100"
+                        HorizontalAlignment="Right"
+                        HorizontalContentAlignment="Center" />
+            </Grid>
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Spacing="8" Margin="0,4,0,0">
                     <!-- Currency -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc9Editor_CurrencySection}" FontWeight="SemiBold" Opacity="0.6" />
                             <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,8,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc Misc9Editor_Money}" VerticalAlignment="Center" Width="100" />
@@ -30,8 +38,8 @@
                     </Border>
 
                     <!-- Blueberry (DLC2) -->
-                    <Border Classes="section-card" Padding="12" IsVisible="{Binding HasBlueberry}">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section" IsVisible="{Binding HasBlueberry}">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc9Editor_BlueberrySection}" FontWeight="SemiBold" Opacity="0.6" />
                             <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc Misc9Editor_BP}" VerticalAlignment="Center" Width="100" />
@@ -51,8 +59,8 @@
                     </Border>
 
                     <!-- Unlocks -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc9Editor_UnlocksSection}" FontWeight="SemiBold" Opacity="0.6" />
                             <WrapPanel>
                                 <Button Content="{loc:Loc Misc9Editor_UnlockFlyLocations}" Command="{Binding UnlockAllFlyLocationsCommand}" Margin="0,0,8,8" />
@@ -65,8 +73,8 @@
                     </Border>
 
                     <!-- DLC Unlocks -->
-                    <Border Classes="section-card" Padding="12" IsVisible="{Binding HasBlueberry}">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section" IsVisible="{Binding HasBlueberry}">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc9Editor_DLCUnlocksSection}" FontWeight="SemiBold" Opacity="0.6" />
                             <WrapPanel>
                                 <Button Content="{loc:Loc Misc9Editor_UnlockCoaches}" Command="{Binding UnlockAllCoachesCommand}" Margin="0,0,8,8" />
@@ -78,10 +86,6 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
-                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>
