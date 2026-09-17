@@ -32,7 +32,7 @@
             <!-- Filters -->
             <ScrollViewer>
                 <StackPanel Spacing="12">
-                    <TextBlock Text="{loc:Loc EntitySeekView_Title}" Classes="header-accent" FontSize="16" FontWeight="SemiBold" />
+                    <TextBlock Text="{loc:Loc EntitySeekView_Title}" Classes="view-title" FontSize="16" FontWeight="SemiBold" />
                     <TextBlock Text="{loc:Loc EntitySeekView_Description}"
                                Foreground="{DynamicResource ThemeTextMutedBrush}" FontSize="12" TextWrapping="Wrap" />
 

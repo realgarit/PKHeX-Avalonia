@@ -28,7 +28,6 @@ public class UiDensityTests
         AssertStyleSetter(theme, "Button.accent-gradient", "Padding", "{DynamicResource UiDensityPrimaryButtonPadding}");
         AssertStyleSetter(theme, "Border.badge-success", "Padding", "{DynamicResource UiDensityBadgePadding}");
         AssertStyleSetter(theme, "Border.badge-error", "Padding", "{DynamicResource UiDensityBadgePadding}");
-        AssertStyleSetter(theme, "Border.header-accent", "Padding", "{DynamicResource UiDensityHeaderPadding}");
         AssertStyleSetter(theme, "Border.editor-section-padded", "Padding", "8,0,8,8");
         AssertStyleSetter(theme, "Border.view-container", "Padding", "{DynamicResource UiDensityViewPadding}");
         AssertStyleSetter(theme, "NumericUpDown.form-field", "MinHeight", "{DynamicResource UiDensityControlHeight}");

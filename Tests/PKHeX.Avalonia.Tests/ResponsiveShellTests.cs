@@ -265,8 +265,13 @@ public sealed class ResponsiveShellTests
     public void AppearanceAccent_IsStaticAndAchromaticAcrossViewStyles()
     {
         var app = ReadSourceFile("App.axaml");
+        var theme = ReadSourceFile("Styles", "Theme.axaml");
         Assert.Contains("PkhexNeutralAccentBrush", app);
         Assert.Contains("Color=\"#707070\"", app);
+        Assert.DoesNotContain("ThemeAccentPrimary", theme);
+        Assert.DoesNotContain("ThemeAccentSecondary", theme);
+        Assert.DoesNotContain("ThemeAccentGlow", theme);
+        Assert.DoesNotContain("ThemeHeaderGradient", theme);
 
         var avaloniaDirectory = Path.Combine(FindRepoRoot(), "PKHeX.Avalonia");
         foreach (var path in Directory.EnumerateFiles(avaloniaDirectory, "*.axaml", SearchOption.AllDirectories))
