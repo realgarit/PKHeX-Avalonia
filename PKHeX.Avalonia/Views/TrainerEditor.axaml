@@ -8,16 +8,22 @@
     <Border Classes="view-container">
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel Classes="view-stack">
-                <!-- Header -->
-                <TextBlock Text="{loc:Loc TrainerEditor_TrainerInfo}" Classes="view-title" Margin="0,0,0,8" />
+                <!-- Header actions stay visible while the long save form scrolls. -->
+                <Grid Classes="save-editor-header" ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{loc:Loc TrainerEditor_TrainerInfo}" Classes="view-title" VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <Button Content="{loc:Loc TrainerEditor_Reset}" Command="{Binding ResetCommand}" />
+                        <Button Content="{loc:Loc TrainerEditor_ApplyChanges}" Command="{Binding SaveCommand}" Classes="accent" />
+                    </StackPanel>
+                </Grid>
 
                 <!-- Top Section: 2 Columns -->
-                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto">
+                <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto">
                     <!-- Column 1: Identity -->
-                    <StackPanel Grid.Column="0" Spacing="16">
+                    <StackPanel Grid.Column="0" Spacing="8">
                         <!-- Identity Card -->
-                        <Border Classes="section-card" Padding="12">
-                            <StackPanel Spacing="12">
+                        <Border Classes="editor-section">
+                            <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc TrainerEditor_Identity}" FontWeight="SemiBold" Opacity="0.6" />
 
                                 <Grid ColumnDefinitions="*,12,120">
@@ -35,7 +41,7 @@
                                     </StackPanel>
                                 </Grid>
 
-                                <Grid ColumnDefinitions="*,12,*">
+                                <Grid ColumnDefinitions="*,8,*">
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="{loc:Loc TrainerEditor_Tid}" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
                                         <NumericUpDown Value="{Binding Tid16}" Minimum="0" Maximum="65535" FormatString="00000" ShowButtonSpinner="False" />
@@ -49,7 +55,7 @@
                         </Border>
 
                         <!-- Game Info (Read-only) -->
-                        <Border Classes="section-card" Padding="12">
+                        <Border Classes="editor-section">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc TrainerEditor_GameInfo}" FontWeight="SemiBold" Opacity="0.6" />
                                 <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" Margin="4,0">
@@ -67,10 +73,10 @@
                     </StackPanel>
 
                     <!-- Column 2: Status & Money -->
-                    <StackPanel Grid.Column="2" Spacing="16">
+                    <StackPanel Grid.Column="2" Spacing="8">
                         <!-- Play Time & Money -->
-                        <Border Classes="section-card" Padding="12">
-                            <StackPanel Spacing="12">
+                        <Border Classes="editor-section">
+                            <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc TrainerEditor_Status}" FontWeight="SemiBold" Opacity="0.6" />
 
                                 <!-- Money -->
@@ -112,7 +118,7 @@
                 </Grid>
 
                 <!-- Badges -->
-                <Border IsVisible="{Binding HasBadges}" Classes="section-card" Padding="12">
+                <Border IsVisible="{Binding HasBadges}" Classes="editor-section">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc TrainerEditor_Badges}" FontWeight="SemiBold" Opacity="0.6" />
                         <ItemsControl ItemsSource="{Binding Badges}">
@@ -135,8 +141,8 @@
                 </Border>
 
                 <!-- Currencies (Full Width) -->
-                <Border IsVisible="{Binding AnyCurrencyVisible}" Classes="section-card" Padding="12">
-                    <StackPanel Spacing="12">
+                <Border IsVisible="{Binding AnyCurrencyVisible}" Classes="editor-section">
+                    <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc TrainerEditor_Currencies}" FontWeight="SemiBold" Opacity="0.6" />
                         <ItemsControl>
                              <!-- I'll use a wrap panel of labeled inputs -->
@@ -191,8 +197,8 @@
                 </Border>
                 
                 <!-- Battle Chateau (Gen 6 XY) -->
-                <Border IsVisible="{Binding HasBattleChateau}" Classes="section-card" Padding="12">
-                    <StackPanel Spacing="12">
+                <Border IsVisible="{Binding HasBattleChateau}" Classes="editor-section">
+                    <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc TrainerEditor_BattleChateau}" FontWeight="SemiBold" Opacity="0.6" />
                         <Grid ColumnDefinitions="*,12,*,12,Auto" RowDefinitions="Auto,4,Auto">
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc TrainerEditor_Rank}" FontSize="11" FontWeight="SemiBold" Opacity="0.7" />
@@ -217,11 +223,11 @@
                 </Border>
 
                 <!-- Adventure & Coordinates (2 Columns) -->
-                <Grid ColumnDefinitions="*,16,*" IsVisible="{Binding HasAdventureInfo}">
-                    <Border Grid.Column="0" Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                <Grid ColumnDefinitions="*,8,*" IsVisible="{Binding HasAdventureInfo}">
+                    <Border Grid.Column="0" Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc TrainerEditor_AdventureInfo}" FontWeight="SemiBold" Opacity="0.6" />
-                            <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,4,Auto">
+                            <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,4,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc TrainerEditor_StartTimestamp}" FontSize="11" Opacity="0.7" />
                                 <NumericUpDown Grid.Row="2" Grid.Column="0" Value="{Binding SecondsToStart}" Minimum="0" FormatString="0" ShowButtonSpinner="False" AutomationProperties.Name="Start Timestamp" />
 
@@ -231,8 +237,8 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Column="2" Classes="section-card" Padding="12" IsVisible="{Binding HasCoordinates}">
-                        <StackPanel Spacing="12">
+                    <Border Grid.Column="2" Classes="editor-section" IsVisible="{Binding HasCoordinates}">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc TrainerEditor_MapCoordinates}" FontWeight="SemiBold" Opacity="0.6" />
                             <Grid ColumnDefinitions="*,8,*,8,*" RowDefinitions="Auto,4,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="X" FontSize="11" Opacity="0.7" />
@@ -248,22 +254,6 @@
                     </Border>
                 </Grid>
 
-                <!-- Footer Buttons -->
-                <Grid ColumnDefinitions="*,16,*" Margin="0,8,0,0">
-                    <Button Grid.Column="0"
-                            Content="{loc:Loc TrainerEditor_Reset}"
-                            Command="{Binding ResetCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center"
-                            Height="32" />
-                    <Button Grid.Column="2"
-                            Content="{loc:Loc TrainerEditor_ApplyChanges}"
-                            Command="{Binding SaveCommand}"
-                            Classes="accent"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center"
-                            Height="32" />
-                </Grid>
             </StackPanel>
         </ScrollViewer>
     </Border>
