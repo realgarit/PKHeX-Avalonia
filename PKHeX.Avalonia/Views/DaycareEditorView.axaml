@@ -10,7 +10,7 @@
 
         <!-- No Daycare Message -->
         <TextBlock IsVisible="{Binding !HasDaycare}" Text="{loc:Loc DaycareEditorView_NotSupported}"
-                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                   Foreground="{DynamicResource ThemeTextSecondaryBrush}"
                    FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
         <!-- Daycare Content -->
@@ -29,10 +29,10 @@
                                 <Image Grid.Column="0" Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}" Width="56" Height="48" Margin="0,0,12,0" />
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
                                     <TextBlock Text="{Binding Species}" FontWeight="SemiBold" />
-                                    <TextBlock Text="{Binding Level}" FontSize="12" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                                    <TextBlock Text="{Binding Level}" FontSize="12" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="4" IsVisible="{Binding $parent[UserControl].((vm:DaycareEditorViewModel)DataContext).HasExperience}">
-                                    <TextBlock Text="{loc:Loc DaycareEditorView_Exp}" FontSize="10" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                                    <TextBlock Text="{loc:Loc DaycareEditorView_Exp}" FontSize="10" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
                                     <NumericUpDown Value="{Binding Experience}" Minimum="0" Maximum="4294967295" Width="100" />
                                 </StackPanel>
                             </Grid>

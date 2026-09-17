@@ -66,7 +66,7 @@
             <x:Double x:Key="UiDensityDataGridEditHeight">28</x:Double>
             <Thickness x:Key="UiDensityCompactCheckBoxPadding">4,2</Thickness>
             <x:Double x:Key="UiDensityCompactCheckBoxHeight">24</x:Double>
-            <Thickness x:Key="UiDensityEditorTabPadding">2,5</Thickness>
+            <Thickness x:Key="UiDensityEditorTabPadding">4,4</Thickness>
             <Thickness x:Key="UiDensityEditorTabMargin">0,0,1,0</Thickness>
             <Thickness x:Key="UiDensityWorkspaceTabPadding">12,8</Thickness>
             <Thickness x:Key="UiDensityFilterableComboBoxPadding">10,6,6,5</Thickness>

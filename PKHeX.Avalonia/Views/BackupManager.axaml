@@ -28,7 +28,7 @@
             <DataGrid ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}"
                       CanUserSortColumns="True" IsReadOnly="True" CanUserResizeColumns="True"
                       GridLinesVisibility="All" BorderThickness="1"
-                      BorderBrush="{DynamicResource ThemeBorderBrush}"
+                      BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                       IsVisible="{Binding !IsEmpty}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{loc:Loc BackupManager_TimestampHeader}" Binding="{Binding Timestamp}" Width="180"/>

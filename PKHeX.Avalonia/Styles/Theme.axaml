@@ -569,6 +569,18 @@
         <Setter Property="Padding" Value="{DynamicResource UiDensitySectionPadding}" />
     </Style>
 
+    <!-- Reference editor sections stay flat and divide by rhythm rather than stacking rounded
+         cards. This keeps the high-frequency Pokémon form scannable and returns width/height to
+         the controls while the broader save-editor surfaces retain section-card for larger tools. -->
+    <Style Selector="Border.editor-section">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="0,0,0,8" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
     <!-- ─────────────────────────────────────────────────────────────────────────
          View Container - Main background for views (replaces SystemControlBackgroundAltHighBrush)
          ───────────────────────────────────────────────────────────────────────── -->
@@ -647,12 +659,13 @@
         <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
     </Style>
 
-    <!-- Pokémon editor section strip: compact, horizontal tabs with a clear selected surface. -->
+    <!-- Pokémon editor section strip: compact, horizontal tabs with one quiet selected rule. -->
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab">
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="Padding" Value="{DynamicResource UiDensityEditorTabPadding}" />
         <Setter Property="Margin" Value="{DynamicResource UiDensityEditorTabMargin}" />
-        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="MinHeight" Value="28" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
         <Setter Property="Background" Value="Transparent" />
@@ -667,7 +680,7 @@
     </Style>
 
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:selected">
-        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
@@ -690,13 +703,27 @@
         <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
     </Style>
 
+    <Style Selector="TabControl.editor-tabs /template/ ItemsPresenter#PART_ItemsPresenter">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="TabControl.editor-tabs /template/ ItemsPresenter#PART_ItemsPresenter &gt; WrapPanel">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.editor-tabs">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
     <Style Selector="Border.entity-summary">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="10" />
-        <Setter Property="Padding" Value="8" />
-        <Setter Property="Margin" Value="0,0,0,8" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="Margin" Value="0,0,0,6" />
     </Style>
 
     <!-- Main save workspace tabs: compact enough to keep all destinations discoverable, with a
@@ -1132,6 +1159,7 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="10,9" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
     </Style>

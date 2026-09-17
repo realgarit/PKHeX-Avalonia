@@ -45,7 +45,7 @@ public sealed class ResponsiveShellTests
             System.Text.RegularExpressions.RegexOptions.Singleline);
         Assert.True(selectedEditorStyle.Success);
         Assert.DoesNotContain("ThemeAccentGlowBrush", selectedEditorStyle.Groups["body"].Value);
-        Assert.Contains("ThemeBackgroundElevatedBrush", selectedEditorStyle.Groups["body"].Value);
+        Assert.Contains("Background\" Value=\"Transparent\"", selectedEditorStyle.Groups["body"].Value);
 
         // Save identity is intentionally a single piece of application chrome: the top header owns
         // the filename, while the left rail and bottom status bar carry only task/status context.
@@ -92,6 +92,19 @@ public sealed class ResponsiveShellTests
                              "Color=\"#(?<hex>[0-9A-Fa-f]{6,8})\""))
                     AssertNeutralColor(name, "gradient", color.Groups["hex"].Value);
             }
+        }
+    }
+
+    [Fact]
+    public void ViewSurfacesUseSharedThemeTokensInsteadOfLegacyFluentBrushes()
+    {
+        var viewsDirectory = Path.Combine(FindRepoRoot(), "PKHeX.Avalonia", "Views");
+        foreach (var path in Directory.EnumerateFiles(viewsDirectory, "*.axaml"))
+        {
+            var view = File.ReadAllText(path);
+            Assert.DoesNotContain("SystemControl", view);
+            Assert.DoesNotContain("ThemeBorderBrush", view);
+            Assert.DoesNotContain("ThemeAccentBrush", view);
         }
     }
 

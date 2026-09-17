@@ -37,7 +37,7 @@
                     <Border Grid.Column="2" Classes="section-card" CornerRadius="4" Padding="16">
                         <DockPanel>
                             <!-- Munchlax Info -->
-                            <Border DockPanel.Dock="Bottom" Background="{DynamicResource SystemControlBackgroundBaseLowBrush}" CornerRadius="4" Padding="12" Margin="0,16,0,0">
+                            <Border DockPanel.Dock="Bottom" Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="12" Margin="0,16,0,0">
                                 <TextBlock Text="{Binding MunchlaxTreesText}" FontSize="12" Opacity="0.8" />
                             </Border>
 

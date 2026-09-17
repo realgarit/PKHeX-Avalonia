@@ -42,7 +42,7 @@
 
                     <!-- Custom Flag -->
                     <Border Grid.Row="2"
-                            BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                            BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                             BorderThickness="1"
                             CornerRadius="4"
                             Padding="10"
@@ -71,7 +71,7 @@
                                 <DataTemplate DataType="vm:EventWork2ViewModel">
                                     <Border Margin="0,0,0,5"
                                             Padding="10"
-                                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                            BorderBrush="{DynamicResource ThemeBorderMutedBrush}"
                                             BorderThickness="1"
                                             CornerRadius="4">
                                         <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto">
@@ -106,7 +106,7 @@
 
                     <!-- Custom Work Value -->
                     <Border Grid.Row="1"
-                            BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                            BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                             BorderThickness="1"
                             CornerRadius="4"
                             Padding="10"

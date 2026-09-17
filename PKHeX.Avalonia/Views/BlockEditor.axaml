@@ -20,7 +20,7 @@
         </Grid>
 
         <!-- Block List -->
-        <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="1" CornerRadius="4">
+        <Border BorderBrush="{DynamicResource ThemeBorderDefaultBrush}" BorderThickness="1" CornerRadius="4">
             <DataGrid ItemsSource="{Binding FilteredBlocks}"
                       SelectedItem="{Binding SelectedBlock}"
                       IsReadOnly="True"

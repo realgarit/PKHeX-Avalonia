@@ -129,9 +129,23 @@ public class UiDensityTests
         Assert.Equal(7, topLevelContentStacks.Count);
         Assert.All(topLevelContentStacks, stack =>
         {
-            Assert.Contains("Spacing=\"12\"", stack.Value);
-            Assert.Contains("Margin=\"6,6,6,64\"", stack.Value);
+            Assert.Contains("Spacing=\"8\"", stack.Value);
+            Assert.Contains("Margin=\"6,6,6,12\"", stack.Value);
         });
+    }
+
+    [Fact]
+    public void PokemonEditor_TabsUseOneQuietSelectedRule()
+    {
+        var theme = ReadSourceFile("Styles", "Theme.axaml");
+        var selected = Regex.Match(
+            theme,
+            "<Style Selector=\"TabControl\\.editor-tabs TabItem\\.editor-tab:selected\">(?<body>.*?)</Style>",
+            RegexOptions.Singleline);
+
+        Assert.True(selected.Success);
+        Assert.Contains("Background\" Value=\"Transparent\"", selected.Groups["body"].Value);
+        Assert.Contains("BorderThickness\" Value=\"0\"", selected.Groups["body"].Value);
     }
 
     [Theory]

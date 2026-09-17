@@ -85,7 +85,7 @@
 
                                 <!-- Selected Facility Details -->
                                 <Border Grid.Row="2"
-                                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                                        Background="{DynamicResource ThemeBackgroundElevatedBrush}"
                                         CornerRadius="4"
                                         Padding="12"
                                         IsVisible="{Binding SelectedFacility, Converter={x:Static ObjectConverters.IsNotNull}}">

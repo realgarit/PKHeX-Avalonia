@@ -48,7 +48,7 @@
                        IsVisible="{Binding SkippedSpeciesReport, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
             <Border Grid.Row="1"
-                    BorderThickness="1" BorderBrush="{DynamicResource ThemeBorderBrush}"
+                    BorderThickness="1" BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                     IsVisible="{Binding SkippedSpeciesReport, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                 <ScrollViewer>
                     <SelectableTextBlock Text="{Binding SkippedSpeciesReport}" Padding="8"

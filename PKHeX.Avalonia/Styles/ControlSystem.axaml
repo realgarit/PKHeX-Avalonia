@@ -147,6 +147,7 @@
         <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
         <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <Style Selector="ComboBoxItem:pointerover /template/ ContentPresenter">
@@ -318,6 +319,8 @@
         <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
         <Setter Property="Padding" Value="{DynamicResource UiDensityFormFieldPadding}" />
         <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
     </Style>
 
@@ -347,6 +350,7 @@
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
         <Setter Property="Padding" Value="{DynamicResource UiDensityCompactCheckBoxPadding}" />
         <Setter Property="MinHeight" Value="{DynamicResource UiDensityCompactCheckBoxHeight}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
     </Style>
 
@@ -356,6 +360,18 @@
 
     <Style Selector="ToggleSwitch">
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="ToggleButton">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
     </Style>
 

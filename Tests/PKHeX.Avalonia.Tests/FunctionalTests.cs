@@ -54,6 +54,16 @@ public class FunctionalTests
     }
 
     [Fact]
+    public void Audit_PokemonEditor_TitleStaysCompactForLongSpeciesNames()
+    {
+        var pkm = new PK3 { Species = (ushort)Species.Bulbasaur };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, _saveFile);
+
+        Assert.Equal("Bulbasaur", vm.Title);
+        Assert.DoesNotContain(":", vm.Title);
+    }
+
+    [Fact]
     public void Audit_PokemonEditor_ModelSync()
     {
         var pkm = new PK7();

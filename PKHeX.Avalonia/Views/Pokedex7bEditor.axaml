@@ -28,7 +28,7 @@
                 <Button Content="{loc:Loc Pokedex7bEditor_SaveEntry}" Command="{Binding SaveCommand}" MinWidth="100" HorizontalAlignment="Left"/>
                 
                 <!-- Entry Flags -->
-                <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                <Border BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
                     <StackPanel Spacing="10">
                         <TextBlock Text="{loc:Loc Pokedex7bEditor_EntryFlags}" FontWeight="Bold"/>
                         <CheckBox Content="{loc:Loc Pokedex7bEditor_Caught}" IsChecked="{Binding Caught}" IsEnabled="{Binding IsCaughtEnabled}"/>
@@ -56,7 +56,7 @@
                 </Border>
                 
                 <!-- Size Data -->
-                <Border IsVisible="{Binding HasSizeData}" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                <Border IsVisible="{Binding HasSizeData}" BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
                     <StackPanel Spacing="10">
                         <TextBlock Text="{loc:Loc Pokedex7bEditor_SizeRecords}" FontWeight="Bold"/>
                         <Grid ColumnDefinitions="Auto, 80, 100, Auto, 80, 100" RowDefinitions="Auto, Auto">
@@ -80,7 +80,7 @@
                 </Border>
 
                 <!-- Languages -->
-                <Border IsVisible="{Binding HasLanguages}" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                <Border IsVisible="{Binding HasLanguages}" BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
                     <StackPanel Spacing="5">
                         <TextBlock Text="{loc:Loc Pokedex7bEditor_Languages}" FontWeight="Bold"/>
                         <WrapPanel Orientation="Horizontal">

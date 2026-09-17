@@ -10,7 +10,7 @@
 
         <!-- No Records Message -->
         <TextBlock IsVisible="{Binding !HasRecords}" Text="{loc:Loc RecordsEditorView_NotSupported}"
-                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                   Foreground="{DynamicResource ThemeTextSecondaryBrush}"
                    FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
         <!-- Records Content -->

@@ -690,7 +690,9 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private void UpdateTitle()
     {
         var speciesName = StringResourceLookup.Species((ushort)Species);
-        Title = Species == 0 ? LocalizedStrings.Instance["PokemonEditor_EmptySlot"] : LocalizedStrings.Instance.Format("PokemonEditor_EditingSpecies", speciesName);
+        // The header already establishes the Pokémon editor context. Keep the persistent entity
+        // title to the species name so the compact header remains readable at its minimum width.
+        Title = Species == 0 ? LocalizedStrings.Instance["PokemonEditor_EmptySlot"] : speciesName;
     }
 
     [RelayCommand]

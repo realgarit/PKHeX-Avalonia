@@ -33,7 +33,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="vm:PokeGearCallerViewModel">
                                     <Border Margin="4" Padding="8,4" CornerRadius="4" 
-                                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                                            Background="{DynamicResource ThemeBackgroundElevatedBrush}"
                                             MinWidth="150">
                                         <CheckBox IsChecked="{Binding IsUnlocked}" Content="{Binding Name}" />
                                     </Border>
