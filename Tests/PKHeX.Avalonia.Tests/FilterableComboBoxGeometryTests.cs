@@ -15,8 +15,6 @@ using PKHeX.Avalonia.Controls;
 using PKHeX.Avalonia.Views;
 using PKHeX.Core;
 using PKHeX.Presentation.ViewModels;
-using ChevronPath = Avalonia.Controls.Shapes.Path;
-
 namespace PKHeX.Avalonia.Tests;
 
 public sealed class FilterableComboBoxGeometryTests
@@ -94,7 +92,7 @@ public sealed class FilterableComboBoxGeometryTests
         var window = Show(field, 240, 80);
 
         Assert.Null(field.InnerRightContent);
-        Assert.Empty(field.GetVisualDescendants().OfType<ChevronPath>());
+        Assert.Empty(field.GetVisualDescendants().OfType<PathIcon>());
 
         window.Close();
     }
@@ -105,25 +103,17 @@ public sealed class FilterableComboBoxGeometryTests
 
         Assert.NotNull(field.Template);
         Assert.Equal(FluentTextControlPadding, field.Padding);
-        Assert.NotNull(field.InnerRightContent);
+        Assert.Null(field.InnerRightContent);
 
         var textBox = field.GetVisualDescendants().OfType<TextBox>().Single();
         Assert.Equal(FluentTextControlPadding, textBox.Padding);
-        Assert.Equal(TextAlignment.Left, textBox.TextAlignment);
+        Assert.Equal(TextAlignment.Start, textBox.TextAlignment);
         Assert.Equal(VerticalAlignment.Center, textBox.VerticalContentAlignment);
 
         var textPresenter = textBox.GetVisualDescendants().OfType<TextPresenter>().Single();
-        Assert.Equal(TextAlignment.Left, textPresenter.TextAlignment);
+        Assert.Equal(TextAlignment.Start, textPresenter.TextAlignment);
         Assert.Equal(VerticalAlignment.Center, textPresenter.VerticalAlignment);
 
-        var chevron = field.GetVisualDescendants().OfType<ChevronPath>()
-            .Single(path => path.Width == 12 && path.Height == 6);
-        Assert.Equal(HorizontalAlignment.Right, chevron.HorizontalAlignment);
-        Assert.Equal(VerticalAlignment.Center, chevron.VerticalAlignment);
-        Assert.Equal(new Thickness(0, 0, 10, 0), chevron.Margin);
-        Assert.False(chevron.IsHitTestVisible);
-        Assert.False(chevron.Focusable);
-        Assert.True(chevron.Bounds.Right <= field.Bounds.Right);
         Assert.False(string.IsNullOrWhiteSpace(AutomationProperties.GetName(field)));
     }
 

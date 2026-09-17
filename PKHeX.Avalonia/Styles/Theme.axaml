@@ -1,8 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
-        xmlns:services="clr-namespace:PKHeX.Avalonia.Services"
-        xmlns:controls="clr-namespace:PKHeX.Avalonia.Controls">
+        xmlns:services="clr-namespace:PKHeX.Avalonia.Services">
 
     <!-- ═══════════════════════════════════════════════════════════════════════
          PKHeX Theme Tokens
@@ -32,6 +31,22 @@
                         <!-- Border Colors -->
                         <Color x:Key="ThemeBorderDefault">#344250</Color>
                         <Color x:Key="ThemeBorderMuted">#263440</Color>
+
+                        <!-- Native control surfaces: quiet enough for long editing sessions, with
+                             a slightly brighter interaction layer so focus and selection remain
+                             legible without turning every field into an accent block. -->
+                        <Color x:Key="ThemeControlBackground">#151F29</Color>
+                        <Color x:Key="ThemeControlBackgroundHover">#1D2A35</Color>
+                        <Color x:Key="ThemeControlBackgroundPressed">#263945</Color>
+                        <Color x:Key="ThemeControlBorder">#415363</Color>
+                        <Color x:Key="ThemeControlBorderHover">#5B7180</Color>
+                        <Color x:Key="ThemeControlBorderFocus">#EF7658</Color>
+                        <Color x:Key="ThemeControlFocusGlow">#EF765820</Color>
+                        <Color x:Key="ThemeControlPopup">#17232D</Color>
+                        <Color x:Key="ThemeControlPopupHover">#273945</Color>
+                        <Color x:Key="ThemeControlPopupSelected">#5B3028</Color>
+                        <Color x:Key="ThemeControlDisabled">#1A232B</Color>
+                        <Color x:Key="ThemeControlDisabledText">#667783</Color>
 
                         <!-- Text Colors (AA on ThemeBackgroundBase: Primary ~13:1, Secondary ~5.7:1) -->
                         <Color x:Key="ThemeTextPrimary">#F2F6F8</Color>
@@ -66,6 +81,19 @@
 
                         <SolidColorBrush x:Key="ThemeBorderDefaultBrush" Color="{StaticResource ThemeBorderDefault}" />
                         <SolidColorBrush x:Key="ThemeBorderMutedBrush" Color="{StaticResource ThemeBorderMuted}" />
+
+                        <SolidColorBrush x:Key="ThemeControlBackgroundBrush" Color="{StaticResource ThemeControlBackground}" />
+                        <SolidColorBrush x:Key="ThemeControlBackgroundHoverBrush" Color="{StaticResource ThemeControlBackgroundHover}" />
+                        <SolidColorBrush x:Key="ThemeControlBackgroundPressedBrush" Color="{StaticResource ThemeControlBackgroundPressed}" />
+                        <SolidColorBrush x:Key="ThemeControlBorderBrush" Color="{StaticResource ThemeControlBorder}" />
+                        <SolidColorBrush x:Key="ThemeControlBorderHoverBrush" Color="{StaticResource ThemeControlBorderHover}" />
+                        <SolidColorBrush x:Key="ThemeControlBorderFocusBrush" Color="{StaticResource ThemeControlBorderFocus}" />
+                        <SolidColorBrush x:Key="ThemeControlFocusGlowBrush" Color="{StaticResource ThemeControlFocusGlow}" />
+                        <SolidColorBrush x:Key="ThemeControlPopupBrush" Color="{StaticResource ThemeControlPopup}" />
+                        <SolidColorBrush x:Key="ThemeControlPopupHoverBrush" Color="{StaticResource ThemeControlPopupHover}" />
+                        <SolidColorBrush x:Key="ThemeControlPopupSelectedBrush" Color="{StaticResource ThemeControlPopupSelected}" />
+                        <SolidColorBrush x:Key="ThemeControlDisabledBrush" Color="{StaticResource ThemeControlDisabled}" />
+                        <SolidColorBrush x:Key="ThemeControlDisabledTextBrush" Color="{StaticResource ThemeControlDisabledText}" />
 
                         <SolidColorBrush x:Key="ThemeTextPrimaryBrush" Color="{StaticResource ThemeTextPrimary}" />
                         <SolidColorBrush x:Key="ThemeTextSecondaryBrush" Color="{StaticResource ThemeTextSecondary}" />
@@ -125,6 +153,20 @@
                         <Color x:Key="ThemeBorderDefault">#C8D3DA</Color>
                         <Color x:Key="ThemeBorderMuted">#E1E8EC</Color>
 
+                        <!-- Native control surfaces -->
+                        <Color x:Key="ThemeControlBackground">#FFFFFF</Color>
+                        <Color x:Key="ThemeControlBackgroundHover">#F1F5F7</Color>
+                        <Color x:Key="ThemeControlBackgroundPressed">#E5EDF1</Color>
+                        <Color x:Key="ThemeControlBorder">#AABAC4</Color>
+                        <Color x:Key="ThemeControlBorderHover">#758B98</Color>
+                        <Color x:Key="ThemeControlBorderFocus">#B94B37</Color>
+                        <Color x:Key="ThemeControlFocusGlow">#D9654A22</Color>
+                        <Color x:Key="ThemeControlPopup">#FFFFFF</Color>
+                        <Color x:Key="ThemeControlPopupHover">#F1F5F7</Color>
+                        <Color x:Key="ThemeControlPopupSelected">#F6DED8</Color>
+                        <Color x:Key="ThemeControlDisabled">#EDF1F3</Color>
+                        <Color x:Key="ThemeControlDisabledText">#82919A</Color>
+
                         <!-- Text Colors (AA on ThemeBackgroundBase/Card: Primary ~16:1, Secondary ~9:1, Muted ~4.6:1) -->
                         <Color x:Key="ThemeTextPrimary">#17232C</Color>
                         <Color x:Key="ThemeTextSecondary">#455661</Color>
@@ -157,6 +199,19 @@
 
                         <SolidColorBrush x:Key="ThemeBorderDefaultBrush" Color="{StaticResource ThemeBorderDefault}" />
                         <SolidColorBrush x:Key="ThemeBorderMutedBrush" Color="{StaticResource ThemeBorderMuted}" />
+
+                        <SolidColorBrush x:Key="ThemeControlBackgroundBrush" Color="{StaticResource ThemeControlBackground}" />
+                        <SolidColorBrush x:Key="ThemeControlBackgroundHoverBrush" Color="{StaticResource ThemeControlBackgroundHover}" />
+                        <SolidColorBrush x:Key="ThemeControlBackgroundPressedBrush" Color="{StaticResource ThemeControlBackgroundPressed}" />
+                        <SolidColorBrush x:Key="ThemeControlBorderBrush" Color="{StaticResource ThemeControlBorder}" />
+                        <SolidColorBrush x:Key="ThemeControlBorderHoverBrush" Color="{StaticResource ThemeControlBorderHover}" />
+                        <SolidColorBrush x:Key="ThemeControlBorderFocusBrush" Color="{StaticResource ThemeControlBorderFocus}" />
+                        <SolidColorBrush x:Key="ThemeControlFocusGlowBrush" Color="{StaticResource ThemeControlFocusGlow}" />
+                        <SolidColorBrush x:Key="ThemeControlPopupBrush" Color="{StaticResource ThemeControlPopup}" />
+                        <SolidColorBrush x:Key="ThemeControlPopupHoverBrush" Color="{StaticResource ThemeControlPopupHover}" />
+                        <SolidColorBrush x:Key="ThemeControlPopupSelectedBrush" Color="{StaticResource ThemeControlPopupSelected}" />
+                        <SolidColorBrush x:Key="ThemeControlDisabledBrush" Color="{StaticResource ThemeControlDisabled}" />
+                        <SolidColorBrush x:Key="ThemeControlDisabledTextBrush" Color="{StaticResource ThemeControlDisabledText}" />
 
                         <SolidColorBrush x:Key="ThemeTextPrimaryBrush" Color="{StaticResource ThemeTextPrimary}" />
                         <SolidColorBrush x:Key="ThemeTextSecondaryBrush" Color="{StaticResource ThemeTextSecondary}" />
@@ -216,6 +271,20 @@
                         <Color x:Key="ThemeBorderDefault">#FFFFFF</Color>
                         <Color x:Key="ThemeBorderMuted">#AAAAAA</Color>
 
+                        <!-- Native control surfaces -->
+                        <Color x:Key="ThemeControlBackground">#000000</Color>
+                        <Color x:Key="ThemeControlBackgroundHover">#1A1A1A</Color>
+                        <Color x:Key="ThemeControlBackgroundPressed">#333333</Color>
+                        <Color x:Key="ThemeControlBorder">#FFFFFF</Color>
+                        <Color x:Key="ThemeControlBorderHover">#FFFFFF</Color>
+                        <Color x:Key="ThemeControlBorderFocus">#FF4500</Color>
+                        <Color x:Key="ThemeControlFocusGlow">#FF450066</Color>
+                        <Color x:Key="ThemeControlPopup">#000000</Color>
+                        <Color x:Key="ThemeControlPopupHover">#333333</Color>
+                        <Color x:Key="ThemeControlPopupSelected">#5A1A00</Color>
+                        <Color x:Key="ThemeControlDisabled">#1A1A1A</Color>
+                        <Color x:Key="ThemeControlDisabledText">#CCCCCC</Color>
+
                         <!-- Text Colors (all >15:1 on black) -->
                         <Color x:Key="ThemeTextPrimary">#FFFFFF</Color>
                         <Color x:Key="ThemeTextSecondary">#E0E0E0</Color>
@@ -248,6 +317,19 @@
 
                         <SolidColorBrush x:Key="ThemeBorderDefaultBrush" Color="{StaticResource ThemeBorderDefault}" />
                         <SolidColorBrush x:Key="ThemeBorderMutedBrush" Color="{StaticResource ThemeBorderMuted}" />
+
+                        <SolidColorBrush x:Key="ThemeControlBackgroundBrush" Color="{StaticResource ThemeControlBackground}" />
+                        <SolidColorBrush x:Key="ThemeControlBackgroundHoverBrush" Color="{StaticResource ThemeControlBackgroundHover}" />
+                        <SolidColorBrush x:Key="ThemeControlBackgroundPressedBrush" Color="{StaticResource ThemeControlBackgroundPressed}" />
+                        <SolidColorBrush x:Key="ThemeControlBorderBrush" Color="{StaticResource ThemeControlBorder}" />
+                        <SolidColorBrush x:Key="ThemeControlBorderHoverBrush" Color="{StaticResource ThemeControlBorderHover}" />
+                        <SolidColorBrush x:Key="ThemeControlBorderFocusBrush" Color="{StaticResource ThemeControlBorderFocus}" />
+                        <SolidColorBrush x:Key="ThemeControlFocusGlowBrush" Color="{StaticResource ThemeControlFocusGlow}" />
+                        <SolidColorBrush x:Key="ThemeControlPopupBrush" Color="{StaticResource ThemeControlPopup}" />
+                        <SolidColorBrush x:Key="ThemeControlPopupHoverBrush" Color="{StaticResource ThemeControlPopupHover}" />
+                        <SolidColorBrush x:Key="ThemeControlPopupSelectedBrush" Color="{StaticResource ThemeControlPopupSelected}" />
+                        <SolidColorBrush x:Key="ThemeControlDisabledBrush" Color="{StaticResource ThemeControlDisabled}" />
+                        <SolidColorBrush x:Key="ThemeControlDisabledTextBrush" Color="{StaticResource ThemeControlDisabledText}" />
 
                         <SolidColorBrush x:Key="ThemeTextPrimaryBrush" Color="{StaticResource ThemeTextPrimary}" />
                         <SolidColorBrush x:Key="ThemeTextSecondaryBrush" Color="{StaticResource ThemeTextSecondary}" />
@@ -574,7 +656,8 @@
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0,0,0,2" />
+        <!-- Fluent already renders the selected pipe. Do not add a second item border. -->
+        <Setter Property="BorderThickness" Value="0" />
     </Style>
 
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:pointerover">
@@ -585,13 +668,25 @@
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:selected">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
-        <Setter Property="BorderThickness" Value="0,0,0,2" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
     <Style Selector="TabControl.editor-tabs TabItem.editor-tab:focus-visible">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ThemeControlFocusGlowBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:selected /template/ Border#PART_SelectedPipe">
+        <Setter Property="IsVisible" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Height" Value="2" />
+        <Setter Property="Margin" Value="0,0,0,0" />
+    </Style>
+
+    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:focus-visible /template/ Border#PART_SelectedPipe">
+        <Setter Property="IsVisible" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
     </Style>
 
     <Style Selector="Border.entity-summary">
@@ -609,8 +704,9 @@
         <Setter Property="Padding" Value="{DynamicResource UiDensityWorkspaceTabPadding}" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0,0,0,2" />
+        <Setter Property="BorderThickness" Value="0" />
     </Style>
 
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:pointerover">
@@ -620,13 +716,58 @@
 
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:selected">
         <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:focus-visible">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
-        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ThemeControlFocusGlowBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:selected /template/ Border#PART_SelectedPipe">
+        <Setter Property="IsVisible" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+        <Setter Property="Height" Value="2" />
+        <Setter Property="Margin" Value="0,0,0,0" />
+    </Style>
+
+    <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:focus-visible /template/ Border#PART_SelectedPipe">
+        <Setter Property="IsVisible" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+    </Style>
+
+    <!-- Entity status actions share one 26px centerline so Legal/Illegal and Shiny never drift
+         relative to the Pokémon title. -->
+    <Style Selector="Button.entity-status-action">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Height" Value="26" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.entity-status-action:pointerover">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+
+    <Style Selector="Button.entity-shiny-action">
+        <Setter Property="Width" Value="26" />
+    </Style>
+
+    <Style Selector="Border.entity-status-badge">
+        <Setter Property="Height" Value="22" />
+        <Setter Property="MinWidth" Value="48" />
+        <Setter Property="Padding" Value="6,0" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -642,80 +783,6 @@
 
     <Style Selector="ComboBox:pointerover">
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
-    </Style>
-
-    <!-- FilterableComboBox has its own style key so this shared geometry cannot leak into the
-         plain AutoCompleteBox used by BatchEditor. -->
-    <Style Selector="controls|FilterableComboBox">
-        <!-- Keep all filterable fields on Fluent's native geometry while making the editable
-             presenter explicit. The inherited InnerRightContent slot carries the chevron. -->
-        <Setter Property="Padding" Value="{DynamicResource UiDensityFilterableComboBoxPadding}" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Grid Name="PART_LayoutRoot">
-                    <TextBox Name="PART_TextBox"
-                             Watermark="{TemplateBinding Watermark}"
-                             Width="{TemplateBinding Width}"
-                             Foreground="{TemplateBinding Foreground}"
-                             Background="{TemplateBinding Background}"
-                             BorderBrush="{TemplateBinding BorderBrush}"
-                             BorderThickness="{TemplateBinding BorderThickness}"
-                             CornerRadius="{TemplateBinding CornerRadius}"
-                             CaretIndex="{TemplateBinding CaretIndex, Mode=TwoWay}"
-                             ClearSelectionOnLostFocus="{TemplateBinding ClearSelectionOnLostFocus}"
-                             Padding="{TemplateBinding Padding}"
-                             Margin="0"
-                             HorizontalContentAlignment="Left"
-                             TextAlignment="Left"
-                             DataValidationErrors.Errors="{TemplateBinding (DataValidationErrors.Errors)}"
-                             MaxLength="{TemplateBinding MaxLength}"
-                             InnerLeftContent="{TemplateBinding InnerLeftContent}"
-                             InnerRightContent="{TemplateBinding InnerRightContent}" />
-                    <Popup Name="PART_Popup"
-                           WindowManagerAddShadowHint="False"
-                           MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
-                           MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                           IsLightDismissEnabled="True"
-                           PlacementTarget="{TemplateBinding}">
-                        <Border Name="PART_SuggestionsContainer"
-                                Padding="{DynamicResource AutoCompleteListMargin}"
-                                BorderThickness="{DynamicResource AutoCompleteListBorderThemeThickness}"
-                                BorderBrush="{DynamicResource AutoCompleteBoxSuggestionsListBorderBrush}"
-                                Background="{DynamicResource AutoCompleteBoxSuggestionsListBackground}"
-                                CornerRadius="{DynamicResource OverlayCornerRadius}">
-                            <ListBox Name="PART_SelectingItemsControl"
-                                     BorderThickness="0"
-                                     Background="Transparent"
-                                     ItemTemplate="{TemplateBinding ItemTemplate}"
-                                     Margin="{DynamicResource AutoCompleteListPadding}"
-                                     ScrollViewer.IsScrollChainingEnabled="False" />
-                        </Border>
-                    </Popup>
-                </Grid>
-            </ControlTemplate>
-        </Setter>
-        <Setter Property="InnerRightContent">
-            <Template>
-                <Path Data="M 0,0 L 12,0 L 6,6 Z"
-                      Fill="{DynamicResource ThemeTextSecondaryBrush}"
-                      Width="12" Height="6" Stretch="Fill"
-                      HorizontalAlignment="Right" VerticalAlignment="Center"
-                      Margin="0,0,10,0" IsHitTestVisible="False" />
-            </Template>
-        </Setter>
-        <Setter Property="Transitions">
-            <Transitions>
-                <BrushTransition Property="BorderBrush" Duration="0:0:0.12" />
-            </Transitions>
-        </Setter>
-    </Style>
-
-    <Style Selector="controls|FilterableComboBox:pointerover">
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
-    </Style>
-
-    <Style Selector="controls|FilterableComboBox /template/ TextBox#PART_TextBox">
-        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════════════════════════
@@ -1057,11 +1124,6 @@
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextMutedBrush}" />
     </Style>
 
-    <Style Selector="TextBlock.rail-status">
-        <Setter Property="FontSize" Value="11" />
-        <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
-    </Style>
-
     <Style Selector="ToggleButton.workspace-nav-item">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
@@ -1099,8 +1161,8 @@
     </Style>
 
     <Style Selector="Border.workspace-nav-icon &gt; PathIcon">
-        <Setter Property="Width" Value="15" />
-        <Setter Property="Height" Value="15" />
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -1113,25 +1175,6 @@
     </Style>
 
     <Style Selector="TextBlock.workspace-nav-description">
-        <Setter Property="FontSize" Value="9" />
-        <Setter Property="Foreground" Value="{DynamicResource ThemeTextMutedBrush}" />
-    </Style>
-
-    <Style Selector="Border.rail-save-card">
-        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="10" />
-    </Style>
-
-    <Style Selector="TextBlock.rail-save-name">
-        <Setter Property="FontSize" Value="11" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
-    </Style>
-
-    <Style Selector="TextBlock.rail-save-path">
         <Setter Property="FontSize" Value="9" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextMutedBrush}" />
     </Style>

@@ -72,22 +72,22 @@
                         <!-- Top: Title and Actions -->
                         <DockPanel Grid.Row="0" VerticalAlignment="Center">
                             <!-- Action Buttons -->
-                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4">
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
                                 <!-- Legality -->
-                                <Button Background="Transparent" BorderThickness="0" Padding="4"
+                                <Button Classes="entity-status-action"
                                         Command="{Binding ShowLegalityCommand}" ToolTip.Tip="{Binding LegalityReport}"
                                         AutomationProperties.Name="Show Legality Report">
                                     <Panel>
-                                        <Border Classes="badge-success" IsVisible="{Binding IsLegal}" Padding="6,2" CornerRadius="4">
-                                            <TextBlock Text="{loc:Loc PokemonEditor_Legal}" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                        <Border Classes="badge-success entity-status-badge" IsVisible="{Binding IsLegal}">
+                                            <TextBlock Text="{loc:Loc PokemonEditor_Legal}" FontSize="10" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
                                         </Border>
-                                        <Border Classes="badge-error" IsVisible="{Binding !IsLegal}" Padding="6,2" CornerRadius="4">
-                                            <TextBlock Text="{loc:Loc PokemonEditor_Illegal}" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                        <Border Classes="badge-error entity-status-badge" IsVisible="{Binding !IsLegal}">
+                                            <TextBlock Text="{loc:Loc PokemonEditor_Illegal}" FontSize="10" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
                                         </Border>
                                     </Panel>
                                 </Button>
                                 <!-- Shiny -->
-                                <Button Background="Transparent" BorderThickness="0" Padding="4"
+                                <Button Classes="entity-status-action entity-shiny-action"
                                         Command="{Binding ToggleShinyCommand}" ToolTip.Tip="{loc:Loc PokemonEditor_ToggleShinyTooltip}"
                                         AutomationProperties.Name="Toggle Shiny">
                                     <Panel>
@@ -134,7 +134,7 @@
                                     
                                     <!-- Species -->
                                     <StackPanel Grid.Row="1" Grid.Column="0">
-                                        <TextBlock Text="{loc:Loc PokemonEditor_Species}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Species}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                         <controls:FilterableComboBox ItemsSource="{Binding SpeciesList}"
                                                   SelectedValue="{Binding Species}" HorizontalAlignment="Stretch"
                                                   AutomationProperties.Name="Species" />
@@ -142,13 +142,13 @@
 
                                     <!-- Nickname -->
                                     <StackPanel Grid.Row="1" Grid.Column="2">
-                                        <TextBlock Text="{loc:Loc PokemonEditor_Nickname}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Nickname}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                         <TextBox Text="{Binding Nickname}" />
                                     </StackPanel>
 
                                     <!-- Form -->
                                     <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,8,0,0" IsVisible="{Binding HasForms}">
-                                        <TextBlock Text="{loc:Loc PokemonEditor_Form}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Form}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                         <ComboBox ItemsSource="{Binding FormList}"
                                                   SelectedValue="{Binding Form}" SelectedValueBinding="{Binding Value}"
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
@@ -156,7 +156,7 @@
 
                                     <!-- Gender -->
                                     <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,8,0,0">
-                                        <TextBlock Text="{loc:Loc PokemonEditor_Gender}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Gender}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                         <ComboBox ItemsSource="{Binding PokemonGenderList}"
                                                   SelectedValue="{Binding Gender}" SelectedValueBinding="{Binding Value}"
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
@@ -174,12 +174,12 @@
                                     <StackPanel Grid.Row="1" Grid.Column="0">
                                         <Grid ColumnDefinitions="*,8,*">
                                             <StackPanel Grid.Column="0">
-                                                <TextBlock Text="{loc:Loc PokemonEditor_Level}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                                <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Level}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                                 <NumericUpDown Value="{Binding Level}" Minimum="1" Maximum="100" FormatString="0" ShowButtonSpinner="False"
                                                                AutomationProperties.Name="Level" />
                                             </StackPanel>
                                             <StackPanel Grid.Column="2">
-                                                <TextBlock Text="{loc:Loc PokemonEditor_Exp}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                                <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Exp}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                                 <NumericUpDown Value="{Binding Exp}" Minimum="0" Maximum="10000000" FormatString="0" ShowButtonSpinner="False"
                                                                AutomationProperties.Name="Experience Points" />
                                             </StackPanel>
@@ -189,8 +189,8 @@
                                         <Border x:Name="ExpBar"
                                                 Height="14" Margin="0,8,0,0"
                                                 CornerRadius="7"
-                                                Background="{DynamicResource ThemeControlMidBrush}"
-                                                BorderBrush="{DynamicResource ThemeBorderMidBrush}"
+                                                Background="{DynamicResource ThemeControlBackgroundBrush}"
+                                                BorderBrush="{DynamicResource ThemeControlBorderBrush}"
                                                 BorderThickness="1"
                                                 Cursor="Hand"
                                                 ClipToBounds="True"
@@ -209,14 +209,14 @@
 
                                     <!-- Nature -->
                                     <StackPanel Grid.Row="1" Grid.Column="2">
-                                        <TextBlock Text="{loc:Loc PokemonEditor_Nature}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Nature}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                         <ComboBox ItemsSource="{Binding NatureList}"
                                                   SelectedValue="{Binding Nature}" SelectedValueBinding="{Binding Value}"
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
 
                                         <!-- Stat Alignment (gen8+) -->
                                         <StackPanel IsVisible="{Binding ShowStatAlignment}" Margin="0,8,0,0">
-                                            <TextBlock Text="{loc:Loc PokemonEditor_StatAlignment}" FontWeight="SemiBold" Margin="0,0,0,4" TextWrapping="Wrap" />
+                                            <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_StatAlignment}" FontWeight="SemiBold" Margin="0,0,0,4" TextWrapping="Wrap" />
                                             <ComboBox ItemsSource="{Binding NatureList}"
                                                       SelectedValue="{Binding StatAlignment}" SelectedValueBinding="{Binding Value}"
                                                       DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch"
@@ -226,7 +226,7 @@
 
                                     <!-- Ability -->
                                     <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,8,0,0">
-                                        <TextBlock Text="{loc:Loc PokemonEditor_Ability}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Ability}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                         <ComboBox ItemsSource="{Binding AbilityList}"
                                                   SelectedValue="{Binding Ability}" SelectedValueBinding="{Binding Value}"
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
@@ -234,7 +234,7 @@
                                     
                                     <!-- Language -->
                                     <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,8,0,0">
-                                        <TextBlock Text="{loc:Loc PokemonEditor_Language}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Language}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                         <ComboBox ItemsSource="{Binding LanguageList}"
                                                   SelectedValue="{Binding Language}" SelectedValueBinding="{Binding Value}"
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
@@ -249,14 +249,14 @@
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{loc:Loc PokemonEditor_Equipment}" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
 
                                     <StackPanel Grid.Row="1" Grid.Column="0">
-                                        <TextBlock Text="{loc:Loc PokemonEditor_HeldItem}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_HeldItem}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                         <controls:FilterableComboBox ItemsSource="{Binding ItemList}"
                                                   SelectedValue="{Binding HeldItem}" HorizontalAlignment="Stretch"
                                                   AutomationProperties.Name="Held Item" />
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="1" Grid.Column="2">
-                                        <TextBlock Text="{loc:Loc PokemonEditor_Ball}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Ball}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                         <ComboBox ItemsSource="{Binding BallList}"
                                                   SelectedValue="{Binding Ball}" SelectedValueBinding="{Binding Value}"
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
@@ -373,7 +373,7 @@
                         <StackPanel Margin="6,6,6,64" Spacing="12">
                             <!-- Origin Game -->
                             <StackPanel>
-                                <TextBlock Text="{loc:Loc PokemonEditor_OriginGame}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_OriginGame}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                 <ComboBox ItemsSource="{Binding OriginGameList}"
                                           SelectedValue="{Binding OriginGame}"
                                           SelectedValueBinding="{Binding Value}"
@@ -383,7 +383,7 @@
 
                             <!-- Met Location -->
                             <StackPanel>
-                                <TextBlock Text="{loc:Loc PokemonEditor_MetLocation}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_MetLocation}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                 <ComboBox ItemsSource="{Binding MetLocationList}"
                                           SelectedValue="{Binding MetLocation}"
                                           SelectedValueBinding="{Binding Value}"
@@ -394,11 +394,11 @@
                             <!-- Met Level and Date Row -->
                             <Grid ColumnDefinitions="*,8,*" VerticalAlignment="Center">
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="{loc:Loc PokemonEditor_MetLevel}" FontWeight="SemiBold" Margin="0,0,0,4" VerticalAlignment="Center" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_MetLevel}" FontWeight="SemiBold" Margin="0,0,0,4" VerticalAlignment="Center" />
                                     <NumericUpDown Value="{Binding MetLevel}" Minimum="0" Maximum="100" FormatString="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2" IsVisible="{Binding HasMetDate}">
-                                    <TextBlock Text="{loc:Loc PokemonEditor_MetDate}" FontWeight="SemiBold" Margin="0,0,0,4" VerticalAlignment="Center" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_MetDate}" FontWeight="SemiBold" Margin="0,0,0,4" VerticalAlignment="Center" />
                                     <CalendarDatePicker SelectedDate="{Binding MetDate}" SelectedDateFormat="Long"
                                                         Watermark="{loc:Loc PokemonEditor_SelectDate}"
                                                         ToolTip.Tip="{loc:Loc PokemonEditor_SelectDate}"
@@ -408,7 +408,7 @@
 
                             <!-- Egg Location -->
                             <StackPanel>
-                                <TextBlock Text="{loc:Loc PokemonEditor_EggLocation}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_EggLocation}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                 <ComboBox ItemsSource="{Binding EggLocationList}"
                                           SelectedValue="{Binding EggLocation}"
                                           SelectedValueBinding="{Binding Value}"
@@ -418,7 +418,7 @@
 
                             <!-- Egg Date -->
                             <StackPanel>
-                                <TextBlock Text="{loc:Loc PokemonEditor_EggDate}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_EggDate}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                 <CalendarDatePicker SelectedDate="{Binding EggDate}" SelectedDateFormat="Long"
                                                     Watermark="{loc:Loc PokemonEditor_SelectDate}"
                                                     ToolTip.Tip="{loc:Loc PokemonEditor_SelectDate}"

@@ -1,0 +1,382 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:PKHeX.Avalonia.Controls">
+
+    <!--
+        Shared native control language.
+
+        The application keeps Avalonia's Fluent control templates and composes a PKHeX surface
+        around them. This file owns the interaction contract: quiet filled inputs, one focus ring,
+        one popup treatment, and density-aware geometry. Views should choose the native control
+        that matches the value instead of replacing it with a styled TextBlock or ad-hoc button.
+    -->
+
+    <!-- Text input -->
+    <Style Selector="TextBox">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityInputPadding}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderHoverBrush}" />
+    </Style>
+
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="TextBox:error /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeErrorBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="TextBox:disabled /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+    </Style>
+
+    <Style Selector="TextBox.form-control">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.form-label">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+        <Setter Property="Margin" Value="0,0,0,5" />
+    </Style>
+
+    <Style Selector="TextBlock.form-hint">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextMutedBrush}" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="StackPanel.form-field">
+        <Setter Property="Spacing" Value="0" />
+    </Style>
+
+    <!-- Selection controls -->
+    <Style Selector="ComboBox">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource ThemeTextMutedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityComboBoxPadding}" />
+        <Setter Property="MaxDropDownHeight" Value="420" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.12" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="ComboBox:pointerover /template/ Border#Background">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderHoverBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox:pressed /template/ Border#Background">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundPressedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox:focus /template/ Border#HighlightBackground">
+        <Setter Property="IsVisible" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource ThemeControlFocusGlowBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="ComboBox:focus /template/ ContentControl#ContentPresenter">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox:focus /template/ PathIcon#DropDownGlyph">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox:disabled /template/ Border#Background">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox:disabled /template/ ContentControl#ContentPresenter">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeControlDisabledTextBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox:disabled /template/ PathIcon#DropDownGlyph">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeControlDisabledTextBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox /template/ Border#PopupBorder">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlPopupBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityPopupPadding}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+    </Style>
+
+    <Style Selector="ComboBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityComboItemPadding}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="ComboBoxItem:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlPopupHoverBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+    </Style>
+
+    <Style Selector="ComboBoxItem:selected /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlPopupSelectedBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+    </Style>
+
+    <Style Selector="ComboBoxItem:selected:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ThemeAccentSecondaryBrush}" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <!-- AutoCompleteBox is the native Fluent search/dropdown surface. FilterableComboBox only adds
+         the value-backed behavior bridge, so both controls intentionally share this style. -->
+    <Style Selector="AutoCompleteBox">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityFilterableComboBoxPadding}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="AutoCompleteBox:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderHoverBrush}" />
+    </Style>
+
+    <Style Selector="AutoCompleteBox:focus">
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+    </Style>
+
+    <Style Selector="AutoCompleteBox /template/ TextBox#PART_TextBox">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityFilterableComboBoxPadding}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="AutoCompleteBox /template/ Border#PART_SuggestionsContainer">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlPopupBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityPopupPadding}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+    </Style>
+
+    <!-- Numeric input -->
+    <Style Selector="NumericUpDown">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityNumericInputPadding}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="NumericUpDown /template/ ButtonSpinner#PART_Spinner">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+    </Style>
+
+    <!-- Fluent's numeric template uses a -1 margin for its inner TextBox. Removing it makes the
+         outer focus ring and disabled border read as one deliberate control instead of a clipped
+         seam, especially when the spinner is enabled. -->
+    <Style Selector="NumericUpDown:not(:disabled) /template/ TextBox#PART_TextBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityNumericInputPadding}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="NumericUpDown:disabled /template/ TextBox#PART_TextBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityNumericInputPadding}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="NumericUpDown:focus-within /template/ ButtonSpinner#PART_Spinner">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlFocusGlowBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="NumericUpDown:pointerover /template/ ButtonSpinner#PART_Spinner">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderHoverBrush}" />
+    </Style>
+
+    <Style Selector="NumericUpDown:disabled /template/ ButtonSpinner#PART_Spinner">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+    </Style>
+
+    <!-- Date input -->
+    <Style Selector="CalendarDatePicker">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityInputPadding}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="CalendarDatePicker:pointerover /template/ Border#Background">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderHoverBrush}" />
+    </Style>
+
+    <Style Selector="CalendarDatePicker:focus-within /template/ Border#Background">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlFocusGlowBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="CalendarDatePicker /template/ TextBox#PART_TextBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityInputPadding}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="CalendarDatePicker /template/ Button#PART_Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+    </Style>
+
+    <Style Selector="DatePicker">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <!-- Buttons and boolean controls -->
+    <Style Selector="Button">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityFormFieldPadding}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="Button:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderHoverBrush}" />
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <Style Selector="Button:pressed">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundPressedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+    </Style>
+
+    <Style Selector="Button:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="Button:disabled">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeControlDisabledTextBrush}" />
+    </Style>
+
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityCompactCheckBoxPadding}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityCompactCheckBoxHeight}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="CheckBox:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="ToggleSwitch">
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="ToggleSwitch:pointerover /template/ Grid#SwitchAreaGrid">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundHoverBrush}" />
+    </Style>
+
+    <!-- Keep the Fluent switch animation and geometry, but replace its palette with the PKHeX
+         semantic surfaces. The template part names are stable in Avalonia 11.3.x. -->
+    <Style Selector="ToggleSwitch /template/ Border#OuterBorder">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundPressedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+    </Style>
+
+    <Style Selector="ToggleSwitch /template/ Border#SwitchKnobBounds">
+        <Setter Property="Background" Value="{DynamicResource ThemeAccentSecondaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="ToggleSwitch /template/ Ellipse#SwitchKnobOn, ToggleSwitch /template/ Ellipse#SwitchKnobOff">
+        <Setter Property="Fill" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+    </Style>
+
+</Styles>

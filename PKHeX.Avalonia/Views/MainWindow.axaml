@@ -268,23 +268,11 @@
                 BorderThickness="0,1,0,0"
                 Padding="{DynamicResource UiDensityStatusBarPadding}">
             <Grid ColumnDefinitions="*,Auto">
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="7">
-                    <TextBlock x:CompileBindings="False"
-                               Text="{Binding CurrentSaveFileName}"
-                               IsVisible="{Binding CurrentSaveFileName, Converter={x:Static ObjectConverters.IsNotNull}}"
-                               ToolTip.Tip="{Binding CurrentSavePath}"
-                               Foreground="{DynamicResource ThemeTextPrimaryBrush}"
-                               FontWeight="SemiBold"
-                               FontSize="12" />
-                    <TextBlock x:CompileBindings="False"
-                               Text="·"
-                               IsVisible="{Binding CurrentSaveFileName, Converter={x:Static ObjectConverters.IsNotNull}}"
-                               Foreground="{DynamicResource ThemeTextMutedBrush}"
-                               FontSize="12" />
-                    <TextBlock Text="{Binding StatusText}"
-                               Foreground="{DynamicResource ThemeTextSecondaryBrush}"
-                               FontSize="12" />
-                </StackPanel>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding StatusText}"
+                           Foreground="{DynamicResource ThemeTextSecondaryBrush}"
+                           FontSize="12"
+                           VerticalAlignment="Center" />
 
                 <!-- Non-intrusive update notification: only visible when a newer, non-skipped release exists. -->
                 <Border Grid.Column="1" x:CompileBindings="False"
@@ -334,10 +322,9 @@
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.Column="0" Classes="workspace-rail">
-                    <Grid RowDefinitions="Auto,*,Auto">
+                    <Grid RowDefinitions="Auto,*">
                         <StackPanel Grid.Row="0" Spacing="4">
                             <TextBlock Text="{loc:Loc Workspace_SectionLabel}" Classes="rail-eyebrow" />
-                            <TextBlock Text="{Binding StatusText}" Classes="rail-status" TextTrimming="CharacterEllipsis" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="1" Margin="0,20,0,0" Spacing="6">
@@ -348,7 +335,8 @@
                                           AutomationProperties.Name="{loc:Loc Workspace_Pokemon}">
                                 <Grid ColumnDefinitions="Auto,*">
                                     <Border Classes="workspace-nav-icon">
-                                        <PathIcon Data="M 8,1 A 7,7 0 1 0 8,15 A 7,7 0 1 0 8,1 M 1,8 H 15 M 5,8 A 3,3 0 1 0 11,8 A 3,3 0 1 0 5,8" />
+                                        <!-- Microsoft Fluent UI System Icon: BoxMultiple20Regular. -->
+                                        <PathIcon Data="M13.58 2.38a3 3 0 0 0-2.16 0L7.96 3.71A1.5 1.5 0 0 0 7 5.11v1.1a4 4 0 0 1 1 0v-1.1c0-.2.13-.4.32-.47l3.46-1.33a2 2 0 0 1 1.44 0l3.46 1.33q.31.14.32.47v7.78c0 .2-.13.4-.32.47L14 14.39v.5q0 .3-.07.6l3.1-1.2c.59-.22.97-.78.97-1.4V5.11a1.5 1.5 0 0 0-.96-1.4zm2.51 2.92a.5.5 0 0 0-.64-.3l-2.77 1.07a.5.5 0 0 1-.36 0L9.55 5.01a.5.5 0 1 0-.35.93l2.76 1.07q.54.2 1.08 0l2.76-1.07a.5.5 0 0 0 .3-.64m-5 5a.5.5 0 0 0-.64-.3L7.5 11.15l-2.95-1.13a.5.5 0 0 0-.35.93L7 12.02v2.49a.5.5 0 1 0 1 0v-2.49l2.8-1.08a.5.5 0 0 0 .3-.64M8.58 7.38a3 3 0 0 0-2.16 0L2.96 8.71a1.5 1.5 0 0 0-.96 1.4v4.78c0 .62.38 1.18.96 1.4l3.46 1.33a3 3 0 0 0 2.16 0l3.46-1.33c.58-.22.96-.78.96-1.4v-4.78a1.5 1.5 0 0 0-.96-1.4zm-1.8.93a2 2 0 0 1 1.44 0l3.46 1.33q.31.14.32.47v4.78c0 .2-.13.4-.32.47l-3.46 1.33a2 2 0 0 1-1.44 0l-3.46-1.33a.5.5 0 0 1-.32-.47v-4.78c0-.2.13-.4.32-.47z" />
                                     </Border>
                                     <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
                                         <TextBlock Text="{loc:Loc Workspace_Pokemon}" Classes="workspace-nav-title" TextWrapping="Wrap" />
@@ -364,7 +352,8 @@
                                           AutomationProperties.Name="{loc:Loc Workspace_Save}">
                                 <Grid ColumnDefinitions="Auto,*">
                                     <Border Classes="workspace-nav-icon">
-                                        <PathIcon Data="M 2,2 H 12 L 14,4 V 14 H 2 Z M 4,2 V 6 H 10 V 2 M 5,10 H 11 V 14 H 5 Z" />
+                                        <!-- Microsoft Fluent UI System Icon: Save20Regular. -->
+                                        <PathIcon Data="M3 5c0-1.1.9-2 2-2h8.38a2 2 0 0 1 1.41.59l1.62 1.62A2 2 0 0 1 17 6.62V15a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1v-4.5c0-.83.67-1.5 1.5-1.5h7c.83 0 1.5.67 1.5 1.5V16a1 1 0 0 0 1-1V6.62a1 1 0 0 0-.3-.7L14.1 4.28a1 1 0 0 0-.71-.29H13v2.5c0 .83-.67 1.5-1.5 1.5h-4A1.5 1.5 0 0 1 6 6.5V4zm2 0v2.5c0 .28.22.5.5.5h4a.5.5 0 0 0 .5-.5V4zm7 12v-4.5a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5V16z" />
                                     </Border>
                                     <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
                                         <TextBlock Text="{loc:Loc Workspace_Save}" Classes="workspace-nav-title" TextWrapping="Wrap" />
@@ -380,7 +369,8 @@
                                           AutomationProperties.Name="{loc:Loc Workspace_Reports}">
                                 <Grid ColumnDefinitions="Auto,*">
                                     <Border Classes="workspace-nav-icon">
-                                        <PathIcon Data="M 6,1 A 5,5 0 1 0 6,11 A 5,5 0 1 0 6,1 M 10,10 L 14,14" />
+                                        <!-- Microsoft Fluent UI System Icon: DataBarVertical20Regular. -->
+                                        <PathIcon Data="M5 3a2 2 0 0 0-2 2v10a2 2 0 1 0 4 0V5a2 2 0 0 0-2-2M4 5a1 1 0 0 1 2 0v10a1 1 0 1 1-2 0zm4 3a2 2 0 1 1 4 0v7a2 2 0 1 1-4 0zm2-1a1 1 0 0 1-1 1v7a1 1 0 1 0 2 0V8a1 1 0 0 1-1-1m3 4a2 2 0 1 1 4 0v4a2 2 0 1 1-4 0zm2-1a1 1 0 0 1-1 1v4a1 1 0 1 0 2 0v-4a1 1 0 0 0-1-1z" />
                                     </Border>
                                     <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
                                         <TextBlock Text="{loc:Loc Workspace_Reports}" Classes="workspace-nav-title" TextWrapping="Wrap" />
@@ -390,17 +380,6 @@
                             </ToggleButton>
                         </StackPanel>
 
-                        <Border Grid.Row="2" Classes="rail-save-card">
-                            <StackPanel Spacing="3">
-                                <TextBlock Text="{Binding CurrentSaveFileName}"
-                                           Classes="rail-save-name"
-                                           TextTrimming="CharacterEllipsis" />
-                                <TextBlock Text="{Binding CurrentSavePath}"
-                                           Classes="rail-save-path"
-                                           TextTrimming="CharacterEllipsis"
-                                           ToolTip.Tip="{Binding CurrentSavePath}" />
-                            </StackPanel>
-                        </Border>
                     </Grid>
                 </Border>
 

@@ -56,6 +56,12 @@ public sealed class UiDensityService : IUiDensityService
         Set(resources, UiDensityResourceKeys.StatusBarPadding, compact ? new Thickness(8, 4) : new Thickness(12, 6));
         Set(resources, UiDensityResourceKeys.ControlHeight, compact ? 32d : 36d);
         Set(resources, UiDensityResourceKeys.FormFieldPadding, compact ? new Thickness(6, 3) : new Thickness(8, 5));
+        Set(resources, UiDensityResourceKeys.InputPadding, compact ? new Thickness(10, 5) : new Thickness(12, 7));
+        Set(resources, UiDensityResourceKeys.ComboBoxPadding, compact ? new Thickness(12, 5, 0, 7) : new Thickness(14, 7, 0, 9));
+        Set(resources, UiDensityResourceKeys.NumericInputPadding, compact ? new Thickness(10, 4) : new Thickness(12, 6));
+        Set(resources, UiDensityResourceKeys.ComboItemPadding, compact ? new Thickness(11, 6) : new Thickness(13, 8));
+        Set(resources, UiDensityResourceKeys.PopupPadding, compact ? new Thickness(4) : new Thickness(6));
+        Set(resources, UiDensityResourceKeys.ControlRadius, compact ? new CornerRadius(7) : new CornerRadius(9));
         Set(resources, UiDensityResourceKeys.InlineControlHeight, compact ? 24d : 30d);
         Set(resources, UiDensityResourceKeys.InlineControlMinWidth, compact ? 50d : 56d);
         Set(resources, UiDensityResourceKeys.DataGridRowHeight, compact ? 36d : 44d);
@@ -92,6 +98,12 @@ internal static class UiDensityResourceKeys
     public const string StatusBarPadding = "UiDensityStatusBarPadding";
     public const string ControlHeight = "UiDensityControlHeight";
     public const string FormFieldPadding = "UiDensityFormFieldPadding";
+    public const string InputPadding = "UiDensityInputPadding";
+    public const string ComboBoxPadding = "UiDensityComboBoxPadding";
+    public const string NumericInputPadding = "UiDensityNumericInputPadding";
+    public const string ComboItemPadding = "UiDensityComboItemPadding";
+    public const string PopupPadding = "UiDensityPopupPadding";
+    public const string ControlRadius = "UiDensityControlRadius";
     public const string InlineControlHeight = "UiDensityInlineControlHeight";
     public const string InlineControlMinWidth = "UiDensityInlineControlMinWidth";
     public const string DataGridRowHeight = "UiDensityDataGridRowHeight";

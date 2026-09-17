@@ -52,6 +52,12 @@
             <Thickness x:Key="UiDensityStatusBarPadding">8,4</Thickness>
             <x:Double x:Key="UiDensityControlHeight">32</x:Double>
             <Thickness x:Key="UiDensityFormFieldPadding">6,3</Thickness>
+            <Thickness x:Key="UiDensityInputPadding">10,5</Thickness>
+            <Thickness x:Key="UiDensityComboBoxPadding">12,5,0,7</Thickness>
+            <Thickness x:Key="UiDensityNumericInputPadding">10,4</Thickness>
+            <Thickness x:Key="UiDensityComboItemPadding">11,6</Thickness>
+            <Thickness x:Key="UiDensityPopupPadding">4</Thickness>
+            <CornerRadius x:Key="UiDensityControlRadius">7</CornerRadius>
             <x:Double x:Key="UiDensityInlineControlHeight">24</x:Double>
             <x:Double x:Key="UiDensityInlineControlMinWidth">50</x:Double>
             <x:Double x:Key="UiDensityDataGridRowHeight">36</x:Double>
@@ -68,6 +74,14 @@
             <Thickness x:Key="UiDensityViewSectionMargin">0,0,0,12</Thickness>
             <Thickness x:Key="UiDensityViewFooterMargin">0,12,0,0</Thickness>
             <Thickness x:Key="UiDensitySectionHeaderMargin">0,0,0,8</Thickness>
+
+            <!-- Fluent's ComboBox popup is rendered in a separate Popup visual tree, so its
+                 background is resource-driven rather than reachable through a normal descendant
+                 selector. Keep those two native resource keys aligned with the PKHeX palette. -->
+            <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="{DynamicResource ThemeControlPopup}" />
+            <SolidColorBrush x:Key="ComboBoxDropDownBorderBrush" Color="{DynamicResource ThemeControlBorder}" />
+            <SolidColorBrush x:Key="AutoCompleteBoxSuggestionsListBackground" Color="{DynamicResource ThemeControlPopup}" />
+            <SolidColorBrush x:Key="AutoCompleteBoxSuggestionsListBorderBrush" Color="{DynamicResource ThemeControlBorder}" />
             
             <converters:ObjectNullConverter x:Key="ObjectNullConverter" />
             <converters:ObjectTrueConverter x:Key="ObjectTrueConverter" />
@@ -81,5 +95,6 @@
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
         <StyleInclude Source="avares://PKHeX.Avalonia/Styles/Theme.axaml" />
+        <StyleInclude Source="avares://PKHeX.Avalonia/Styles/ControlSystem.axaml" />
     </Application.Styles>
 </Application>
