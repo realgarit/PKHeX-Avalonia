@@ -67,7 +67,7 @@
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="16" />
                                     <TextBlock Text="{loc:Loc RaidEditor_Active}" Foreground="Green" IsVisible="{Binding IsActive}" VerticalAlignment="Center" />
-                                    <TextBlock Text="{loc:Loc RaidEditor_Inactive}" Foreground="Gray" IsVisible="{Binding !IsActive}" VerticalAlignment="Center" />
+                                    <TextBlock Text="{loc:Loc RaidEditor_Inactive}" Foreground="{DynamicResource ThemeTextMutedBrush}" IsVisible="{Binding !IsActive}" VerticalAlignment="Center" />
                                 </StackPanel>
 
                                 <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto,8,Auto">

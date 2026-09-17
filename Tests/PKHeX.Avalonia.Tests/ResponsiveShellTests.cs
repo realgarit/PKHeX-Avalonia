@@ -120,6 +120,7 @@ public sealed class ResponsiveShellTests
             Assert.DoesNotContain("SystemControl", view);
             Assert.DoesNotContain("ThemeBorderBrush", view);
             Assert.DoesNotContain("ThemeAccentBrush", view);
+            Assert.DoesNotContain("Foreground=\"Gray\"", view);
         }
     }
 
