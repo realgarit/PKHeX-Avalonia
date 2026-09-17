@@ -5,22 +5,22 @@
              x:Class="PKHeX.Avalonia.Views.PokedexLAEditor"
              x:DataType="vm:PokedexLAEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <DockPanel>
             <!-- Header -->
-            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+            <DockPanel Classes="save-editor-header" DockPanel.Dock="Top" Margin="0,0,0,8">
                 <TextBlock Text="{loc:Loc PokedexLAEditor_Title}" Classes="view-title" VerticalAlignment="Center" />
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
                     <Button Content="{loc:Loc PokedexLAEditor_ReportAll}" Command="{Binding ReportAllCommand}" />
                     <Button Content="{loc:Loc PokedexLAEditor_SaveAll}" Command="{Binding SaveCommand}" Classes="accent" />
                 </StackPanel>
             </DockPanel>
 
-            <Grid ColumnDefinitions="250,16,*">
+            <Grid ColumnDefinitions="250,8,*">
                 <!-- Species List -->
                 <DockPanel Grid.Column="0">
                     <TextBox DockPanel.Dock="Top" Text="{Binding SearchText}" Watermark="{loc:Loc PokedexLAEditor_Search}" Margin="0,0,0,8" AutomationProperties.Name="Search Species" />
-                    <Border Classes="section-card" Padding="0">
+                    <Border Classes="pokedex-species-list">
                         <ListBox ItemsSource="{Binding SpeciesList}"
                                  SelectedItem="{Binding SelectedSpecies}"
                                  Background="Transparent">
@@ -35,31 +35,28 @@
 
                 <!-- Detailed View -->
                 <ScrollViewer Grid.Column="2" DataContext="{Binding SelectedSpecies}">
-                    <StackPanel Spacing="16">
+                    <StackPanel Spacing="8">
                         <!-- Summary & Forms -->
-                        <Grid ColumnDefinitions="*,16,*">
-                            <Border Grid.Column="0" Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
+                        <Grid ColumnDefinitions="*,8,*">
+                            <Border Grid.Column="0" Classes="editor-section">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc PokedexLAEditor_SpeciesInfo}" FontWeight="SemiBold" Opacity="0.6" />
                                     <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,8,Auto">
                                         <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc PokedexLAEditor_ResearchLevelReported}" VerticalAlignment="Center" FontSize="11" Opacity="0.7"/>
                                         <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding ReportedResearchLevel}" FontWeight="Bold" />
-                                        
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Loc PokedexLAEditor_ResearchLevelUnreported}" VerticalAlignment="Center" FontSize="11" Opacity="0.7"/>
                                         <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding UnreportedResearchLevel}" FontWeight="Bold" Foreground="{DynamicResource ThemeSuccessBrush}" />
                                     </Grid>
-                                    
-                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <CheckBox Content="{loc:Loc PokedexLAEditor_Complete}" IsChecked="{Binding IsComplete}" IsEnabled="False" />
                                         <CheckBox Content="{loc:Loc PokedexLAEditor_Perfect}" IsChecked="{Binding IsPerfect}" IsEnabled="False" />
                                         <CheckBox Content="{loc:Loc PokedexLAEditor_Solitude}" IsChecked="{Binding IsSolitudeComplete}" />
                                     </StackPanel>
-                                    
                                     <Button Content="{loc:Loc PokedexLAEditor_ReportCurrentSpecies}" Command="{Binding ReportSpeciesCommand}" HorizontalAlignment="Stretch" />
                                 </StackPanel>
                             </Border>
 
-                            <Border Grid.Column="2" Classes="section-card" Padding="12">
+                            <Border Grid.Column="2" Classes="editor-section">
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc PokedexLAEditor_Forms}" FontWeight="SemiBold" Opacity="0.6" />
                                     <ListBox ItemsSource="{Binding Forms}" SelectedItem="{Binding SelectedForm}" Height="120" Background="Transparent">
@@ -74,14 +71,13 @@
                         </Grid>
 
                         <!-- Flags -->
-                        <Border Classes="section-card" Padding="12" DataContext="{Binding SelectedForm}">
-                            <StackPanel Spacing="12">
+                        <Border Classes="editor-section" DataContext="{Binding SelectedForm}">
+                            <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc PokedexLAEditor_FlagsCurrentForm}" FontWeight="SemiBold" Opacity="0.6" />
                                 <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc PokedexLAEditor_SeenInWild}" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4"/>
                                     <TextBlock Grid.Row="0" Grid.Column="1" Text="{loc:Loc PokedexLAEditor_Obtained}" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4"/>
                                     <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Loc PokedexLAEditor_CaughtInWild}" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,4"/>
-                                    
                                     <CheckBox Grid.Row="1" Grid.Column="0" Content="{loc:Loc PokedexLAEditor_Flag1}" IsChecked="{Binding Seen0}" />
                                     <CheckBox Grid.Row="2" Grid.Column="0" Content="{loc:Loc PokedexLAEditor_Flag2}" IsChecked="{Binding Seen1}" />
                                     <CheckBox Grid.Row="3" Grid.Column="0" Content="{loc:Loc PokedexLAEditor_Flag3}" IsChecked="{Binding Seen2}" />
@@ -113,8 +109,8 @@
                         </Border>
 
                         <!-- Research Tasks -->
-                        <Border Classes="section-card" Padding="12">
-                            <StackPanel Spacing="12">
+                        <Border Classes="editor-section">
+                            <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc PokedexLAEditor_ResearchTasks}" FontWeight="SemiBold" Opacity="0.6" />
                                 <ItemsControl ItemsSource="{Binding Tasks}">
                                     <ItemsControl.ItemTemplate>

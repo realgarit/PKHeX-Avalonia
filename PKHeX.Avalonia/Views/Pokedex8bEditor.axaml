@@ -8,13 +8,21 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="PKHeX.Avalonia.Views.Pokedex8bEditor"
              x:DataType="vm:Pokedex8bEditorViewModel">
-    
-    <Border Padding="16" Classes="view-container">
-        <Grid ColumnDefinitions="250, 16, *" RowDefinitions="*,Auto">
+    <Border Classes="view-container">
+        <Grid ColumnDefinitions="250, 8, *" RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" Grid.Column="2" Classes="save-editor-header">
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                    <Button Command="{Binding ModifyAllCommand}" CommandParameter="SeenNone" Content="{loc:Loc Pokedex8bEditor_SeenNone}" />
+                    <Button Command="{Binding ModifyAllCommand}" CommandParameter="CaughtNone" Content="{loc:Loc Pokedex8bEditor_CaughtNone}" />
+                    <Button Command="{Binding SeenAllCommand}" Content="{loc:Loc Pokedex8bEditor_SeenAll}" />
+                    <Button Command="{Binding CaughtAllCommand}" Content="{loc:Loc Pokedex8bEditor_CaughtAll}" />
+                    <Button Command="{Binding CompleteDexCommand}" Content="{loc:Loc Pokedex8bEditor_CompleteDex}" Classes="accent" />
+                </StackPanel>
+            </Grid>
             <!-- Species List -->
-            <Grid Grid.Column="0" RowDefinitions="Auto, 8, *">
+            <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto, 8, *">
                 <TextBox Grid.Row="0" Text="{Binding SearchText}" Watermark="{loc:Loc Pokedex8bEditor_SearchSpecies}" AutomationProperties.Name="Search Species" />
-                <Border Grid.Row="2" Classes="section-card" Padding="0">
+                <Border Grid.Row="2" Classes="pokedex-species-list">
                     <ListBox ItemsSource="{Binding FilteredSpecies}" SelectedItem="{Binding SelectedSpecies}" Background="Transparent">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="core:ComboItem">
@@ -24,13 +32,12 @@
                     </ListBox>
                 </Border>
             </Grid>
-            
             <!-- Editor Area -->
-            <ScrollViewer Grid.Column="2" Grid.Row="0">
-                <StackPanel Spacing="16">
+            <ScrollViewer Grid.Column="2" Grid.Row="1">
+                <StackPanel Spacing="8">
                     <!-- Global Settings -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex8bEditor_Global}" FontWeight="SemiBold" Opacity="0.6" />
                             <StackPanel Orientation="Horizontal" Spacing="24">
                                 <CheckBox IsChecked="{Binding HasRegionalDex}" Content="{loc:Loc Pokedex8bEditor_RegionalDexUnlocked}"/>
@@ -40,17 +47,16 @@
                     </Border>
 
                     <!-- Current Entry -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex8bEditor_CurrentSpecies}" FontWeight="SemiBold" Opacity="0.6" />
-                            
-                            <Grid ColumnDefinitions="Auto, 16, *" RowDefinitions="Auto, 12, Auto">
+                            <Grid ColumnDefinitions="Auto, 8, *" RowDefinitions="Auto, 12, Auto">
                                 <StackPanel Grid.Row="0" Grid.Column="0" Spacing="8">
                                     <TextBlock Text="{loc:Loc Pokedex8bEditor_State}" FontWeight="SemiBold" Opacity="0.7" />
                                     <ComboBox ItemsSource="{Binding States}" SelectedIndex="{Binding State}" HorizontalAlignment="Stretch" MinWidth="150" />
                                 </StackPanel>
 
-                                <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ColumnDefinitions="*, 16, *">
+                                <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ColumnDefinitions="*, 8, *">
                                     <StackPanel Grid.Column="0" Spacing="8">
                                         <TextBlock Text="{loc:Loc Pokedex8bEditor_GenderFlags}" FontWeight="SemiBold" Opacity="0.7" />
                                         <CheckBox IsChecked="{Binding SeenMale}" Content="{loc:Loc Pokedex8bEditor_Male}" IsEnabled="{Binding CanBeMale}"/>
@@ -65,9 +71,8 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                    
                     <!-- Languages -->
-                    <Border Classes="section-card" Padding="12">
+                    <Border Classes="editor-section">
                         <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex8bEditor_Languages}" FontWeight="SemiBold" Opacity="0.6" />
                             <WrapPanel Orientation="Horizontal">
@@ -85,8 +90,8 @@
                     </Border>
 
                     <!-- Forms -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex8bEditor_Forms}" FontWeight="SemiBold" Opacity="0.6" />
                             <Grid ColumnDefinitions="*,80,80">
                                 <TextBlock Grid.Column="0" Text="{loc:Loc Pokedex8bEditor_ColForm}" FontWeight="Bold" Opacity="0.7"/>
@@ -109,14 +114,6 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- Actions -->
-            <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Spacing="12" Margin="0,16,0,0" HorizontalAlignment="Right">
-                <Button Command="{Binding ModifyAllCommand}" CommandParameter="SeenNone" Content="{loc:Loc Pokedex8bEditor_SeenNone}"/>
-                <Button Command="{Binding ModifyAllCommand}" CommandParameter="CaughtNone" Content="{loc:Loc Pokedex8bEditor_CaughtNone}"/>
-                <Button Command="{Binding SeenAllCommand}" Content="{loc:Loc Pokedex8bEditor_SeenAll}"/>
-                <Button Command="{Binding CaughtAllCommand}" Content="{loc:Loc Pokedex8bEditor_CaughtAll}"/>
-                <Button Command="{Binding CompleteDexCommand}" Content="{loc:Loc Pokedex8bEditor_CompleteDex}" Classes="accent"/>
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

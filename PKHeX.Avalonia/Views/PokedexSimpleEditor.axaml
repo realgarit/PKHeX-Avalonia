@@ -8,10 +8,11 @@
              x:Class="PKHeX.Avalonia.Views.PokedexSimpleEditor"
              x:DataType="vm:PokedexSimpleEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
-        <Grid RowDefinitions="Auto,*,Auto">
+    <Border Classes="view-container">
+        <Grid RowDefinitions="Auto,*">
             <!-- Controls -->
-            <StackPanel Grid.Row="0" Spacing="12" Margin="0,0,0,16">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Classes="save-editor-header">
+                <StackPanel Grid.Column="0" Spacing="8" Margin="0,0,8,0">
                 <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc PokedexSimpleEditor_SearchSpecies}" AutomationProperties.Name="Search Species" />
                 <WrapPanel Orientation="Horizontal">
                     <Button Content="{loc:Loc PokedexSimpleEditor_SeenAll}" Command="{Binding SeenAllCommand}" Margin="0,0,8,8" />
@@ -19,11 +20,13 @@
                     <Button Content="{loc:Loc PokedexSimpleEditor_CaughtAll}" Command="{Binding CaughtAllCommand}" Margin="0,0,8,8" />
                     <Button Content="{loc:Loc PokedexSimpleEditor_CaughtNone}" Command="{Binding CaughtNoneCommand}" Margin="0,0,8,8" />
                 </WrapPanel>
-            </StackPanel>
+                </StackPanel>
+                <Button Grid.Column="1" Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
+            </Grid>
 
             <!-- List -->
-            <Border Grid.Row="1" Classes="section-card" Padding="0">
-                <DataGrid ItemsSource="{Binding FilteredEntries}" 
+            <Border Grid.Row="1" Classes="pokedex-species-list">
+                <DataGrid Classes="save-grid" ItemsSource="{Binding FilteredEntries}"
                           AutoGenerateColumns="False" 
                           CanUserResizeColumns="True" 
                           CanUserSortColumns="True"
@@ -38,10 +41,6 @@
                 </DataGrid>
             </Border>
 
-            <!-- Footer -->
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,16,0,0">
-                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center"/>
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

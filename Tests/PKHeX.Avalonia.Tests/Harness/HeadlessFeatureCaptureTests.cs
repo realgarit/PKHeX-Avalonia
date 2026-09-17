@@ -273,6 +273,45 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
     }
 
     [AvaloniaFact]
+    public void CapturePokedexEditorStates_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        CaptureAuxiliaryView(
+            new Pokedex6Editor { DataContext = new Pokedex6EditorViewModel(new SAV6XY()) },
+            "pokedex6-editor.png",
+            1000,
+            680,
+            "Gen 6 Pokédex editor");
+        CaptureAuxiliaryView(
+            new Pokedex7bEditor { DataContext = new Pokedex7bEditorViewModel(new SAV7b()) },
+            "pokedex7b-editor.png",
+            920,
+            650,
+            "LGPE Pokédex editor");
+
+        using var host = new HeadlessAppFixture();
+        var saveDirectory = SaveFileFixture.FindSaveFilesPath();
+        Assert.NotNull(saveDirectory);
+        host.LoadSave(Path.Combine(saveDirectory!, "gen9_scarlet.main"));
+        var save = host.Save as SAV9SV
+            ?? throw new InvalidOperationException("The Gen 9 Pokédex capture save could not be loaded.");
+        CaptureAuxiliaryView(
+            new PokedexGen9Editor { DataContext = new PokedexGen9EditorViewModel(save) },
+            "pokedex-gen9-editor.png",
+            900,
+            620,
+            "Gen 9 Pokédex editor");
+        CaptureAuxiliaryView(
+            new PokedexLAEditor { DataContext = new PokedexLAEditorViewModel(BlankSaveFile.Get(GameVersion.PLA)) },
+            "pokedex-la-editor.png",
+            1000,
+            680,
+            "Legends Pokédex editor");
+    }
+
+    [AvaloniaFact]
     public void CaptureDensityModes_MainWindow_WhenEnabled_WritesPng()
     {
         if (SkipWhenCaptureDisabled())

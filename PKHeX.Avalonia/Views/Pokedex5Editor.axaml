@@ -8,13 +8,20 @@
              mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
              x:Class="PKHeX.Avalonia.Views.Pokedex5Editor"
              x:DataType="vm:Pokedex5EditorViewModel">
-    
-    <Border Padding="16" Classes="view-container">
-        <Grid ColumnDefinitions="250, 16, *" RowDefinitions="*,Auto">
+    <Border Classes="view-container">
+        <Grid ColumnDefinitions="250, 8, *" RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" Grid.Column="2" Classes="save-editor-header">
+                <Button Content="{loc:Loc Pokedex5Editor_SaveEntry}"
+                        Command="{Binding SaveCommand}"
+                        Classes="accent"
+                        MinWidth="100"
+                        HorizontalAlignment="Right"
+                        HorizontalContentAlignment="Center" />
+            </Grid>
             <!-- Species List -->
-            <Grid Grid.Column="0" RowDefinitions="Auto, 8, *">
+            <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto, 8, *">
                 <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc Pokedex5Editor_SearchSpecies}" AutomationProperties.Name="Search Species" />
-                <Border Grid.Row="2" Classes="section-card" Padding="0">
+                <Border Grid.Row="2" Classes="pokedex-species-list">
                     <ListBox ItemsSource="{Binding Species}" SelectedItem="{Binding SelectedSpecies}" Background="Transparent">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="core:ComboItem">
@@ -24,13 +31,12 @@
                     </ListBox>
                 </Border>
             </Grid>
-            
             <!-- Details -->
-            <ScrollViewer Grid.Column="2">
-                <StackPanel Spacing="16">
+            <ScrollViewer Grid.Row="1" Grid.Column="2">
+                <StackPanel Spacing="8">
                     <!-- Global Settings -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex5Editor_GlobalSettings}" FontWeight="SemiBold" Opacity="0.6" />
                             <Grid ColumnDefinitions="*, 12, *, 12, *">
                                 <CheckBox Content="{loc:Loc Pokedex5Editor_NationalDexUnlocked}" IsChecked="{Binding NationalDexUnlocked}"/>
@@ -42,15 +48,12 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                    
                     <!-- Entry Flags -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex5Editor_EntryFlags}" FontWeight="SemiBold" Opacity="0.6" />
-                            
                             <CheckBox Content="{loc:Loc Pokedex5Editor_Caught}" IsChecked="{Binding Caught}" FontWeight="SemiBold" />
-                            
-                            <Grid ColumnDefinitions="*, 16, *">
+                            <Grid ColumnDefinitions="*, 8, *">
                                 <!-- Seen -->
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Pokedex5Editor_Seen}" FontWeight="SemiBold" Opacity="0.7" />
@@ -59,7 +62,6 @@
                                     <CheckBox Content="{loc:Loc Pokedex5Editor_MaleShiny}" IsChecked="{Binding SeenMaleShiny}" IsEnabled="{Binding CanBeMale}"/>
                                     <CheckBox Content="{loc:Loc Pokedex5Editor_FemaleShiny}" IsChecked="{Binding SeenFemaleShiny}" IsEnabled="{Binding CanBeFemale}"/>
                                 </StackPanel>
-                                
                                 <!-- Displayed -->
                                 <StackPanel Grid.Column="2" Spacing="8">
                                     <TextBlock Text="{loc:Loc Pokedex5Editor_Displayed}" FontWeight="SemiBold" Opacity="0.7" />
@@ -71,9 +73,8 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                    
                     <!-- Languages -->
-                    <Border IsVisible="{Binding HasLanguages}" Classes="section-card" Padding="12">
+                    <Border IsVisible="{Binding HasLanguages}" Classes="editor-section">
                         <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex5Editor_Languages}" FontWeight="SemiBold" Opacity="0.6" />
                             <WrapPanel Orientation="Horizontal">
@@ -87,12 +88,11 @@
                             </WrapPanel>
                         </StackPanel>
                     </Border>
-                    
                     <!-- Forms -->
-                    <Border IsVisible="{Binding HasForms}" Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border IsVisible="{Binding HasForms}" Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Pokedex5Editor_Forms}" FontWeight="SemiBold" Opacity="0.6" />
-                            <Grid ColumnDefinitions="*, 16, *">
+                            <Grid ColumnDefinitions="*, 8, *">
                                 <!-- Forms Seen -->
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Pokedex5Editor_Seen}" FontWeight="SemiBold" Opacity="0.7" />
@@ -104,7 +104,6 @@
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
-                                
                                 <!-- Forms Displayed -->
                                 <StackPanel Grid.Column="2" Spacing="8">
                                     <TextBlock Text="{loc:Loc Pokedex5Editor_Displayed}" FontWeight="SemiBold" Opacity="0.7" />
@@ -122,10 +121,6 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
-                <Button Content="{loc:Loc Pokedex5Editor_SaveEntry}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center"/>
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

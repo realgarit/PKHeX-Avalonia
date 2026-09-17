@@ -9,27 +9,39 @@
              x:Class="PKHeX.Avalonia.Views.Pokedex7bEditor"
              x:DataType="vm:Pokedex7bEditorViewModel">
     
-    <Grid ColumnDefinitions="280, *" Margin="10">
+    <Border Classes="view-container">
+    <Grid ColumnDefinitions="280,8,*">
         <!-- Entry List -->
         <Grid Grid.Column="0" RowDefinitions="Auto, *">
             <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc Pokedex7bEditor_SearchSpeciesForm}" Margin="0,0,0,10" AutomationProperties.Name="Search Species/Form"/>
-            <ListBox Grid.Row="1" ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate x:DataType="core:ComboItem">
-                        <TextBlock Text="{Binding Text}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <Border Grid.Row="1" Classes="pokedex-species-list">
+                <ListBox ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry}" Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="core:ComboItem">
+                            <TextBlock Text="{Binding Text}" Padding="8,4"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
         </Grid>
+
+        <GridSplitter Grid.Column="1" Classes="pane-splitter" />
         
         <!-- Details -->
-        <ScrollViewer Grid.Column="1" Margin="10,0,0,0">
-            <StackPanel Spacing="10">
-                <Button Content="{loc:Loc Pokedex7bEditor_SaveEntry}" Command="{Binding SaveCommand}" MinWidth="100" HorizontalAlignment="Left"/>
+        <ScrollViewer Grid.Column="2">
+            <StackPanel Spacing="8">
+                <Grid Classes="save-editor-header">
+                    <Button Content="{loc:Loc Pokedex7bEditor_SaveEntry}"
+                            Command="{Binding SaveCommand}"
+                            Classes="accent"
+                            MinWidth="100"
+                            HorizontalAlignment="Right"
+                            HorizontalContentAlignment="Center" />
+                </Grid>
                 
                 <!-- Entry Flags -->
-                <Border BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
-                    <StackPanel Spacing="10">
+                <Border Classes="editor-section">
+                    <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc Pokedex7bEditor_EntryFlags}" FontWeight="Bold"/>
                         <CheckBox Content="{loc:Loc Pokedex7bEditor_Caught}" IsChecked="{Binding Caught}" IsEnabled="{Binding IsCaughtEnabled}"/>
                         
@@ -56,8 +68,8 @@
                 </Border>
                 
                 <!-- Size Data -->
-                <Border IsVisible="{Binding HasSizeData}" BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
-                    <StackPanel Spacing="10">
+                <Border IsVisible="{Binding HasSizeData}" Classes="editor-section">
+                    <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc Pokedex7bEditor_SizeRecords}" FontWeight="Bold"/>
                         <Grid ColumnDefinitions="Auto, 80, 100, Auto, 80, 100" RowDefinitions="Auto, Auto">
                             <Label Grid.Row="0" Grid.Column="0" Content="{loc:Loc Pokedex7bEditor_MinHeight}" VerticalAlignment="Center"/>
@@ -80,7 +92,7 @@
                 </Border>
 
                 <!-- Languages -->
-                <Border IsVisible="{Binding HasLanguages}" BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="1" CornerRadius="4" Padding="10">
+                <Border IsVisible="{Binding HasLanguages}" Classes="editor-section">
                     <StackPanel Spacing="5">
                         <TextBlock Text="{loc:Loc Pokedex7bEditor_Languages}" FontWeight="Bold"/>
                         <WrapPanel Orientation="Horizontal">
@@ -99,4 +111,5 @@
             </StackPanel>
         </ScrollViewer>
     </Grid>
+    </Border>
 </UserControl>
