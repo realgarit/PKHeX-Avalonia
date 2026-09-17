@@ -25,9 +25,9 @@ public class FilterableComboBox : AutoCompleteBox
 
     private bool _syncing;
 
-    // Use a concrete style key so FilterableComboBox's shared geometry cannot alter plain
-    // AutoCompleteBox instances, such as the Batch Editor's search field.
-    protected override Type StyleKeyOverride => typeof(FilterableComboBox);
+    // The class adds the value-backed selection bridge only. Its visuals come from Avalonia's
+    // native Fluent AutoCompleteBox template, just like the plain search field in Batch Editor.
+    protected override Type StyleKeyOverride => typeof(AutoCompleteBox);
 
     public FilterableComboBox()
     {

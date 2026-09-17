@@ -166,18 +166,9 @@
         <Setter Property="Foreground" Value="White" />
     </Style>
 
-    <!-- FilterableComboBox keeps the AutoComplete behavior but speaks the same visual language. -->
+    <!-- AutoCompleteBox is the native Fluent search/dropdown surface. FilterableComboBox only adds
+         the value-backed behavior bridge, so both controls intentionally share this style. -->
     <Style Selector="AutoCompleteBox">
-        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
-        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
-        <Setter Property="FocusAdorner" Value="{x:Null}" />
-    </Style>
-
-    <Style Selector="controls|FilterableComboBox">
         <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
@@ -188,16 +179,16 @@
         <Setter Property="FocusAdorner" Value="{x:Null}" />
     </Style>
 
-    <Style Selector="controls|FilterableComboBox:pointerover">
+    <Style Selector="AutoCompleteBox:pointerover">
         <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundHoverBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderHoverBrush}" />
     </Style>
 
-    <Style Selector="controls|FilterableComboBox:focus">
+    <Style Selector="AutoCompleteBox:focus">
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
     </Style>
 
-    <Style Selector="controls|FilterableComboBox /template/ TextBox#PART_TextBox">
+    <Style Selector="AutoCompleteBox /template/ TextBox#PART_TextBox">
         <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
@@ -208,7 +199,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
-    <Style Selector="controls|FilterableComboBox /template/ Border#PART_SuggestionsContainer">
+    <Style Selector="AutoCompleteBox /template/ Border#PART_SuggestionsContainer">
         <Setter Property="Background" Value="{DynamicResource ThemeControlPopupBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />

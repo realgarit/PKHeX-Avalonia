@@ -72,22 +72,22 @@
                         <!-- Top: Title and Actions -->
                         <DockPanel Grid.Row="0" VerticalAlignment="Center">
                             <!-- Action Buttons -->
-                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4">
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
                                 <!-- Legality -->
-                                <Button Background="Transparent" BorderThickness="0" Padding="4"
+                                <Button Classes="entity-status-action"
                                         Command="{Binding ShowLegalityCommand}" ToolTip.Tip="{Binding LegalityReport}"
                                         AutomationProperties.Name="Show Legality Report">
                                     <Panel>
-                                        <Border Classes="badge-success" IsVisible="{Binding IsLegal}" Padding="6,2" CornerRadius="4">
-                                            <TextBlock Text="{loc:Loc PokemonEditor_Legal}" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                        <Border Classes="badge-success entity-status-badge" IsVisible="{Binding IsLegal}">
+                                            <TextBlock Text="{loc:Loc PokemonEditor_Legal}" FontSize="10" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
                                         </Border>
-                                        <Border Classes="badge-error" IsVisible="{Binding !IsLegal}" Padding="6,2" CornerRadius="4">
-                                            <TextBlock Text="{loc:Loc PokemonEditor_Illegal}" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                        <Border Classes="badge-error entity-status-badge" IsVisible="{Binding !IsLegal}">
+                                            <TextBlock Text="{loc:Loc PokemonEditor_Illegal}" FontSize="10" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
                                         </Border>
                                     </Panel>
                                 </Button>
                                 <!-- Shiny -->
-                                <Button Background="Transparent" BorderThickness="0" Padding="4"
+                                <Button Classes="entity-status-action entity-shiny-action"
                                         Command="{Binding ToggleShinyCommand}" ToolTip.Tip="{loc:Loc PokemonEditor_ToggleShinyTooltip}"
                                         AutomationProperties.Name="Toggle Shiny">
                                     <Panel>

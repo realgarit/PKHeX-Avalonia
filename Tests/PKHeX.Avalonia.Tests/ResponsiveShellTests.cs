@@ -29,7 +29,9 @@ public sealed class ResponsiveShellTests
         Assert.Equal(7, System.Text.RegularExpressions.Regex.Matches(mainWindow, "Classes=\"workspace-tab\"").Count);
 
         Assert.Contains("TabControl.editor-tabs TabItem.editor-tab:selected", theme);
-        Assert.Contains("BorderThickness\" Value=\"0,0,0,2", theme);
+        Assert.Contains("TabControl.editor-tabs TabItem.editor-tab:selected /template/ Border#PART_SelectedPipe", theme);
+        Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:selected /template/ Border#PART_SelectedPipe", theme);
+        Assert.Contains("BorderThickness\" Value=\"0\"", theme);
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:selected", theme);
         Assert.Contains("TabControl.editor-tabs TabItem.editor-tab:focus-visible", theme);
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:focus-visible", theme);
@@ -40,6 +42,18 @@ public sealed class ResponsiveShellTests
         Assert.True(selectedEditorStyle.Success);
         Assert.DoesNotContain("ThemeAccentGlowBrush", selectedEditorStyle.Groups["body"].Value);
         Assert.Contains("ThemeBackgroundElevatedBrush", selectedEditorStyle.Groups["body"].Value);
+
+        // Save identity is intentionally a single piece of application chrome: the top header owns
+        // the filename, while the left rail and bottom status bar carry only task/status context.
+        Assert.Single(System.Text.RegularExpressions.Regex.Matches(mainWindow, "Text=\"\\{Binding CurrentSaveFileName\\}\""));
+        Assert.DoesNotContain("rail-save-card", mainWindow);
+        Assert.DoesNotContain("rail-status", mainWindow);
+        var statusBar = System.Text.RegularExpressions.Regex.Match(
+            mainWindow,
+            "<Border DockPanel.Dock=\"Bottom\"(?<body>.*?)</Border>",
+            System.Text.RegularExpressions.RegexOptions.Singleline);
+        Assert.True(statusBar.Success);
+        Assert.DoesNotContain("CurrentSaveFileName", statusBar.Groups["body"].Value);
     }
 
     [AvaloniaFact]

@@ -5,6 +5,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using PKHeX.Avalonia.Controls;
+using PKHeX.Avalonia.Views;
 using PKHeX.Core;
 using Xunit;
 
@@ -87,6 +88,30 @@ public sealed class NativeControlSystemTests
         Assert.Equal(new Thickness(0), textBox.Margin);
         Assert.Equal(0, textBox.BorderThickness.Left);
         Assert.Equal(0, textBox.BorderThickness.Top);
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void PokemonEditor_StatusActionsShareOneCenterline()
+    {
+        var save = new SAV9SV();
+        var pk = new PK9 { Species = (ushort)Species.Pikachu, CurrentLevel = 55 };
+        var (viewModel, _, _) = TestHelpers.CreateTestViewModel(pk, save);
+        var view = new PokemonEditor { DataContext = viewModel };
+        var window = new Window { Content = view, Width = 620, Height = 240 };
+        window.Show();
+        Pump(window);
+
+        var actions = view.GetVisualDescendants()
+            .OfType<Button>()
+            .Where(button => button.Classes.Contains("entity-status-action"))
+            .ToArray();
+
+        Assert.Equal(2, actions.Length);
+        Assert.All(actions, action => Assert.Equal(26, action.Bounds.Height));
+        var centers = actions.Select(action => action.Bounds.Y + action.Bounds.Height / 2).ToArray();
+        Assert.InRange(Math.Abs(centers[0] - centers[1]), 0, 0.01);
 
         window.Close();
     }
