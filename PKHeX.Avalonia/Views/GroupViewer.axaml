@@ -17,16 +17,19 @@
         <!-- Define any resources here if needed -->
     </UserControl.Resources>
     
-    <Grid RowDefinitions="Auto, *, Auto" Margin="10">
+    <Border Classes="view-container">
+    <Grid RowDefinitions="Auto, *">
         <!-- Header -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+        <Border Grid.Row="0" Classes="tool-header">
+        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
             <Button Content="&#60;" Command="{Binding PreviousGroupCommand}" AutomationProperties.Name="Previous Group"/>
             <ComboBox ItemsSource="{Binding GroupNames}" SelectedIndex="{Binding CurrentGroupIndex}" MinWidth="180" MaxDropDownHeight="400" AutomationProperties.Name="Group Selection"/>
             <Button Content="&#62;" Command="{Binding NextGroupCommand}" AutomationProperties.Name="Next Group"/>
         </StackPanel>
+        </Border>
 
         <!-- Slots -->
-        <ScrollViewer Grid.Row="1" Margin="0,10">
+        <ScrollViewer Grid.Row="1" Margin="0,8,0,0">
             <ItemsControl ItemsSource="{Binding Slots}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -46,7 +49,7 @@
                                 
                                 <!-- Info -->
                                 <TextBlock Grid.Row="1" Text="{Binding SpeciesName}" FontSize="10" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Grid.Row="2" Text="{Binding Nickname}" FontSize="9" HorizontalAlignment="Center" Foreground="Gray" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Grid.Row="2" Text="{Binding Nickname}" FontSize="9" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeTextMutedBrush}" TextTrimming="CharacterEllipsis"/>
                             </Grid>
                         </Button>
                     </DataTemplate>
@@ -54,4 +57,5 @@
             </ItemsControl>
         </ScrollViewer>
     </Grid>
+    </Border>
 </UserControl>

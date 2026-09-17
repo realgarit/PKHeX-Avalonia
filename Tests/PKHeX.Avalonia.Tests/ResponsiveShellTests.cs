@@ -36,12 +36,12 @@ public sealed class ResponsiveShellTests
         Assert.DoesNotContain("ThemeAccentBrush\"", mainWindow);
         Assert.Equal(7, System.Text.RegularExpressions.Regex.Matches(mainWindow, "Classes=\"workspace-tab\"").Count);
 
-        Assert.Contains("TabControl.editor-tabs TabItem.editor-tab:selected", theme);
-        Assert.Contains("TabControl.editor-tabs TabItem.editor-tab:selected /template/ Border#PART_SelectedPipe", theme);
+        Assert.Contains("TabControl.editor-tabs TabItem:selected", theme);
+        Assert.Contains("TabControl.editor-tabs TabItem:selected /template/ Border#PART_SelectedPipe", theme);
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:selected /template/ Border#PART_SelectedPipe", theme);
         Assert.Contains("BorderThickness\" Value=\"0\"", theme);
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:selected", theme);
-        Assert.Contains("TabControl.editor-tabs TabItem.editor-tab:focus-visible", theme);
+        Assert.Contains("TabControl.editor-tabs TabItem:focus-visible", theme);
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:focus-visible", theme);
         var selectedRailStyle = System.Text.RegularExpressions.Regex.Match(
             theme,
@@ -56,7 +56,7 @@ public sealed class ResponsiveShellTests
         Assert.Contains("Button.auxiliary-list-item /template/ Border#PART_Border", theme);
         var selectedEditorStyle = System.Text.RegularExpressions.Regex.Match(
             theme,
-            "<Style Selector=\"TabControl\\.editor-tabs TabItem\\.editor-tab:selected\">(?<body>.*?)</Style>",
+            "<Style Selector=\"TabControl\\.editor-tabs TabItem:selected\">(?<body>.*?)</Style>",
             System.Text.RegularExpressions.RegexOptions.Singleline);
         Assert.True(selectedEditorStyle.Success);
         Assert.DoesNotContain("ThemeAccentGlowBrush", selectedEditorStyle.Groups["body"].Value);
@@ -531,6 +531,41 @@ public sealed class ResponsiveShellTests
             Assert.Contains("editor-section-padded", ReadSourceFile("Views", view));
 
         Assert.Contains("database-filter-pane", ReadSourceFile("Views", "SecretBase3Editor.axaml"));
+    }
+
+    [Fact]
+    public void RemainingUtilityDialogs_UseFlatNativeSurfacesAndTopActions()
+    {
+        var views = new[]
+        {
+            "BackupManager.axaml",
+            "BlockEditor.axaml",
+            "EventFlags2Editor.axaml",
+            "EventReset1Editor.axaml",
+            "Fashion9Editor.axaml",
+            "GroupViewer.axaml",
+            "LegalityView.axaml",
+            "MailBoxEditor.axaml",
+            "PokepuffEditor.axaml",
+            "SaveDiffView.axaml",
+            "TrashEditor.axaml",
+        };
+
+        foreach (var view in views)
+        {
+            var source = ReadSourceFile("Views", view);
+            Assert.Contains("view-container", source);
+            Assert.DoesNotContain("BorderBrush=\"Gray\"", source);
+            Assert.DoesNotContain("BorderBrush=\"LightGray\"", source);
+            Assert.DoesNotContain("GridLinesVisibility=\"All\"", source);
+        }
+
+        foreach (var view in new[] { "BackupManager.axaml", "BlockEditor.axaml", "EventFlags2Editor.axaml", "Fashion9Editor.axaml", "SaveDiffView.axaml" })
+            Assert.Contains("Classes=\"save-grid\"", ReadSourceFile("Views", view));
+
+        var theme = ReadSourceFile("Styles", "Theme.axaml");
+        Assert.DoesNotContain("Border.section-card", theme);
+        Assert.Contains("DataGrid.save-grid DataGridRow:selected /template/ Rectangle#BackgroundRectangle", theme);
     }
 
     [AvaloniaFact]

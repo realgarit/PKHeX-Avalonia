@@ -446,6 +446,59 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
     }
 
     [AvaloniaFact]
+    public void CaptureRemainingUtilityDialogStates_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        CaptureAuxiliaryView(
+            new EventFlags2Editor { DataContext = new EventFlags2EditorViewModel(new SAV2()) },
+            "event-flags2-editor.png",
+            900,
+            680,
+            "Gen 2 Event Flags editor");
+        CaptureAuxiliaryView(
+            new EventReset1Editor { DataContext = new EventReset1EditorViewModel(new SAV1()) },
+            "event-reset1-editor.png",
+            900,
+            680,
+            "Gen 1 Event Reset editor");
+        CaptureAuxiliaryView(
+            new LegalityView { DataContext = new LegalityViewModel("Legal\nNo issues found.") },
+            "legality-editor.png",
+            700,
+            500,
+            "Legality report");
+        CaptureAuxiliaryView(
+            new Fashion9Editor { DataContext = new Fashion9EditorViewModel(LoadCaptureSave<SAV9SV>("gen9_scarlet.main")) },
+            "fashion9-editor.png",
+            900,
+            680,
+            "Gen 9 Fashion editor");
+        CaptureAuxiliaryView(
+            new MailBoxEditor { DataContext = new MailBoxEditorViewModel(new SAV2()) },
+            "mail-box-editor.png",
+            900,
+            680,
+            "Mail Box editor");
+        CaptureAuxiliaryView(
+            new PokepuffEditor { DataContext = new PokepuffEditorViewModel(new SAV6XY()) },
+            "poke-puff-editor.png",
+            900,
+            680,
+            "Poké Puff editor");
+        CaptureAuxiliaryView(
+            new TrashEditor
+            {
+                DataContext = new TrashEditorViewModel("PIKA", null, new PK4 { Species = 25 }, 4, EntityContext.Gen4),
+            },
+            "trash-editor.png",
+            820,
+            620,
+            "Trash editor");
+    }
+
+    [AvaloniaFact]
     public void CaptureDatabaseToolStates_WhenEnabled_WritesPng()
     {
         if (SkipWhenCaptureDisabled())

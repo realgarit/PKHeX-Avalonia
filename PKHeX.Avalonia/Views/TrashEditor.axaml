@@ -8,7 +8,8 @@
              x:Class="PKHeX.Avalonia.Views.TrashEditor"
              x:DataType="vm:TrashEditorViewModel">
 
-    <Grid RowDefinitions="Auto, *, Auto, Auto" Margin="10">
+    <Border Classes="view-container">
+    <Grid RowDefinitions="Auto, *, Auto, Auto">
         <!-- Text Preview -->
         <StackPanel Grid.Row="0" Spacing="5">
             <TextBlock Text="{loc:Loc TrashEditor_TextPreview}" FontWeight="Bold"/>
@@ -26,7 +27,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Vertical" Margin="2">
-                            <TextBlock Text="{Binding Index, StringFormat=X2}" FontSize="10" HorizontalAlignment="Center" Foreground="Gray"/>
+                            <TextBlock Text="{Binding Index, StringFormat=X2}" FontSize="10" HorizontalAlignment="Center" Foreground="{DynamicResource ThemeTextMutedBrush}"/>
                             <TextBox Text="{Binding HexValue}" Width="40" MaxLength="2" HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </DataTemplate>
@@ -35,7 +36,8 @@
         </ScrollViewer>
 
         <!-- Trash Generator -->
-        <StackPanel Grid.Row="2" Spacing="5" Margin="0,10">
+        <Border Grid.Row="2" Classes="editor-section-padded" Padding="8" Margin="0,8,0,0">
+        <StackPanel Spacing="5">
             <TextBlock Text="{loc:Loc TrashEditor_Generator}" FontWeight="Bold"/>
             <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" Margin="0,5">
                 <TextBlock Text="{loc:Loc TrashEditor_Species}" Grid.Column="0" Grid.Row="0"/>
@@ -61,6 +63,7 @@
                 <Button Content="{loc:Loc TrashEditor_ClearTrash}" Command="{Binding ClearTrashCommand}"/>
             </StackPanel>
         </StackPanel>
+        </Border>
 
         <!-- Footer Buttons -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
@@ -68,4 +71,5 @@
             <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent"/>
         </StackPanel>
     </Grid>
+    </Border>
 </UserControl>

@@ -140,7 +140,7 @@ public class UiDensityTests
         var theme = ReadSourceFile("Styles", "Theme.axaml");
         var selected = Regex.Match(
             theme,
-            "<Style Selector=\"TabControl\\.editor-tabs TabItem\\.editor-tab:selected\">(?<body>.*?)</Style>",
+            "<Style Selector=\"TabControl\\.editor-tabs TabItem:selected\">(?<body>.*?)</Style>",
             RegexOptions.Singleline);
 
         Assert.True(selected.Success);

@@ -718,6 +718,11 @@
         <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
+    <Style Selector="DataGrid.save-grid DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+        <Setter Property="IsVisible" Value="False" />
+        <Setter Property="Fill" Value="Transparent" />
+    </Style>
+
     <!-- Database/detail tools use a full-width neutral surface with an explicit filter rail and a
          shared native grid contract. The class is additive so inventory keeps its existing layout. -->
     <Style Selector="Grid.tool-surface">
@@ -972,7 +977,7 @@
     </Style>
 
     <!-- Pokémon editor section strip: compact, horizontal tabs with one quiet selected rule. -->
-    <Style Selector="TabControl.editor-tabs TabItem.editor-tab">
+    <Style Selector="TabControl.editor-tabs TabItem">
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="Padding" Value="{DynamicResource UiDensityEditorTabPadding}" />
         <Setter Property="Margin" Value="{DynamicResource UiDensityEditorTabMargin}" />
@@ -986,12 +991,12 @@
         <Setter Property="BorderThickness" Value="0" />
     </Style>
 
-    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:pointerover">
+    <Style Selector="TabControl.editor-tabs TabItem:pointerover">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
     </Style>
 
-    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:selected">
+    <Style Selector="TabControl.editor-tabs TabItem:selected">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
@@ -999,18 +1004,18 @@
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
-    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:focus-visible">
+    <Style Selector="TabControl.editor-tabs TabItem:focus-visible">
         <Setter Property="Background" Value="{DynamicResource ThemeControlFocusGlowBrush}" />
     </Style>
 
-    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:selected /template/ Border#PART_SelectedPipe">
+    <Style Selector="TabControl.editor-tabs TabItem:selected /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
         <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
         <Setter Property="Height" Value="2" />
         <Setter Property="Margin" Value="0,0,0,0" />
     </Style>
 
-    <Style Selector="TabControl.editor-tabs TabItem.editor-tab:focus-visible /template/ Border#PART_SelectedPipe">
+    <Style Selector="TabControl.editor-tabs TabItem:focus-visible /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
         <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>

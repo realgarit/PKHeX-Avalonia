@@ -13,14 +13,14 @@
             <Setter Property="AutoGenerateColumns" Value="False" />
             <Setter Property="CanUserResizeColumns" Value="True" />
             <Setter Property="CanUserSortColumns" Value="False" />
-            <Setter Property="GridLinesVisibility" Value="All" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
         </Style>
     </UserControl.Styles>
 
     <UserControl.DataTemplates>
         <!-- Template for SV Fashion Blocks -->
         <DataTemplate DataType="vm:FashionBlock9ViewModel">
-            <DataGrid ItemsSource="{Binding Items}">
+            <DataGrid Classes="save-grid" ItemsSource="{Binding Items}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{loc:Loc Fashion9Editor_ColumnValue}" Binding="{Binding Value}" Width="*" />
                     <DataGridCheckBoxColumn Header="{loc:Loc Fashion9Editor_ColumnNew}" Binding="{Binding IsNew}" Width="Auto" />
@@ -30,7 +30,7 @@
 
         <!-- Template for ZA Fashion Blocks -->
         <DataTemplate DataType="vm:FashionBlock9aViewModel">
-            <DataGrid ItemsSource="{Binding Items}">
+            <DataGrid Classes="save-grid" ItemsSource="{Binding Items}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{loc:Loc Fashion9Editor_ColumnValue}" Binding="{Binding Value}" Width="*" />
                     <DataGridCheckBoxColumn Header="{loc:Loc Fashion9Editor_ColumnNew}" Binding="{Binding IsNew}" Width="Auto" />
@@ -44,7 +44,7 @@
 
         <!-- Template for ZA Hair Blocks -->
         <DataTemplate DataType="vm:HairMakeBlockViewModel">
-            <DataGrid ItemsSource="{Binding Items}">
+            <DataGrid Classes="save-grid" ItemsSource="{Binding Items}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{loc:Loc Fashion9Editor_ColumnValue}" Binding="{Binding Value}" Width="*" />
                     <DataGridCheckBoxColumn Header="{loc:Loc Fashion9Editor_ColumnNew}" Binding="{Binding IsNew}" Width="Auto" />
@@ -53,13 +53,16 @@
         </DataTemplate>
     </UserControl.DataTemplates>
 
+    <Border Classes="view-container">
     <DockPanel>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="10">
+        <Border DockPanel.Dock="Top" Classes="tool-header">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
              <Button Content="{loc:Loc Fashion9Editor_UnlockAllZA}" Command="{Binding UnlocksCommand}" CommandParameter="All" />
              <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" />
         </StackPanel>
+        </Border>
 
-        <TabControl ItemsSource="{Binding Tabs}">
+        <TabControl Classes="editor-tabs" ItemsSource="{Binding Tabs}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}" Margin="5,0"/>
@@ -67,4 +70,5 @@
             </TabControl.ItemTemplate>
         </TabControl>
     </DockPanel>
+    </Border>
 </UserControl>
