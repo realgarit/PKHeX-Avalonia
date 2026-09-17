@@ -31,19 +31,19 @@
             <Grid RowDefinitions="Auto,*" VerticalAlignment="Stretch">
                 <!-- Header Section -->
                 <Border Grid.Row="0" Classes="entity-summary">
-                    <Grid ColumnDefinitions="Auto,*" Margin="4,0,4,0">
+                    <Grid ColumnDefinitions="Auto,*" Margin="2,0,2,0">
                     <!-- Left: Sprite Card -->
                     <Border Grid.Column="0"
                             Background="{DynamicResource ThemeBackgroundCardBrush}"
                             BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                             BorderThickness="1"
                             CornerRadius="8"
-                            Width="80" Height="68"
+                            Width="64" Height="54"
                             BoxShadow="{DynamicResource ThemeShadowSmall}"
                             ClipToBounds="True">
                         <Panel>
                             <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}"
-                                   Width="64" Height="52"
+                                   Width="52" Height="42"
                                    RenderOptions.BitmapInterpolationMode="HighQuality"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -63,7 +63,7 @@
                     </Border>
 
                     <!-- Right: Info & Actions -->
-                    <Grid Grid.Column="1" RowDefinitions="*,*" Margin="12,0,0,0">
+                    <Grid Grid.Column="1" RowDefinitions="*,*" Margin="8,0,0,0">
                         <!-- Top: Title and Actions -->
                         <DockPanel Grid.Row="0" VerticalAlignment="Center">
                             <!-- Action Buttons -->
@@ -94,17 +94,17 @@
                                 </Button>
                             </StackPanel>
                             <!-- Title -->
-                            <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                         </DockPanel>
                         <!-- Bottom: Badges -->
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="6,2">
+                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="5,1">
                                 <TextBlock Text="{Binding Level, StringFormat='Lv. {0}'}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
                             </Border>
-                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="6,2">
+                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="5,1">
                                 <TextBlock Text="{Binding IVTotal, StringFormat='IV: {0}'}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
                             </Border>
-                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="6,2">
+                            <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="5,1">
                                 <TextBlock Text="{Binding EVTotal, StringFormat='EV: {0}'}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}"/>
                             </Border>
                         </StackPanel>
@@ -119,12 +119,12 @@
                                     <!-- Main Tab -->
                                     <TabItem Classes="editor-tab" Header="{loc:Loc PokemonEditor_TabMain}">
                                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                            <StackPanel Spacing="12" Margin="6,6,6,64">
+                                            <StackPanel Spacing="8" Margin="6,6,6,12">
 
                                 <!-- Core Info Card -->
                             <Border Classes="section-card"
                                     CornerRadius="4" Padding="6">
-                                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                                <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{loc:Loc PokemonEditor_CoreInfo}" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
                                     
                                     <!-- Species -->
@@ -162,7 +162,7 @@
                             <!-- Growth Card -->
                             <Border Classes="section-card"
                                     CornerRadius="4" Padding="6">
-                                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto">
+                                <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{loc:Loc PokemonEditor_Growth}" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
 
                                     <!-- Level & Exp -->
@@ -239,8 +239,8 @@
 
                             <!-- Misc Card -->
                             <Border Classes="section-card"
-                                    CornerRadius="4" Padding="8">
-                                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto">
+                                    CornerRadius="4" Padding="6">
+                                <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{loc:Loc PokemonEditor_Equipment}" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
 
                                     <StackPanel Grid.Row="1" Grid.Column="0">
@@ -268,14 +268,14 @@
                 <!-- Stats Tab -->
                 <TabItem Classes="editor-tab" Header="{loc:Loc PokemonEditor_TabStats}">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Spacing="12" Margin="6,6,6,64">
+                        <StackPanel Spacing="8" Margin="6,6,6,12">
                         <TextBlock Text="{loc:Loc PokemonEditor_HaXStatsWarning}"
                                    IsVisible="{Binding IsHaXMode}"
                                    Foreground="{DynamicResource ThemeWarningBrush}"
                                    TextWrapping="Wrap"
                                    Margin="2,0,2,0" />
                         <Border Classes="section-card"
-                                CornerRadius="4" Padding="8">
+                                CornerRadius="4" Padding="6">
                             <Grid ColumnDefinitions="40,40,42,42,30,26" RowDefinitions="Auto,Auto,4,Auto,Auto,Auto,Auto,Auto,Auto">
                                 <!-- Actions stay above the compact column labels so they never compete
                                      with IV/EV headers for horizontal space. -->
@@ -365,7 +365,7 @@
                 <!-- Met Tab -->
                 <TabItem Classes="editor-tab" Header="{loc:Loc PokemonEditor_TabMet}">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="6,6,6,64" Spacing="12">
+                        <StackPanel Margin="6,6,6,12" Spacing="8">
                             <!-- Origin Game -->
                             <StackPanel>
                                     <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_OriginGame}" FontWeight="SemiBold" Margin="0,0,0,4" />
@@ -428,7 +428,7 @@
                 <!-- Moves Tab -->
                 <TabItem Classes="editor-tab" Header="{loc:Loc PokemonEditor_TabMoves}">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Spacing="12" Margin="6,6,6,64">
+                        <StackPanel Spacing="8" Margin="6,6,6,12">
                             <!-- Current Moves Section -->
                             <StackPanel Spacing="8">
                                 <DockPanel Margin="0,0,0,4">
@@ -573,11 +573,11 @@
                 <!-- OT/Misc Tab -->
                 <TabItem Classes="editor-tab" Header="{loc:Loc PokemonEditor_TabOtMisc}">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Spacing="12" Margin="6,6,6,64">
+                        <StackPanel Spacing="8" Margin="6,6,6,12">
                             <!-- Original Trainer Card -->
                             <Border Classes="section-card"
-                                    CornerRadius="4" Padding="8">
-                                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                                    CornerRadius="4" Padding="6">
+                                <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{loc:Loc PokemonEditor_OriginalTrainer}" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
                                     
                                     <StackPanel Grid.Row="1" Grid.Column="0">
@@ -592,7 +592,7 @@
                                                   DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" />
                                     </StackPanel>
 
-                                    <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto" Margin="0,8,0,0">
+                                    <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" ColumnDefinitions="*,8,*" RowDefinitions="Auto,Auto" Margin="0,8,0,0">
                                         <StackPanel Grid.Row="0" Grid.Column="0">
                                             <TextBlock Text="{loc:Loc PokemonEditor_Tid}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                             <NumericUpDown Value="{Binding TrainerID}" Minimum="0" Maximum="4294967295" FormatString="0" ShowButtonSpinner="False"
@@ -620,8 +620,8 @@
 
                             <!-- Latest Handling Trainer Card -->
                             <Border IsVisible="{Binding CanEditHandlingTrainer}" Classes="section-card"
-                                    CornerRadius="4" Padding="8">
-                                <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto,Auto">
+                                    CornerRadius="4" Padding="6">
+                                <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,Auto,Auto">
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{loc:Loc MemoryEditor_HandlingTrainer}" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
 
                                     <StackPanel Grid.Row="1" Grid.Column="0">
@@ -653,7 +653,7 @@
                             </Border>
 
                             <!-- Extra Info Card -->
-                            <Border Classes="section-card" CornerRadius="4" Padding="8">
+                            <Border Classes="section-card" CornerRadius="4" Padding="6">
                                 <StackPanel Spacing="12">
                                     <TextBlock Text="{loc:Loc PokemonEditor_EncryptionStatus}" FontWeight="Bold" Opacity="0.6" />
                                     
@@ -723,7 +723,7 @@
 
                             <!-- Form Argument -->
                             <Border IsVisible="{Binding ShowFormArgument}" Classes="section-card"
-                                    CornerRadius="4" Padding="8">
+                                    CornerRadius="4" Padding="6">
                                 <StackPanel>
                                     <TextBlock Text="{loc:Loc PokemonEditor_FormArgument}" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
                                     <ComboBox IsVisible="{Binding ShowFormArgumentNamed}"
@@ -741,7 +741,7 @@
 
                             <!-- Markings -->
                             <Border IsVisible="{Binding HasMarkings}" Classes="section-card"
-                                    CornerRadius="4" Padding="8">
+                                    CornerRadius="4" Padding="6">
                                 <StackPanel>
                                     <TextBlock Text="{loc:Loc PokemonEditor_Markings}" FontWeight="Bold" Margin="0,0,0,8" Opacity="0.6" />
                                     <UniformGrid Columns="6">
@@ -761,9 +761,9 @@
                 <!-- Contest Tab -->
                 <TabItem Classes="editor-tab" Header="{loc:Loc PokemonEditor_TabContest}" IsVisible="{Binding HasContestStats}">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Spacing="12" Margin="6,6,6,64">
+                        <StackPanel Spacing="8" Margin="6,6,6,12">
                          <Border Classes="section-card"
-                                CornerRadius="4" Padding="8">
+                                CornerRadius="4" Padding="6">
                             <StackPanel Spacing="16">
                                 <TextBlock Text="{loc:Loc PokemonEditor_ContestStats}" FontWeight="Bold" FontSize="16" Opacity="0.6" />
                                 <UniformGrid Columns="2" Rows="3">
@@ -803,14 +803,14 @@
                 <!-- Memory Tab -->
                 <TabItem Classes="editor-tab" Header="{loc:Loc PokemonEditor_TabMemory}" IsVisible="{Binding HasMemories}">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Spacing="12" Margin="6,6,6,64">
+                        <StackPanel Spacing="8" Margin="6,6,6,12">
                             <Button Content="{loc:Loc PokemonEditor_MemoryEditor}" Command="{Binding OpenMemoryEditorCommand}" HorizontalAlignment="Right" />
                             <!-- OT Memory -->
                             <Border Classes="section-card"
-                                    CornerRadius="4" Padding="8">
+                                    CornerRadius="4" Padding="6">
                                 <StackPanel Spacing="12">
                                     <TextBlock Text="{loc:Loc PokemonEditor_OtMemory}" FontWeight="Bold" Opacity="0.6" />
-                                    <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,Auto">
                                         <StackPanel Grid.Row="0" Grid.Column="0">
                                             <TextBlock Text="{loc:Loc PokemonEditor_MemoryLabel}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                             <NumericUpDown Value="{Binding OtMemory}" Minimum="0" Maximum="255" FormatString="0" ShowButtonSpinner="False" />
@@ -834,10 +834,10 @@
 
                             <!-- HT Memory -->
                             <Border Classes="section-card"
-                                    CornerRadius="4" Padding="8">
+                                    CornerRadius="4" Padding="6">
                                 <StackPanel Spacing="12">
                                     <TextBlock Text="{loc:Loc PokemonEditor_HtMemory}" FontWeight="Bold" Opacity="0.6" />
-                                    <Grid ColumnDefinitions="*,16,*" RowDefinitions="Auto,Auto">
+                                    <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,Auto">
                                         <StackPanel Grid.Row="0" Grid.Column="0">
                                             <TextBlock Text="{loc:Loc PokemonEditor_MemoryLabel}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                             <NumericUpDown Value="{Binding HtMemory}" Minimum="0" Maximum="255" FormatString="0" ShowButtonSpinner="False" />

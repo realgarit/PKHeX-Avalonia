@@ -45,7 +45,7 @@ public sealed class ResponsiveShellTests
             System.Text.RegularExpressions.RegexOptions.Singleline);
         Assert.True(selectedEditorStyle.Success);
         Assert.DoesNotContain("ThemeAccentGlowBrush", selectedEditorStyle.Groups["body"].Value);
-        Assert.Contains("ThemeBackgroundElevatedBrush", selectedEditorStyle.Groups["body"].Value);
+        Assert.Contains("Background\" Value=\"Transparent\"", selectedEditorStyle.Groups["body"].Value);
 
         // Save identity is intentionally a single piece of application chrome: the top header owns
         // the filename, while the left rail and bottom status bar carry only task/status context.
