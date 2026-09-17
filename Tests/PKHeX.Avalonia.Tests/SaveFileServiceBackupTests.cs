@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Moq;
 using PKHeX.Core;
 
 namespace PKHeX.Avalonia.Tests;
@@ -109,5 +110,48 @@ public sealed class SaveFileServiceBackupTests : IDisposable
 
         var identity = SaveIdentity.Compute(path);
         Assert.Equal(2, backupService.ListBackups(identity).Entries.Count);
+    }
+
+    [Fact]
+    public async Task SaveFileAsync_SnapshotsTheOriginalSaveBeforeAConcurrentLoad()
+    {
+        var original = SaveFileFactory.CreateBlankSave(GameVersion.W2);
+        original.Money = 111;
+        var replacement = SaveFileFactory.CreateBlankSave(GameVersion.W2);
+        replacement.Money = 222;
+        var originalPath = Path.Combine(_tempDir, "original.sav");
+        var replacementPath = Path.Combine(_tempDir, "replacement.sav");
+        await File.WriteAllBytesAsync(originalPath, original.Write().ToArray());
+        await File.WriteAllBytesAsync(replacementPath, replacement.Write().ToArray());
+
+        var backupStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseBackup = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var backupService = new Mock<ISaveBackupService>();
+        backupService
+            .Setup(s => s.CreateBackup(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<int>()))
+            .Callback(() =>
+            {
+                backupStarted.TrySetResult();
+                releaseBackup.Task.GetAwaiter().GetResult();
+            })
+            .Returns((SaveBackupEntry?)null);
+        var service = new SaveFileService(backupService.Object, new AppSettings());
+
+        Assert.True(await service.LoadSaveFileAsync(originalPath));
+        service.CurrentSave!.Money = 333;
+        var saveTask = service.SaveFileAsync();
+        await backupStarted.Task;
+
+        var loadTask = service.LoadSaveFileAsync(replacementPath);
+        Assert.False(loadTask.IsCompleted);
+
+        releaseBackup.SetResult();
+        Assert.True(await saveTask);
+        Assert.True(await loadTask);
+
+        var writtenOriginal = Assert.IsAssignableFrom<SAV5>(FileUtil.GetSupportedFile(originalPath));
+        Assert.Equal(333u, writtenOriginal.Money);
+        Assert.Equal(222u, service.CurrentSave!.Money);
+        Assert.Equal(replacementPath, service.CurrentPath);
     }
 }

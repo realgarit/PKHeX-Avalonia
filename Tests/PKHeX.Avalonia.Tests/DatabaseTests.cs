@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Threading.Tasks;
 using Xunit;
 using PKHeX.Core;
 using PKHeX.Presentation.ViewModels;
@@ -363,5 +365,40 @@ public class DatabaseTests : IDisposable
         vm.Filter.Level = 10;
         var miss = vm.Filter.GetSearchSettings().Search(allPkms).Where(p => p.Species != 0).ToList();
         Assert.Empty(miss);
+    }
+
+    [Fact]
+    public async Task Database_FolderScan_FiltersBeforeReadingAndReportsProgress()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "pkhex-database-scan-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            var sav = BlankSaveFile.Get(GameVersion.SL);
+            var pk = sav.BlankPKM;
+            pk.Species = 25;
+            pk.RefreshChecksum();
+            File.WriteAllBytes(Path.Combine(root, "pikachu.pk9"), pk.Data.ToArray());
+            File.WriteAllBytes(Path.Combine(root, "not-a-pokemon.pk9"), new byte[pk.Data.Length]);
+            File.WriteAllBytes(Path.Combine(root, "unrelated.bin"), new byte[1024 * 1024]);
+
+            var dialogMock = new Mock<IDialogService>();
+            dialogMock.Setup(d => d.OpenFolderAsync(It.IsAny<string>())).ReturnsAsync(root);
+            var vm = new PKMDatabaseViewModel(sav, new Mock<ISpriteRenderer>().Object, dialogMock.Object);
+            vm.Filter.Species = 25;
+
+            await vm.LoadFolderCommand.ExecuteAsync(null);
+
+            var match = Assert.Single(vm.Results);
+            Assert.Equal((ushort)25, match.PKM.Species);
+            Assert.Equal(3, vm.SearchProgress);
+            Assert.Contains("Scanned 3 files, skipped 2, found 1 matches.", vm.StatusText, StringComparison.Ordinal);
+            Assert.False(vm.IsSearching);
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); }
+            catch { /* best effort */ }
+        }
     }
 }

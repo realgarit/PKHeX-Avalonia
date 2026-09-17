@@ -357,39 +357,112 @@ public partial class MainWindowViewModel
         await _windowService.ShowDialogAsync(vm, T("Menu_Data_MysteryGiftDatabase"));
     }
 
-    [RelayCommand(CanExecute = nameof(HasSave))]
+    private bool CanTransferBoxes => HasSave && !IsBoxTransferRunning;
+
+    [RelayCommand(CanExecute = nameof(CanTransferBoxes))]
     private async Task DumpBoxesAsync()
     {
-        if (CurrentSave is null) return;
+        if (CurrentSave is not { } save) return;
 
         var path = await _dialogService.OpenFolderAsync(T("File_SelectFolderDumpBoxes"));
         if (string.IsNullOrEmpty(path)) return;
 
-        var result = new DumpBoxesUseCase().Execute(CurrentSave, path);
-        if (!result.Success)
+        using var transfer = BeginBoxTransfer();
+        try
         {
-            await _dialogService.ShowErrorAsync(T("Menu_Data_DumpBoxes"), result.Message);
-            return;
-        }
+            // Dump only this point-in-time copy. The live save can keep serving the UI while the
+            // filesystem work runs on a worker thread.
+            var snapshot = save.Clone();
+            var result = await Task.Run(() => new DumpBoxesUseCase().Execute(snapshot, path), transfer.Token);
+            transfer.Token.ThrowIfCancellationRequested();
+            if (!result.Success)
+            {
+                await _dialogService.ShowErrorAsync(T("Menu_Data_DumpBoxes"), result.Message);
+                return;
+            }
 
-        await _dialogService.ShowInformationAsync(T("Menu_Data_DumpBoxes"), result.Message);
+            await _dialogService.ShowInformationAsync(T("Menu_Data_DumpBoxes"), result.Message);
+        }
+        catch (OperationCanceledException)
+        {
+            // Save switching retires background work silently; the new session must not receive a
+            // completion dialog for an operation that belongs to the old save.
+        }
+        catch (Exception ex)
+        {
+            await _dialogService.ShowErrorAsync(T("Menu_Data_DumpBoxes"), ex.Message);
+        }
     }
 
-    [RelayCommand(CanExecute = nameof(HasSave))]
+    [RelayCommand(CanExecute = nameof(CanTransferBoxes))]
     private async Task LoadBoxesAsync()
     {
-        if (CurrentSave is null) return;
+        if (CurrentSave is not { } save) return;
 
         var path = await _dialogService.OpenFolderAsync(T("File_SelectFolderLoadBoxes"));
         if (string.IsNullOrEmpty(path)) return;
 
-        var result = new LoadBoxesUseCase().Execute(CurrentSave, path);
+        using var transfer = BeginBoxTransfer();
+        try
+        {
+            // Parse and import into a clone off-thread. Only the resulting box data is copied into
+            // the live save after the worker completes and only if the same save is still current.
+            var workingCopy = save.Clone();
+            var result = await Task.Run(() => new LoadBoxesUseCase().Execute(workingCopy, path), transfer.Token);
+            transfer.Token.ThrowIfCancellationRequested();
 
-        BoxViewer?.RefreshCurrentBox();
+            if (!ReferenceEquals(CurrentSave, save))
+                return;
 
-        if (!result.Success)
-            await _dialogService.ShowErrorAsync(T("Menu_Data_LoadBoxes"), result.Message);
-        else
+            if (!result.Success)
+            {
+                await _dialogService.ShowErrorAsync(T("Menu_Data_LoadBoxes"), result.Message);
+                return;
+            }
+
+            ApplyBoxData(save, workingCopy);
+            BoxViewer?.RefreshCurrentBox();
+            PartyViewer?.RefreshParty();
             await _dialogService.ShowInformationAsync(T("Menu_Data_LoadBoxes"), result.Message);
+        }
+        catch (OperationCanceledException)
+        {
+            // Save switching retires background work silently; never apply a stale import.
+        }
+        catch (Exception ex)
+        {
+            await _dialogService.ShowErrorAsync(T("Menu_Data_LoadBoxes"), ex.Message);
+        }
+    }
+
+    private BoxTransferScope BeginBoxTransfer()
+    {
+        var cts = new CancellationTokenSource();
+        _boxTransferCts = cts;
+        IsBoxTransferRunning = true;
+        return new BoxTransferScope(this, cts);
+    }
+
+    private static void ApplyBoxData(SaveFile target, SaveFile source)
+    {
+        for (var box = 0; box < target.BoxCount; box++)
+            target.SetBoxData(source.GetBoxData(box), box);
+        target.State.Edited = true;
+    }
+
+    private sealed class BoxTransferScope(MainWindowViewModel owner, CancellationTokenSource cts) : IDisposable
+    {
+        public CancellationToken Token => cts.Token;
+
+        public void Dispose()
+        {
+            if (ReferenceEquals(owner._boxTransferCts, cts))
+            {
+                owner._boxTransferCts = null;
+                owner.IsBoxTransferRunning = false;
+            }
+
+            cts.Dispose();
+        }
     }
 }

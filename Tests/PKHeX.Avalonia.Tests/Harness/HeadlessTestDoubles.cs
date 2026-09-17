@@ -20,11 +20,14 @@ public sealed class RecordingDialogService : IDialogService
     /// <summary>Path returned by <see cref="OpenFileAsync"/> (simulating the native picker result).</summary>
     public string? OpenFileResult { get; set; }
 
+    /// <summary>Path returned by <see cref="OpenFolderAsync"/> (simulating the native picker result).</summary>
+    public string? OpenFolderResult { get; set; }
+
     /// <summary>Result returned by <see cref="ShowConfirmationAsync"/>.</summary>
     public bool ConfirmResult { get; set; }
 
     public Task<string?> OpenFileAsync(string title, string[]? filters = null) => Task.FromResult(OpenFileResult);
-    public Task<string?> OpenFolderAsync(string title) => Task.FromResult<string?>(null);
+    public Task<string?> OpenFolderAsync(string title) => Task.FromResult(OpenFolderResult);
     public Task<string?> SaveFileAsync(string title, string? defaultFileName = null, string[]? filters = null) => Task.FromResult<string?>(null);
 
     public Task ShowErrorAsync(string title, string message)
