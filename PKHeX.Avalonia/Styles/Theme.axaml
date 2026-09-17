@@ -569,6 +569,18 @@
         <Setter Property="Padding" Value="{DynamicResource UiDensitySectionPadding}" />
     </Style>
 
+    <!-- Reference editor sections stay flat and divide by rhythm rather than stacking rounded
+         cards. This keeps the high-frequency Pokémon form scannable and returns width/height to
+         the controls while the broader save-editor surfaces retain section-card for larger tools. -->
+    <Style Selector="Border.editor-section">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="0,0,0,8" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
     <!-- ─────────────────────────────────────────────────────────────────────────
          View Container - Main background for views (replaces SystemControlBackgroundAltHighBrush)
          ───────────────────────────────────────────────────────────────────────── -->
@@ -693,6 +705,10 @@
 
     <Style Selector="TabControl.editor-tabs /template/ ItemsPresenter#PART_ItemsPresenter">
         <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="TabControl.editor-tabs /template/ ItemsPresenter#PART_ItemsPresenter &gt; WrapPanel">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
     </Style>
 
     <Style Selector="TabControl.editor-tabs">
