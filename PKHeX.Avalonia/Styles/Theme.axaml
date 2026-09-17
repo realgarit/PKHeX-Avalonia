@@ -1361,9 +1361,9 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style Selector="Border.launcher-item-icon &gt; TextBlock">
-        <Setter Property="FontSize" Value="13" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+    <Style Selector="Border.launcher-item-icon &gt; PathIcon">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeAccentPrimaryBrush}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />

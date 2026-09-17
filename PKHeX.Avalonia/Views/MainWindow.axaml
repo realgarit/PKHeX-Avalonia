@@ -518,9 +518,8 @@
                         </TabControl>
                     </Grid>
 
-                    <!-- Reports is intentionally a focused launcher surface in this first shell
-                         migration. Its cards route to the existing production tools; the unified
-                         capability registry will replace this temporary list in the next slice. -->
+                    <!-- Reports and the launcher bind the same capability descriptors, so a tool's
+                         title, icon, description, and availability have one owner. -->
                     <Border Classes="reports-surface" IsVisible="{Binding IsReportsWorkspace}">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <StackPanel Classes="view-stack">
@@ -529,66 +528,37 @@
                                     <TextBlock Text="{loc:Loc Workspace_Reports_Description}" Classes="view-subtitle" TextWrapping="Wrap" />
                                 </StackPanel>
 
-                                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
-                                    <Button Grid.Row="0" Grid.Column="0" Classes="report-tool-card" Command="{Binding OpenBoxReportCommand}"
-                                            AutomationProperties.Name="{loc:Loc Menu_Data_BoxReport}">
-                                        <Grid ColumnDefinitions="Auto,*">
-                                            <Border Classes="report-tool-icon"><PathIcon Data="M 2,3 H 14 V 14 H 2 Z M 5,6 H 11 M 5,9 H 11 M 5,12 H 8" /></Border>
-                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
-                                                <TextBlock Text="{loc:Loc Menu_Data_BoxReport}" Classes="report-tool-title" />
-                                                <TextBlock Text="{loc:Loc Workspace_Reports_ToolHint}" Classes="report-tool-description" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Button>
-                                    <Button Grid.Row="0" Grid.Column="1" Classes="report-tool-card" Command="{Binding OpenLegalityAuditCommand}"
-                                            AutomationProperties.Name="{loc:Loc Menu_Data_LegalityAudit}">
-                                        <Grid ColumnDefinitions="Auto,*">
-                                            <Border Classes="report-tool-icon"><PathIcon Data="M 8,1 L 14,3 V 8 C 14,12 11,15 8,17 C 5,15 2,12 2,8 V 3 Z M 5,8 L 7,10 L 11,6" /></Border>
-                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
-                                                <TextBlock Text="{loc:Loc Menu_Data_LegalityAudit}" Classes="report-tool-title" />
-                                                <TextBlock Text="{loc:Loc Workspace_Reports_ToolHint}" Classes="report-tool-description" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Button>
-                                    <Button Grid.Row="1" Grid.Column="0" Classes="report-tool-card" Command="{Binding OpenPKMDatabaseCommand}"
-                                            AutomationProperties.Name="{loc:Loc Menu_Data_PKMDatabase}">
-                                        <Grid ColumnDefinitions="Auto,*">
-                                            <Border Classes="report-tool-icon"><PathIcon Data="M 2,4 C 2,2 14,2 14,4 V 14 C 14,16 2,16 2,14 Z M 2,4 C 2,6 14,6 14,4 M 2,9 C 2,11 14,11 14,9" /></Border>
-                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
-                                                <TextBlock Text="{loc:Loc Menu_Data_PKMDatabase}" Classes="report-tool-title" />
-                                                <TextBlock Text="{loc:Loc Workspace_Reports_ToolHint}" Classes="report-tool-description" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Button>
-                                    <Button Grid.Row="1" Grid.Column="1" Classes="report-tool-card" Command="{Binding OpenEncounterDatabaseCommand}"
-                                            AutomationProperties.Name="{loc:Loc Menu_Data_EncounterDatabase}">
-                                        <Grid ColumnDefinitions="Auto,*">
-                                            <Border Classes="report-tool-icon"><PathIcon Data="M 3,3 H 13 V 13 H 3 Z M 6,6 H 10 M 6,9 H 10 M 6,12 H 8" /></Border>
-                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
-                                                <TextBlock Text="{loc:Loc Menu_Data_EncounterDatabase}" Classes="report-tool-title" />
-                                                <TextBlock Text="{loc:Loc Workspace_Reports_ToolHint}" Classes="report-tool-description" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Button>
-                                    <Button Grid.Row="2" Grid.Column="0" Classes="report-tool-card" Command="{Binding OpenBatchEditorCommand}"
-                                            AutomationProperties.Name="{loc:Loc Menu_Tools_BatchEditor}">
-                                        <Grid ColumnDefinitions="Auto,*">
-                                            <Border Classes="report-tool-icon"><PathIcon Data="M 2,3 H 14 V 5 H 2 Z M 2,8 H 14 V 10 H 2 Z M 2,13 H 14 V 15 H 2 Z" /></Border>
-                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
-                                                <TextBlock Text="{loc:Loc Menu_Tools_BatchEditor}" Classes="report-tool-title" />
-                                                <TextBlock Text="{loc:Loc Workspace_Reports_ToolHint}" Classes="report-tool-description" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </Button>
-                                </Grid>
+                                <ItemsControl ItemsSource="{Binding ReportToolItems}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Columns="2" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ToolLauncherItem">
+                                            <Button Classes="report-tool-card"
+                                                    Command="{Binding Command}"
+                                                    AutomationProperties.Name="{Binding Title}">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <Border Classes="report-tool-icon">
+                                                        <PathIcon Data="{Binding IconData}" />
+                                                    </Border>
+                                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
+                                                        <TextBlock Text="{Binding Title}" Classes="report-tool-title" />
+                                                        <TextBlock Text="{Binding Description}" Classes="report-tool-description" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
                 </Grid>
             </Grid>
 
-            <!-- Tool launcher overlay. This is deliberately a visual shell over the existing
-                 commands; capability-aware filtering and search index ownership follow next. -->
+            <!-- Tool launcher overlay backed by the same capability registry as Reports. -->
             <Border Classes="launcher-overlay" IsVisible="{Binding IsToolLauncherOpen}">
                 <Border Classes="launcher-panel">
                     <Grid RowDefinitions="Auto,Auto,*">
@@ -628,7 +598,7 @@
                                             AutomationProperties.Name="{Binding Title}">
                                         <Grid ColumnDefinitions="Auto,*">
                                             <Border Classes="launcher-item-icon">
-                                                <TextBlock Text="{Binding Glyph}" />
+                                                <PathIcon Data="{Binding IconData}" />
                                             </Border>
                                             <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
                                                 <TextBlock Text="{Binding Title}" Classes="launcher-item-title" />

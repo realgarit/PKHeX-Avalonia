@@ -120,6 +120,14 @@ public sealed class ResponsiveShellTests
         Assert.True(launcher.IsVisible);
         Assert.True(app.ViewModel.IsToolLauncherOpen);
 
+        var reportCapabilities = app.ViewModel.ReportToolItems.ToList();
+        Assert.True(reportCapabilities.Count == 5, $"Expected five report capabilities, found {reportCapabilities.Count}.");
+        Assert.All(reportCapabilities, item =>
+        {
+            Assert.Contains(item, app.ViewModel.ToolLauncherItems);
+            Assert.False(string.IsNullOrWhiteSpace(item.IconData));
+        });
+
         app.ViewModel.ToolSearchText = "batch";
         var matches = app.ViewModel.FilteredToolLauncherItems.ToList();
         Assert.Single(matches);
