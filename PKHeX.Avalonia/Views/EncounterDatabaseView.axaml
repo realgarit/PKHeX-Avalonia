@@ -7,19 +7,19 @@
              x:DataType="vm:EncounterDatabaseViewModel"
              x:Name="Root"
              MinWidth="650" MinHeight="500" MaxHeight="700">
-    <DockPanel Margin="16">
-        <TextBlock DockPanel.Dock="Top" Text="{loc:Loc EncounterDatabaseView_Title}" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
+    <DockPanel Classes="tool-surface" Margin="12">
+        <TextBlock DockPanel.Dock="Top" Text="{loc:Loc EncounterDatabaseView_Title}" Classes="view-title" Margin="0,0,0,8" />
 
         <!-- Search Controls -->
-        <Border DockPanel.Dock="Top" Classes="section-card" Margin="0,0,0,12">
+        <Border DockPanel.Dock="Top" Classes="tool-search-surface" Margin="0,0,0,8">
             <Grid ColumnDefinitions="*,Auto">
-                <StackPanel Grid.Column="0" Spacing="4">
-                    <TextBlock Text="{loc:Loc EncounterDatabaseView_Species}" FontWeight="SemiBold" FontSize="12" />
+                <StackPanel Grid.Column="0" Spacing="3">
+                    <TextBlock Text="{loc:Loc EncounterDatabaseView_Species}" Classes="tool-field-label" />
                     <controls:FilterableComboBox ItemsSource="{Binding SpeciesList}"
                               SelectedValue="{Binding SelectedSpecies}"
                               AutomationProperties.Name="Species" />
                 </StackPanel>
-                <Button Grid.Column="1" Content="{loc:Loc EncounterDatabaseView_Search}" Command="{Binding SearchCommand}" Margin="12,0,0,0" Padding="16,8" VerticalAlignment="Bottom" Classes="accent" />
+                <Button Grid.Column="1" Content="{loc:Loc EncounterDatabaseView_Search}" Command="{Binding SearchCommand}" Margin="8,0,0,0" VerticalAlignment="Bottom" Classes="accent" />
             </Grid>
         </Border>
 
@@ -28,8 +28,7 @@
 
         <!-- Results Grid — min height so the scroll area is always visible;
              the view's MaxHeight ensures this never grows beyond the screen -->
-        <Border BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
-                BorderThickness="1" CornerRadius="4" MinHeight="200">
+        <Border Classes="database-results-surface" MinHeight="200">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Results}">
                     <ItemsControl.ItemsPanel>
@@ -45,9 +44,8 @@
                                     CommandParameter="{Binding}"
                                     AutomationProperties.Name="{Binding AccessibleName}"
                                     Background="Transparent" BorderThickness="0">
-                                <Border Classes="section-card"
-                                        CornerRadius="6" Padding="8" Width="240" Height="70"
-                                        BoxShadow="{DynamicResource ThemeShadowSmall}">
+                                <Border Classes="tool-result-card"
+                                        Padding="8" Width="240" Height="70">
                                     <Grid ColumnDefinitions="50,*">
                                         <Image Grid.Column="0" Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}" Width="40" Height="40" VerticalAlignment="Center"/>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">

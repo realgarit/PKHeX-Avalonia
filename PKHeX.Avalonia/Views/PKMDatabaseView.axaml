@@ -4,17 +4,17 @@
              xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.PKMDatabaseView"
              x:DataType="vm:PKMDatabaseViewModel"
-             Width="900" Height="600">
-    <Grid x:Name="RootGrid">
+             MinWidth="800" MinHeight="500">
+    <Grid x:Name="RootGrid" Classes="tool-surface">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" MinWidth="180" MaxWidth="480"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <!-- Sidebar: Filters -->
-        <Border Grid.Column="0" Classes="section-card" Padding="16">
+        <Border Grid.Column="0" Classes="database-filter-pane">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="{loc:Loc PKMDatabaseView_SearchFilters}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                <TextBlock DockPanel.Dock="Top" Text="{loc:Loc PKMDatabaseView_SearchFilters}" Classes="tool-pane-title" Margin="0,0,0,12"/>
 
                 <StackPanel DockPanel.Dock="Bottom" Spacing="8">
                     <Button Content="{loc:Loc PKMDatabaseView_SearchCurrentSave}" Command="{Binding SearchSaveCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
@@ -22,8 +22,8 @@
                 </StackPanel>
 
                 <ScrollViewer>
-                    <StackPanel Spacing="12">
-                        <StackPanel Spacing="4">
+                    <StackPanel Spacing="8">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_Species}" Opacity="0.7" FontSize="12"/>
                             <ComboBox ItemsSource="{Binding Filter.SpeciesList}"
                                       SelectedValue="{Binding Filter.Species}"
@@ -32,7 +32,7 @@
                                       HorizontalAlignment="Stretch"/>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_Nature}" Opacity="0.7" FontSize="12"/>
                             <ComboBox ItemsSource="{Binding Filter.NatureList}"
                                       SelectedValue="{Binding Filter.Nature}"
@@ -41,12 +41,12 @@
                                       HorizontalAlignment="Stretch"/>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_Nickname}" Opacity="0.7" FontSize="12"/>
                             <TextBox Text="{Binding Filter.Nickname}" Watermark="{loc:Loc PKMDatabaseView_Nickname}" HorizontalAlignment="Stretch"/>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_Shiny}" Opacity="0.7" FontSize="12"/>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <RadioButton Content="{loc:Loc PKMDatabaseView_Any}" IsChecked="{Binding Filter.IsShiny, Converter={StaticResource ObjectNullConverter}}"/>
@@ -55,7 +55,7 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_Legality}" Opacity="0.7" FontSize="12"/>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <RadioButton Content="{loc:Loc PKMDatabaseView_Any}" IsChecked="{Binding Filter.IsLegal, Converter={StaticResource ObjectNullConverter}}"/>
@@ -64,7 +64,7 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_Egg}" Opacity="0.7" FontSize="12"/>
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <RadioButton Content="{loc:Loc PKMDatabaseView_Any}" IsChecked="{Binding Filter.IsEgg, Converter={StaticResource ObjectNullConverter}}"/>
@@ -73,7 +73,7 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_HiddenPower}" Opacity="0.7" FontSize="12"/>
                             <ComboBox ItemsSource="{Binding Filter.HiddenPowerList}"
                                       SelectedValue="{Binding Filter.HiddenPowerType}"
@@ -82,7 +82,7 @@
                                       HorizontalAlignment="Stretch"/>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_Level}" Opacity="0.7" FontSize="12"/>
                             <ComboBox ItemsSource="{Binding Filter.LevelComparisonList}"
                                       SelectedValue="{Binding Filter.LevelComparison}"
@@ -94,7 +94,7 @@
                                            AutomationProperties.Name="Level"/>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_IVTotal}" Opacity="0.7" FontSize="12"/>
                             <ComboBox ItemsSource="{Binding Filter.IvTypeList}"
                                       SelectedValue="{Binding Filter.IvType}"
@@ -103,7 +103,7 @@
                                       HorizontalAlignment="Stretch"/>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_EVTotal}" Opacity="0.7" FontSize="12"/>
                             <ComboBox ItemsSource="{Binding Filter.EvTypeList}"
                                       SelectedValue="{Binding Filter.EvType}"
@@ -128,24 +128,26 @@
         <GridSplitter Grid.Column="1" x:Name="FilterSplitter" Classes="pane-splitter"/>
 
         <!-- Main Content: Results -->
-        <Border Grid.Column="2" Padding="16">
+        <Border Grid.Column="2" Classes="database-results-pane">
             <DockPanel>
                 <Button DockPanel.Dock="Top" x:Name="ToggleFiltersButton" Click="OnToggleFilters"
                         Content="{loc:Loc PKMDatabaseView_ToggleFilters}" ToolTip.Tip="{loc:Loc PKMDatabaseView_ToggleFiltersTooltip}"
+                        Classes="tool-filter-toggle"
                         HorizontalAlignment="Left" Margin="0,0,0,8"/>
 
-                <Border DockPanel.Dock="Bottom" Padding="0,8,0,0" BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,1,0,0">
+                <Border DockPanel.Dock="Bottom" Classes="database-status">
                     <TextBlock Text="{Binding StatusText}" Opacity="0.7" FontSize="12"/>
                 </Border>
 
-                <DataGrid ItemsSource="{Binding Results}"
+                <DataGrid Classes="save-grid database-grid"
+                          ItemsSource="{Binding Results}"
                           SelectedItem="{Binding SelectedResult}"
                           IsReadOnly="True" 
                           AutoGenerateColumns="False"
                           CanUserResizeColumns="True"
                           DoubleTapped="OnDoubleTapped">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="{loc:Loc PKMDatabaseView_Sprite}" Width="60">
+                        <DataGridTemplateColumn Header="{loc:Loc PKMDatabaseView_Sprite}" Width="80">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}" Width="40" Height="40" HorizontalAlignment="Center"/>

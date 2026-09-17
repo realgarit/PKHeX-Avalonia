@@ -219,6 +219,60 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
     }
 
     [AvaloniaFact]
+    public void CaptureDatabaseToolStates_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        using var host = new HeadlessAppFixture();
+        var saveDirectory = SaveFileFixture.FindSaveFilesPath();
+        Assert.NotNull(saveDirectory);
+        host.LoadSave(Path.Combine(saveDirectory!, "gen9_scarlet.main"));
+        var save = host.Save ?? throw new InvalidOperationException("The database capture save could not be loaded.");
+        var spriteRenderer = host.Services.GetRequiredService<ISpriteRenderer>();
+
+        CaptureAuxiliaryView(
+            new PKMDatabaseView
+            {
+                DataContext = new PKMDatabaseViewModel(save, spriteRenderer, host.Dialogs),
+            },
+            "pkm-database-editor.png",
+            1100,
+            700,
+            "PKM Database");
+        CaptureAuxiliaryView(
+            new EncounterDatabaseView
+            {
+                DataContext = new EncounterDatabaseViewModel(save, spriteRenderer, host.Dialogs, _ => { }),
+            },
+            "encounter-database-editor.png",
+            900,
+            650,
+            "Encounter Database");
+        CaptureAuxiliaryView(
+            new BoxReportView { DataContext = new BoxReportViewModel(save, host.Dialogs) },
+            "box-report-editor.png",
+            1100,
+            600,
+            "Box Data Report");
+        CaptureAuxiliaryView(
+            new LegalityAuditView { DataContext = new LegalityAuditViewModel(save, host.Dialogs) },
+            "legality-audit-editor.png",
+            1100,
+            600,
+            "Legality Audit");
+        CaptureAuxiliaryView(
+            new MysteryGiftDatabaseView
+            {
+                DataContext = new MysteryGiftDatabaseViewModel(save, spriteRenderer, host.Dialogs),
+            },
+            "mystery-gift-database-editor.png",
+            1100,
+            700,
+            "Mystery Gift Database");
+    }
+
+    [AvaloniaFact]
     public void CaptureDensityModes_MainWindow_WhenEnabled_WritesPng()
     {
         if (SkipWhenCaptureDisabled())

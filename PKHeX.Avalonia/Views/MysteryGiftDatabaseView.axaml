@@ -6,25 +6,25 @@
              x:Class="PKHeX.Avalonia.Views.MysteryGiftDatabaseView"
              x:DataType="vm:MysteryGiftDatabaseViewModel"
              MinWidth="900" MinHeight="600">
-    <Grid x:Name="RootGrid">
+    <Grid x:Name="RootGrid" Classes="tool-surface">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" MinWidth="180" MaxWidth="480"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <!-- Sidebar: Filters -->
-        <Border Grid.Column="0" Classes="section-card" Padding="16">
+        <Border Grid.Column="0" Classes="database-filter-pane">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="{loc:Loc MysteryGiftDatabaseView_GiftFilters}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                <TextBlock DockPanel.Dock="Top" Text="{loc:Loc MysteryGiftDatabaseView_GiftFilters}" Classes="tool-pane-title" Margin="0,0,0,12"/>
 
                 <StackPanel DockPanel.Dock="Bottom" Spacing="8">
-                    <Button Content="{loc:Loc MysteryGiftDatabaseView_RefreshDatabase}" Command="{Binding SearchDatabaseCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Theme="{StaticResource AccentButtonTheme}"/>
+                    <Button Content="{loc:Loc MysteryGiftDatabaseView_RefreshDatabase}" Command="{Binding SearchDatabaseCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Classes="accent"/>
                     <Button Content="{loc:Loc MysteryGiftDatabaseView_ScanFolder}" Command="{Binding LoadFolderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 </StackPanel>
 
                 <ScrollViewer>
-                    <StackPanel Spacing="12">
-                        <StackPanel Spacing="4">
+                    <StackPanel Spacing="8">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc MysteryGiftDatabaseView_Species}" Opacity="0.7" FontSize="12"/>
                             <ComboBox ItemsSource="{Binding SpeciesList}"
                                       SelectedValue="{Binding Species}"
@@ -33,7 +33,7 @@
                                       HorizontalAlignment="Stretch"/>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc MysteryGiftDatabaseView_Generation}" Opacity="0.7" FontSize="12"/>
                             <ComboBox ItemsSource="{Binding GenerationList}"
                                       SelectedValue="{Binding Generation}"
@@ -42,7 +42,7 @@
                                       HorizontalAlignment="Stretch"/>
                         </StackPanel>
 
-                        <StackPanel Spacing="4">
+                        <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc MysteryGiftDatabaseView_GiftType}" Opacity="0.7" FontSize="12"/>
                             <CheckBox Content="{loc:Loc MysteryGiftDatabaseView_ShowPokemon}" IsChecked="{Binding ShowPokemon}"/>
                             <CheckBox Content="{loc:Loc MysteryGiftDatabaseView_ShowItems}" IsChecked="{Binding ShowItems}"/>
@@ -56,23 +56,25 @@
         <GridSplitter Grid.Column="1" x:Name="FilterSplitter" Classes="pane-splitter"/>
 
         <!-- Main Content: Results -->
-        <Border Grid.Column="2" Padding="16">
+        <Border Grid.Column="2" Classes="database-results-pane">
             <DockPanel>
                 <Button DockPanel.Dock="Top" x:Name="ToggleFiltersButton" Click="OnToggleFilters"
                         Content="{loc:Loc MysteryGiftDatabaseView_ToggleFilters}" ToolTip.Tip="{loc:Loc MysteryGiftDatabaseView_ToggleFiltersTooltip}"
+                        Classes="tool-filter-toggle"
                         HorizontalAlignment="Left" Margin="0,0,0,8"/>
 
-                <Border DockPanel.Dock="Bottom" Padding="0,8,0,0" BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,1,0,0">
+                <Border DockPanel.Dock="Bottom" Classes="database-status">
                     <TextBlock Text="{Binding StatusText}" Opacity="0.7" FontSize="12"/>
                 </Border>
 
-                <DataGrid ItemsSource="{Binding Results}"
+                <DataGrid Classes="save-grid database-grid"
+                          ItemsSource="{Binding Results}"
                           IsReadOnly="True" 
                           AutoGenerateColumns="False"
                           CanUserResizeColumns="True"
                           DoubleTapped="OnDoubleTapped">
                     <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="{loc:Loc MysteryGiftDatabaseView_Sprite}" Width="60">
+                    <DataGridTemplateColumn Header="{loc:Loc MysteryGiftDatabaseView_Sprite}" Width="80">
                         <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}" Width="40" Height="40" HorizontalAlignment="Center"/>

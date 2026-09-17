@@ -301,6 +301,38 @@ public sealed class ResponsiveShellTests
         Assert.Contains("Classes=\"auxiliary-list-item\"", ReadSourceFile("Views", "MysteryGiftEditor.axaml"));
     }
 
+    [Fact]
+    public void DatabaseTools_UseFullWidthFilterResultsAndNativeGridSurfaces()
+    {
+        var gridViews = new[]
+        {
+            "PKMDatabaseView.axaml",
+            "MysteryGiftDatabaseView.axaml",
+            "BoxReportView.axaml",
+            "LegalityAuditView.axaml",
+        };
+
+        foreach (var view in gridViews)
+        {
+            var source = ReadSourceFile("Views", view);
+            Assert.Contains("Classes=\"tool-surface\"", source);
+            Assert.DoesNotContain("Classes=\"section-card\"", source);
+            Assert.Contains("database-grid", source);
+        }
+
+        var encounterDatabase = ReadSourceFile("Views", "EncounterDatabaseView.axaml");
+        Assert.Contains("Classes=\"tool-surface\"", encounterDatabase);
+        Assert.Contains("Classes=\"database-results-surface\"", encounterDatabase);
+        Assert.Contains("Classes=\"tool-result-card\"", encounterDatabase);
+        Assert.DoesNotContain("Classes=\"section-card\"", encounterDatabase);
+
+        var pkmDatabase = ReadSourceFile("Views", "PKMDatabaseView.axaml");
+        Assert.DoesNotContain("Width=\"900\" Height=\"600\"", pkmDatabase);
+        Assert.Contains("Classes=\"database-filter-pane\"", pkmDatabase);
+        Assert.Contains("Classes=\"database-results-pane\"", pkmDatabase);
+        Assert.Contains("Width=\"80\"", pkmDatabase);
+    }
+
     [AvaloniaFact]
     public void ToolsMenu_UsesEveryRegisteredCapabilityOnce()
     {
