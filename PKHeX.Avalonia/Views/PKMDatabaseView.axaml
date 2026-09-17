@@ -166,6 +166,8 @@
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
                 <ProgressBar IsIndeterminate="True" Width="200"/>
                 <TextBlock Classes="overlay-text" Text="{loc:Loc PKMDatabaseView_SearchingText}" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding SearchProgressText}" HorizontalAlignment="Center" FontSize="12"/>
+                <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelSearchCommand}" HorizontalAlignment="Center"/>
             </StackPanel>
         </Grid>
     </Grid>

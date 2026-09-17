@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using PKHeX.Application.Abstractions.LiveHex;
 using PKHeX.Core;
@@ -73,6 +74,28 @@ public class LiveHexServiceTests
             () => service.ConnectAsync("127.0.0.1", 6000, new SAV8SWSH()));
         Assert.Contains("Unsupported game version", ex.Message);
         Assert.False(service.IsConnected);
+    }
+
+    [Fact]
+    public async Task DisconnectAsync_CancelsAnInFlightHandshakeBeforeItPublishes()
+    {
+        var (service, mem) = NewService();
+        using var handshakeGate = new ManualResetEventSlim(false);
+        mem.BotbaseVersionGate = handshakeGate;
+
+        var connectTask = service.ConnectAsync("127.0.0.1", 6000, new SAV8SWSH());
+        await mem.HandshakeStarted.Task;
+
+        var disconnectTask = service.DisconnectAsync();
+        Assert.False(disconnectTask.IsCompleted);
+
+        handshakeGate.Set();
+        await disconnectTask;
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => connectTask);
+
+        Assert.False(service.IsConnected);
+        Assert.Null(service.Session);
+        Assert.True(mem.DisposeCount > 0);
     }
 
     [Fact]

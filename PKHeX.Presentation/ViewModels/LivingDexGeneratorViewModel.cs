@@ -27,6 +27,7 @@ public partial class LivingDexGeneratorViewModel : ViewModelBase
     private readonly LivingDexPlacementUseCase _placement = new();
 
     private CancellationTokenSource? _cts;
+    private bool _retired;
 
     /// <summary>Raised once boxes were actually written to, so the host can refresh the box/party viewers.</summary>
     public event Action? BoxesUpdated;
@@ -83,6 +84,12 @@ public partial class LivingDexGeneratorViewModel : ViewModelBase
             var startBox = SelectedBoxIndex;
 
             var result = await Task.Run(() => _service.Generate(_sav, options, progress, token), token);
+
+            if (_retired)
+            {
+                StatusMessage = "Generation cancelled. No changes were made.";
+                return;
+            }
 
             if (result.Cancelled)
             {
@@ -141,7 +148,7 @@ public partial class LivingDexGeneratorViewModel : ViewModelBase
             // Exactly one refresh on every path that may have written to the boxes, success or not.
             // Before #262 this only ran on success, so a mid-placement failure left the box view
             // showing empty slots over a save that had actually been modified.
-            if (boxesMayHaveChanged)
+            if (boxesMayHaveChanged && !_retired)
                 BoxesUpdated?.Invoke();
 
             IsRunning = false;
@@ -163,4 +170,15 @@ public partial class LivingDexGeneratorViewModel : ViewModelBase
     private void Cancel() => _cts?.Cancel();
 
     private bool CanCancel() => IsRunning;
+
+    /// <summary>
+    /// Retires this generator when its save session is no longer current. Any in-flight generation is
+    /// cancelled, and completion is prevented from placing into the old save or refreshing a newer
+    /// save's viewers.
+    /// </summary>
+    public void Retire()
+    {
+        _retired = true;
+        _cts?.Cancel();
+    }
 }

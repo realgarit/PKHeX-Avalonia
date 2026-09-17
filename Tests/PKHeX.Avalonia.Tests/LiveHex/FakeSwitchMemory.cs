@@ -1,5 +1,7 @@
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using PKHeX.Application.Abstractions.LiveHex;
 
 namespace PKHeX.Avalonia.Tests.LiveHex;
@@ -22,10 +24,17 @@ internal sealed class FakeSwitchMemory : IConsoleConnection
 
     public bool Connected { get; private set; } = true;
     public bool ConnectCalled { get; private set; }
+    public TaskCompletionSource HandshakeStarted { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    public ManualResetEventSlim? BotbaseVersionGate { get; set; }
+    public int DisposeCount { get; private set; }
 
     public void Connect(string ip, int port, int timeoutMs) { ConnectCalled = true; Connected = true; }
     public void Disconnect() => Connected = false;
-    public void Dispose() => Disconnect();
+    public void Dispose()
+    {
+        DisposeCount++;
+        Disconnect();
+    }
 
     public byte[] ReadHeap(ulong offset, int length) => Read(_heap, offset, length);
     public void WriteHeap(System.ReadOnlySpan<byte> data, ulong offset) => Write(_heap, data, offset);
@@ -34,7 +43,12 @@ internal sealed class FakeSwitchMemory : IConsoleConnection
     public void WriteAbsolute(System.ReadOnlySpan<byte> data, ulong offset) => Write(_absolute, data, offset);
     public ulong GetHeapBase() => HeapBase;
     public string GetTitleId() => TitleId;
-    public string GetBotbaseVersion() => BotbaseVersion;
+    public string GetBotbaseVersion()
+    {
+        HandshakeStarted.TrySetResult();
+        BotbaseVersionGate?.Wait();
+        return BotbaseVersion;
+    }
     public string GetGameInfo(string info) => GameVersion;
 
     // --- test setup helpers ---

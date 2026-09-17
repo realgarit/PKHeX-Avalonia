@@ -10,17 +10,24 @@ namespace PKHeX.Presentation.ViewModels;
 
 public partial class PKMDatabaseViewModel : ViewModelBase
 {
+    private const int MaxFolderResults = 10_000;
+
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly IDialogService _dialogService;
+    private CancellationTokenSource? _searchCts;
 
     [ObservableProperty]
     private ObservableCollection<PKMDatabaseEntry> _results = [];
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SearchSaveCommand))]
+    [NotifyCanExecuteChangedFor(nameof(LoadFolderCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CancelSearchCommand))]
     private bool _isSearching;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SearchProgressText))]
     private int _searchProgress;
 
     [ObservableProperty]
@@ -31,6 +38,9 @@ public partial class PKMDatabaseViewModel : ViewModelBase
 
     /// <summary>Shared entity filter inputs + combo data sources (bound by the view).</summary>
     public EntityFilterViewModel Filter { get; }
+
+    public string SearchProgressText =>
+        LocalizedStrings.Instance.Format("PKMDatabase_ScannedFiles", SearchProgress);
 
     public PKMDatabaseViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, IDialogService dialogService)
     {
@@ -43,11 +53,13 @@ public partial class PKMDatabaseViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Register<LanguageChangedMessage>(this, (r, m) => RefreshLanguage());
     }
 
-    [RelayCommand]
+    private bool CanStartSearch => !IsSearching;
+
+    [RelayCommand(CanExecute = nameof(CanStartSearch))]
     private async Task SearchSaveAsync()
     {
         Results.Clear();
-        IsSearching = true;
+        using var search = BeginSearch();
         StatusText = LocalizedStrings.Instance["PKMDatabase_SearchingCurrentSave"];
 
         try
@@ -62,76 +74,168 @@ public partial class PKMDatabaseViewModel : ViewModelBase
                 return;
             }
 
-            var matches = await Task.Run(() => settings.Search(allPkms).Where(p => p.Species != 0).ToList());
+            var matches = await Task.Run(
+                () => settings.Search(allPkms).Where(p => p.Species != 0).ToList(),
+                search.Token);
+            search.Token.ThrowIfCancellationRequested();
 
             foreach (var pk in matches)
                 Results.Add(new PKMDatabaseEntry(pk, _spriteRenderer));
 
             StatusText = LocalizedStrings.Instance.Format("PKMDatabase_FoundMatchesInSave", Results.Count);
         }
+        catch (OperationCanceledException)
+        {
+            StatusText = LocalizedStrings.Instance["PKMDatabase_SearchCancelled"];
+        }
         catch (Exception ex)
         {
             StatusText = LocalizedStrings.Instance.Format("PKMDatabase_SearchErrorStatus", ex.Message);
             await _dialogService.ShowErrorAsync(LocalizedStrings.Instance["PKMDatabase_SearchErrorTitle"], ex.Message);
         }
-        finally
-        {
-            IsSearching = false;
-        }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanStartSearch))]
     private async Task LoadFolderAsync()
     {
         var path = await _dialogService.OpenFolderAsync(LocalizedStrings.Instance["PKMDatabase_SelectFolderToScanTitle"]);
         if (string.IsNullOrEmpty(path)) return;
 
         Results.Clear();
-        IsSearching = true;
+        using var search = BeginSearch();
         StatusText = LocalizedStrings.Instance["PKMDatabase_ScanningFolder"];
 
-        try 
+        try
         {
             var settings = Filter.GetSearchSettings();
-            var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-            
-            var matches = await Task.Run(() => 
-            {
-                var found = new List<PKM>();
-                foreach (var file in files)
-                {
-                    var data = File.ReadAllBytes(file);
-                    if (SaveUtil.IsSizeValid(data.Length))
-                    {
-                        var sav = SaveUtil.GetSaveFile(data);
-                        if (sav != null)
-                        {
-                            var pkms = sav.BoxData.Concat(sav.PartyData);
-                            found.AddRange(settings.Search(pkms).Where(p => p.Species != 0));
-                        }
-                    }
-                    else
-                    {
-                        var pk = EntityFormat.GetFromBytes(data, _sav.Context);
-                        if (pk != null && settings.Search([pk]).Any())
-                            found.Add(pk);
-                    }
-                }
-                return found;
-            });
-    
-            foreach (var pk in matches)
+            var progress = new Progress<int>(count => SearchProgress = count);
+            var scan = await Task.Run(
+                () => ScanFolder(path, _sav, settings, progress, search.Token),
+                search.Token);
+            search.Token.ThrowIfCancellationRequested();
+
+            foreach (var pk in scan.Matches)
                 Results.Add(new PKMDatabaseEntry(pk, _spriteRenderer));
 
-            StatusText = LocalizedStrings.Instance.Format("PKMDatabase_FoundMatchesInFolder", Results.Count);
+            StatusText = LocalizedStrings.Instance.Format(
+                "PKMDatabase_FolderScanSummary",
+                scan.FilesScanned,
+                scan.FilesSkipped,
+                Results.Count);
+            if (scan.ResultLimitReached)
+            {
+                StatusText += " " + LocalizedStrings.Instance.Format(
+                    "PKMDatabase_FolderScanLimit",
+                    MaxFolderResults);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            StatusText = LocalizedStrings.Instance["PKMDatabase_SearchCancelled"];
         }
         catch (Exception ex)
         {
             StatusText = LocalizedStrings.Instance.Format("PKMDatabase_SearchErrorStatus", ex.Message);
         }
-        finally
+    }
+
+    [RelayCommand(CanExecute = nameof(IsSearching))]
+    private void CancelSearch() => _searchCts?.Cancel();
+
+    private SearchScope BeginSearch()
+    {
+        var cts = new CancellationTokenSource();
+        _searchCts = cts;
+        IsSearching = true;
+        SearchProgress = 0;
+        return new SearchScope(this, cts);
+    }
+
+    private static FolderScanResult ScanFolder(
+        string path,
+        SaveFile referenceSave,
+        SearchSettings settings,
+        IProgress<int> progress,
+        CancellationToken cancellationToken)
+    {
+        var matches = new List<PKM>();
+        var filesScanned = 0;
+        var filesSkipped = 0;
+        var resultLimitReached = false;
+        var options = new EnumerationOptions
         {
-            IsSearching = false;
+            RecurseSubdirectories = true,
+            IgnoreInaccessible = true,
+            ReturnSpecialDirectories = false,
+        };
+
+        foreach (var file in Directory.EnumerateFiles(path, "*", options))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            filesScanned++;
+
+            try
+            {
+                var info = new FileInfo(file);
+                if (!info.Exists ||
+                    (!SaveUtil.IsSizeValid(info.Length) && !EntityDetection.IsSizePlausible(info.Length)))
+                {
+                    filesSkipped++;
+                    progress.Report(filesScanned);
+                    continue;
+                }
+
+                switch (FileUtil.GetSupportedFile(file, referenceSave))
+                {
+                    case SaveFile save:
+                        matches.AddRange(settings.Search(save.BoxData.Concat(save.PartyData))
+                            .Where(p => p.Species != 0));
+                        break;
+                    case PKM pk when pk.Species != 0 && settings.Search([pk]).Any():
+                        matches.Add(pk);
+                        break;
+                    default:
+                        filesSkipped++;
+                        break;
+                }
+            }
+            catch
+            {
+                // One unreadable or malformed file must not discard the rest of the scan.
+                filesSkipped++;
+            }
+
+            progress.Report(filesScanned);
+            if (matches.Count >= MaxFolderResults)
+            {
+                matches = matches.Take(MaxFolderResults).ToList();
+                resultLimitReached = true;
+                break;
+            }
+        }
+
+        return new FolderScanResult(matches, filesScanned, filesSkipped, resultLimitReached);
+    }
+
+    private sealed record FolderScanResult(
+        IReadOnlyList<PKM> Matches,
+        int FilesScanned,
+        int FilesSkipped,
+        bool ResultLimitReached);
+
+    private sealed class SearchScope(PKMDatabaseViewModel owner, CancellationTokenSource cts) : IDisposable
+    {
+        public CancellationToken Token => cts.Token;
+
+        public void Dispose()
+        {
+            if (ReferenceEquals(owner._searchCts, cts))
+            {
+                owner._searchCts = null;
+                owner.IsSearching = false;
+            }
+
+            cts.Dispose();
         }
     }
 
@@ -142,6 +246,7 @@ public partial class PKMDatabaseViewModel : ViewModelBase
         Filter.RefreshLanguage();
         foreach (var entry in Results)
             entry.Refresh();
+        OnPropertyChanged(nameof(SearchProgressText));
     }
 
     [RelayCommand]

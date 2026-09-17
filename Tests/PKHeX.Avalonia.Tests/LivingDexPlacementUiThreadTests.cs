@@ -35,6 +35,25 @@ namespace PKHeX.Avalonia.Tests;
 /// </summary>
 public class LivingDexPlacementUiThreadTests
 {
+    private sealed class BlockingLivingDexService(IReadOnlyList<PKM> pokemon) : ILivingDexService
+    {
+        public TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public TaskCompletionSource Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public LivingDexGenerationResult Generate(
+            SaveFile sav,
+            LivingDexOptions options,
+            IProgress<LivingDexGenerationProgress>? progress = null,
+            CancellationToken cancellationToken = default,
+            int? maxSpeciesId = null)
+        {
+            Started.TrySetResult();
+            Release.Task.GetAwaiter().GetResult();
+            progress?.Report(new LivingDexGenerationProgress(pokemon.Count, pokemon.Count));
+            return LivingDexGenerationResult.Ok(pokemon, []);
+        }
+    }
+
     /// <summary>
     /// Stands in for the real (minutes-long) generator. Also records whether it was invoked off the UI
     /// thread, so a "fix" that simply made the whole flow synchronous would fail the assertion.
@@ -173,6 +192,33 @@ public class LivingDexPlacementUiThreadTests
         Assert.Null(thrown);
         app.Pump();
         Assert.True(undoRedo.CanUndo);
+    }
+
+    [AvaloniaFact]
+    public async Task SwitchingSaves_RetiresAnInFlightGeneratorBeforePlacement()
+    {
+        var original = BlankSaveFile.Get(GameVersion.SW);
+        var replacement = BlankSaveFile.Get(GameVersion.SW);
+        var service = new BlockingLivingDexService([MakeEntity(original, 25)]);
+
+        using var app = new HeadlessAppFixture(svc => svc.AddSingleton<ILivingDexService>(service));
+        app.LoadSaveInstance(original);
+
+        var vm = OpenGenerator(app);
+        var refreshes = 0;
+        vm.BoxesUpdated += () => refreshes++;
+        var run = vm.GenerateCommand.ExecuteAsync(null);
+        await service.Started.Task;
+
+        app.LoadSaveInstance(replacement);
+        service.Release.TrySetResult();
+        await run;
+        app.Pump();
+
+        Assert.Equal(0, original.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(0, replacement.GetBoxSlotAtIndex(0, 0).Species);
+        Assert.Equal(0, refreshes);
+        Assert.Contains("cancelled", vm.StatusMessage, StringComparison.OrdinalIgnoreCase);
     }
 
     // -------------------------------------------------------------------

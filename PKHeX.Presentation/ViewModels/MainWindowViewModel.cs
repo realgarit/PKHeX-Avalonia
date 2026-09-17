@@ -58,6 +58,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(OpenSaveDiffCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenBoxWorkspaceCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPartyWorkspaceCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DumpBoxesCommand))]
+    [NotifyCanExecuteChangedFor(nameof(LoadBoxesCommand))]
     [NotifyCanExecuteChangedFor(nameof(UndoCommand))]
     [NotifyCanExecuteChangedFor(nameof(RedoCommand))]
     private SaveFile? _currentSave;
@@ -70,6 +72,12 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private MysteryGiftEditorViewModel? _mysteryGiftEditor;
     [ObservableProperty] private BatchEditorViewModel? _batchEditor;
     [ObservableProperty] private PokemonEditorViewModel? _currentPokemonEditor;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(DumpBoxesCommand))]
+    [NotifyCanExecuteChangedFor(nameof(LoadBoxesCommand))]
+    private bool _isBoxTransferRunning;
+
+    private CancellationTokenSource? _boxTransferCts;
 
     public bool HasSave => CurrentSave is not null;
     public bool CanUndo => _undoRedo.CanUndo;
@@ -218,6 +226,14 @@ public partial class MainWindowViewModel : ViewModelBase
         _legalityAudit = null;
         _autoLegalityMod = null;
         DisposeLiveHeX();
+        _boxTransferCts?.Cancel();
+        _boxTransferCts = null;
+        IsBoxTransferRunning = false;
+        if (_livingDexGenerator is not null)
+        {
+            _livingDexGenerator.Retire();
+            _livingDexGenerator.BoxesUpdated -= OnLivingDexBoxesUpdated;
+        }
         _livingDexGenerator = null;
         _backupManager = null;
         _saveDiff = null;

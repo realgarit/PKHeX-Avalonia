@@ -7,6 +7,8 @@ using Avalonia.Headless.XUnit;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Moq;
+using PKHeX.Application.Abstractions;
 using PKHeX.Avalonia.Views;
 using PKHeX.Core;
 using PKHeX.Presentation.ViewModels;
@@ -90,6 +92,30 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
         tabs.SelectedIndex = 4; // OT/Misc
         PumpToStableLayout(window);
         CaptureOrSkip(window, "pokerus.png", "Pokerus");
+    }
+
+    [AvaloniaFact]
+    public void CapturePkmDatabaseScanningState_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        var sav = new SAV9SV();
+        var vm = new PKMDatabaseViewModel(
+            sav,
+            new Mock<ISpriteRenderer>().Object,
+            new Mock<IDialogService>().Object)
+        {
+            IsSearching = true,
+            SearchProgress = 42,
+        };
+
+        var view = new PKMDatabaseView { DataContext = vm };
+        var window = new Window { Content = view, Width = 960, Height = 620 };
+        window.Show();
+        PumpToStableLayout(window);
+
+        CaptureOrSkip(window, "pkm-database-scanning.png", "PKM Database scanning state");
     }
 
     private bool SkipWhenCaptureDisabled()
