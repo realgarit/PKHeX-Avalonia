@@ -9,23 +9,22 @@
         <vm:PokepuffEditorViewModel />
     </Design.DataContext>
 
-    <DockPanel Margin="10">
-        <!-- Bottom Buttons -->
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
-            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" />
-        </StackPanel>
+    <Border Classes="view-container">
+    <DockPanel>
+        <!-- One compact action surface -->
+        <Border DockPanel.Dock="Top" Classes="tool-header">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                <Button Content="{loc:Loc PokepuffEditor_GiveAllBest}" Command="{Binding GiveAllBestCommand}" />
+                <Button Content="{loc:Loc PokepuffEditor_GiveAllVaried}" Command="{Binding GiveAllVariedCommand}" />
+                <Button Content="{loc:Loc PokepuffEditor_RemoveAll}" Command="{Binding RemoveAllCommand}" />
+                <Button Content="{loc:Loc PokepuffEditor_Sort}" Command="{Binding SortCommand}" />
+                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" />
+            </StackPanel>
+        </Border>
 
         <!-- Use a ScrollViewer for content -->
         <ScrollViewer>
-            <StackPanel Spacing="10">
-                <!-- Toolbar -->
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button Content="{loc:Loc PokepuffEditor_GiveAllBest}" Command="{Binding GiveAllBestCommand}" />
-                    <Button Content="{loc:Loc PokepuffEditor_GiveAllVaried}" Command="{Binding GiveAllVariedCommand}" />
-                    <Button Content="{loc:Loc PokepuffEditor_RemoveAll}" Command="{Binding RemoveAllCommand}" />
-                    <Button Content="{loc:Loc PokepuffEditor_Sort}" Command="{Binding SortCommand}" />
-                </StackPanel>
-                
+            <StackPanel Spacing="8" Margin="0,8,0,0">
                 <!-- Puffs Grid -->
                 <ItemsControl ItemsSource="{Binding Puffs}">
                      <ItemsControl.ItemsPanel>
@@ -35,7 +34,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:PokepuffSlotViewModel">
-                            <Border Margin="2" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="4" Width="180">
+                            <Border Classes="editor-section-padded" Margin="0,0,0,8" Padding="8" Width="180">
                                 <Grid ColumnDefinitions="Auto,*">
                                     <TextBlock Grid.Column="0" Text="{Binding DisplayIndex, StringFormat='{}{0}: '}" VerticalAlignment="Center" Margin="0,0,5,0" />
                                     <ComboBox Grid.Column="1"
@@ -51,4 +50,5 @@
             </StackPanel>
         </ScrollViewer>
     </DockPanel>
+    </Border>
 </UserControl>

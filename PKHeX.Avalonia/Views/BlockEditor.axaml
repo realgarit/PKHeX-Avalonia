@@ -6,9 +6,10 @@
              x:Class="PKHeX.Avalonia.Views.BlockEditor"
              x:DataType="vm:BlockEditorViewModel"
              MinWidth="600" MinHeight="500">
-    <DockPanel Margin="16">
+    <Border Classes="view-container">
+    <DockPanel>
         <!-- Header -->
-        <TextBlock DockPanel.Dock="Top" Text="{loc:Loc BlockEditor_Title}" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
+        <TextBlock DockPanel.Dock="Top" Classes="view-title" Text="{loc:Loc BlockEditor_Title}" Margin="0,0,0,8" />
 
         <!-- Search and Action Buttons -->
         <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
@@ -20,8 +21,8 @@
         </Grid>
 
         <!-- Block List -->
-        <Border BorderBrush="{DynamicResource ThemeBorderDefaultBrush}" BorderThickness="1" CornerRadius="4">
-            <DataGrid ItemsSource="{Binding FilteredBlocks}"
+        <Border Classes="database-results-pane">
+            <DataGrid Classes="save-grid" ItemsSource="{Binding FilteredBlocks}"
                       SelectedItem="{Binding SelectedBlock}"
                       IsReadOnly="True"
                       SelectionMode="Single"
@@ -29,7 +30,6 @@
                       CanUserResizeColumns="True"
                       CanUserSortColumns="True"
                       AutoGenerateColumns="False"
-                      GridLinesVisibility="All"
                       HeadersVisibility="All">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{loc:Loc BlockEditor_KeyHeader}" Binding="{Binding Key}" Width="100" />
@@ -40,4 +40,5 @@
             </DataGrid>
         </Border>
     </DockPanel>
+    </Border>
 </UserControl>

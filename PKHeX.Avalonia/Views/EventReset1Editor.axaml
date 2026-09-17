@@ -9,25 +9,27 @@
         <vm:EventReset1EditorViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,*,Auto" Margin="15">
-        <!-- Header -->
-        <StackPanel Spacing="5">
-            <TextBlock Text="{loc:Loc EventReset1Editor_Title}" FontWeight="Bold" FontSize="18"/>
+    <Border Classes="view-container">
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header and actions -->
+        <Grid Grid.Row="0" Classes="save-editor-header" ColumnDefinitions="*,Auto">
+            <StackPanel Spacing="3">
+            <TextBlock Text="{loc:Loc EventReset1Editor_Title}" Classes="view-title" />
             <TextBlock Text="{loc:Loc EventReset1Editor_Description}"
                        Opacity="0.7" TextWrapping="Wrap"/>
-            <Button Content="{loc:Loc EventReset1Editor_ResetAll}" Command="{Binding ResetAllCommand}" Margin="0,10,0,0"/>
-        </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                <Button Content="{loc:Loc EventReset1Editor_ResetAll}" Command="{Binding ResetAllCommand}" />
+                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" />
+            </StackPanel>
+        </Grid>
 
         <!-- Events List -->
-        <ScrollViewer Grid.Row="1" Margin="0,15,0,0">
+        <ScrollViewer Grid.Row="1" Margin="0,8,0,0">
             <ItemsControl ItemsSource="{Binding Events}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="vm:OverworldEventViewModel">
-                        <Border Margin="0,0,0,5"
-                                Padding="10"
-                                BorderBrush="{DynamicResource ThemeBorderMutedBrush}"
-                                BorderThickness="1"
-                                CornerRadius="4">
+                        <Border Classes="editor-section-padded" Margin="0,0,0,8" Padding="8">
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBlock Grid.Column="0"
                                            Text="{Binding Name}"
@@ -45,9 +47,6 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <!-- Bottom Buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
-            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}"/>
-        </StackPanel>
     </Grid>
+    </Border>
 </UserControl>

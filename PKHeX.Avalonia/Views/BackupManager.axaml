@@ -9,8 +9,9 @@
              x:DataType="vm:BackupManagerViewModel"
              MinWidth="500" MinHeight="350" Width="700" Height="450">
 
+    <Border Classes="view-container">
     <DockPanel>
-        <Border DockPanel.Dock="Top" Padding="12,8">
+        <Border DockPanel.Dock="Top" Classes="tool-header">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
                     <Button Content="{loc:Loc BackupManager_RefreshButton}" Command="{Binding RefreshCommand}" />
@@ -25,10 +26,8 @@
         </Border>
 
         <Panel>
-            <DataGrid ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}"
+            <DataGrid Classes="save-grid" ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}"
                       CanUserSortColumns="True" IsReadOnly="True" CanUserResizeColumns="True"
-                      GridLinesVisibility="All" BorderThickness="1"
-                      BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                       IsVisible="{Binding !IsEmpty}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{loc:Loc BackupManager_TimestampHeader}" Binding="{Binding Timestamp}" Width="180"/>
@@ -47,4 +46,5 @@
                        TextAlignment="Center" />
         </Panel>
     </DockPanel>
+    </Border>
 </UserControl>
