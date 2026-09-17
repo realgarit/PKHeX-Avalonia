@@ -524,6 +524,9 @@ public sealed class ResponsiveShellTests
         foreach (var view in new[] { "FolderList.axaml", "KChart.axaml", "MoveShopEditor.axaml", "SealStickers8bEditor.axaml", "TechRecordEditor.axaml", "Underground8bEditor.axaml" })
             Assert.Contains("Classes=\"save-grid\"", ReadSourceFile("Views", view));
 
+        foreach (var view in new[] { "MoveShopEditor.axaml", "SealStickers8bEditor.axaml", "TechRecordEditor.axaml", "Underground8bEditor.axaml" })
+            Assert.Contains("Common_Save", ReadSourceFile("Views", view));
+
         foreach (var view in new[] { "EventWorkEditor.axaml", "GearBREditor.axaml", "Link6Editor.axaml", "Misc8aEditor.axaml", "SecretBase6Editor.axaml", "SimpleTrainerEditor.axaml" })
             Assert.Contains("editor-section-padded", ReadSourceFile("Views", view));
 

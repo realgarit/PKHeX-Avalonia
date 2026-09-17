@@ -12,6 +12,7 @@
         <StackPanel Grid.Row="0" Classes="save-editor-header" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
             <Button Content="{loc:Loc SealStickers8bEditor_SetAllMax}" Command="{Binding SetAllMaxCommand}" />
             <Button Content="{loc:Loc SealStickers8bEditor_SetAllNone}" Command="{Binding SetAllNoneCommand}" />
+            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" />
         </StackPanel>
 
         <DataGrid Grid.Row="1" Classes="save-grid" ItemsSource="{Binding Items}" AutoGenerateColumns="False"
