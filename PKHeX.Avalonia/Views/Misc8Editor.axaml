@@ -9,13 +9,16 @@
         <vm:Misc8EditorViewModel />
     </Design.DataContext>
 
-    <Border Padding="16" Classes="view-container">
-        <Grid RowDefinitions="*,Auto">
-            <ScrollViewer>
-                <StackPanel Spacing="16" Margin="0,8,0,0">
+    <Border Classes="view-container">
+        <Grid RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" Classes="save-editor-header">
+                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalAlignment="Right" HorizontalContentAlignment="Center" />
+            </Grid>
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Spacing="8" Margin="0,4,0,0">
                     <!-- Currency -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc8Editor_Currency}" FontWeight="SemiBold" Opacity="0.6" />
                             <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,8,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc Misc8Editor_Watts}" VerticalAlignment="Center" Width="60" />
@@ -34,8 +37,8 @@
                     </Border>
 
                     <!-- Battle Tower -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc8Editor_BattleTower}" FontWeight="SemiBold" Opacity="0.6" />
                             <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,8,Auto,8,Auto">
                                 <TextBlock Grid.Row="0" Grid.Column="1" Text="{loc:Loc Misc8Editor_Wins}" FontWeight="SemiBold" Opacity="0.7" HorizontalAlignment="Center" />
@@ -53,8 +56,8 @@
                     </Border>
 
                     <!-- Unlocks -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc8Editor_Unlocks}" FontWeight="SemiBold" Opacity="0.6" />
                             <WrapPanel>
                                 <Button Content="{loc:Loc Misc8Editor_UnlockAllFashionLegal}" Command="{Binding UnlockAllFashionCommand}" Margin="0,0,8,8" />
@@ -65,10 +68,6 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
-                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

@@ -219,6 +219,71 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
     }
 
     [AvaloniaFact]
+    public void CaptureLegacyMiscEditorStates_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        CaptureAuxiliaryView(
+            new Misc2Editor
+            {
+                DataContext = new Misc2EditorViewModel(
+                    LoadCaptureSave<SAV2>("gen2_crystal.sav")),
+            },
+            "misc2-editor.png",
+            800,
+            620,
+            "Gen 2 Misc editor");
+        CaptureAuxiliaryView(
+            new Misc5Editor
+            {
+                DataContext = new Misc5EditorViewModel(
+                    LoadCaptureSave<SAV5>("gen5_black.sav")),
+            },
+            "misc5-editor.png",
+            920,
+            700,
+            "Gen 5 Misc editor");
+        CaptureAuxiliaryView(
+            new Misc7Editor
+            {
+                DataContext = new Misc7EditorViewModel(
+                    LoadCaptureSave<SAV7>("gen7_sun.main")),
+            },
+            "misc7-editor.png",
+            920,
+            700,
+            "Gen 7 Misc editor");
+        CaptureAuxiliaryView(
+            new Misc7bEditor
+            {
+                DataContext = new Misc7bEditorViewModel(new SAV7b()),
+            },
+            "misc7b-editor.png",
+            800,
+            620,
+            "LGPE Misc editor");
+        CaptureAuxiliaryView(
+            new Misc8Editor
+            {
+                DataContext = new Misc8EditorViewModel(new SAV8SWSH()),
+            },
+            "misc8-editor.png",
+            800,
+            620,
+            "Gen 8 Misc editor");
+        CaptureAuxiliaryView(
+            new Misc8bEditor
+            {
+                DataContext = new Misc8bEditorViewModel(new SAV8BS()),
+            },
+            "misc8b-editor.png",
+            900,
+            700,
+            "BDSP Misc editor");
+    }
+
+    [AvaloniaFact]
     public void CaptureDatabaseToolStates_WhenEnabled_WritesPng()
     {
         if (SkipWhenCaptureDisabled())
@@ -569,6 +634,15 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
         {
             window.Close();
         }
+    }
+
+    private static TSave LoadCaptureSave<TSave>(string fileName)
+        where TSave : SaveFile
+    {
+        var saveDirectory = SaveFileFixture.FindSaveFilesPath()
+            ?? throw new InvalidOperationException("The capture save directory could not be found.");
+        return SaveFileFixture.LoadSave(Path.Combine(saveDirectory, fileName)) as TSave
+            ?? throw new InvalidOperationException($"The capture save {fileName} could not be loaded as {typeof(TSave).Name}.");
     }
 
     private void CaptureFreshShellState(HeadlessAppFixture app, string fileName, string stateLabel)

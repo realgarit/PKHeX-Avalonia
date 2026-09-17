@@ -9,15 +9,17 @@
         <vm:Misc8bEditorViewModel />
     </Design.DataContext>
 
-    <Border Padding="16" Classes="view-container">
-        <Grid RowDefinitions="*,Auto">
-            <ScrollViewer>
-                <StackPanel Spacing="16" Margin="0,8,0,0">
-                    <TextBlock Text="{loc:Loc Misc8bEditor_Title}" Classes="view-title" />
-
+    <Border Classes="view-container">
+        <Grid RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Classes="save-editor-header">
+                <TextBlock Text="{loc:Loc Misc8bEditor_Title}" Classes="view-title" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
+            </Grid>
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Spacing="8" Margin="0,4,0,0">
                     <!-- Mythical Pokemon Section -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc8bEditor_MythicalSection}" FontWeight="SemiBold" Opacity="0.6" />
                             <TextBlock Text="{loc:Loc Misc8bEditor_MythicalDescription}"
                                        Opacity="0.7" TextWrapping="Wrap" FontSize="12"/>
@@ -44,8 +46,8 @@
                     </Border>
 
                     <!-- Legendary Pokemon Section -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc8bEditor_LegendarySection}" FontWeight="SemiBold" Opacity="0.6" />
 
                             <WrapPanel Orientation="Horizontal" Margin="0,0,-8,-8">
@@ -62,8 +64,8 @@
                     </Border>
 
                     <!-- Trainer Battles Section -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc8bEditor_TrainerBattlesSection}" FontWeight="SemiBold" Opacity="0.6" />
 
                             <WrapPanel Orientation="Horizontal" Margin="0,0,-8,-8">
@@ -80,8 +82,8 @@
                     </Border>
 
                     <!-- Unlockables Section -->
-                    <Border Classes="section-card" Padding="12">
-                        <StackPanel Spacing="12">
+                    <Border Classes="editor-section">
+                        <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Misc8bEditor_UnlockablesSection}" FontWeight="SemiBold" Opacity="0.6" />
 
                             <WrapPanel Orientation="Horizontal" Margin="0,0,-8,-8">
@@ -99,10 +101,6 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,16,0,0">
-                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center"/>
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

@@ -9,18 +9,21 @@
         <vm:Misc5EditorViewModel />
     </Design.DataContext>
 
-    <Border Padding="16" Classes="view-container">
-        <Grid RowDefinitions="*,Auto">
+    <Border Classes="view-container">
+        <Grid RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" Classes="save-editor-header">
+                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalAlignment="Right" HorizontalContentAlignment="Center" />
+            </Grid>
             <!-- Main Content with TabControl -->
-            <TabControl Grid.Row="0">
+            <TabControl Grid.Row="1" Classes="editor-tabs">
                 <!-- Main Tab -->
-                <TabItem Header="{loc:Loc Misc5Editor_Main}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc Misc5Editor_Main}">
                     <ScrollViewer>
-                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                        <StackPanel Spacing="8" Margin="0,4,0,0">
                             <!-- Fly Destinations -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
-                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock Text="{loc:Loc Misc5Editor_FlyDestinations}" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
                                         <Button Content="{loc:Loc Misc5Editor_UnlockAll}" Command="{Binding UnlockAllFlyDestinationsCommand}" FontSize="11" Padding="8,4" />
                                     </StackPanel>
@@ -34,7 +37,7 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="vm:FlyDestination5ViewModel">
                                                     <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}" 
-                                                            CornerRadius="4" Margin="0,0,8,8" Padding="8,4">
+                                                             Margin="0,0,8,8" Padding="8,4">
                                                         <CheckBox Content="{Binding Name}" IsChecked="{Binding IsUnlocked}" 
                                                                   MinWidth="140" />
                                                     </Border>
@@ -46,16 +49,16 @@
                             </Border>
 
                             <!-- Key System (B2W2 only) -->
-                            <Border Classes="section-card" Padding="12" IsVisible="{Binding IsB2W2}">
-                                <StackPanel Spacing="12">
-                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Classes="editor-section" IsVisible="{Binding IsB2W2}">
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock Text="{loc:Loc Misc5Editor_KeySystem}" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
                                         <Button Content="{loc:Loc Misc5Editor_UnlockAll}" Command="{Binding UnlockAllKeysCommand}" FontSize="11" Padding="8,4" />
                                     </StackPanel>
                                     <ItemsControl ItemsSource="{Binding Keys}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:KeySystemViewModel">
-                                                <Border Margin="0,0,0,8" Padding="8" Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4">
+                                                <Border Margin="0,0,0,8" Padding="8" Background="{DynamicResource ThemeBackgroundElevatedBrush}" >
                                                     <Grid ColumnDefinitions="*,Auto,Auto">
                                                         <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" />
                                                         <CheckBox Grid.Column="1" Content="{loc:Loc Misc5Editor_Obtained}" IsChecked="{Binding IsObtained}" Margin="16,0" />
@@ -69,8 +72,8 @@
                             </Border>
 
                             <!-- Roamer (BW only) -->
-                            <Border Classes="section-card" Padding="12" IsVisible="{Binding IsBW}">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section" IsVisible="{Binding IsBW}">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc5Editor_Roamers}" FontWeight="SemiBold" Opacity="0.6" />
                                     <CheckBox Content="{loc:Loc Misc5Editor_LibertyPassActivated}" IsChecked="{Binding LibertyPassActivated}" />
                                     <ItemsControl ItemsSource="{Binding Roamers}">
@@ -93,13 +96,13 @@
                 </TabItem>
 
                 <!-- Battle Subway Tab -->
-                <TabItem Header="{loc:Loc Misc5Editor_BattleSubway}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc Misc5Editor_BattleSubway}">
                     <ScrollViewer>
-                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                        <StackPanel Spacing="8" Margin="0,4,0,0">
                             <!-- Super Mode Unlocks -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
-                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock Text="{loc:Loc Misc5Editor_SuperModeUnlocks}" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
                                         <Button Content="{loc:Loc Misc5Editor_UnlockAll}" Command="{Binding UnlockAllSuperModesCommand}" FontSize="11" Padding="8,4" />
                                     </StackPanel>
@@ -112,8 +115,8 @@
                             </Border>
 
                             <!-- Normal Mode Records -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc5Editor_NormalModeRecords}" FontWeight="SemiBold" Opacity="0.6" />
                                     <Grid ColumnDefinitions="Auto,*,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto">
                                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{loc:Loc Misc5Editor_Past}" FontWeight="SemiBold" Opacity="0.7" HorizontalAlignment="Center" />
@@ -139,8 +142,8 @@
                             </Border>
 
                             <!-- Super Mode Records -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc5Editor_SuperModeRecords}" FontWeight="SemiBold" Opacity="0.6" />
                                     <Grid ColumnDefinitions="Auto,*,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto">
                                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{loc:Loc Misc5Editor_Past}" FontWeight="SemiBold" Opacity="0.7" HorizontalAlignment="Center" />
@@ -169,10 +172,6 @@
                 </TabItem>
             </TabControl>
 
-            <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
-                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>
