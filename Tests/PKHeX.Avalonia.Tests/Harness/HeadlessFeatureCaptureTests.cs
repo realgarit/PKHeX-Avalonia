@@ -284,6 +284,70 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
     }
 
     [AvaloniaFact]
+    public void CaptureComplexEditorStates_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        var dialog = new Mock<IDialogService>().Object;
+        var spriteRenderer = new Mock<ISpriteRenderer>().Object;
+        CaptureAuxiliaryView(
+            new PokeathlonEditor
+            {
+                DataContext = new PokeathlonEditorViewModel(LoadCaptureSave<SAV4HGSS>("gen4_heartgold.sav"), spriteRenderer),
+            },
+            "pokeathlon-editor.png",
+            980,
+            760,
+            "Pokéathlon editor");
+        CaptureAuxiliaryView(
+            new JoinAvenueEditor
+            {
+                DataContext = new JoinAvenueEditorViewModel(LoadCaptureSave<SAV5B2W2>("gen5_white2.sav"), spriteRenderer, dialog),
+            },
+            "join-avenue-editor.png",
+            980,
+            760,
+            "Join Avenue editor");
+        CaptureAuxiliaryView(
+            new GlobalLink5Editor
+            {
+                DataContext = new GlobalLink5EditorViewModel(LoadCaptureSave<SAV5>("gen5_white2.sav"), spriteRenderer),
+            },
+            "global-link-editor.png",
+            760,
+            720,
+            "Global Link editor");
+        CaptureAuxiliaryView(
+            new MedalEditorView
+            {
+                DataContext = new MedalEditorViewModel(LoadCaptureSave<SaveFile>("gen5_white2.sav"), dialog),
+            },
+            "medal-editor.png",
+            980,
+            720,
+            "Medal editor");
+        CaptureAuxiliaryView(
+            new FashionEditorView
+            {
+                DataContext = new FashionEditorViewModel(new SAV8SWSH()),
+            },
+            "fashion-editor.png",
+            760,
+            620,
+            "Fashion editor");
+        CaptureAuxiliaryView(
+            new DonutEditor
+            {
+                DataContext = new DonutEditorViewModel(LoadCaptureSave<SaveFile>("gen9a_legendsza.main")),
+            },
+            "donut-editor.png",
+            820,
+            700,
+            "Donut editor");
+    }
+
+    [AvaloniaFact]
     public void CaptureDatabaseToolStates_WhenEnabled_WritesPng()
     {
         if (SkipWhenCaptureDisabled())

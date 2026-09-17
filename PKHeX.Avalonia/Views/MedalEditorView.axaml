@@ -5,11 +5,11 @@
              x:Class="PKHeX.Avalonia.Views.MedalEditorView"
              x:DataType="vm:MedalEditorViewModel"
              MinWidth="640" MinHeight="560">
-    <DockPanel Margin="16">
-        <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,12">
+    <DockPanel Classes="tool-surface" Margin="12">
+        <StackPanel Classes="tool-header-stack" DockPanel.Dock="Top">
             <TextBlock Text="{loc:Loc MedalEditorView_MedalRally}" FontSize="20" FontWeight="SemiBold" />
             <TextBlock Text="{Binding GameInfo}" FontSize="12" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
-            <TextBlock FontSize="14" Margin="0,8,0,0">
+            <TextBlock FontSize="14" Margin="0,4,0,0">
                 <Run Text="{loc:Loc MedalEditorView_TotalObtained}" />
                 <Run Text="{Binding TotalObtained}" FontWeight="SemiBold" />
                 <Run Text=" / 255" />
@@ -30,12 +30,12 @@
                 <Button Content="{loc:Loc MedalEditorView_Refresh}" Command="{Binding RefreshCommand}" Padding="16,6" />
             </StackPanel>
 
-            <TabControl>
+            <TabControl Classes="editor-tabs">
                 <!-- ===================== Medals Tab ===================== -->
-                <TabItem Header="{loc:Loc MedalEditorView_Medals}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc MedalEditorView_Medals}">
                     <DockPanel>
                         <!-- Settings + Import/Export -->
-                        <Border DockPanel.Dock="Top" Classes="section-card" Margin="0,8,0,8" Padding="12">
+                        <Border DockPanel.Dock="Top" Classes="editor-section-padded" Margin="0,8,0,8" Padding="8">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="{loc:Loc MedalEditorView_Settings}" FontWeight="SemiBold" />
                                 <Grid ColumnDefinitions="Auto,160,Auto,160" RowDefinitions="Auto,Auto" >
@@ -63,8 +63,8 @@
                         </Border>
 
                         <!-- Editable Medal Grid -->
-                        <Border Classes="section-card" CornerRadius="4" Padding="0" ClipToBounds="True">
-                            <DataGrid ItemsSource="{Binding MedalRows}"
+                        <Border Classes="editor-section-padded" Padding="0" ClipToBounds="True">
+                            <DataGrid Classes="save-grid" ItemsSource="{Binding MedalRows}"
                                       AutoGenerateColumns="False"
                                       CanUserResizeColumns="True"
                                       CanUserSortColumns="False"
@@ -110,10 +110,10 @@
                 </TabItem>
 
                 <!-- ===================== Habitat Tab ===================== -->
-                <TabItem Header="{loc:Loc MedalEditorView_Habitat}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc MedalEditorView_Habitat}">
                     <DockPanel>
                         <!-- Habitat Settings + Actions -->
-                        <Border DockPanel.Dock="Top" Classes="section-card" Margin="0,8,0,8" Padding="12">
+                        <Border DockPanel.Dock="Top" Classes="editor-section-padded" Margin="0,8,0,8" Padding="8">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="{loc:Loc MedalEditorView_Settings}" FontWeight="SemiBold" />
                                 <Grid ColumnDefinitions="Auto,160" RowDefinitions="Auto">
@@ -131,8 +131,8 @@
                         </Border>
 
                         <!-- Editable Habitat Grid -->
-                        <Border Classes="section-card" CornerRadius="4" Padding="0" ClipToBounds="True">
-                            <DataGrid ItemsSource="{Binding HabitatRows}"
+                        <Border Classes="editor-section-padded" Padding="0" ClipToBounds="True">
+                            <DataGrid Classes="save-grid" ItemsSource="{Binding HabitatRows}"
                                       AutoGenerateColumns="False"
                                       CanUserResizeColumns="True"
                                       CanUserSortColumns="False"

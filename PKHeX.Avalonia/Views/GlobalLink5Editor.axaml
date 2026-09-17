@@ -8,8 +8,8 @@
              x:Class="PKHeX.Avalonia.Views.GlobalLink5Editor"
              x:DataType="vm:GlobalLink5EditorViewModel"
              MinWidth="640" MinHeight="560">
-    <DockPanel Margin="16">
-        <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,12">
+    <DockPanel Classes="tool-surface" Margin="12">
+        <StackPanel Classes="tool-header-stack" DockPanel.Dock="Top">
             <TextBlock Text="{loc:Loc GlobalLink5Editor_Title}" FontSize="20" FontWeight="SemiBold" />
             <TextBlock Text="{Binding GameInfo}" FontSize="12" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
         </StackPanel>
@@ -20,12 +20,12 @@
                    FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
         <!-- Content -->
-        <TabControl IsVisible="{Binding IsSupported}">
+        <TabControl Classes="editor-tabs" IsVisible="{Binding IsSupported}">
             <!-- ===================== Status Tab ===================== -->
-            <TabItem Header="{loc:Loc GlobalLink5Editor_Status}">
-                <StackPanel Spacing="12" Margin="0,8,0,0">
+            <TabItem Classes="editor-tab" Header="{loc:Loc GlobalLink5Editor_Status}">
+                <StackPanel Spacing="8" Margin="0,4,0,0">
                     <!-- Counters / status -->
-                    <Border Classes="section-card" Padding="12">
+                    <Border Classes="editor-section-padded" Padding="8">
                         <StackPanel Spacing="10">
                             <TextBlock Text="{loc:Loc GlobalLink5Editor_Upload}" FontWeight="SemiBold" />
                             <Grid ColumnDefinitions="Auto,160,Auto,160" RowDefinitions="Auto,Auto">
@@ -46,7 +46,7 @@
                     </Border>
 
                     <!-- Flags -->
-                    <Border Classes="section-card" Padding="12">
+                    <Border Classes="editor-section-padded" Padding="8">
                         <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc GlobalLink5Editor_AccountFlags}" FontWeight="SemiBold" />
                             <CheckBox Content="{loc:Loc GlobalLink5Editor_SlotPresent}" IsChecked="{Binding IsSlotPresent}" />
@@ -56,7 +56,7 @@
                     </Border>
 
                     <!-- Furniture selection / downloaded content -->
-                    <Border Classes="section-card" Padding="12">
+                    <Border Classes="editor-section-padded" Padding="8">
                         <StackPanel Spacing="10">
                             <TextBlock Text="{loc:Loc GlobalLink5Editor_SelectionContent}" FontWeight="SemiBold" />
                             <Grid ColumnDefinitions="Auto,160,Auto,160" RowDefinitions="Auto,Auto,Auto">
@@ -88,9 +88,9 @@
             </TabItem>
 
             <!-- ===================== Items Tab ===================== -->
-            <TabItem Header="{loc:Loc GlobalLink5Editor_Items}">
-                <Border Classes="section-card" CornerRadius="4" Padding="0" ClipToBounds="True" Margin="0,8,0,0">
-                    <DataGrid ItemsSource="{Binding Items}"
+            <TabItem Classes="editor-tab" Header="{loc:Loc GlobalLink5Editor_Items}">
+                <Border Classes="editor-section-padded" Padding="0" ClipToBounds="True" Margin="0,4,0,0">
+                    <DataGrid Classes="save-grid" ItemsSource="{Binding Items}"
                               AutoGenerateColumns="False"
                               CanUserResizeColumns="True"
                               CanUserSortColumns="False"
@@ -137,9 +137,9 @@
             </TabItem>
 
             <!-- ===================== Furniture Tab ===================== -->
-            <TabItem Header="{loc:Loc GlobalLink5Editor_Furniture}">
-                <Border Classes="section-card" CornerRadius="4" Padding="0" ClipToBounds="True" Margin="0,8,0,0">
-                    <DataGrid ItemsSource="{Binding Furniture}"
+            <TabItem Classes="editor-tab" Header="{loc:Loc GlobalLink5Editor_Furniture}">
+                <Border Classes="editor-section-padded" Padding="0" ClipToBounds="True" Margin="0,4,0,0">
+                    <DataGrid Classes="save-grid" ItemsSource="{Binding Furniture}"
                               AutoGenerateColumns="False"
                               CanUserResizeColumns="True"
                               CanUserSortColumns="False"

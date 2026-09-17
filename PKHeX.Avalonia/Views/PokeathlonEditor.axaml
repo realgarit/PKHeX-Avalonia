@@ -30,7 +30,7 @@
         <!-- A participant: species/form/gender/shiny + EC, TID16/SID16. -->
         <DataTemplate x:Key="ParticipantTemplate" DataType="vm:PokeathlonParticipantViewModel">
             <Border BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="1"
-                    CornerRadius="4" Padding="8">
+                    Padding="8">
                 <StackPanel Spacing="6">
                     <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Slot, StringFormat='Slot {0}'}" FontWeight="SemiBold" VerticalAlignment="Center" Width="56" />
@@ -68,7 +68,7 @@
         <!-- An event record: a record value + three responsible (species, form) entries. -->
         <DataTemplate x:Key="EventRecordTemplate" DataType="vm:PokeathlonEventRecordViewModel">
             <Border BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="1"
-                    CornerRadius="4" Padding="8">
+                    Padding="8">
                 <StackPanel Spacing="6">
                     <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Slot, StringFormat='Record {0}'}" FontWeight="SemiBold" VerticalAlignment="Center" Width="72" />
@@ -83,8 +83,8 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <DockPanel Margin="16">
-        <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,12">
+    <DockPanel Classes="tool-surface" Margin="12">
+        <StackPanel Classes="tool-header-stack" DockPanel.Dock="Top">
             <TextBlock Text="{loc:Loc PokeathlonEditor_Title}" FontSize="20" FontWeight="SemiBold" />
             <TextBlock Text="{Binding GameInfo}" FontSize="12" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
         </StackPanel>
@@ -94,12 +94,12 @@
                    Foreground="{DynamicResource ThemeTextSecondaryBrush}"
                    FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-        <TabControl IsVisible="{Binding IsSupported}">
+        <TabControl Classes="editor-tabs" IsVisible="{Binding IsSupported}">
             <!-- ===================== General ===================== -->
-            <TabItem Header="{loc:Loc PokeathlonEditor_TabGeneral}">
-                <ScrollViewer Margin="0,8,0,0">
-                    <StackPanel Spacing="12">
-                        <Border Classes="section-card" Padding="12">
+            <TabItem Classes="editor-tab" Header="{loc:Loc PokeathlonEditor_TabGeneral}">
+                <ScrollViewer Margin="0,4,0,0">
+                    <StackPanel Spacing="8">
+                        <Border Classes="editor-section-padded" Padding="8">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="{loc:Loc PokeathlonEditor_PointsSection}" FontWeight="SemiBold" />
                                 <StackPanel Orientation="Horizontal" Spacing="8">
@@ -110,7 +110,7 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Classes="section-card" Padding="12">
+                        <Border Classes="editor-section-padded" Padding="8">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc PokeathlonEditor_DailyShopFlags}" FontWeight="SemiBold" />
                                 <ItemsControl ItemsSource="{Binding DailyShop}">
@@ -128,7 +128,7 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Classes="section-card" Padding="12">
+                        <Border Classes="editor-section-padded" Padding="8">
                             <StackPanel Spacing="8">
                                 <Grid ColumnDefinitions="*,Auto,Auto">
                                     <TextBlock Grid.Column="0" Text="{loc:Loc PokeathlonEditor_DataCards}" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -154,10 +154,10 @@
             </TabItem>
 
             <!-- ===================== Counters ===================== -->
-            <TabItem Header="{loc:Loc PokeathlonEditor_TabCounters}">
-                <ScrollViewer Margin="0,8,0,0">
-                    <StackPanel Spacing="12">
-                        <Border Classes="section-card" Padding="12">
+            <TabItem Classes="editor-tab" Header="{loc:Loc PokeathlonEditor_TabCounters}">
+                <ScrollViewer Margin="0,4,0,0">
+                    <StackPanel Spacing="8">
+                        <Border Classes="editor-section-padded" Padding="8">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc PokeathlonEditor_GlobalCounters}" FontWeight="SemiBold" />
                                 <Grid ColumnDefinitions="Auto,140,24,Auto,140" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
@@ -212,8 +212,8 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Classes="section-card" CornerRadius="4" Padding="0" ClipToBounds="True">
-                            <DataGrid ItemsSource="{Binding EventStats}"
+                        <Border Classes="editor-section-padded" Padding="0" ClipToBounds="True">
+                            <DataGrid Classes="save-grid" ItemsSource="{Binding EventStats}"
                                       AutoGenerateColumns="False" CanUserResizeColumns="True"
                                       CanUserSortColumns="False" IsReadOnly="False" MinHeight="280">
                                 <DataGrid.Columns>
@@ -240,16 +240,16 @@
             </TabItem>
 
             <!-- ===================== Medals ===================== -->
-            <TabItem Header="{loc:Loc PokeathlonEditor_TabMedals}">
-                <DockPanel Margin="0,8,0,0">
+            <TabItem Classes="editor-tab" Header="{loc:Loc PokeathlonEditor_TabMedals}">
+                <DockPanel Margin="0,4,0,0">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
                         <TextBlock Text="{loc:Loc PokeathlonEditor_MedalsDescription}" VerticalAlignment="Center"
                                    Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
                         <Button Content="{loc:Loc PokeathlonEditor_GiveAll}" Command="{Binding GiveAllMedalsCommand}" />
                         <Button Content="{loc:Loc PokeathlonEditor_ClearAll}" Command="{Binding ClearAllMedalsCommand}" />
                     </StackPanel>
-                    <Border Classes="section-card" CornerRadius="4" Padding="0" ClipToBounds="True">
-                        <DataGrid ItemsSource="{Binding Medals}"
+                    <Border Classes="editor-section-padded" Padding="0" ClipToBounds="True">
+                        <DataGrid Classes="save-grid" ItemsSource="{Binding Medals}"
                                   AutoGenerateColumns="False" CanUserResizeColumns="True"
                                   CanUserSortColumns="True" IsReadOnly="False" MinHeight="360">
                             <DataGrid.Columns>
@@ -275,16 +275,16 @@
             </TabItem>
 
             <!-- ===================== Courses ===================== -->
-            <TabItem Header="{loc:Loc PokeathlonEditor_TabCourses}">
-                <DockPanel Margin="0,8,0,0">
+            <TabItem Classes="editor-tab" Header="{loc:Loc PokeathlonEditor_TabCourses}">
+                <DockPanel Margin="0,4,0,0">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
                         <TextBlock Text="{loc:Loc PokeathlonEditor_Course}" VerticalAlignment="Center" />
                         <ComboBox MinWidth="180" ItemsSource="{Binding Courses}" SelectedItem="{Binding SelectedCourse}"
                                   DisplayMemberBinding="{Binding Name}" />
                     </StackPanel>
                     <ScrollViewer>
-                        <StackPanel DataContext="{Binding SelectedCourse}" Spacing="12">
-                            <Border Classes="section-card" Padding="12">
+                        <StackPanel DataContext="{Binding SelectedCourse}" Spacing="8">
+                            <Border Classes="editor-section-padded" Padding="8">
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc PokeathlonEditor_Scores}" FontWeight="SemiBold" />
                                     <Grid ColumnDefinitions="Auto,140,24,Auto,140" RowDefinitions="Auto,Auto">
@@ -299,7 +299,7 @@
                                     </Grid>
                                 </StackPanel>
                             </Border>
-                            <Border Classes="section-card" Padding="12">
+                            <Border Classes="editor-section-padded" Padding="8">
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc PokeathlonEditor_RecordTeam}" FontWeight="SemiBold" />
                                     <ItemsControl ItemsSource="{Binding Participants}">
@@ -317,22 +317,22 @@
             </TabItem>
 
             <!-- ===================== Self Events ===================== -->
-            <TabItem Header="{loc:Loc PokeathlonEditor_TabEventData}">
-                <DockPanel Margin="0,8,0,0">
+            <TabItem Classes="editor-tab" Header="{loc:Loc PokeathlonEditor_TabEventData}">
+                <DockPanel Margin="0,4,0,0">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
                         <TextBlock Text="{loc:Loc PokeathlonEditor_Event}" VerticalAlignment="Center" />
                         <ComboBox MinWidth="180" ItemsSource="{Binding SelfEvents}" SelectedItem="{Binding SelectedSelfEvent}"
                                   DisplayMemberBinding="{Binding Name}" />
                     </StackPanel>
                     <ScrollViewer>
-                        <StackPanel DataContext="{Binding SelectedSelfEvent}" Spacing="12">
-                            <Border Classes="section-card" Padding="12">
+                        <StackPanel DataContext="{Binding SelectedSelfEvent}" Spacing="8">
+                            <Border Classes="editor-section-padded" Padding="8">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <TextBlock Text="{loc:Loc PokeathlonEditor_Attempts}" VerticalAlignment="Center" />
                                     <NumericUpDown Value="{Binding Attempts}" Minimum="0" Maximum="{Binding MaxAttempts}" FormatString="0" Classes="compact" Width="160" />
                                 </StackPanel>
                             </Border>
-                            <Border Classes="section-card" Padding="12">
+                            <Border Classes="editor-section-padded" Padding="8">
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc PokeathlonEditor_Records}" FontWeight="SemiBold" />
                                     <ItemsControl ItemsSource="{Binding Records}">
@@ -350,22 +350,22 @@
             </TabItem>
 
             <!-- ===================== Connection ===================== -->
-            <TabItem Header="{loc:Loc PokeathlonEditor_TabConnection}">
-                <DockPanel Margin="0,8,0,0">
+            <TabItem Classes="editor-tab" Header="{loc:Loc PokeathlonEditor_TabConnection}">
+                <DockPanel Margin="0,4,0,0">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
                         <TextBlock Text="{loc:Loc PokeathlonEditor_Event}" VerticalAlignment="Center" />
                         <ComboBox MinWidth="180" ItemsSource="{Binding Connections}" SelectedItem="{Binding SelectedConnection}"
                                   DisplayMemberBinding="{Binding Name}" />
                     </StackPanel>
                     <ScrollViewer>
-                        <StackPanel DataContext="{Binding SelectedConnection}" Spacing="12">
-                            <Border Classes="section-card" Padding="12">
+                        <StackPanel DataContext="{Binding SelectedConnection}" Spacing="8">
+                            <Border Classes="editor-section-padded" Padding="8">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <TextBlock Text="{loc:Loc PokeathlonEditor_Attempts}" VerticalAlignment="Center" />
                                     <NumericUpDown Value="{Binding Attempts}" Minimum="0" Maximum="{Binding MaxAttempts}" FormatString="0" Classes="compact" Width="160" />
                                 </StackPanel>
                             </Border>
-                            <Border Classes="section-card" Padding="12">
+                            <Border Classes="editor-section-padded" Padding="8">
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc PokeathlonEditor_Records}" FontWeight="SemiBold" />
                                     <ItemsControl ItemsSource="{Binding Records}">
@@ -377,8 +377,8 @@
                                     </ItemsControl>
                                 </StackPanel>
                             </Border>
-                            <Border Classes="section-card" CornerRadius="4" Padding="0" ClipToBounds="True">
-                                <DataGrid ItemsSource="{Binding Trainers}"
+                            <Border Classes="editor-section-padded" Padding="0" ClipToBounds="True">
+                                <DataGrid Classes="save-grid" ItemsSource="{Binding Trainers}"
                                           AutoGenerateColumns="False" CanUserResizeColumns="True"
                                           CanUserSortColumns="False" IsReadOnly="False" MinHeight="200">
                                     <DataGrid.Columns>

@@ -581,6 +581,22 @@
         <Setter Property="Margin" Value="0" />
     </Style>
 
+    <!-- Broader tool dialogs use the same divider language with a small content inset. This keeps
+         dense tables and multi-control sections readable without returning to nested rounded cards. -->
+    <Style Selector="Border.editor-section-padded">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="8,0,8,8" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="StackPanel.tool-header-stack">
+        <Setter Property="Spacing" Value="3" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+
     <!-- Save workspace pages use the same compact header and flat section language as the
          Pokémon reference editor. Actions stay visible while long forms scroll. -->
     <Style Selector="Grid.save-editor-header">

@@ -23,7 +23,7 @@
 
         <!-- Shared IJoinAvenueEntity5 fields, reused by Self / Visitor / Fan / Occupant / Assistant panes. -->
         <DataTemplate x:Key="CommonEntityTemplate" DataType="vm:JoinAvenueEntityViewModel">
-            <Border Classes="section-card" Padding="12">
+            <Border Classes="editor-section-padded" Padding="8">
                 <StackPanel Spacing="8">
                     <TextBlock Text="{loc:Loc JoinAvenueEditor_General}" FontWeight="SemiBold" />
                     <Grid ColumnDefinitions="Auto,160,24,Auto,160" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
@@ -79,9 +79,9 @@
 
         <!-- A full Visitor / Occupant / Self pane (common + visitor-specific + favorite species + import/export). -->
         <DataTemplate x:Key="VisitorPaneTemplate" DataType="vm:JoinAvenueVisitorEntryViewModel">
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="8">
                 <ContentControl Content="{Binding}" ContentTemplate="{StaticResource CommonEntityTemplate}" />
-                <Border Classes="section-card" Padding="12">
+                <Border Classes="editor-section-padded" Padding="8">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc JoinAvenueEditor_VisitorShop}" FontWeight="SemiBold" />
                         <Grid ColumnDefinitions="Auto,160,24,Auto,160" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
@@ -147,9 +147,9 @@
 
         <!-- A full Fan pane. -->
         <DataTemplate x:Key="FanPaneTemplate" DataType="vm:JoinAvenueFanEntryViewModel">
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="8">
                 <ContentControl Content="{Binding}" ContentTemplate="{StaticResource CommonEntityTemplate}" />
-                <Border Classes="section-card" Padding="12">
+                <Border Classes="editor-section-padded" Padding="8">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc JoinAvenueEditor_FanHeader}" FontWeight="SemiBold" />
                         <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
@@ -171,9 +171,9 @@
 
         <!-- A full Assistant pane. -->
         <DataTemplate x:Key="AssistantPaneTemplate" DataType="vm:JoinAvenueAssistantEntryViewModel">
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="8">
                 <ContentControl Content="{Binding}" ContentTemplate="{StaticResource CommonEntityTemplate}" />
-                <Border Classes="section-card" Padding="12">
+                <Border Classes="editor-section-padded" Padding="8">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc JoinAvenueEditor_AssistantPositions}" FontWeight="SemiBold" />
                         <StackPanel Orientation="Horizontal" Spacing="6">
@@ -191,8 +191,8 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <DockPanel Margin="16">
-        <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,12">
+    <DockPanel Classes="tool-surface" Margin="12">
+        <StackPanel Classes="tool-header-stack" DockPanel.Dock="Top">
             <TextBlock Text="{loc:Loc JoinAvenueEditor_Title}" FontSize="20" FontWeight="SemiBold" />
             <TextBlock Text="{Binding GameInfo}" FontSize="12" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
         </StackPanel>
@@ -202,12 +202,12 @@
                    Foreground="{DynamicResource ThemeTextSecondaryBrush}"
                    FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-        <TabControl IsVisible="{Binding IsSupported}">
+        <TabControl Classes="editor-tabs" IsVisible="{Binding IsSupported}">
             <!-- ===================== Settings ===================== -->
-            <TabItem Header="{loc:Loc JoinAvenueEditor_Settings}">
-                <ScrollViewer Margin="0,8,0,0">
-                    <StackPanel Spacing="12">
-                        <Border Classes="section-card" Padding="12">
+            <TabItem Classes="editor-tab" Header="{loc:Loc JoinAvenueEditor_Settings}">
+                <ScrollViewer Margin="0,4,0,0">
+                    <StackPanel Spacing="8">
+                        <Border Classes="editor-section-padded" Padding="8">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc JoinAvenueEditor_Avenue}" FontWeight="SemiBold" />
                                 <Grid ColumnDefinitions="Auto,200,24,Auto,200" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
@@ -239,7 +239,7 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Classes="section-card" Padding="12">
+                        <Border Classes="editor-section-padded" Padding="8">
                             <StackPanel Spacing="8">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock Grid.Column="0" Text="{loc:Loc JoinAvenueEditor_VisitingPlayerDb}" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -251,8 +251,8 @@
                                     <TextBlock Grid.Column="3" Text="{loc:Loc JoinAvenueEditor_InsertIndex}" VerticalAlignment="Center" Margin="0,0,8,0" />
                                     <NumericUpDown Grid.Column="4" Value="{Binding VisitingPlayerInsertIndex}" Minimum="0" Maximum="31" FormatString="0" Classes="compact" />
                                 </Grid>
-                                <Border CornerRadius="4" ClipToBounds="True">
-                                    <DataGrid ItemsSource="{Binding VisitingPlayers}"
+                                <Border ClipToBounds="True">
+                                    <DataGrid Classes="save-grid" ItemsSource="{Binding VisitingPlayers}"
                                               AutoGenerateColumns="False" CanUserResizeColumns="True"
                                               CanUserSortColumns="False" IsReadOnly="False" MinHeight="260" MaxHeight="320">
                                         <DataGrid.Columns>
@@ -274,15 +274,15 @@
             </TabItem>
 
             <!-- ===================== Self ===================== -->
-            <TabItem Header="{loc:Loc JoinAvenueEditor_Self}">
-                <ScrollViewer Margin="0,8,0,0">
+            <TabItem Classes="editor-tab" Header="{loc:Loc JoinAvenueEditor_Self}">
+                <ScrollViewer Margin="0,4,0,0">
                     <ContentControl Content="{Binding Self}" ContentTemplate="{StaticResource VisitorPaneTemplate}" />
                 </ScrollViewer>
             </TabItem>
 
             <!-- ===================== Visitors ===================== -->
-            <TabItem Header="{loc:Loc JoinAvenueEditor_Visitors}">
-                <DockPanel Margin="0,8,0,0">
+            <TabItem Classes="editor-tab" Header="{loc:Loc JoinAvenueEditor_Visitors}">
+                <DockPanel Margin="0,4,0,0">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
                         <TextBlock Text="{loc:Loc JoinAvenueEditor_Visitor}" VerticalAlignment="Center" />
                         <ComboBox MinWidth="180" ItemsSource="{Binding Visitors}" SelectedItem="{Binding SelectedVisitor}"
@@ -295,8 +295,8 @@
             </TabItem>
 
             <!-- ===================== Fans ===================== -->
-            <TabItem Header="{loc:Loc JoinAvenueEditor_Fans}">
-                <DockPanel Margin="0,8,0,0">
+            <TabItem Classes="editor-tab" Header="{loc:Loc JoinAvenueEditor_Fans}">
+                <DockPanel Margin="0,4,0,0">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
                         <TextBlock Text="{loc:Loc JoinAvenueEditor_FanHeader}" VerticalAlignment="Center" />
                         <ComboBox MinWidth="180" ItemsSource="{Binding Fans}" SelectedItem="{Binding SelectedFan}"
@@ -309,8 +309,8 @@
             </TabItem>
 
             <!-- ===================== Occupants ===================== -->
-            <TabItem Header="{loc:Loc JoinAvenueEditor_Occupants}">
-                <DockPanel Margin="0,8,0,0">
+            <TabItem Classes="editor-tab" Header="{loc:Loc JoinAvenueEditor_Occupants}">
+                <DockPanel Margin="0,4,0,0">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
                         <TextBlock Text="{loc:Loc JoinAvenueEditor_Occupant}" VerticalAlignment="Center" />
                         <ComboBox MinWidth="180" ItemsSource="{Binding Occupants}" SelectedItem="{Binding SelectedOccupant}"
@@ -323,8 +323,8 @@
             </TabItem>
 
             <!-- ===================== Assistants ===================== -->
-            <TabItem Header="{loc:Loc JoinAvenueEditor_Assistants}">
-                <DockPanel Margin="0,8,0,0">
+            <TabItem Classes="editor-tab" Header="{loc:Loc JoinAvenueEditor_Assistants}">
+                <DockPanel Margin="0,4,0,0">
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
                         <TextBlock Text="{loc:Loc JoinAvenueEditor_AssistantLabel}" VerticalAlignment="Center" />
                         <ComboBox MinWidth="180" ItemsSource="{Binding Assistants}" SelectedItem="{Binding SelectedAssistant}"
