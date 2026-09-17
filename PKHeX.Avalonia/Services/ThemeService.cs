@@ -7,10 +7,9 @@ namespace PKHeX.Avalonia.Services;
 /// <summary>
 /// Avalonia-side implementation of <see cref="IThemeService"/>. Drives the app-wide
 /// <see cref="global::Avalonia.Application.RequestedThemeVariant"/>, which every open window/dialog
-/// inherits automatically and re-styles live — so switching needs no restart. "Follow system" is
-/// implemented by handing control back to Avalonia (<see cref="ThemeVariant.Default"/>), which
-/// tracks <see cref="global::Avalonia.Application.PlatformSettings"/> live on macOS, Windows, and
-/// Linux desktop portals that expose a color-scheme preference.
+/// inherits automatically and re-styles live, so switching needs no restart. The visible product
+/// choices are Dark and Light. Legacy persisted values are normalized to Dark so an older settings
+/// file cannot reintroduce an unsupported third appearance.
 /// </summary>
 public sealed class ThemeService : IThemeService
 {
@@ -26,10 +25,21 @@ public sealed class ThemeService : IThemeService
     public AppTheme CurrentTheme => _settings.Theme.Selected;
 
     /// <summary>Applies the persisted theme preference. Call once at startup, before the main window is created.</summary>
-    public void Initialize() => ApplyThemeVariant(_settings.Theme.Selected);
+    public void Initialize()
+    {
+        var normalized = Normalize(_settings.Theme.Selected);
+        if (_settings.Theme.Selected != normalized)
+        {
+            _settings.Theme.Selected = normalized;
+            _settingsStore.Save(_settings);
+        }
+
+        ApplyThemeVariant(normalized);
+    }
 
     public void ApplyTheme(AppTheme theme)
     {
+        theme = Normalize(theme);
         _settings.Theme.Selected = theme;
         _settingsStore.Save(_settings);
         ApplyThemeVariant(theme);
@@ -41,13 +51,9 @@ public sealed class ThemeService : IThemeService
         if (app is null)
             return;
 
-        app.RequestedThemeVariant = theme switch
-        {
-            AppTheme.Light => ThemeVariant.Light,
-            AppTheme.Dark => ThemeVariant.Dark,
-            AppTheme.HighContrast => AppThemeVariants.HighContrast,
-            AppTheme.System => ThemeVariant.Default, // Avalonia tracks PlatformSettings live.
-            _ => ThemeVariant.Dark,
-        };
+        app.RequestedThemeVariant = theme == AppTheme.Light ? ThemeVariant.Light : ThemeVariant.Dark;
     }
+
+    private static AppTheme Normalize(AppTheme theme) =>
+        theme is AppTheme.Dark or AppTheme.Light ? theme : AppTheme.Dark;
 }

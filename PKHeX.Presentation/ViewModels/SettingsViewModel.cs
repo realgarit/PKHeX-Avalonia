@@ -93,7 +93,9 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
 
     // Appearance
     [ObservableProperty] private AppTheme _selectedTheme;
-    public IReadOnlyList<AppTheme> Themes { get; } = Enum.GetValues<AppTheme>();
+    // Keep the picker intentionally small. HighContrast/System remain readable legacy enum values
+    // for old settings files, but are not product-facing appearance choices anymore.
+    public IReadOnlyList<AppTheme> Themes { get; } = [AppTheme.Dark, AppTheme.Light];
 
     [ObservableProperty] private AppDensity _selectedDensity;
     public IReadOnlyList<AppDensity> Densities { get; } = Enum.GetValues<AppDensity>();
@@ -133,7 +135,9 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         ModifyUnset = _settings.SlotWrite.ModifyUnset;
 
         SpritePreference = _settings.Sprite.SpritePreference;
-        SelectedTheme = _themeService.CurrentTheme;
+        SelectedTheme = Themes.Contains(_themeService.CurrentTheme)
+            ? _themeService.CurrentTheme
+            : AppTheme.Dark;
         SelectedDensity = _uiDensityService.CurrentDensity;
 
         _isLoading = false;

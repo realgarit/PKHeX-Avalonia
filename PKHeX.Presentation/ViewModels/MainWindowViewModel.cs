@@ -324,6 +324,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
             DisposeBatchEditor();
         }
+
+        // Keep the shared launcher/report registry in lockstep with the command CanExecute state.
+        RefreshCapabilityAvailability();
     }
 
     private void DisposeBatchEditor()
