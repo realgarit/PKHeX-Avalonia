@@ -22,13 +22,13 @@
                 Application.Resources (not a Style's resources) to reliably take precedence over
                 FluentTheme's own SystemAccentColor* resources.
             -->
-            <Color x:Key="SystemAccentColor">#718089</Color>
-            <Color x:Key="SystemAccentColorDark1">#58666E</Color>
-            <Color x:Key="SystemAccentColorDark2">#424E55</Color>
-            <Color x:Key="SystemAccentColorDark3">#2E383E</Color>
-            <Color x:Key="SystemAccentColorLight1">#8F9BA2</Color>
-            <Color x:Key="SystemAccentColorLight2">#AAB3B8</Color>
-            <Color x:Key="SystemAccentColorLight3">#C6CDD1</Color>
+            <Color x:Key="SystemAccentColor">#777777</Color>
+            <Color x:Key="SystemAccentColorDark1">#5A5A5A</Color>
+            <Color x:Key="SystemAccentColorDark2">#444444</Color>
+            <Color x:Key="SystemAccentColorDark3">#303030</Color>
+            <Color x:Key="SystemAccentColorLight1">#949494</Color>
+            <Color x:Key="SystemAccentColorLight2">#ADADAD</Color>
+            <Color x:Key="SystemAccentColorLight3">#C7C7C7</Color>
 
             <!-- Override Focus Visuals to remove yellow/accent border -->
             <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="Transparent" />
@@ -88,6 +88,7 @@
             <converters:ObjectFalseConverter x:Key="ObjectFalseConverter" />
             <converters:PngBytesToBitmapConverter x:Key="PngBytesToBitmap" />
             <converters:RibbonIconConverter x:Key="RibbonIcon" />
+            <converters:PathGeometryConverter x:Key="PathGeometry" />
         </ResourceDictionary>
     </Application.Resources>
 

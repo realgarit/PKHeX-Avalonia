@@ -15,6 +15,7 @@ using PKHeX.Avalonia.Controls;
 using PKHeX.Avalonia.Views;
 using PKHeX.Avalonia.Tests.Fixtures;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 using PKHeX.Presentation.ViewModels;
 using Xunit;
 using Xunit.Abstractions;
@@ -230,6 +231,27 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
         app.Pump();
         CaptureFreshShellState(app, "shell-launcher.png", "Tool launcher");
         app.ViewModel.IsToolLauncherOpen = false;
+    }
+
+    [AvaloniaFact]
+    public void CaptureToolsMenu_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        using var app = new HeadlessAppFixture();
+        app.Window.Width = 1024;
+        app.Window.Height = 720;
+        app.LoadSaveInstance(new SAV6XY());
+
+        var toolsMenu = app.Window.GetVisualDescendants()
+            .OfType<MenuItem>()
+            .Single(menu => Equals(menu.Header, LocalizedStrings.Instance["Menu_Tools"]));
+        toolsMenu.IsSubMenuOpen = true;
+        app.Pump();
+
+        CaptureShellState(app.Window, "tools-menu.png", "capability-driven Tools menu");
+        toolsMenu.IsSubMenuOpen = false;
     }
 
     [AvaloniaFact]

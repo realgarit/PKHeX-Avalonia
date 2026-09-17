@@ -14,7 +14,7 @@
     </UserControl.Resources>
 
     <UserControl.Styles>
-        <!-- Nuking the yellow focus border locally for this view -->
+        <!-- Keep the editor on the shared neutral focus treatment. -->
         <Style Selector="Border">
             <Setter Property="FocusAdorner" Value="{x:Null}" />
         </Style>

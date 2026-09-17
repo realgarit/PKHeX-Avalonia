@@ -31,8 +31,13 @@ public sealed class Task2BWorkspaceUiTests
         Assert.DoesNotContain("OnPartyTabDoubleTapped", mainWindow);
         Assert.Contains("Command=\"{Binding OpenBoxWorkspaceCommand}\"", mainWindow);
         Assert.Contains("Command=\"{Binding OpenPartyWorkspaceCommand}\"", mainWindow);
-        Assert.Contains("AutomationProperties.Name=\"{loc:Loc Menu_Tools_OpenBoxWorkspace}\"", mainWindow);
-        Assert.Contains("AutomationProperties.Name=\"{loc:Loc Menu_Tools_OpenPartyWorkspace}\"", mainWindow);
+        // Workspace commands now have one source of truth in the capability-driven Tools menu;
+        // the bound title is also the accessible name, so the commands are not duplicated in
+        // Window navigation.
+        Assert.Contains("AutomationProperties.Name=\"{Binding Title}\"", mainWindow);
+        var workspaces = ReadRepositoryFile("PKHeX.Presentation/ViewModels/MainWindowViewModel.Workspaces.cs");
+        Assert.Contains("Menu_Tools_OpenBoxWorkspace", workspaces);
+        Assert.Contains("Menu_Tools_OpenPartyWorkspace", workspaces);
 
         // The tab-level double-tap handlers must not replace the existing slot-level gesture.
         Assert.Contains("DoubleTapped=\"OnSlotDoubleTapped\"", boxViewer);
