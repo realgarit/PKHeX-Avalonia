@@ -1432,6 +1432,35 @@
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextMutedBrush}" />
     </Style>
 
+    <!-- Dense selectable rows used by auxiliary record/gift lists. The single bottom rule keeps
+         large histories scannable without stacking rounded native button cards. -->
+    <Style Selector="Button.auxiliary-list-item">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="8,5" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.auxiliary-list-item:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+    </Style>
+
+    <Style Selector="Button.auxiliary-list-item /template/ Border#PART_Border">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+
+    <Style Selector="Button.auxiliary-list-item:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+    </Style>
+
     <Style Selector="Border.party-strip">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />

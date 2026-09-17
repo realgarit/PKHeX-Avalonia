@@ -10,19 +10,27 @@
         <vm:Misc3EditorViewModel />
     </Design.DataContext>
 
-    <Border Padding="16" Classes="view-container">
-        <Grid RowDefinitions="*,Auto">
+    <Border Classes="view-container">
+        <Grid RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" Classes="save-editor-header">
+                <Button Content="{loc:Loc Common_Save}"
+                        Command="{Binding SaveCommand}"
+                        Classes="accent"
+                        MinWidth="100"
+                        HorizontalAlignment="Right"
+                        HorizontalContentAlignment="Center" />
+            </Grid>
             <!-- Main Content with TabControl -->
-            <TabControl Grid.Row="0">
+            <TabControl Grid.Row="1" Classes="editor-tabs">
                 <!-- Main Tab: Records, Coins, BP -->
-                <TabItem Header="{loc:Loc Misc3Editor_Main}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc Misc3Editor_Main}">
                     <ScrollViewer>
-                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                        <StackPanel Spacing="8" Margin="0,4,0,0">
                             <!-- Records Section -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc3Editor_Records}" FontWeight="SemiBold" Opacity="0.6" />
-                                    <Grid ColumnDefinitions="*,16,120">
+                                    <Grid ColumnDefinitions="*,8,120">
                                         <ComboBox Grid.Column="0"
                                                   ItemsSource="{Binding RecordList}"
                                                   SelectedItem="{Binding SelectedRecord}"
@@ -40,8 +48,8 @@
                             </Border>
 
                             <!-- Coins & BP Section -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc3Editor_CurrencyAndMisc}" FontWeight="SemiBold" Opacity="0.6" />
                                     <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,8,Auto,8,Auto">
                                         <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc Misc3Editor_Coins}" VerticalAlignment="Center" Width="80" />
@@ -68,8 +76,8 @@
                             </Border>
 
                             <!-- Other Section (R/S/E only) -->
-                            <Border Classes="section-card" Padding="12" IsVisible="{Binding CanForceMirageIsland}">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section" IsVisible="{Binding CanForceMirageIsland}">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc3Editor_Other}" FontWeight="SemiBold" Opacity="0.6" />
                                     <Button Content="{loc:Loc Misc3Editor_MirageIslandAppear}"
                                             Command="{Binding ForceMirageIslandCommand}"
@@ -82,12 +90,12 @@
                 </TabItem>
 
                 <!-- Joyful Minigames Tab -->
-                <TabItem Header="{loc:Loc Misc3Editor_Joyful}" IsVisible="{Binding IsJoyfulVisible}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc Misc3Editor_Joyful}" IsVisible="{Binding IsJoyfulVisible}">
                     <ScrollViewer>
-                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                        <StackPanel Spacing="8" Margin="0,4,0,0">
                             <!-- Jump Minigame -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc3Editor_PokemonJump}" FontWeight="SemiBold" Opacity="0.6" />
                                     <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto">
                                         <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc Misc3Editor_JumpsInRow}" VerticalAlignment="Center" Width="100" />
@@ -114,8 +122,8 @@
                             </Border>
 
                             <!-- Berry Minigame -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc3Editor_DodrioBerryPicking}" FontWeight="SemiBold" Opacity="0.6" />
                                     <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto">
                                         <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc Misc3Editor_BerriesInRow}" VerticalAlignment="Center" Width="100" />
@@ -145,26 +153,25 @@
                 </TabItem>
 
                 <!-- Battle Frontier Tab (Emerald only) -->
-                <TabItem Header="{loc:Loc Misc3Editor_BattleFrontier}" IsVisible="{Binding IsBattleFrontierVisible}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc Misc3Editor_BattleFrontier}" IsVisible="{Binding IsBattleFrontierVisible}">
                     <ScrollViewer>
-                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                        <StackPanel Spacing="8" Margin="0,4,0,0">
                             <!-- Frontier Pass -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
                                     <TextBlock Text="{loc:Loc Misc3Editor_FrontierPass}" FontWeight="SemiBold" Opacity="0.6" />
                                     <CheckBox Content="{loc:Loc Misc3Editor_FrontierPassActivated}" IsChecked="{Binding FrontierPassActivated}" />
                                 </StackPanel>
                             </Border>
 
                             <!-- Symbols -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
-                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock Text="{loc:Loc Misc3Editor_Symbols}" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
                                         <Button Content="{loc:Loc Misc3Editor_GiveAllGold}" Command="{Binding GiveAllSymbolsCommand}" FontSize="11" Padding="8,4" />
                                         <Button Content="{loc:Loc Misc3Editor_ClearAll}" Command="{Binding ClearAllSymbolsCommand}" FontSize="11" Padding="8,4" />
                                     </StackPanel>
-                                    
                                     <ItemsControl ItemsSource="{Binding FrontierSymbols}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
@@ -173,7 +180,7 @@
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:FrontierSymbolViewModel">
-                                                <Border Margin="0,0,8,8" Padding="8" Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4">
+                                                <Border Margin="0,0,8,8" Padding="8" Background="{DynamicResource ThemeBackgroundElevatedBrush}">
                                                     <Grid ColumnDefinitions="*,Auto,Auto">
                                                         <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" Width="80" />
                                                         <TextBlock Grid.Column="1" Text="{Binding StatusText}" Width="60" VerticalAlignment="Center" 
@@ -193,13 +200,13 @@
                 </TabItem>
 
                 <!-- Ferry Tab (Emerald only) -->
-                <TabItem Header="{loc:Loc Misc3Editor_Ferry}" IsVisible="{Binding IsFerryVisible}">
+                <TabItem Classes="editor-tab" Header="{loc:Loc Misc3Editor_Ferry}" IsVisible="{Binding IsFerryVisible}">
                     <ScrollViewer>
-                        <StackPanel Spacing="16" Margin="0,8,0,0">
+                        <StackPanel Spacing="8" Margin="0,4,0,0">
                             <!-- Reach Destinations -->
-                            <Border Classes="section-card" Padding="12">
-                                <StackPanel Spacing="12">
-                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock Text="{loc:Loc Misc3Editor_FerryDestinations}" FontWeight="SemiBold" Opacity="0.6" VerticalAlignment="Center" />
                                         <Button Content="{loc:Loc Misc3Editor_UnlockAll}" Command="{Binding UnlockAllFerryDestinationsCommand}" FontSize="11" Padding="8,4" />
                                     </StackPanel>
@@ -229,10 +236,6 @@
                 </TabItem>
             </TabControl>
 
-            <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0" Spacing="12">
-                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>
