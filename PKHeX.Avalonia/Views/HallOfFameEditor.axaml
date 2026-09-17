@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.HallOfFameEditor"
              x:DataType="vm:HallOfFameEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <!-- Not supported message -->
             <StackPanel VerticalAlignment="Center"
@@ -36,8 +36,7 @@
                 <Grid ColumnDefinitions="200,16,*">
                     <!-- Entry List -->
                     <Border Grid.Column="0"
-                            Classes="section-card"
-                            CornerRadius="4">
+                            Classes="editor-section-padded">
                         <ListBox ItemsSource="{Binding Entries}"
                                  SelectedItem="{Binding SelectedEntry}">
                             <ListBox.ItemTemplate>
@@ -53,8 +52,7 @@
 
                     <!-- Selected Entry Details -->
                     <Border Grid.Column="2"
-                            Classes="section-card"
-                            CornerRadius="4"
+                            Classes="editor-section-padded"
                             Padding="16"
                             IsVisible="{Binding SelectedEntry, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <StackPanel DataContext="{Binding SelectedEntry}" Spacing="16">
@@ -73,7 +71,7 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="vm:HallOfFameMemberViewModel">
-                                        <Border Margin="4" Padding="8" CornerRadius="4"
+                                        <Border Margin="4" Padding="8"
                                                 Background="{DynamicResource ThemeBackgroundElevatedBrush}">
                                             <StackPanel Width="80">
                                                 <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}"

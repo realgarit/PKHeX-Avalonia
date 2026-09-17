@@ -18,7 +18,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding IsSupported}">
             <StackPanel Spacing="12">
                 <!-- Basic Info -->
-                <Border Classes="section-card">
+                <Border Classes="editor-section-padded">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc TrainerCard8EditorView_TrainerInfo}" FontWeight="SemiBold" Margin="0,0,0,4" />
                         <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto">
@@ -35,7 +35,7 @@
                 </Border>
 
                 <!-- Stats -->
-                <Border Classes="section-card">
+                <Border Classes="editor-section-padded">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc TrainerCard8EditorView_Statistics}" FontWeight="SemiBold" Margin="0,0,0,4" />
                         <Grid ColumnDefinitions="180,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
@@ -58,7 +58,7 @@
                 </Border>
 
                 <!-- Pokédex Completion -->
-                <Border Classes="section-card">
+                <Border Classes="editor-section-padded">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc TrainerCard8EditorView_PokedexCompletion}" FontWeight="SemiBold" Margin="0,0,0,4" />
                         <CheckBox Content="{loc:Loc TrainerCard8EditorView_GalarComplete}" IsChecked="{Binding PokeDexComplete}" />

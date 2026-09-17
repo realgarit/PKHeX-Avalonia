@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.HoneyTreeEditor"
              x:DataType="vm:HoneyTreeEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="{loc:Loc HoneyTreeEditor_NotAvailable}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -20,7 +20,7 @@
 
                 <Grid ColumnDefinitions="250,16,*">
                     <!-- Tree List -->
-                    <Border Grid.Column="0" Classes="section-card" CornerRadius="4">
+                    <Border Grid.Column="0" Classes="editor-section-padded">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Text="{loc:Loc HoneyTreeEditor_Trees}" FontWeight="SemiBold" Margin="8" />
                             <ListBox ItemsSource="{Binding Trees}" SelectedItem="{Binding SelectedTree}">
@@ -34,10 +34,10 @@
                     </Border>
 
                     <!-- Tree Details -->
-                    <Border Grid.Column="2" Classes="section-card" CornerRadius="4" Padding="16">
+                    <Border Grid.Column="2" Classes="editor-section-padded" Padding="16">
                         <DockPanel>
                             <!-- Munchlax Info -->
-                            <Border DockPanel.Dock="Bottom" Background="{DynamicResource ThemeBackgroundElevatedBrush}" CornerRadius="4" Padding="12" Margin="0,16,0,0">
+                            <Border DockPanel.Dock="Bottom" Background="{DynamicResource ThemeBackgroundElevatedBrush}" Padding="8" Margin="0,16,0,0">
                                 <TextBlock Text="{Binding MunchlaxTreesText}" FontSize="12" Opacity="0.8" />
                             </Border>
 

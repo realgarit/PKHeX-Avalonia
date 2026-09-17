@@ -68,7 +68,7 @@
                        Opacity="0.5" FontSize="11" HorizontalAlignment="Center" Margin="{DynamicResource UiDensityViewFooterMargin}" />
             
             <!-- Party Grid - 2 columns, 3 rows -->
-            <Border Classes="section-card" Padding="{DynamicResource UiDensitySectionPadding}">
+            <Border Classes="editor-section-padded" Padding="{DynamicResource UiDensitySectionPadding}">
                 <ItemsControl ItemsSource="{Binding Slots}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -162,7 +162,6 @@
                                 <Panel IsHitTestVisible="False">
                                     <!-- Empty slot -->
                                     <Border Background="{DynamicResource ThemeBackgroundCardBrush}"
-                                            CornerRadius="4" 
                                             IsVisible="{Binding IsEmpty}"
                                             Height="70">
                                         <TextBlock Text="{loc:Loc PartyViewer_Empty}"

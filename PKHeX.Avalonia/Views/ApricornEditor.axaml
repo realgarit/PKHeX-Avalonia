@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.ApricornEditor"
              x:DataType="vm:ApricornEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="{loc:Loc ApricornEditor_NotAvailableTitle}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -21,7 +21,7 @@
                     </StackPanel>
                 </DockPanel>
 
-                <Border Classes="section-card" CornerRadius="4" Padding="16">
+                <Border Classes="editor-section-padded" Padding="16">
                     <ItemsControl ItemsSource="{Binding Apricorns}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="vm:ApricornSlotViewModel">

@@ -18,7 +18,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding IsSupported}">
             <StackPanel Spacing="12">
                 <!-- Settings -->
-                <Border Classes="section-card">
+                <Border Classes="editor-section-padded">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc PoketchEditorView_Settings}" FontWeight="SemiBold" Margin="0,0,0,4" />
                         <CheckBox Content="{loc:Loc PoketchEditorView_Enabled}" IsChecked="{Binding PoketchEnabled}" />
@@ -39,7 +39,7 @@
                 </Border>
 
                 <!-- Apps -->
-                <Border Classes="section-card">
+                <Border Classes="editor-section-padded">
                     <StackPanel Spacing="8">
                         <StackPanel Orientation="Horizontal" Spacing="16">
                             <TextBlock Text="{loc:Loc PoketchEditorView_UnlockedApps}" FontWeight="SemiBold" VerticalAlignment="Center" />

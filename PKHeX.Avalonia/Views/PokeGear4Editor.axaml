@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.PokeGear4Editor"
              x:DataType="vm:PokeGear4EditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="{loc:Loc PokeGear4Editor_NotAvailable}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -23,7 +23,7 @@
                 </DockPanel>
 
                 <ScrollViewer>
-                    <Border Classes="section-card" CornerRadius="4" Padding="16">
+                    <Border Classes="editor-section-padded" Padding="16">
                         <ItemsControl ItemsSource="{Binding Callers}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -32,7 +32,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="vm:PokeGearCallerViewModel">
-                                    <Border Margin="4" Padding="8,4" CornerRadius="4" 
+                                    <Border Margin="4" Padding="8,4"
                                             Background="{DynamicResource ThemeBackgroundElevatedBrush}"
                                             MinWidth="150">
                                         <CheckBox IsChecked="{Binding IsUnlocked}" Content="{Binding Name}" />

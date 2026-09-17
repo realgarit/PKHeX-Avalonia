@@ -432,6 +432,63 @@ public sealed class ResponsiveShellTests
         Assert.Contains("Classes=\"tool-surface\"", ReadSourceFile("Views", "PokeathlonEditor.axaml"));
     }
 
+    [Fact]
+    public void RemainingDialogViews_UseFlatPaddedSectionsAndNativeListSelection()
+    {
+        var views = new[]
+        {
+            "ApricornEditor.axaml",
+            "BoxLayoutEditor.axaml",
+            "BoxManipView.axaml",
+            "Capture7GGEditor.axaml",
+            "ChatterEditor.axaml",
+            "DaycareEditorView.axaml",
+            "FestivalPlazaEditor.axaml",
+            "Geonet4Editor.axaml",
+            "HallOfFame1Editor.axaml",
+            "HallOfFame3EditorView.axaml",
+            "HallOfFame7Editor.axaml",
+            "HallOfFameEditor.axaml",
+            "HoneyTreeEditor.axaml",
+            "OPowerEditor.axaml",
+            "PartyViewer.axaml",
+            "PokeBlockEditor.axaml",
+            "PokeGear4Editor.axaml",
+            "PokebeanEditor.axaml",
+            "PoketchEditorView.axaml",
+            "RTC3Editor.axaml",
+            "RTCEditor.axaml",
+            "Raid9Editor.axaml",
+            "RaidEditor.axaml",
+            "RaidSevenStar9Editor.axaml",
+            "RecordsEditorView.axaml",
+            "RibbonEditor.axaml",
+            "Roamer3Editor.axaml",
+            "Roamer6Editor.axaml",
+            "RoamerEditor.axaml",
+            "SaveHandlerTroubleshooter.axaml",
+            "SecretBaseEditor.axaml",
+            "SettingsView.axaml",
+            "TrainerCard8EditorView.axaml",
+            "UndergroundEditor.axaml",
+            "UnityTower5Editor.axaml",
+            "UpdateChangelogView.axaml",
+            "ZygardeCellEditor.axaml",
+        };
+
+        foreach (var view in views)
+        {
+            var source = ReadSourceFile("Views", view);
+            Assert.DoesNotContain("section-card", source);
+            Assert.Contains("editor-section-padded", source);
+        }
+
+        var theme = ReadSourceFile("Styles", "Theme.axaml");
+        Assert.Contains("ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter", theme);
+        Assert.Contains("Background\" Value=\"Transparent\"", theme);
+        Assert.Contains("BorderBrush\" Value=\"{StaticResource PkhexNeutralAccentBrush}\"", theme);
+    }
+
     [AvaloniaFact]
     public void ToolsMenu_UsesEveryRegisteredCapabilityOnce()
     {

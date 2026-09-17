@@ -40,7 +40,6 @@
             <Border Grid.Column="1"
                     BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                     BorderThickness="1"
-                    CornerRadius="4"
                     Padding="10">
                 <Grid RowDefinitions="Auto,*,Auto">
                     <!-- Slot Selector -->
@@ -89,8 +88,7 @@
 
                         <!-- Team Summary -->
                         <Border Grid.Row="4"
-                                Classes="section-card"
-                                CornerRadius="4"
+                                Classes="editor-section-padded"
                                 Padding="10"
                                 Margin="0,15,0,0">
                             <StackPanel>

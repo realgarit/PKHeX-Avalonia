@@ -348,6 +348,54 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
     }
 
     [AvaloniaFact]
+    public void CaptureRemainingDialogStates_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        var spriteRenderer = new Mock<ISpriteRenderer>().Object;
+        CaptureAuxiliaryView(
+            new OPowerEditor { DataContext = new OPowerEditorViewModel(new SAV6XY()) },
+            "o-power-editor.png",
+            820,
+            620,
+            "O-Power editor");
+        CaptureAuxiliaryView(
+            new PokebeanEditor { DataContext = new PokebeanEditorViewModel(new SAV7SM()) },
+            "pokebean-editor.png",
+            820,
+            620,
+            "Poké Beans editor");
+        CaptureAuxiliaryView(
+            new PoketchEditorView { DataContext = new PoketchEditorViewModel(new SAV4Pt()) },
+            "poketch-editor.png",
+            820,
+            620,
+            "Pokétch editor");
+        CaptureAuxiliaryView(
+            new RaidEditor { DataContext = new RaidEditorViewModel(new SAV8SWSH()) },
+            "raid-editor.png",
+            820,
+            620,
+            "Raid editor");
+        CaptureAuxiliaryView(
+            new Raid9Editor { DataContext = new Raid9EditorViewModel(LoadCaptureSave<SAV9SV>("gen9_scarlet.main")) },
+            "raid9-editor.png",
+            820,
+            620,
+            "Gen 9 Raid editor");
+        CaptureAuxiliaryView(
+            new SecretBaseEditor
+            {
+                DataContext = new SecretBaseEditorViewModel(new SAV6XY(), spriteRenderer),
+            },
+            "secret-base-editor.png",
+            900,
+            680,
+            "Secret Base editor");
+    }
+
+    [AvaloniaFact]
     public void CaptureDatabaseToolStates_WhenEnabled_WritesPng()
     {
         if (SkipWhenCaptureDisabled())

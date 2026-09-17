@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.RaidEditor"
              x:DataType="vm:RaidEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <!-- Not supported message -->
             <StackPanel VerticalAlignment="Center"
@@ -39,8 +39,7 @@
                 <Grid ColumnDefinitions="200,16,*">
                     <!-- Den List -->
                     <Border Grid.Column="0"
-                            Classes="section-card"
-                            CornerRadius="4">
+                            Classes="editor-section-padded">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Text="{loc:Loc RaidEditor_Dens}" FontWeight="SemiBold" Margin="8" />
                             <ListBox ItemsSource="{Binding Dens}"
@@ -60,8 +59,7 @@
 
                     <!-- Selected Den Details -->
                     <Border Grid.Column="2"
-                            Classes="section-card"
-                            CornerRadius="4"
+                            Classes="editor-section-padded"
                             Padding="16"
                             IsVisible="{Binding SelectedDen, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <ScrollViewer>

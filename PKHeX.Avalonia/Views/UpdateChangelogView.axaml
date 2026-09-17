@@ -24,7 +24,7 @@
                 <ItemsControl ItemsSource="{Binding Releases}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:ReleaseNoteViewModel">
-                            <Border Classes="section-card" Padding="16" CornerRadius="8" Margin="0,0,0,12">
+                            <Border Classes="editor-section-padded" Padding="8" Margin="0,0,0,12">
                                 <StackPanel Spacing="6">
                                     <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" />
                                     <TextBlock Text="{Binding Body}" TextWrapping="Wrap" FontSize="12" Opacity="0.85" />

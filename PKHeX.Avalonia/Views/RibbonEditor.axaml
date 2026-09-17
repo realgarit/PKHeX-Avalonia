@@ -8,7 +8,7 @@
              x:Class="PKHeX.Avalonia.Views.RibbonEditor"
              x:DataType="vm:RibbonEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Grid RowDefinitions="Auto,*,Auto">
 
             <!-- Header -->
@@ -22,7 +22,7 @@
             </DockPanel>
             
             <!-- Ribbon List - Similar to WinForms TableLayoutPanel style -->
-            <Border Grid.Row="1" Classes="section-card" Padding="8">
+            <Border Grid.Row="1" Classes="editor-section-padded" Padding="8">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding Ribbons}">
                         <ItemsControl.ItemsPanel>
@@ -35,7 +35,6 @@
                             <DataTemplate>
                                 <!-- Each ribbon is a row: Icon | Name | Control -->
                                 <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}"
-                                        CornerRadius="4"
                                         Padding="8,6"
                                         Margin="0,1">
                                     <Grid ColumnDefinitions="40,*,80">

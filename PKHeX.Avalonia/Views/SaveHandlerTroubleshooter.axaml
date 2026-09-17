@@ -17,7 +17,7 @@
             </StackPanel>
 
             <!-- File selection -->
-            <Border Classes="section-card" Padding="20" CornerRadius="8">
+            <Border Classes="editor-section-padded" Padding="8">
                 <StackPanel Spacing="12">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="📁" FontSize="20" VerticalAlignment="Center"/>
@@ -32,7 +32,7 @@
             </Border>
 
             <!-- Forced parameters -->
-            <Border Classes="section-card" Padding="20" CornerRadius="8">
+            <Border Classes="editor-section-padded" Padding="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="🔧" FontSize="20" VerticalAlignment="Center"/>
@@ -65,7 +65,7 @@
             </Border>
 
             <!-- Status / result -->
-            <Border Classes="section-card" Padding="16" CornerRadius="8">
+            <Border Classes="editor-section-padded" Padding="8">
                 <SelectableTextBlock Text="{Binding Status}" TextWrapping="Wrap" FontSize="13" MinHeight="48"/>
             </Border>
 

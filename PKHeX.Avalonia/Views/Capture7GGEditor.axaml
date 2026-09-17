@@ -30,7 +30,6 @@
             <Border Grid.Column="1"
                     BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                     BorderThickness="1"
-                    CornerRadius="4"
                     Padding="15">
                 <StackPanel Spacing="15">
                     <TextBlock Text="{loc:Loc Capture7GGEditor_Title}" FontWeight="Bold" FontSize="16"/>
@@ -50,8 +49,7 @@
                     </StackPanel>
 
                     <!-- Per-Species Counts -->
-                    <Border Classes="section-card"
-                            CornerRadius="4"
+                    <Border Classes="editor-section-padded"
                             Padding="10">
                         <StackPanel Spacing="10">
                             <TextBlock Text="{loc:Loc Capture7GGEditor_SpeciesCountsHeader}" FontWeight="Bold"/>
@@ -72,8 +70,7 @@
                     </Border>
 
                     <!-- Total Counts -->
-                    <Border Classes="section-card"
-                            CornerRadius="4"
+                    <Border Classes="editor-section-padded"
                             Padding="10">
                         <StackPanel Spacing="10">
                             <TextBlock Text="{loc:Loc Capture7GGEditor_TotalCountsHeader}" FontWeight="Bold"/>
