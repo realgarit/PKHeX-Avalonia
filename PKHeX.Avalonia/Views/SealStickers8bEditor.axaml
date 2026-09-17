@@ -7,14 +7,16 @@
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
              x:Class="PKHeX.Avalonia.Views.SealStickers8bEditor"
              x:DataType="vm:SealStickers8bEditorViewModel">
-    <Grid RowDefinitions="Auto, *, Auto" Margin="10">
-        <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+    <Border Classes="view-container">
+    <Grid RowDefinitions="Auto, *">
+        <StackPanel Grid.Row="0" Classes="save-editor-header" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
             <Button Content="{loc:Loc SealStickers8bEditor_SetAllMax}" Command="{Binding SetAllMaxCommand}" />
             <Button Content="{loc:Loc SealStickers8bEditor_SetAllNone}" Command="{Binding SetAllNoneCommand}" />
+            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" />
         </StackPanel>
 
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Items}" AutoGenerateColumns="False"
-                  IsReadOnly="False" GridLinesVisibility="All" BorderThickness="1" BorderBrush="Gray">
+        <DataGrid Grid.Row="1" Classes="save-grid" ItemsSource="{Binding Items}" AutoGenerateColumns="False"
+                  IsReadOnly="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{loc:Loc SealStickers8bEditor_ColumnId}" Binding="{Binding Index, StringFormat=\{0:D3\}}" IsReadOnly="True" Width="50" />
                 <DataGridTextColumn Header="{loc:Loc SealStickers8bEditor_ColumnName}" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
@@ -29,8 +31,6 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
-            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" />
-        </StackPanel>
     </Grid>
+    </Border>
 </UserControl>

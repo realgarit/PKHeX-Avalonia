@@ -5,8 +5,9 @@
              x:Class="PKHeX.Avalonia.Views.BoxListEditor"
              x:DataType="vm:BoxListEditorViewModel">
 
-    <DockPanel Margin="10">
-        <Border DockPanel.Dock="Top" BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="0,0,0,10">
+    <Border Classes="view-container">
+        <DockPanel>
+        <Border DockPanel.Dock="Top" Classes="tool-header" Margin="0,0,0,8">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <TextBlock Text="{loc:Loc BoxListEditor_Title}" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
                 <Button Content="{loc:Loc BoxListEditor_RefreshButton}" Command="{Binding RefreshCommand}" FontSize="11" Padding="8,4" />
@@ -14,12 +15,13 @@
             </StackPanel>
         </Border>
 
-        <ListBox ItemsSource="{Binding Boxes}" SelectedItem="{Binding SelectedBox}">
+        <ListBox Classes="list-surface" ItemsSource="{Binding Boxes}" SelectedItem="{Binding SelectedBox}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Display}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    </DockPanel>
+        </DockPanel>
+    </Border>
 </UserControl>

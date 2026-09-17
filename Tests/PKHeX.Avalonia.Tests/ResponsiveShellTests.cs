@@ -489,6 +489,50 @@ public sealed class ResponsiveShellTests
         Assert.Contains("BorderBrush\" Value=\"{StaticResource PkhexNeutralAccentBrush}\"", theme);
     }
 
+    [Fact]
+    public void LegacyUtilityViews_UseSharedNeutralSurfacesAndNativeGridChrome()
+    {
+        var views = new[]
+        {
+            "AccessorEditor.axaml",
+            "BoxListEditor.axaml",
+            "DatabaseEditor.axaml",
+            "EncountersEditor.axaml",
+            "EventWorkEditor.axaml",
+            "FolderList.axaml",
+            "GearBREditor.axaml",
+            "KChart.axaml",
+            "Link6Editor.axaml",
+            "Misc8aEditor.axaml",
+            "MoveShopEditor.axaml",
+            "SealStickers8bEditor.axaml",
+            "SecretBase3Editor.axaml",
+            "SecretBase6Editor.axaml",
+            "SimpleTrainerEditor.axaml",
+            "TechRecordEditor.axaml",
+            "Underground8bEditor.axaml",
+        };
+
+        foreach (var view in views)
+        {
+            var source = ReadSourceFile("Views", view);
+            Assert.Contains("view-container", source);
+            Assert.DoesNotContain("BorderBrush=\"Gray\"", source);
+            Assert.DoesNotContain("GridLinesVisibility=\"All\"", source);
+        }
+
+        foreach (var view in new[] { "FolderList.axaml", "KChart.axaml", "MoveShopEditor.axaml", "SealStickers8bEditor.axaml", "TechRecordEditor.axaml", "Underground8bEditor.axaml" })
+            Assert.Contains("Classes=\"save-grid\"", ReadSourceFile("Views", view));
+
+        foreach (var view in new[] { "MoveShopEditor.axaml", "SealStickers8bEditor.axaml", "TechRecordEditor.axaml", "Underground8bEditor.axaml" })
+            Assert.Contains("Common_Save", ReadSourceFile("Views", view));
+
+        foreach (var view in new[] { "EventWorkEditor.axaml", "GearBREditor.axaml", "Link6Editor.axaml", "Misc8aEditor.axaml", "SecretBase6Editor.axaml", "SimpleTrainerEditor.axaml" })
+            Assert.Contains("editor-section-padded", ReadSourceFile("Views", view));
+
+        Assert.Contains("database-filter-pane", ReadSourceFile("Views", "SecretBase3Editor.axaml"));
+    }
+
     [AvaloniaFact]
     public void ToolsMenu_UsesEveryRegisteredCapabilityOnce()
     {
