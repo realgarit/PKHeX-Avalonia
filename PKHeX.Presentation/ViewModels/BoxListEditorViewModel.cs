@@ -76,5 +76,5 @@ public class BoxSummary
     public int OccupiedSlots { get; }
     public int TotalSlots { get; }
 
-    public string Display => $"Box {Index + 1}: {Name} ({OccupiedSlots}/{TotalSlots})";
+    public string Display => $"{Name} ({OccupiedSlots}/{TotalSlots})";
 }

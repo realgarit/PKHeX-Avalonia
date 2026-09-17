@@ -396,6 +396,56 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
     }
 
     [AvaloniaFact]
+    public void CaptureLegacyUtilityStates_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        CaptureAuxiliaryView(
+            new AccessorEditor { DataContext = new AccessorEditorViewModel(new SAV6XY()) },
+            "accessor-editor.png",
+            900,
+            620,
+            "Accessor editor");
+        CaptureAuxiliaryView(
+            new BoxListEditor { DataContext = new BoxListEditorViewModel(new SAV6XY()) },
+            "box-list-editor.png",
+            720,
+            560,
+            "Box list editor");
+        CaptureAuxiliaryView(
+            new EventWorkEditor { DataContext = new EventWorkEditorViewModel(new SAV7b()) },
+            "event-work-editor.png",
+            820,
+            620,
+            "Event work editor");
+        CaptureAuxiliaryView(
+            new Misc8aEditor { DataContext = new Misc8aEditorViewModel(LoadCaptureSave<SAV8LA>("gen8a_legendsarceus.main")) },
+            "misc8a-editor.png",
+            820,
+            620,
+            "Legends: Arceus Misc editor");
+        CaptureAuxiliaryView(
+            new SecretBase3Editor { DataContext = new SecretBase3EditorViewModel(new SAV3E()) },
+            "secret-base3-editor.png",
+            820,
+            620,
+            "Gen 3 Secret Base editor");
+        CaptureAuxiliaryView(
+            new SealStickers8bEditor { DataContext = new SealStickers8bEditorViewModel(new SAV8BS()) },
+            "seal-stickers8b-editor.png",
+            820,
+            620,
+            "BDSP Seal Stickers editor");
+        CaptureAuxiliaryView(
+            new Underground8bEditor { DataContext = new Underground8bEditorViewModel(new SAV8BS()) },
+            "underground8b-editor.png",
+            900,
+            620,
+            "BDSP Underground editor");
+    }
+
+    [AvaloniaFact]
     public void CaptureDatabaseToolStates_WhenEnabled_WritesPng()
     {
         if (SkipWhenCaptureDisabled())

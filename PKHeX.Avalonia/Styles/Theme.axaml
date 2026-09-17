@@ -558,20 +558,9 @@
         <Setter Property="Opacity" Value="0.6" />
     </Style>
 
-    <!-- ─────────────────────────────────────────────────────────────────────────
-         Section Card - For form sections (replaces SystemControlBackgroundChromeMediumLowBrush)
-         ───────────────────────────────────────────────────────────────────────── -->
-    <Style Selector="Border.section-card">
-        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="{DynamicResource UiDensitySectionRadius}" />
-        <Setter Property="Padding" Value="{DynamicResource UiDensitySectionPadding}" />
-    </Style>
-
     <!-- Reference editor sections stay flat and divide by rhythm rather than stacking rounded
          cards. This keeps the high-frequency Pokémon form scannable and returns width/height to
-         the controls while the broader save-editor surfaces retain section-card for larger tools. -->
+         the controls across every save-editor surface. -->
     <Style Selector="Border.editor-section">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
@@ -597,6 +586,12 @@
         <Setter Property="Margin" Value="0,0,0,8" />
     </Style>
 
+    <Style Selector="Border.editor-rule">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
     <!-- Save workspace pages use the same compact header and flat section language as the
          Pokémon reference editor. Actions stay visible while long forms scroll. -->
     <Style Selector="Grid.save-editor-header">
@@ -605,6 +600,11 @@
     </Style>
 
     <Style Selector="DockPanel.save-editor-header">
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.save-editor-header">
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
@@ -691,6 +691,31 @@
 
     <Style Selector="DataGrid.save-grid DataGridRow">
         <Setter Property="MinHeight" Value="{DynamicResource UiDensityDataGridRowHeight}" />
+    </Style>
+
+    <Style Selector="DataGrid.save-grid DataGridRow">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="DataGrid.save-grid DataGridRow:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+    </Style>
+
+    <Style Selector="DataGrid.save-grid DataGridRow:selected">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="DataGrid.save-grid DataGridRow:selected /template/ Border#RowBorder">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="DataGrid.save-grid DataGridRow:selected:pointerover /template/ Border#RowBorder">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
     </Style>
 
     <!-- Database/detail tools use a full-width neutral surface with an explicit filter rail and a
@@ -798,6 +823,14 @@
     <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+    </Style>
+
+    <Style Selector="ListBox.list-surface">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="0" />
     </Style>
 
     <Style Selector="Border.database-status">

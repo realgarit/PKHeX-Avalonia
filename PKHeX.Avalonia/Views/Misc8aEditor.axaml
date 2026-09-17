@@ -9,16 +9,18 @@
         <vm:Misc8aEditorViewModel />
     </Design.DataContext>
 
-    <DockPanel Margin="10">
-        <!-- Bottom Buttons -->
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="10">
+    <Border Classes="view-container">
+        <DockPanel>
+        <Border DockPanel.Dock="Top" Classes="tool-header">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
             <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" />
-        </StackPanel>
+            </StackPanel>
+        </Border>
 
         <ScrollViewer>
-            <StackPanel Spacing="15" Margin="10">
+            <StackPanel Spacing="8" Margin="0,8,0,0">
                 <!-- Currency -->
-                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                <Border Classes="editor-section-padded" Padding="8">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc Misc8aEditor_Currency}" FontWeight="Bold" FontSize="14" />
                         <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto">
@@ -36,7 +38,7 @@
                 </Border>
 
                 <!-- Expedition Team -->
-                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10">
+                <Border Classes="editor-section-padded" Padding="8">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc Misc8aEditor_SurveyCorps}" FontWeight="Bold" FontSize="14" />
                         <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
@@ -52,5 +54,6 @@
                 </Border>
             </StackPanel>
         </ScrollViewer>
-    </DockPanel>
+        </DockPanel>
+    </Border>
 </UserControl>

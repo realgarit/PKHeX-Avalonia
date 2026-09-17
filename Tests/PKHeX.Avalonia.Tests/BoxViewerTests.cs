@@ -232,6 +232,7 @@ public class BoxViewerTests(ITestOutputHelper output)
         var vm = new BoxListEditorViewModel(sav);
 
         Assert.All(vm.Boxes, box => Assert.Equal(0, box.OccupiedSlots));
+        Assert.Equal("Box 1 (0/30)", vm.Boxes[0].Display);
         output.WriteLine("Gen6 blank save: all boxes show 0 occupied ✓");
     }
 
