@@ -11,6 +11,7 @@ using Avalonia.VisualTree;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using PKHeX.Application.Abstractions;
+using PKHeX.Avalonia.Controls;
 using PKHeX.Avalonia.Views;
 using PKHeX.Avalonia.Tests.Fixtures;
 using PKHeX.Core;
@@ -95,6 +96,42 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
         tabs.SelectedIndex = 4; // OT/Misc
         PumpToStableLayout(window);
         CaptureOrSkip(window, "pokerus.png", "Pokerus");
+    }
+
+    [AvaloniaFact]
+    public void CaptureNativeControls_PokemonEditor_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        var sav = new SAV9SV();
+        var pk = new PK9 { Species = (ushort)Species.Pikachu, CurrentLevel = 55 };
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pk, sav);
+        var view = new PokemonEditor { DataContext = vm };
+        var window = new Window { Content = view, Width = 620, Height = 720 };
+        window.Show();
+
+        try
+        {
+            PumpToStableLayout(window);
+
+            // Open a real native ComboBox so the artifact proves the composed field and popup
+            // surfaces, not only their closed-state colors. Select the gender list by its actual
+            // ComboItem content rather than relying on the order of the editor's hidden fields.
+            var gender = view.GetVisualDescendants()
+                .OfType<ComboBox>()
+                .First(combo => combo.Items.Cast<object>()
+                    .OfType<ComboItem>()
+                    .Any(item => item.Text == "Male"));
+            gender.IsDropDownOpen = true;
+            PumpToStableLayout(window);
+
+            CaptureOrSkip(window, "native-controls-pokemon-editor.png", "native control system");
+        }
+        finally
+        {
+            window.Close();
+        }
     }
 
     [AvaloniaFact]

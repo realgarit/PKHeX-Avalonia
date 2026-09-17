@@ -38,6 +38,22 @@ public class UiDensityTests
     }
 
     [Fact]
+    public void ControlSystem_UsesNativeFluentControlsAndSemanticInteractionStates()
+    {
+        var controls = ReadSourceFile("Styles", "ControlSystem.axaml");
+
+        Assert.Contains("<Style Selector=\"ComboBox\">", controls);
+        Assert.Contains("ComboBox /template/ Border#PopupBorder", controls);
+        Assert.Contains("ComboBoxItem:selected /template/ ContentPresenter", controls);
+        Assert.Contains("<Style Selector=\"CalendarDatePicker\">", controls);
+        Assert.Contains("<Style Selector=\"NumericUpDown\">", controls);
+        Assert.Contains("NumericUpDown:not(:disabled) /template/ TextBox#PART_TextBox", controls);
+        Assert.Contains("<Style Selector=\"ToggleSwitch\">", controls);
+        Assert.Contains("ThemeControlBorderFocusBrush", controls);
+        Assert.DoesNotContain("ThemeControlMidBrush", controls);
+    }
+
+    [Fact]
     public void MainWindow_UsesCompactEditorColumnAndStatusBar()
     {
         var mainWindow = ReadSourceFile("Views", "MainWindow.axaml");
