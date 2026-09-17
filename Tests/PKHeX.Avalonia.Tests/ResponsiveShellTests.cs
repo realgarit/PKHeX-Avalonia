@@ -365,6 +365,40 @@ public sealed class ResponsiveShellTests
         Assert.Contains("Classes=\"save-editor-header\"", ReadSourceFile("Views", "Pokedex7bEditor.axaml"));
     }
 
+    [Fact]
+    public void LegacyMiscEditors_UseFlatSectionsAndConsistentTabRails()
+    {
+        var views = new[]
+        {
+            "Misc2Editor.axaml",
+            "Misc5Editor.axaml",
+            "Misc7Editor.axaml",
+            "Misc7bEditor.axaml",
+            "Misc8Editor.axaml",
+            "Misc8bEditor.axaml",
+        };
+
+        foreach (var view in views)
+        {
+            var source = ReadSourceFile("Views", view);
+            Assert.DoesNotContain("section-card", source);
+            Assert.DoesNotContain("Bottom Buttons", source);
+            Assert.Contains("Classes=\"editor-section\"", source);
+            Assert.Contains("Classes=\"save-editor-header\"", source);
+        }
+
+        foreach (var view in new[] { "Misc5Editor.axaml", "Misc7Editor.axaml" })
+        {
+            var source = ReadSourceFile("Views", view);
+            Assert.DoesNotContain("<TabItem Header=", source);
+            Assert.Contains("Classes=\"editor-tabs\"", source);
+        }
+
+        var misc7 = ReadSourceFile("Views", "Misc7Editor.axaml");
+        Assert.Contains("Grid.Row=\"2\" Grid.Column=\"0\" Text=\"{loc:Loc Misc7Editor_Single}", misc7);
+        Assert.DoesNotContain("Grid.Row=\"1\" Grid.Column=\"0\" Text=\"{loc:Loc Misc7Editor_Single}", misc7);
+    }
+
     [AvaloniaFact]
     public void ToolsMenu_UsesEveryRegisteredCapabilityOnce()
     {

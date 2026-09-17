@@ -9,21 +9,23 @@
         <vm:Misc2EditorViewModel />
     </Design.DataContext>
 
-    <Border Padding="16" Classes="view-container">
-        <Grid RowDefinitions="*,Auto">
-            <StackPanel Spacing="16">
-                <TextBlock Text="{loc:Loc Misc2Editor_Title}" Classes="view-title" />
+    <Border Classes="view-container">
+        <Grid RowDefinitions="Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Classes="save-editor-header">
+                <TextBlock Text="{loc:Loc Misc2Editor_Title}" Classes="view-title" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
+            </Grid>
+            <StackPanel Grid.Row="1" Spacing="8">
 
                 <!-- GS Ball Section (Crystal only) -->
-                <Border Classes="section-card"
-                        Padding="16"
+                <Border Classes="editor-section"
                         IsVisible="{Binding IsCrystal}">
-                    <StackPanel Spacing="12">
+                    <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc Misc2Editor_GsBallEvent}" FontWeight="SemiBold" FontSize="14"/>
                         <TextBlock TextWrapping="Wrap" Opacity="0.7"
                                    Text="{loc:Loc Misc2Editor_GsBallDescription}"/>
 
-                        <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,8,0,0">
+                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
                             <Button Content="{loc:Loc Misc2Editor_EnableGsBallEvent}"
                                     Command="{Binding EnableGsBallCommand}"
                                     IsEnabled="{Binding CanEnableGsBall}"
@@ -38,7 +40,7 @@
                 </Border>
 
                 <!-- Non-Crystal message -->
-                <Border Classes="section-card" Padding="20" IsVisible="{Binding !IsCrystal}">
+                <Border Classes="editor-section" Padding="8" IsVisible="{Binding !IsCrystal}">
                     <TextBlock Text="{loc:Loc Misc2Editor_NoSpecialOptions}"
                                Opacity="0.6"
                                HorizontalAlignment="Center"
@@ -46,10 +48,6 @@
                 </Border>
             </StackPanel>
 
-            <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,16,0,0">
-                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center"/>
-            </StackPanel>
         </Grid>
     </Border>
 </UserControl>
