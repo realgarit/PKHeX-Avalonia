@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.Raid9Editor"
              x:DataType="vm:Raid9EditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="{loc:Loc Raid9Editor_NotAvailable}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -38,7 +38,7 @@
 
                 <Grid ColumnDefinitions="200,16,*">
                     <!-- Raid List -->
-                    <Border Grid.Column="0" Classes="section-card" CornerRadius="4">
+                    <Border Grid.Column="0" Classes="editor-section-padded">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Text="{loc:Loc Raid9Editor_Raids}" FontWeight="SemiBold" Margin="8" />
                             <ListBox ItemsSource="{Binding Raids9}" SelectedItem="{Binding SelectedRaid}">
@@ -55,7 +55,7 @@
                     </Border>
 
                     <!-- Raid Details -->
-                    <Border Grid.Column="2" Classes="section-card" CornerRadius="4" Padding="16"
+                    <Border Grid.Column="2" Classes="editor-section-padded" Padding="16"
                             IsVisible="{Binding SelectedRaid, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <StackPanel DataContext="{Binding SelectedRaid}" Spacing="12">
                             <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="16" />

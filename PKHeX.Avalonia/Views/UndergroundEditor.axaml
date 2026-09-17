@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.UndergroundEditor"
              x:DataType="vm:UndergroundEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="{loc:Loc UndergroundEditor_NotAvailable}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -18,7 +18,7 @@
                     <Button Content="{loc:Loc UndergroundEditor_Refresh}" Command="{Binding RefreshCommand}" HorizontalAlignment="Right" Padding="12,6" />
                 </DockPanel>
 
-                <Border Classes="section-card" CornerRadius="4" Padding="16">
+                <Border Classes="editor-section-padded" Padding="16">
                     <ScrollViewer>
                         <Grid ColumnDefinitions="*,16,*">
                             <!-- Left Column -->

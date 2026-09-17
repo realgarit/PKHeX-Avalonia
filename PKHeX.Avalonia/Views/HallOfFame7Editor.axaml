@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.HallOfFame7Editor"
              x:DataType="vm:HallOfFame7EditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="{loc:Loc HallOfFame7Editor_NotAvailable}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -18,7 +18,7 @@
 
                 <ScrollViewer>
                     <StackPanel Spacing="16">
-                        <Border Classes="section-card" CornerRadius="4" Padding="16">
+                        <Border Classes="editor-section-padded" Padding="16">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc HallOfFame7Editor_FirstClearTeam}" FontWeight="Bold" FontSize="14" />
                                 <ItemsControl ItemsSource="{Binding FirstEntries}">
@@ -38,7 +38,7 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Classes="section-card" CornerRadius="4" Padding="16">
+                        <Border Classes="editor-section-padded" Padding="16">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc HallOfFame7Editor_CurrentTeam}" FontWeight="Bold" FontSize="14" />
                                 <ItemsControl ItemsSource="{Binding CurrentEntries}">
@@ -58,7 +58,7 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Classes="section-card" CornerRadius="4" Padding="16"
+                        <Border Classes="editor-section-padded" Padding="16"
                                 IsVisible="{Binding HasStarterEc}">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc HallOfFame7Editor_UsumOnly}" FontWeight="Bold" FontSize="14" />

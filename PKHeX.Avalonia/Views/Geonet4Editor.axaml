@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.Geonet4Editor"
              x:DataType="vm:Geonet4EditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsSupported}">
                 <TextBlock Text="{loc:Loc Geonet4Editor_NotAvailable}" FontSize="18" HorizontalAlignment="Center" Opacity="0.7" />
@@ -19,7 +19,7 @@
                 </DockPanel>
 
                 <StackPanel Spacing="16">
-                    <Border Classes="section-card" CornerRadius="4" Padding="16">
+                    <Border Classes="editor-section-padded" Padding="16">
                         <StackPanel Spacing="12">
                             <TextBlock Text="{loc:Loc Geonet4Editor_GlobeManagement}" FontWeight="Bold" FontSize="14" />
                             <TextBlock Text="{loc:Loc Geonet4Editor_GlobeDescription}"
@@ -33,7 +33,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Classes="section-card" CornerRadius="4" Padding="16">
+                    <Border Classes="editor-section-padded" Padding="16">
                         <StackPanel Spacing="8">
                             <TextBlock Text="{loc:Loc Geonet4Editor_Options}" FontWeight="Bold" FontSize="14" />
                             <CheckBox IsChecked="{Binding GlobalFlag}" Content="{loc:Loc Geonet4Editor_GlobalFlag}" />

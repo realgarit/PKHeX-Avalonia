@@ -14,8 +14,7 @@
             <TextBlock Text="{loc:Loc RTC3Editor_Title}" FontWeight="Bold" FontSize="18"/>
 
             <!-- Initial Clock -->
-            <Border Classes="section-card"
-                    CornerRadius="4"
+            <Border Classes="editor-section-padded"
                     Padding="15">
                 <StackPanel Spacing="10">
                     <TextBlock Text="{loc:Loc RTC3Editor_InitialClock}" FontWeight="Bold"/>
@@ -38,8 +37,7 @@
             </Border>
 
             <!-- Elapsed Clock -->
-            <Border Classes="section-card"
-                    CornerRadius="4"
+            <Border Classes="editor-section-padded"
                     Padding="15">
                 <StackPanel Spacing="10">
                     <TextBlock Text="{loc:Loc RTC3Editor_ElapsedClock}" FontWeight="Bold"/>

@@ -772,6 +772,34 @@
         <Setter Property="Padding" Value="10,5" />
     </Style>
 
+    <!-- Every selectable list uses the same quiet outline state. Avalonia's Fluent template
+         paints its selection surface on the inner content presenter, so styling only the
+         ListBoxItem itself leaves the default gray fill visible. Keep the item transparent and
+         put the one-pixel focus cue on that presenter instead. -->
+    <Style Selector="ListBoxItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+    </Style>
+
     <Style Selector="Border.database-status">
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
         <Setter Property="BorderThickness" Value="0,1,0,0" />

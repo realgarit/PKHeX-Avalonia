@@ -5,7 +5,7 @@
              x:Class="PKHeX.Avalonia.Views.FestivalPlazaEditor"
              x:DataType="vm:FestivalPlazaEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <Panel>
             <!-- Not supported message -->
             <StackPanel VerticalAlignment="Center"
@@ -36,8 +36,7 @@
                 <Grid ColumnDefinitions="*,16,*">
                     <!-- Left: Plaza Stats -->
                     <Border Grid.Column="0"
-                            Classes="section-card"
-                            CornerRadius="4"
+                            Classes="editor-section-padded"
                             Padding="16">
                         <StackPanel Spacing="16">
                             <TextBlock Text="{loc:Loc FestivalPlazaEditor_PlazaInfo}" FontWeight="SemiBold" FontSize="14" />
@@ -63,8 +62,7 @@
 
                     <!-- Right: Facilities -->
                     <Border Grid.Column="2"
-                            Classes="section-card"
-                            CornerRadius="4"
+                            Classes="editor-section-padded"
                             Padding="16">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Text="{loc:Loc FestivalPlazaEditor_Facilities}" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,12" />
@@ -86,8 +84,7 @@
                                 <!-- Selected Facility Details -->
                                 <Border Grid.Row="2"
                                         Background="{DynamicResource ThemeBackgroundElevatedBrush}"
-                                        CornerRadius="4"
-                                        Padding="12"
+                                        Padding="8"
                                         IsVisible="{Binding SelectedFacility, Converter={x:Static ObjectConverters.IsNotNull}}">
                                     <Grid ColumnDefinitions="Auto,8,*" RowDefinitions="Auto,8,Auto,8,Auto"
                                           DataContext="{Binding SelectedFacility}">

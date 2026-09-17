@@ -17,7 +17,7 @@
             <TextBlock Text="{loc:Loc Settings_Title}" FontSize="28" FontWeight="Light" Margin="0,0,0,12"/>
 
             <!-- Backup Settings Card -->
-            <Border Classes="section-card" Padding="20" CornerRadius="8">
+            <Border Classes="editor-section-padded" Padding="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="💾" FontSize="20" VerticalAlignment="Center"/>
@@ -36,7 +36,7 @@
             </Border>
 
             <!-- Slot Write Settings Card -->
-            <Border Classes="section-card" Padding="20" CornerRadius="8">
+            <Border Classes="editor-section-padded" Padding="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="📝" FontSize="20" VerticalAlignment="Center"/>
@@ -82,7 +82,7 @@
             </Border>
 
             <!-- Sprite Settings Card -->
-            <Border Classes="section-card" Padding="20" CornerRadius="8">
+            <Border Classes="editor-section-padded" Padding="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="🎨" FontSize="20" VerticalAlignment="Center"/>
@@ -109,7 +109,7 @@
             </Border>
 
             <!-- Updates Settings Card -->
-            <Border Classes="section-card" Padding="20" CornerRadius="8">
+            <Border Classes="editor-section-padded" Padding="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="🔔" FontSize="20" VerticalAlignment="Center"/>
@@ -148,7 +148,7 @@
             </Border>
 
             <!-- Appearance Settings Card -->
-            <Border Classes="section-card" Padding="20" CornerRadius="8">
+            <Border Classes="editor-section-padded" Padding="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <TextBlock Text="🖥️" FontSize="20" VerticalAlignment="Center"/>
