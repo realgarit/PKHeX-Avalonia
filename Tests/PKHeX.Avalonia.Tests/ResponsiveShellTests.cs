@@ -26,6 +26,10 @@ public sealed class ResponsiveShellTests
         Assert.Contains("SelectedIndex=\"{Binding SelectedWorkspaceIndex, Mode=TwoWay}\"", mainWindow);
         Assert.Contains("Classes=\"pane-splitter shell-divider\"", mainWindow);
         Assert.Contains("Classes=\"workspace-tabs\"", mainWindow);
+        Assert.Contains("ItemsSource=\"{Binding AvailableToolMenuGroups}\"", mainWindow);
+        Assert.DoesNotContain("<MenuItem Header=\"{loc:Loc Menu_Pokemon}\"", mainWindow);
+        Assert.DoesNotContain("<MenuItem Header=\"{loc:Loc Menu_Gen1}\"", mainWindow);
+        Assert.DoesNotContain("ThemeAccentBrush\"", mainWindow);
         Assert.Equal(7, System.Text.RegularExpressions.Regex.Matches(mainWindow, "Classes=\"workspace-tab\"").Count);
 
         Assert.Contains("TabControl.editor-tabs TabItem.editor-tab:selected", theme);
@@ -54,6 +58,41 @@ public sealed class ResponsiveShellTests
             System.Text.RegularExpressions.RegexOptions.Singleline);
         Assert.True(statusBar.Success);
         Assert.DoesNotContain("CurrentSaveFileName", statusBar.Groups["body"].Value);
+    }
+
+    [Fact]
+    public void VisibleThemeTokensStayNeutral()
+    {
+        var theme = ReadSourceFile("Styles", "Theme.axaml");
+        var dictionaries = System.Text.RegularExpressions.Regex.Matches(
+            theme,
+            "<ResourceDictionary x:Key=\"(?<name>Dark|Light)\">(?<body>.*?)</ResourceDictionary>",
+            System.Text.RegularExpressions.RegexOptions.Singleline);
+
+        Assert.Equal(2, dictionaries.Count);
+        foreach (System.Text.RegularExpressions.Match dictionary in dictionaries)
+        {
+            var name = dictionary.Groups["name"].Value;
+            var body = dictionary.Groups["body"].Value;
+            var tokens = System.Text.RegularExpressions.Regex.Matches(
+                body,
+                "<Color x:Key=\"(?<key>Theme(?:Background|Border|Control|Text|Accent)[^\"]*)\">#(?<hex>[0-9A-Fa-f]{6,8})</Color>");
+
+            Assert.NotEmpty(tokens);
+            foreach (System.Text.RegularExpressions.Match token in tokens)
+                AssertNeutralColor(name, token.Groups["key"].Value, token.Groups["hex"].Value);
+
+            foreach (System.Text.RegularExpressions.Match gradient in System.Text.RegularExpressions.Regex.Matches(
+                         body,
+                         "<LinearGradientBrush x:Key=\"Theme(?:Accent|Card|Header)Gradient\".*?</LinearGradientBrush>",
+                         System.Text.RegularExpressions.RegexOptions.Singleline))
+            {
+                foreach (System.Text.RegularExpressions.Match color in System.Text.RegularExpressions.Regex.Matches(
+                             gradient.Value,
+                             "Color=\"#(?<hex>[0-9A-Fa-f]{6,8})\""))
+                    AssertNeutralColor(name, "gradient", color.Groups["hex"].Value);
+            }
+        }
     }
 
     [AvaloniaFact]
@@ -135,6 +174,25 @@ public sealed class ResponsiveShellTests
     }
 
     [AvaloniaFact]
+    public void ToolsMenu_UsesEveryRegisteredCapabilityOnce()
+    {
+        using var app = new HeadlessAppFixture();
+        app.LoadSaveInstance(new SAV6XY());
+
+        var menuEntries = app.ViewModel.ToolMenuGroups
+            .SelectMany(group => group.Items)
+            .ToList();
+
+        Assert.True(menuEntries.Count == app.ViewModel.ToolLauncherItems.Count,
+            $"Expected every capability to appear in one menu group, found {menuEntries.Count} of {app.ViewModel.ToolLauncherItems.Count}.");
+        Assert.All(app.ViewModel.ToolLauncherItems, item => Assert.Contains(item, menuEntries));
+        Assert.Contains(app.ViewModel.ToolMenuGroups, group =>
+            group.IsAvailable && group.Title == LocalizedStrings.Instance["Menu_Gen6"]);
+        Assert.DoesNotContain(app.ViewModel.ToolMenuGroups, group =>
+            group.IsAvailable && group.Title == LocalizedStrings.Instance["Menu_Gen1"]);
+    }
+
+    [AvaloniaFact]
     public void SaveWorkspace_HidesUnsupportedZaEventAndGiftTabs()
     {
         using var app = new HeadlessAppFixture();
@@ -171,5 +229,14 @@ public sealed class ResponsiveShellTests
         }
 
         return dir;
+    }
+
+    private static void AssertNeutralColor(string theme, string token, string hex)
+    {
+        var red = Convert.ToInt32(hex[..2], 16);
+        var green = Convert.ToInt32(hex[2..4], 16);
+        var blue = Convert.ToInt32(hex[4..6], 16);
+        var spread = Math.Max(red, Math.Max(green, blue)) - Math.Min(red, Math.Min(green, blue));
+        Assert.True(spread == 0, $"{theme} token {token} is tinted ({hex}).");
     }
 }

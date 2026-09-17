@@ -60,8 +60,8 @@ public sealed class NativeControlSystemTests
         Assert.Equal(new CornerRadius(7), text.CornerRadius);
         Assert.Equal(new CornerRadius(7), numeric.CornerRadius);
 
-        Assert.Equal(new Color(0xFF, 0x41, 0x53, 0x63), ((SolidColorBrush)combo.BorderBrush!).Color);
-        Assert.Equal(new Color(0xFF, 0x41, 0x53, 0x63), ((SolidColorBrush)text.BorderBrush!).Color);
+        Assert.Equal(new Color(0xFF, 0x4A, 0x4A, 0x4A), ((SolidColorBrush)combo.BorderBrush!).Color);
+        Assert.Equal(new Color(0xFF, 0x4A, 0x4A, 0x4A), ((SolidColorBrush)text.BorderBrush!).Color);
 
         combo.IsDropDownOpen = true;
         Pump(window);
@@ -69,7 +69,7 @@ public sealed class NativeControlSystemTests
             .OfType<Border>()
             .FirstOrDefault(border => border.Name == "PopupBorder");
         Assert.NotNull(popupBorder);
-        Assert.Equal(new Color(0xFF, 0x17, 0x23, 0x2D), ((SolidColorBrush)popupBorder!.Background!).Color);
+        Assert.Equal(new Color(0xFF, 0x1D, 0x1D, 0x1D), ((SolidColorBrush)popupBorder!.Background!).Color);
 
         window.Close();
     }
