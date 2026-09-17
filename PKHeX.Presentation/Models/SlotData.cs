@@ -30,6 +30,9 @@ public partial class SlotData : ObservableObject
     [ObservableProperty] private string _natureName = string.Empty;
     [ObservableProperty] private string _showdownSummary = string.Empty;
     [ObservableProperty] private bool _isLegal;
+
+    /// <summary>One-based slot number shown in the storage tray.</summary>
+    public int SlotNumber => Slot + 1;
     
     /// <summary>
     /// Short summary for tooltip.

@@ -70,6 +70,7 @@
     <!-- Embed all images recursively -->
     <EmbeddedResource Include="Assets\Images\**\*.png" />
     <AvaloniaResource Include="Assets/Icons/icon.ico" />
+    <AvaloniaResource Include="Assets/Icons/icon.png" />
   </ItemGroup>
 
   <!-- macOS App Bundle Target -->

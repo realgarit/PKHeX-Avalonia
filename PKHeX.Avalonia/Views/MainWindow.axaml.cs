@@ -1,6 +1,7 @@
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using PKHeX.Presentation.ViewModels;
 
@@ -32,5 +33,11 @@ public partial class MainWindow : Window
 
         e.Handled = true;
         await vm.HandleWindowFileDropAsync(paths);
+    }
+
+    private void OnLauncherItemClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+            vm.CloseToolLauncherCommand.Execute(null);
     }
 }

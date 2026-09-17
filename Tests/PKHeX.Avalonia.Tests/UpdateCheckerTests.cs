@@ -201,6 +201,7 @@ public class MainWindowUpdateCheckTests
             settings,
             new FakeSettingsStore(),
             new Mock<IThemeService>().Object,
+            new Mock<IUiDensityService>().Object,
             new UndoRedoService(),
             new LanguageService(),
             new Mock<IAutoLegalityService>().Object,

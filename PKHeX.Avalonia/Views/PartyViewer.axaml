@@ -18,17 +18,30 @@
         <KeyBinding Gesture="Delete" Command="{Binding DeleteSlotCommand}" CommandParameter="{Binding SelectedSlot}" />
     </UserControl.KeyBindings>
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <DockPanel>
             <!-- Header -->
-            <Grid DockPanel.Dock="Top" ColumnDefinitions="*,44" Margin="0,0,0,12">
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="*,42,42" Margin="{DynamicResource UiDensityViewSectionMargin}">
                 <TextBlock Grid.Column="0"
                            Text="{loc:Loc PartyViewer_Title}"
-                           FontWeight="SemiBold"
-                           FontSize="18"
+                           Classes="view-title"
                            VerticalAlignment="Center" />
                 <Button Grid.Column="1"
-                        Content="←"
+                        Command="{Binding OpenDetachedToolCommand}"
+                        ToolTip.Tip="{loc:Loc PartyViewer_PopOut}"
+                        AutomationProperties.Name="{loc:Loc PartyViewer_PopOut}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <Path Data="M 3,13 L 13,3 M 6,3 H 13 V 10"
+                          Stroke="{DynamicResource ThemeTextSecondaryBrush}"
+                          StrokeThickness="1.5"
+                          Width="16" Height="16" />
+                </Button>
+                <Button Grid.Column="2"
                         Command="{Binding MoveToBoxCommand}"
                         CommandParameter="{Binding SelectedSlot}"
                         ToolTip.Tip="{loc:Loc Slot_MoveSelectedToBoxTooltip}"
@@ -41,16 +54,21 @@
                         VerticalContentAlignment="Center"
                         FontSize="18"
                         IsVisible="{Binding CanMoveToBox}"
-                        IsEnabled="{Binding SelectedSlot.IsEmpty, Converter={StaticResource ObjectFalseConverter}}" />
+                        IsEnabled="{Binding SelectedSlot.IsEmpty, Converter={StaticResource ObjectFalseConverter}}">
+                    <Path Data="M 14,8 H 3 M 8,3 L 3,8 L 8,13"
+                          Stroke="{DynamicResource ThemeTextSecondaryBrush}"
+                          StrokeThickness="1.5"
+                          Width="16" Height="16" />
+                </Button>
             </Grid>
 
             <!-- Footer -->
             <TextBlock DockPanel.Dock="Bottom"
                        Text="{loc:Loc PartyViewer_Footer}"
-                       Opacity="0.5" FontSize="11" HorizontalAlignment="Center" Margin="0,12,0,0" />
+                       Opacity="0.5" FontSize="11" HorizontalAlignment="Center" Margin="{DynamicResource UiDensityViewFooterMargin}" />
             
             <!-- Party Grid - 2 columns, 3 rows -->
-            <Border Classes="section-card" Padding="8">
+            <Border Classes="section-card" Padding="{DynamicResource UiDensitySectionPadding}">
                 <ItemsControl ItemsSource="{Binding Slots}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

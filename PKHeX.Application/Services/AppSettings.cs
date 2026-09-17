@@ -27,6 +27,7 @@ public sealed class AppSettings : IProgramSettings
     public LocalResourceSettings LocalResources { get; set; } = new();
     public SpriteSettings Sprite { get; set; } = new();
     public ThemeSettings Theme { get; set; } = new();
+    public DensitySettings Density { get; set; } = new();
 
     public string DisplayLanguage { get; set; } = "en";
 
@@ -94,6 +95,16 @@ public sealed class AppSettings : IProgramSettings
     public class ThemeSettings
     {
         public AppTheme Selected { get; set; } = AppTheme.Dark;
+    }
+
+    /// <summary>
+    /// UI density preference. Defined locally since Core does not expose a frontend density type.
+    /// Compact remains the default to preserve the current desktop layout while the roomier
+    /// Comfortable mode is available as an explicit preference.
+    /// </summary>
+    public class DensitySettings
+    {
+        public AppDensity Selected { get; set; } = AppDensity.Compact;
     }
 
     /// <summary>

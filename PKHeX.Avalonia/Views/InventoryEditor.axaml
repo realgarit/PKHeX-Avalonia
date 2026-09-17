@@ -5,11 +5,11 @@
              x:Class="PKHeX.Avalonia.Views.InventoryEditor"
              x:DataType="vm:InventoryEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <DockPanel>
             <!-- Header -->
-            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                <TextBlock Text="{loc:Loc InventoryEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+            <DockPanel DockPanel.Dock="Top" Margin="{DynamicResource UiDensityViewSectionMargin}">
+                <TextBlock Text="{loc:Loc InventoryEditor_Title}" Classes="view-title" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
                     <Button Content="{loc:Loc InventoryEditor_Reset}" Command="{Binding ResetCommand}" Padding="12,6" />
                     <Button Content="{loc:Loc InventoryEditor_Apply}" Command="{Binding SaveCommand}" Classes="accent" Padding="12,6" />

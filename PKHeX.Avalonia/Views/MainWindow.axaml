@@ -1,11 +1,14 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+        xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
         xmlns:views="using:PKHeX.Avalonia.Views"
         xmlns:controls="using:PKHeX.Avalonia.Controls"
         xmlns:loc="using:PKHeX.Avalonia.Localization"
         x:Class="PKHeX.Avalonia.Views.MainWindow"
+        x:Name="MainShell"
         x:DataType="vm:MainWindowViewModel"
+        Background="{DynamicResource ThemeBackgroundDeepBrush}"
         Title="{Binding WindowTitle}"
         Icon="/Assets/Icons/icon.ico"
         Width="1024" Height="720"
@@ -17,6 +20,11 @@
         <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}" />
         <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveFileCommand}" />
         <KeyBinding Gesture="Ctrl+Shift+S" Command="{Binding SaveFileAsCommand}" />
+        <KeyBinding Gesture="Ctrl+K" Command="{Binding OpenToolLauncherCommand}" />
+        <KeyBinding Gesture="Escape" Command="{Binding CloseToolLauncherCommand}" />
+        <KeyBinding Gesture="Ctrl+1" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Pokemon}" />
+        <KeyBinding Gesture="Ctrl+2" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Save}" />
+        <KeyBinding Gesture="Ctrl+3" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Reports}" />
     </Window.KeyBindings>
 
     <DockPanel>
@@ -28,6 +36,34 @@
                 <MenuItem Header="{loc:Loc Menu_File_SaveAs}" Command="{Binding SaveFileAsCommand}" InputGesture="Ctrl+Shift+S" />
                 <Separator />
                 <MenuItem Header="{loc:Loc Menu_File_Close}" Command="{Binding CloseFileCommand}" />
+            </MenuItem>
+            <MenuItem Header="{loc:Loc Menu_Edit}">
+                <MenuItem Header="{loc:Loc Menu_Options_Undo}" Command="{Binding UndoCommand}" InputGesture="Ctrl+Z" />
+                <MenuItem Header="{loc:Loc Menu_Options_Redo}" Command="{Binding RedoCommand}" InputGesture="Ctrl+Y" />
+            </MenuItem>
+            <MenuItem Header="{loc:Loc Menu_Pokemon}">
+                <MenuItem Header="{loc:Loc Menu_Tools_Showdown}">
+                    <MenuItem Header="{loc:Loc Menu_Showdown_ImportSet}" Command="{Binding ImportShowdownCommand}" InputGesture="Ctrl+T" />
+                    <MenuItem Header="{loc:Loc Menu_Showdown_ExportSet}" Command="{Binding ExportShowdownCommand}" InputGesture="Ctrl+Shift+T" />
+                    <Separator />
+                    <MenuItem Header="{loc:Loc Menu_Showdown_ImportTeam}" Command="{Binding ImportShowdownTeamCommand}" />
+                </MenuItem>
+                <MenuItem Header="{loc:Loc Menu_Tools_AutoLegalityMod}" Command="{Binding OpenAutoLegalityModCommand}" />
+                <MenuItem Header="{loc:Loc Menu_Tools_QRCode}">
+                    <MenuItem Header="{loc:Loc Menu_QR_ShowCurrent}" Command="{Binding ShowQrCodeCommand}" />
+                    <MenuItem Header="{loc:Loc Menu_QR_ImportImage}" Command="{Binding ImportQrCodeCommand}" />
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="{loc:Loc Menu_Save}">
+                <MenuItem Header="{loc:Loc Tab_Trainer}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="2" />
+                <MenuItem Header="{loc:Loc Tab_Inventory}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="3" />
+                <MenuItem Header="{loc:Loc Menu_Tools_SaveEditors}">
+                    <MenuItem Header="{loc:Loc Menu_Save_Daycare}" Command="{Binding OpenDaycareCommand}" />
+                    <MenuItem Header="{loc:Loc Menu_Save_Records}" Command="{Binding OpenRecordsCommand}" />
+                    <MenuItem Header="{loc:Loc Menu_Save_HallOfFame}" Command="{Binding OpenHallOfFameCommand}" />
+                    <MenuItem Header="{loc:Loc Menu_Save_MailBox}" Command="{Binding OpenMailBoxCommand}" />
+                    <MenuItem Header="{loc:Loc Menu_Save_BoxLayout}" Command="{Binding OpenBoxLayoutCommand}" />
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="{loc:Loc Menu_Tools}">
                 <MenuItem Header="{loc:Loc Menu_Tools_SaveHandlerTroubleshooter}" Command="{Binding OpenSaveHandlerTroubleshooterCommand}" />
@@ -155,7 +191,17 @@
                     </MenuItem>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="{loc:Loc Menu_Options}">
+            <MenuItem Header="{loc:Loc Menu_Window}">
+                <MenuItem Header="{loc:Loc Workspace_Pokemon}" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Pokemon}" />
+                <MenuItem Header="{loc:Loc Workspace_Save}" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Save}" />
+                <MenuItem Header="{loc:Loc Workspace_Reports}" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Reports}" />
+                <Separator />
+                <MenuItem Header="{loc:Loc Tab_Box}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="0" />
+                <MenuItem Header="{loc:Loc Tab_Party}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="1" />
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenBoxWorkspace}" Command="{Binding OpenBoxWorkspaceCommand}" />
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenPartyWorkspace}" Command="{Binding OpenPartyWorkspaceCommand}" />
+            </MenuItem>
+            <MenuItem Header="{loc:Loc Menu_Help}">
                 <MenuItem Header="{loc:Loc Menu_Options_Language}">
                     <ComboBox x:CompileBindings="False"
                               ItemsSource="{Binding LanguageService.AvailableLanguages}"
@@ -163,20 +209,64 @@
                               Width="120"
                               AutomationProperties.Name="Language Selection"/>
                 </MenuItem>
-                <MenuItem Header="{loc:Loc Menu_Options_Undo}" Command="{Binding UndoCommand}" InputGesture="Ctrl+Z" />
-                <MenuItem Header="{loc:Loc Menu_Options_Redo}" Command="{Binding RedoCommand}" InputGesture="Ctrl+Y" />
-                <Separator />
                 <MenuItem Header="{loc:Loc Menu_Options_Settings}" Command="{Binding OpenSettingsCommand}" />
                 <MenuItem Header="{loc:Loc Menu_Options_About}" Command="{Binding OpenAboutCommand}" />
             </MenuItem>
         </Menu>
+
+        <!-- Persistent application context. Menus retain expert access; the header keeps the
+             current save, task launcher, and primary save action visible without consuming a
+             permanent editor rail. -->
+        <Border DockPanel.Dock="Top" Classes="app-header">
+            <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Classes="brand-mark">
+                        <Image Source="avares://PKHeX.Avalonia/Assets/Icons/icon.png"
+                               Width="32" Height="32" />
+                    </Border>
+                    <StackPanel Margin="12,0,0,0" Spacing="1" VerticalAlignment="Center">
+                        <TextBlock Text="{loc:Loc App_ProductName}" Classes="app-brand-name" />
+                        <TextBlock Text="{loc:Loc App_Subtitle}" Classes="app-brand-subtitle" />
+                    </StackPanel>
+                </StackPanel>
+
+                <Border Grid.Column="1" Classes="save-context" Margin="24,0,24,0">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Ellipse Width="8" Height="8"
+                                 Fill="{DynamicResource ThemeSuccessBrush}"
+                                 VerticalAlignment="Center"
+                                 IsVisible="{Binding HasSave}" />
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="1">
+                            <TextBlock Text="{Binding CurrentSaveFileName}"
+                                       IsVisible="{Binding CurrentSaveFileName, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                       Classes="save-context-name"
+                                       TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding StatusText}"
+                                       Classes="save-context-status"
+                                       TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <Button Classes="header-tool-button"
+                            Content="{loc:Loc Launcher_Title}"
+                            Command="{Binding OpenToolLauncherCommand}"
+                            AutomationProperties.Name="{loc:Loc Launcher_Title}" />
+                    <Button Classes="accent"
+                            Content="{loc:Loc Menu_File_Save}"
+                            Command="{Binding SaveFileCommand}"
+                            AutomationProperties.Name="{loc:Loc Menu_File_Save}" />
+                </StackPanel>
+            </Grid>
+        </Border>
 
         <!-- Status Bar - Themed -->
         <Border DockPanel.Dock="Bottom"
                 Background="{DynamicResource ThemeBackgroundCardBrush}"
                 BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                 BorderThickness="0,1,0,0"
-                Padding="8,4">
+                Padding="{DynamicResource UiDensityStatusBarPadding}">
             <Grid ColumnDefinitions="*,Auto">
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="7">
                     <TextBlock x:CompileBindings="False"
@@ -215,120 +305,364 @@
 
         <!-- Main Content -->
         <Grid Background="{DynamicResource ThemeBackgroundDeepBrush}">
-            <!-- No Save Loaded State - Hero Welcome -->
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
-                        IsVisible="{Binding !HasSave}">
-                <TextBlock Text="{loc:Loc Hero_Title}"
-                           FontSize="32"
-                           FontWeight="Light"
-                           Foreground="{DynamicResource ThemeTextPrimaryBrush}"
-                           HorizontalAlignment="Center" />
-                <TextBlock Text="{loc:Loc Hero_Subtitle}"
-                           Foreground="{DynamicResource ThemeTextMutedBrush}"
-                           HorizontalAlignment="Center"
-                           Margin="0,8,0,24" />
-                <Button Content="{loc:Loc Hero_OpenButton}"
-                        Command="{Binding OpenFileCommand}"
-                        HorizontalAlignment="Center"
-                        Classes="accent-gradient"
-                        Padding="24,12"
-                        FontSize="14" />
-            </StackPanel>
+            <!-- No Save Loaded State - branded welcome surface -->
+            <Border Classes="welcome-surface" IsVisible="{Binding !HasSave}">
+                <StackPanel Classes="welcome-stack" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Border Classes="welcome-icon" HorizontalAlignment="Center">
+                        <Image Source="avares://PKHeX.Avalonia/Assets/Icons/icon.png"
+                               Width="56" Height="56" />
+                    </Border>
+                    <TextBlock Text="{loc:Loc Hero_Title}"
+                               Classes="welcome-title"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc Hero_Subtitle}"
+                               Classes="welcome-subtitle"
+                               HorizontalAlignment="Center" />
+                    <Button Content="{loc:Loc Hero_OpenButton}"
+                            Command="{Binding OpenFileCommand}"
+                            HorizontalAlignment="Center"
+                            Classes="accent-gradient" />
+                </StackPanel>
+            </Border>
 
-            <!-- Save Loaded State: WinForms-style layout -->
-            <!-- Left: PKMEditor (persistent side panel) | Right: SAVEditor (tabs with Box/Party/Trainer/etc) -->
+            <!-- Save loaded state: task rail + task-aware content. The Pokémon editor column is
+                 present only for the Pokémon task; Save and Reports reclaim that width. -->
             <Grid IsVisible="{Binding HasSave}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="380" MinWidth="360" MaxWidth="480" />
-                    <ColumnDefinition Width="8" />
+                    <ColumnDefinition Width="176" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-            <!-- Left Panel: PKM Editor (responsive 420–520px) -->
-            <Border x:Name="EditorPane" Grid.Column="0"
-                    Background="{DynamicResource ThemeBackgroundBaseBrush}"
-                    BorderThickness="0,0,1,0"
-                    BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
-                    Focusable="False">
-                <ContentControl Content="{Binding CurrentPokemonEditor}" Focusable="False"
-                                HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                    <ContentControl.ContentTemplate>
-                        <DataTemplate DataType="vm:PokemonEditorViewModel">
-                            <views:PokemonEditor />
-                        </DataTemplate>
-                    </ContentControl.ContentTemplate>
-                </ContentControl>
-            </Border>
+                <Border Grid.Column="0" Classes="workspace-rail">
+                    <Grid RowDefinitions="Auto,*,Auto">
+                        <StackPanel Grid.Row="0" Spacing="4">
+                            <TextBlock Text="{loc:Loc Workspace_SectionLabel}" Classes="rail-eyebrow" />
+                            <TextBlock Text="{Binding StatusText}" Classes="rail-status" TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
 
-                <GridSplitter Grid.Column="1"
-                              Classes="pane-splitter shell-divider"
-                              AutomationProperties.Name="{loc:Loc MainWindow_ResizeEditor}" />
+                        <StackPanel Grid.Row="1" Margin="0,20,0,0" Spacing="6">
+                            <ToggleButton Classes="workspace-nav-item"
+                                          IsChecked="{Binding IsPokemonWorkspace, Mode=OneWay}"
+                                          Command="{Binding SelectWorkspaceCommand}"
+                                          CommandParameter="{x:Static vm:MainWorkspace.Pokemon}"
+                                          AutomationProperties.Name="{loc:Loc Workspace_Pokemon}">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Border Classes="workspace-nav-icon">
+                                        <PathIcon Data="M 8,1 A 7,7 0 1 0 8,15 A 7,7 0 1 0 8,1 M 1,8 H 15 M 5,8 A 3,3 0 1 0 11,8 A 3,3 0 1 0 5,8" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
+                                        <TextBlock Text="{loc:Loc Workspace_Pokemon}" Classes="workspace-nav-title" TextWrapping="Wrap" />
+                                        <TextBlock Text="{loc:Loc Workspace_Pokemon_Desc}" Classes="workspace-nav-description" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ToggleButton>
 
-                <!-- Right Panel: SAV Editor (Box, Party, Trainer, etc.) -->
-                <TabControl x:Name="WorkspacePane" Grid.Column="2" Margin="0" Classes="workspace-tabs">
-                    <TabItem Classes="workspace-tab">
-                        <TabItem.Header>
-                            <controls:DoubleTapCommandBorder Command="{Binding OpenBoxWorkspaceCommand}">
-                                <TextBlock Text="{loc:Loc Tab_Box}" />
-                            </controls:DoubleTapCommandBorder>
-                        </TabItem.Header>
-                        <views:BoxViewer DataContext="{Binding BoxViewer}" />
-                    </TabItem>
-                    <TabItem Classes="workspace-tab">
-                        <TabItem.Header>
-                            <controls:DoubleTapCommandBorder Command="{Binding OpenPartyWorkspaceCommand}">
-                                <TextBlock Text="{loc:Loc Tab_Party}" />
-                            </controls:DoubleTapCommandBorder>
-                        </TabItem.Header>
-                        <views:PartyViewer DataContext="{Binding PartyViewer}" />
-                    </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Trainer}" Classes="workspace-tab">
-                        <ContentControl Content="{Binding TrainerEditor}">
-                            <ContentControl.ContentTemplate>
-                                <DataTemplate DataType="vm:TrainerEditorViewModel">
-                                    <views:TrainerEditor />
-                                </DataTemplate>
-                            </ContentControl.ContentTemplate>
-                        </ContentControl>
-                    </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Inventory}" Classes="workspace-tab">
-                        <ContentControl Content="{Binding InventoryEditor}">
-                            <ContentControl.ContentTemplate>
-                                <DataTemplate DataType="vm:InventoryEditorViewModel">
-                                    <views:InventoryEditor />
-                                </DataTemplate>
-                            </ContentControl.ContentTemplate>
-                        </ContentControl>
-                    </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Events}" Classes="workspace-tab">
-                        <ContentControl Content="{Binding EventFlagsEditor}">
-                            <ContentControl.ContentTemplate>
-                                <DataTemplate DataType="vm:EventFlagsEditorViewModel">
-                                    <views:EventFlagsEditor />
-                                </DataTemplate>
-                            </ContentControl.ContentTemplate>
-                        </ContentControl>
-                    </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Gifts}" Classes="workspace-tab">
-                        <ContentControl Content="{Binding MysteryGiftEditor}">
-                            <ContentControl.ContentTemplate>
-                                <DataTemplate DataType="vm:MysteryGiftEditorViewModel">
-                                    <views:MysteryGiftEditor />
-                                </DataTemplate>
-                            </ContentControl.ContentTemplate>
-                        </ContentControl>
-                    </TabItem>
-                    <TabItem Header="{loc:Loc Tab_Batch}" Classes="workspace-tab">
-                        <ContentControl Content="{Binding BatchEditor}">
-                            <ContentControl.ContentTemplate>
-                                <DataTemplate DataType="vm:BatchEditorViewModel">
-                                    <views:BatchEditor />
-                                </DataTemplate>
-                            </ContentControl.ContentTemplate>
-                        </ContentControl>
-                    </TabItem>
-                </TabControl>
+                            <ToggleButton Classes="workspace-nav-item"
+                                          IsChecked="{Binding IsSaveWorkspace, Mode=OneWay}"
+                                          Command="{Binding SelectWorkspaceCommand}"
+                                          CommandParameter="{x:Static vm:MainWorkspace.Save}"
+                                          AutomationProperties.Name="{loc:Loc Workspace_Save}">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Border Classes="workspace-nav-icon">
+                                        <PathIcon Data="M 2,2 H 12 L 14,4 V 14 H 2 Z M 4,2 V 6 H 10 V 2 M 5,10 H 11 V 14 H 5 Z" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
+                                        <TextBlock Text="{loc:Loc Workspace_Save}" Classes="workspace-nav-title" TextWrapping="Wrap" />
+                                        <TextBlock Text="{loc:Loc Workspace_Save_Desc}" Classes="workspace-nav-description" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ToggleButton>
+
+                            <ToggleButton Classes="workspace-nav-item"
+                                          IsChecked="{Binding IsReportsWorkspace, Mode=OneWay}"
+                                          Command="{Binding SelectWorkspaceCommand}"
+                                          CommandParameter="{x:Static vm:MainWorkspace.Reports}"
+                                          AutomationProperties.Name="{loc:Loc Workspace_Reports}">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Border Classes="workspace-nav-icon">
+                                        <PathIcon Data="M 6,1 A 5,5 0 1 0 6,11 A 5,5 0 1 0 6,1 M 10,10 L 14,14" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
+                                        <TextBlock Text="{loc:Loc Workspace_Reports}" Classes="workspace-nav-title" TextWrapping="Wrap" />
+                                        <TextBlock Text="{loc:Loc Workspace_Reports_Desc}" Classes="workspace-nav-description" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ToggleButton>
+                        </StackPanel>
+
+                        <Border Grid.Row="2" Classes="rail-save-card">
+                            <StackPanel Spacing="3">
+                                <TextBlock Text="{Binding CurrentSaveFileName}"
+                                           Classes="rail-save-name"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding CurrentSavePath}"
+                                           Classes="rail-save-path"
+                                           TextTrimming="CharacterEllipsis"
+                                           ToolTip.Tip="{Binding CurrentSavePath}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Column="1" Margin="12">
+                    <!-- Pokémon and Save share the real existing workspace control. Auto columns
+                         collapse the editor and splitter when Save is the active task. -->
+                    <Grid IsVisible="{Binding !IsReportsWorkspace}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="0" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border x:Name="EditorPane" Grid.Column="0" Width="360" MinWidth="320" MaxWidth="440"
+                                Background="{DynamicResource ThemeBackgroundBaseBrush}"
+                                BorderThickness="0,0,1,0"
+                                BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
+                                Focusable="False"
+                                IsVisible="{Binding IsPokemonWorkspace}">
+                            <ContentControl Content="{Binding CurrentPokemonEditor}" Focusable="False"
+                                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                <ContentControl.ContentTemplate>
+                                    <DataTemplate DataType="vm:PokemonEditorViewModel">
+                                        <views:PokemonEditor />
+                                    </DataTemplate>
+                                </ContentControl.ContentTemplate>
+                            </ContentControl>
+                        </Border>
+
+                        <GridSplitter Grid.Column="1" Width="8"
+                                      Classes="pane-splitter shell-divider"
+                                      IsVisible="{Binding IsPokemonWorkspace}"
+                                      AutomationProperties.Name="{loc:Loc MainWindow_ResizeEditor}" />
+
+                        <TabControl x:Name="WorkspacePane" Grid.Column="2" Margin="0" Classes="workspace-tabs"
+                                    SelectedIndex="{Binding SelectedWorkspaceIndex, Mode=TwoWay}">
+                            <TabItem Classes="workspace-tab" IsVisible="{Binding IsPokemonWorkspace}">
+                                <TabItem.Header>
+                                    <controls:DoubleTapCommandBorder Command="{Binding OpenBoxWorkspaceCommand}">
+                                        <TextBlock Text="{loc:Loc Tab_Box}" />
+                                    </controls:DoubleTapCommandBorder>
+                                </TabItem.Header>
+                                <Grid RowDefinitions="*,Auto">
+                                    <views:BoxViewer Grid.Row="0" DataContext="{Binding BoxViewer}" />
+                                    <Border Grid.Row="1" Classes="party-strip">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <StackPanel Classes="party-strip-label" Spacing="2">
+                                                <TextBlock Text="{loc:Loc Tab_Party}" />
+                                                <TextBlock Text="{loc:Loc Workspace_PartySlots}" />
+                                            </StackPanel>
+                                            <ItemsControl Grid.Column="1"
+                                                          x:CompileBindings="False"
+                                                          ItemsSource="{Binding #MainShell.DataContext.PartyViewer.Slots}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <UniformGrid Columns="6" Rows="1" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="models:PartySlotData">
+                                                        <Border Classes="party-strip-slot">
+                                                            <Grid>
+                                                                <Border Classes="party-strip-empty" IsVisible="{Binding IsEmpty}" />
+                                                                <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}"
+                                                                       Stretch="Uniform"
+                                                                       IsVisible="{Binding !IsEmpty}"
+                                                                       Margin="4" />
+                                                                <TextBlock Text="{Binding Nickname}"
+                                                                           Classes="party-strip-name"
+                                                                           IsVisible="{Binding !IsEmpty}"
+                                                                           VerticalAlignment="Bottom"
+                                                                           HorizontalAlignment="Center"
+                                                                           TextTrimming="CharacterEllipsis" />
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </TabItem>
+                            <TabItem Classes="workspace-tab" IsVisible="{Binding IsPokemonWorkspace}">
+                                <TabItem.Header>
+                                    <controls:DoubleTapCommandBorder Command="{Binding OpenPartyWorkspaceCommand}">
+                                        <TextBlock Text="{loc:Loc Tab_Party}" />
+                                    </controls:DoubleTapCommandBorder>
+                                </TabItem.Header>
+                                <views:PartyViewer DataContext="{Binding PartyViewer}" />
+                            </TabItem>
+                            <TabItem Header="{loc:Loc Tab_Trainer}" Classes="workspace-tab" IsVisible="{Binding IsSaveWorkspace}">
+                                <ContentControl Content="{Binding TrainerEditor}">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate DataType="vm:TrainerEditorViewModel">
+                                            <views:TrainerEditor />
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                            </TabItem>
+                            <TabItem Header="{loc:Loc Tab_Inventory}" Classes="workspace-tab" IsVisible="{Binding IsSaveWorkspace}">
+                                <ContentControl Content="{Binding InventoryEditor}">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate DataType="vm:InventoryEditorViewModel">
+                                            <views:InventoryEditor />
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                            </TabItem>
+                            <TabItem Header="{loc:Loc Tab_Events}" Classes="workspace-tab" IsVisible="{Binding IsEventsWorkspace}">
+                                <ContentControl Content="{Binding EventFlagsEditor}">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate DataType="vm:EventFlagsEditorViewModel">
+                                            <views:EventFlagsEditor />
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                            </TabItem>
+                            <TabItem Header="{loc:Loc Tab_Gifts}" Classes="workspace-tab" IsVisible="{Binding IsGiftsWorkspace}">
+                                <ContentControl Content="{Binding MysteryGiftEditor}">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate DataType="vm:MysteryGiftEditorViewModel">
+                                            <views:MysteryGiftEditor />
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                            </TabItem>
+                            <TabItem Header="{loc:Loc Tab_Batch}" Classes="workspace-tab" IsVisible="{Binding IsSaveWorkspace}">
+                                <ContentControl Content="{Binding BatchEditor}">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate DataType="vm:BatchEditorViewModel">
+                                            <views:BatchEditor />
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
+
+                    <!-- Reports is intentionally a focused launcher surface in this first shell
+                         migration. Its cards route to the existing production tools; the unified
+                         capability registry will replace this temporary list in the next slice. -->
+                    <Border Classes="reports-surface" IsVisible="{Binding IsReportsWorkspace}">
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                            <StackPanel Classes="view-stack">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="{loc:Loc Workspace_Reports_Title}" Classes="view-title" />
+                                    <TextBlock Text="{loc:Loc Workspace_Reports_Description}" Classes="view-subtitle" TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                                    <Button Grid.Row="0" Grid.Column="0" Classes="report-tool-card" Command="{Binding OpenBoxReportCommand}"
+                                            AutomationProperties.Name="{loc:Loc Menu_Data_BoxReport}">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <Border Classes="report-tool-icon"><PathIcon Data="M 2,3 H 14 V 14 H 2 Z M 5,6 H 11 M 5,9 H 11 M 5,12 H 8" /></Border>
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
+                                                <TextBlock Text="{loc:Loc Menu_Data_BoxReport}" Classes="report-tool-title" />
+                                                <TextBlock Text="{loc:Loc Workspace_Reports_ToolHint}" Classes="report-tool-description" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+                                    <Button Grid.Row="0" Grid.Column="1" Classes="report-tool-card" Command="{Binding OpenLegalityAuditCommand}"
+                                            AutomationProperties.Name="{loc:Loc Menu_Data_LegalityAudit}">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <Border Classes="report-tool-icon"><PathIcon Data="M 8,1 L 14,3 V 8 C 14,12 11,15 8,17 C 5,15 2,12 2,8 V 3 Z M 5,8 L 7,10 L 11,6" /></Border>
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
+                                                <TextBlock Text="{loc:Loc Menu_Data_LegalityAudit}" Classes="report-tool-title" />
+                                                <TextBlock Text="{loc:Loc Workspace_Reports_ToolHint}" Classes="report-tool-description" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+                                    <Button Grid.Row="1" Grid.Column="0" Classes="report-tool-card" Command="{Binding OpenPKMDatabaseCommand}"
+                                            AutomationProperties.Name="{loc:Loc Menu_Data_PKMDatabase}">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <Border Classes="report-tool-icon"><PathIcon Data="M 2,4 C 2,2 14,2 14,4 V 14 C 14,16 2,16 2,14 Z M 2,4 C 2,6 14,6 14,4 M 2,9 C 2,11 14,11 14,9" /></Border>
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
+                                                <TextBlock Text="{loc:Loc Menu_Data_PKMDatabase}" Classes="report-tool-title" />
+                                                <TextBlock Text="{loc:Loc Workspace_Reports_ToolHint}" Classes="report-tool-description" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+                                    <Button Grid.Row="1" Grid.Column="1" Classes="report-tool-card" Command="{Binding OpenEncounterDatabaseCommand}"
+                                            AutomationProperties.Name="{loc:Loc Menu_Data_EncounterDatabase}">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <Border Classes="report-tool-icon"><PathIcon Data="M 3,3 H 13 V 13 H 3 Z M 6,6 H 10 M 6,9 H 10 M 6,12 H 8" /></Border>
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
+                                                <TextBlock Text="{loc:Loc Menu_Data_EncounterDatabase}" Classes="report-tool-title" />
+                                                <TextBlock Text="{loc:Loc Workspace_Reports_ToolHint}" Classes="report-tool-description" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+                                    <Button Grid.Row="2" Grid.Column="0" Classes="report-tool-card" Command="{Binding OpenBatchEditorCommand}"
+                                            AutomationProperties.Name="{loc:Loc Menu_Tools_BatchEditor}">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <Border Classes="report-tool-icon"><PathIcon Data="M 2,3 H 14 V 5 H 2 Z M 2,8 H 14 V 10 H 2 Z M 2,13 H 14 V 15 H 2 Z" /></Border>
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="3">
+                                                <TextBlock Text="{loc:Loc Menu_Tools_BatchEditor}" Classes="report-tool-title" />
+                                                <TextBlock Text="{loc:Loc Workspace_Reports_ToolHint}" Classes="report-tool-description" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
             </Grid>
+
+            <!-- Tool launcher overlay. This is deliberately a visual shell over the existing
+                 commands; capability-aware filtering and search index ownership follow next. -->
+            <Border Classes="launcher-overlay" IsVisible="{Binding IsToolLauncherOpen}">
+                <Border Classes="launcher-panel">
+                    <Grid RowDefinitions="Auto,Auto,*">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="3">
+                                <TextBlock Text="{loc:Loc Launcher_Title}" Classes="view-title" />
+                                <TextBlock Text="{loc:Loc Launcher_Hint}" Classes="view-subtitle" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Classes="icon-button" Content="×"
+                                    Command="{Binding CloseToolLauncherCommand}"
+                                    AutomationProperties.Name="{loc:Loc Launcher_Close}" />
+                        </Grid>
+                        <Border Grid.Row="1" Classes="launcher-search-box">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Path Data="M 6,1 A 5,5 0 1 0 6,11 A 5,5 0 1 0 6,1 M 10,10 L 14,14"
+                                      Stroke="{DynamicResource ThemeTextSecondaryBrush}"
+                                      StrokeThickness="1.5"
+                                      Width="16" Height="16"
+                                      VerticalAlignment="Center" />
+                                <TextBox Grid.Column="1"
+                                         Classes="launcher-search-input"
+                                         Text="{Binding ToolSearchText, Mode=TwoWay}"
+                                         Watermark="{loc:Loc Launcher_Hint}" />
+                            </Grid>
+                        </Border>
+                        <ItemsControl Grid.Row="2" Margin="0,10,0,0" ItemsSource="{Binding FilteredToolLauncherItems}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ToolLauncherItem">
+                                    <Button Classes="launcher-item"
+                                            Command="{Binding Command}"
+                                            Click="OnLauncherItemClick"
+                                            AutomationProperties.Name="{Binding Title}">
+                                        <Grid ColumnDefinitions="Auto,*">
+                                            <Border Classes="launcher-item-icon">
+                                                <TextBlock Text="{Binding Glyph}" />
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
+                                                <TextBlock Text="{Binding Title}" Classes="launcher-item-title" />
+                                                <TextBlock Text="{Binding Description}" Classes="launcher-item-description" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Border>
+            </Border>
         </Grid>
     </DockPanel>
 </Window>

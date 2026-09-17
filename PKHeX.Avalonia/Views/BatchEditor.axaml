@@ -5,11 +5,11 @@
              x:Class="PKHeX.Avalonia.Views.BatchEditor"
              x:DataType="vm:BatchEditorViewModel">
 
-    <Border Padding="16" Classes="view-container">
+    <Border Classes="view-container">
         <DockPanel>
             <!-- Header -->
-            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                <TextBlock Text="{loc:Loc BatchEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+            <DockPanel DockPanel.Dock="Top" Margin="{DynamicResource UiDensityViewSectionMargin}">
+                <TextBlock Text="{loc:Loc BatchEditor_Title}" Classes="view-title" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
                     <TextBlock Text="{loc:Loc BatchEditor_AffectedCountLabel}" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding AffectedCount}" VerticalAlignment="Center" MinWidth="24" />

@@ -23,6 +23,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly AppSettings _settings;
     private readonly ISettingsStore _settingsStore;
     private readonly IThemeService _themeService;
+    private readonly IUiDensityService _uiDensityService;
     private readonly UndoRedoService _undoRedo;
     private readonly LanguageService _languageService;
     private readonly IAutoLegalityService _autoLegalityService;
@@ -68,8 +69,12 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private PartyViewerViewModel? _partyViewer;
     [ObservableProperty] private TrainerEditorViewModel? _trainerEditor;
     [ObservableProperty] private InventoryEditorViewModel? _inventoryEditor;
-    [ObservableProperty] private EventFlagsEditorViewModel? _eventFlagsEditor;
-    [ObservableProperty] private MysteryGiftEditorViewModel? _mysteryGiftEditor;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsEventsWorkspace))]
+    private EventFlagsEditorViewModel? _eventFlagsEditor;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsGiftsWorkspace))]
+    private MysteryGiftEditorViewModel? _mysteryGiftEditor;
     [ObservableProperty] private BatchEditorViewModel? _batchEditor;
     [ObservableProperty] private PokemonEditorViewModel? _currentPokemonEditor;
     [ObservableProperty]
@@ -131,6 +136,7 @@ public partial class MainWindowViewModel : ViewModelBase
         AppSettings settings,
         ISettingsStore settingsStore,
         IThemeService themeService,
+        IUiDensityService uiDensityService,
         UndoRedoService undoRedo,
         LanguageService languageService,
         IAutoLegalityService autoLegalityService,
@@ -151,6 +157,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _settings = settings;
         _settingsStore = settingsStore;
         _themeService = themeService;
+        _uiDensityService = uiDensityService;
         _undoRedo = undoRedo;
         _languageService = languageService;
         _autoLegalityService = autoLegalityService;
@@ -189,12 +196,14 @@ public partial class MainWindowViewModel : ViewModelBase
         // Bring the UI-chrome string table to the language the LanguageService was initialized with
         // (from persisted settings at startup) before the window renders.
         LocalizedStrings.Instance.SetLanguage(_languageService.CurrentLanguage);
+        InitializeToolLauncherItems();
     }
 
     private void OnLanguageChanged()
     {
         // Swap the shell's UI-chrome strings, then persist the choice so it survives a restart.
         LocalizedStrings.Instance.SetLanguage(_languageService.CurrentLanguage);
+        RefreshToolLauncherLocalization();
         if (!string.Equals(_settings.DisplayLanguage, _languageService.CurrentLanguage, StringComparison.Ordinal))
         {
             _settings.DisplayLanguage = _languageService.CurrentLanguage;
@@ -218,6 +227,10 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void OnSaveFileChanged(SaveFile? sav)
     {
+        ActiveWorkspace = MainWorkspace.Pokemon;
+        SelectedWorkspaceIndex = 0;
+        IsToolLauncherOpen = false;
+
         // Dismiss any modeless tool windows (e.g. the box seek tool) bound to the previous save.
         _windowService.CloseAllTools();
         _slotService.ResetSession();

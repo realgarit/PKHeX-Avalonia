@@ -36,6 +36,8 @@ public partial class App : global::Avalonia.Application
 
         // Apply the persisted theme preference before any window is created.
         Services.GetRequiredService<ThemeService>().Initialize();
+        // Apply the persisted spacing/control-size vocabulary before any window is created.
+        Services.GetRequiredService<UiDensityService>().Initialize();
 
         // Apply the persisted UI/data language before any window is created so both the game-data
         // strings (GameInfo) and the shell's UI-chrome strings (LocalizedStrings, synced by the main
@@ -125,6 +127,8 @@ public partial class App : global::Avalonia.Application
         services.AddSingleton<IAppLifetime, AppLifetimeService>();
         services.AddSingleton<ThemeService>();
         services.AddSingleton<IThemeService>(sp => sp.GetRequiredService<ThemeService>());
+        services.AddSingleton<UiDensityService>();
+        services.AddSingleton<IUiDensityService>(sp => sp.GetRequiredService<UiDensityService>());
 
         // Update-check flow shared by the silent startup check and the manual "Check for Updates"
         // buttons (Settings/About). Singleton so the status-bar notification it raises persists for

@@ -22,17 +22,52 @@
                 Application.Resources (not a Style's resources) to reliably take precedence over
                 FluentTheme's own SystemAccentColor* resources.
             -->
-            <Color x:Key="SystemAccentColor">#E3350D</Color>
-            <Color x:Key="SystemAccentColorDark1">#CC0000</Color>
-            <Color x:Key="SystemAccentColorDark2">#990000</Color>
-            <Color x:Key="SystemAccentColorDark3">#660000</Color>
-            <Color x:Key="SystemAccentColorLight1">#FF5533</Color>
-            <Color x:Key="SystemAccentColorLight2">#FF7755</Color>
-            <Color x:Key="SystemAccentColorLight3">#FF9977</Color>
+            <Color x:Key="SystemAccentColor">#EF7658</Color>
+            <Color x:Key="SystemAccentColorDark1">#D45A40</Color>
+            <Color x:Key="SystemAccentColorDark2">#A84432</Color>
+            <Color x:Key="SystemAccentColorDark3">#7A3026</Color>
+            <Color x:Key="SystemAccentColorLight1">#F59B7D</Color>
+            <Color x:Key="SystemAccentColorLight2">#F8B49A</Color>
+            <Color x:Key="SystemAccentColorLight3">#FBD0C0</Color>
 
             <!-- Override Focus Visuals to remove yellow/accent border -->
             <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="Transparent" />
             <SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="Transparent" />
+
+            <!--
+                Semantic density tokens. Compact is the compatibility default and is re-applied by
+                UiDensityService at startup. The service replaces these values at runtime when the
+                user selects Comfortable, while DynamicResource consumers update without rebuilding
+                their views.
+            -->
+            <Thickness x:Key="UiDensityCardPadding">4</Thickness>
+            <CornerRadius x:Key="UiDensityCardRadius">6</CornerRadius>
+            <Thickness x:Key="UiDensityPrimaryButtonPadding">16,8</Thickness>
+            <Thickness x:Key="UiDensityBadgePadding">6,3</Thickness>
+            <CornerRadius x:Key="UiDensityBadgeRadius">12</CornerRadius>
+            <Thickness x:Key="UiDensityHeaderPadding">12,8</Thickness>
+            <Thickness x:Key="UiDensitySectionPadding">6</Thickness>
+            <CornerRadius x:Key="UiDensitySectionRadius">6</CornerRadius>
+            <Thickness x:Key="UiDensityViewPadding">8</Thickness>
+            <Thickness x:Key="UiDensityStatusBarPadding">8,4</Thickness>
+            <x:Double x:Key="UiDensityControlHeight">32</x:Double>
+            <Thickness x:Key="UiDensityFormFieldPadding">6,3</Thickness>
+            <x:Double x:Key="UiDensityInlineControlHeight">24</x:Double>
+            <x:Double x:Key="UiDensityInlineControlMinWidth">50</x:Double>
+            <x:Double x:Key="UiDensityDataGridRowHeight">36</x:Double>
+            <Thickness x:Key="UiDensityDataGridCellPadding">6,3</Thickness>
+            <Thickness x:Key="UiDensityDataGridEditPadding">4,2</Thickness>
+            <x:Double x:Key="UiDensityDataGridEditHeight">28</x:Double>
+            <Thickness x:Key="UiDensityCompactCheckBoxPadding">4,2</Thickness>
+            <x:Double x:Key="UiDensityCompactCheckBoxHeight">24</x:Double>
+            <Thickness x:Key="UiDensityEditorTabPadding">2,5</Thickness>
+            <Thickness x:Key="UiDensityEditorTabMargin">0,0,1,0</Thickness>
+            <Thickness x:Key="UiDensityWorkspaceTabPadding">12,8</Thickness>
+            <Thickness x:Key="UiDensityFilterableComboBoxPadding">10,6,6,5</Thickness>
+            <x:Double x:Key="UiDensityViewStackSpacing">12</x:Double>
+            <Thickness x:Key="UiDensityViewSectionMargin">0,0,0,12</Thickness>
+            <Thickness x:Key="UiDensityViewFooterMargin">0,12,0,0</Thickness>
+            <Thickness x:Key="UiDensitySectionHeaderMargin">0,0,0,8</Thickness>
             
             <converters:ObjectNullConverter x:Key="ObjectNullConverter" />
             <converters:ObjectTrueConverter x:Key="ObjectTrueConverter" />
