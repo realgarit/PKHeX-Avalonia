@@ -7,8 +7,8 @@
          PKHeX Theme Tokens
          Semantic design tokens exposed as ThemeDictionaries so the whole app can
          switch appearance at runtime (Settings > Appearance) without a restart:
-           - Dark          : neutral dark Fluent palette (default)
-           - Light         : neutral light Fluent palette
+           - Dark          : charcoal surface with a restrained rose action accent (default)
+           - Light         : soft neutral surface with a restrained rose action accent
            - HighContrast  : retained internally for legacy accessibility settings, not exposed in
                              the product picker
          Every consumer below (and in Views) must use DynamicResource, not
@@ -23,46 +23,46 @@
                     <!-- ═══════════════════════ Dark (default) ═══════════════════════ -->
                     <ResourceDictionary x:Key="Dark">
                         <!-- Base Colors -->
-                        <Color x:Key="ThemeBackgroundDeep">#101010</Color>
-                        <Color x:Key="ThemeBackgroundBase">#171717</Color>
-                        <Color x:Key="ThemeBackgroundCard">#202020</Color>
-                        <Color x:Key="ThemeBackgroundElevated">#2A2A2A</Color>
-                        <Color x:Key="ThemeBackgroundHover">#353535</Color>
+                        <Color x:Key="ThemeBackgroundDeep">#191B22</Color>
+                        <Color x:Key="ThemeBackgroundBase">#191B22</Color>
+                        <Color x:Key="ThemeBackgroundCard">#22252E</Color>
+                        <Color x:Key="ThemeBackgroundElevated">#292D37</Color>
+                        <Color x:Key="ThemeBackgroundHover">#343743</Color>
 
                         <!-- Border Colors -->
-                        <Color x:Key="ThemeBorderDefault">#3D3D3D</Color>
-                        <Color x:Key="ThemeBorderMuted">#2C2C2C</Color>
+                        <Color x:Key="ThemeBorderDefault">#4D5160</Color>
+                        <Color x:Key="ThemeBorderMuted">#343743</Color>
 
                         <!-- Native control surfaces: quiet enough for long editing sessions, with
                              a slightly brighter interaction layer so focus and selection remain
                              legible without turning every field into an accent block. -->
-                        <Color x:Key="ThemeControlBackground">#1C1C1C</Color>
-                        <Color x:Key="ThemeControlBackgroundHover">#262626</Color>
-                        <Color x:Key="ThemeControlBackgroundPressed">#313131</Color>
-                        <Color x:Key="ThemeControlBorder">#4A4A4A</Color>
-                        <Color x:Key="ThemeControlBorderHover">#666666</Color>
-                        <Color x:Key="ThemeControlBorderFocus">#D7D7D7</Color>
-                        <Color x:Key="ThemeControlFocusGlow">#D7D7D720</Color>
-                        <Color x:Key="ThemeControlPopup">#1D1D1D</Color>
-                        <Color x:Key="ThemeControlPopupHover">#2B2B2B</Color>
-                        <Color x:Key="ThemeControlPopupSelected">#454545</Color>
-                        <Color x:Key="ThemeControlDisabled">#242424</Color>
-                        <Color x:Key="ThemeControlDisabledText">#777777</Color>
+                        <Color x:Key="ThemeControlBackground">#292D37</Color>
+                        <Color x:Key="ThemeControlBackgroundHover">#343743</Color>
+                        <Color x:Key="ThemeControlBackgroundPressed">#3B3E4A</Color>
+                        <Color x:Key="ThemeControlBorder">#4D5160</Color>
+                        <Color x:Key="ThemeControlBorderHover">#7E8394</Color>
+                        <Color x:Key="ThemeControlBorderFocus">#F1A1A9</Color>
+                        <Color x:Key="ThemeControlFocusGlow">#F1A1A933</Color>
+                        <Color x:Key="ThemeControlPopup">#22252E</Color>
+                        <Color x:Key="ThemeControlPopupHover">#343743</Color>
+                        <Color x:Key="ThemeControlPopupSelected">#403039</Color>
+                        <Color x:Key="ThemeControlDisabled">#242833</Color>
+                        <Color x:Key="ThemeControlDisabledText">#A0A5B4</Color>
 
                         <!-- Text Colors (AA on ThemeBackgroundBase: Primary ~13:1, Secondary ~5.7:1) -->
-                        <Color x:Key="ThemeTextPrimary">#F4F4F4</Color>
-                        <Color x:Key="ThemeTextSecondary">#B8B8B8</Color>
-                        <Color x:Key="ThemeTextMuted">#858585</Color>
+                        <Color x:Key="ThemeTextPrimary">#E2E4EB</Color>
+                        <Color x:Key="ThemeTextSecondary">#C5C7D0</Color>
+                        <Color x:Key="ThemeTextMuted">#A0A5B4</Color>
 
                         <!-- Semantic Colors -->
-                        <Color x:Key="ThemeSuccessColor">#3FB950</Color>
-                        <Color x:Key="ThemeSuccessGlow">#3FB95040</Color>
-                        <Color x:Key="ThemeErrorColor">#F85149</Color>
-                        <Color x:Key="ThemeErrorGlow">#F8514940</Color>
-                        <Color x:Key="ThemeWarningColor">#D29922</Color>
-                        <Color x:Key="ThemeWarningGlow">#D2992240</Color>
-                        <Color x:Key="ThemeShinyColor">#E3350D</Color>
-                        <Color x:Key="ThemeShinyGoldColor">#FFD700</Color>
+                        <Color x:Key="ThemeSuccessColor">#8EC4A7</Color>
+                        <Color x:Key="ThemeSuccessGlow">#8EC4A740</Color>
+                        <Color x:Key="ThemeErrorColor">#FF8D87</Color>
+                        <Color x:Key="ThemeErrorGlow">#FF8D8740</Color>
+                        <Color x:Key="ThemeWarningColor">#F4C969</Color>
+                        <Color x:Key="ThemeWarningGlow">#F4C96940</Color>
+                        <Color x:Key="ThemeShinyColor">#FF8A65</Color>
+                        <Color x:Key="ThemeShinyGoldColor">#F4D35E</Color>
 
                         <!-- Full-screen scrim used behind loading/searching overlays -->
                         <Color x:Key="ThemeOverlayScrim">#80000000</Color>
@@ -107,54 +107,67 @@
                         <SolidColorBrush x:Key="ThemeOverlayScrimBrush" Color="{StaticResource ThemeOverlayScrim}" />
                         <SolidColorBrush x:Key="ThemeOverlayForegroundBrush" Color="{StaticResource ThemeOverlayForeground}" />
 
+                        <!-- Compact PKHeX semantic palette. Action background and foreground are
+                             intentionally separate from accent text/focus so each use can meet its
+                             own contrast requirement. -->
+                        <SolidColorBrush x:Key="CompactAccentBrush" Color="#B05763" />
+                        <SolidColorBrush x:Key="CompactAccentHoverBrush" Color="#B45B68" />
+                        <SolidColorBrush x:Key="CompactAccentPressedBrush" Color="#9E4E5B" />
+                        <SolidColorBrush x:Key="CompactOnAccentBrush" Color="#FFFFFF" />
+                        <SolidColorBrush x:Key="CompactAccentTextBrush" Color="#D98B95" />
+                        <SolidColorBrush x:Key="CompactSelectionBrush" Color="#403039" />
+                        <SolidColorBrush x:Key="CompactSelectionBorderBrush" Color="#C4717B" />
+                        <SolidColorBrush x:Key="CompactFocusBrush" Color="#F1A1A9" />
+                        <SolidColorBrush x:Key="CompactIconBrush" Color="#D98B95" />
+
                         <!-- Box Shadow Effects -->
                         <BoxShadows x:Key="ThemeShadowSmall">0 1 3 0 #00000040</BoxShadows>
                         <BoxShadows x:Key="ThemeShadowMedium">0 4 12 0 #00000050</BoxShadows>
                         <BoxShadows x:Key="ThemeShadowLarge">0 8 24 0 #00000060</BoxShadows>
-                        <BoxShadows x:Key="ThemeGlowSuccess">0 0 16 0 #3FB95040</BoxShadows>
-                        <BoxShadows x:Key="ThemeGlowError">0 0 16 0 #F8514940</BoxShadows>
+                        <BoxShadows x:Key="ThemeGlowSuccess">0 0 16 0 #8EC4A740</BoxShadows>
+                        <BoxShadows x:Key="ThemeGlowError">0 0 16 0 #FF8D8740</BoxShadows>
                     </ResourceDictionary>
 
                     <!-- ═══════════════════════════ Light ═══════════════════════════ -->
                     <ResourceDictionary x:Key="Light">
                         <!-- Base Colors -->
-                        <Color x:Key="ThemeBackgroundDeep">#F0F0F0</Color>
-                        <Color x:Key="ThemeBackgroundBase">#F8F8F8</Color>
+                        <Color x:Key="ThemeBackgroundDeep">#F7F7F9</Color>
+                        <Color x:Key="ThemeBackgroundBase">#F7F7F9</Color>
                         <Color x:Key="ThemeBackgroundCard">#FFFFFF</Color>
-                        <Color x:Key="ThemeBackgroundElevated">#E9E9E9</Color>
-                        <Color x:Key="ThemeBackgroundHover">#DEDEDE</Color>
+                        <Color x:Key="ThemeBackgroundElevated">#FBFBFC</Color>
+                        <Color x:Key="ThemeBackgroundHover">#E4E5E9</Color>
 
                         <!-- Border Colors -->
-                        <Color x:Key="ThemeBorderDefault">#C7C7C7</Color>
-                        <Color x:Key="ThemeBorderMuted">#E1E1E1</Color>
+                        <Color x:Key="ThemeBorderDefault">#BFC1C8</Color>
+                        <Color x:Key="ThemeBorderMuted">#E4E5E9</Color>
 
                         <!-- Native control surfaces -->
-                        <Color x:Key="ThemeControlBackground">#FFFFFF</Color>
-                        <Color x:Key="ThemeControlBackgroundHover">#F2F2F2</Color>
-                        <Color x:Key="ThemeControlBackgroundPressed">#E7E7E7</Color>
-                        <Color x:Key="ThemeControlBorder">#A9A9A9</Color>
-                        <Color x:Key="ThemeControlBorderHover">#777777</Color>
-                        <Color x:Key="ThemeControlBorderFocus">#4B4B4B</Color>
-                        <Color x:Key="ThemeControlFocusGlow">#4B4B4B22</Color>
+                        <Color x:Key="ThemeControlBackground">#FBFBFC</Color>
+                        <Color x:Key="ThemeControlBackgroundHover">#F1F1F4</Color>
+                        <Color x:Key="ThemeControlBackgroundPressed">#E4E5E9</Color>
+                        <Color x:Key="ThemeControlBorder">#BFC1C8</Color>
+                        <Color x:Key="ThemeControlBorderHover">#83868F</Color>
+                        <Color x:Key="ThemeControlBorderFocus">#913F4A</Color>
+                        <Color x:Key="ThemeControlFocusGlow">#913F4A22</Color>
                         <Color x:Key="ThemeControlPopup">#FFFFFF</Color>
-                        <Color x:Key="ThemeControlPopupHover">#F2F2F2</Color>
-                        <Color x:Key="ThemeControlPopupSelected">#DCDCDC</Color>
-                        <Color x:Key="ThemeControlDisabled">#EEEEEE</Color>
-                        <Color x:Key="ThemeControlDisabledText">#808080</Color>
+                        <Color x:Key="ThemeControlPopupHover">#F1F1F4</Color>
+                        <Color x:Key="ThemeControlPopupSelected">#F5E8EA</Color>
+                        <Color x:Key="ThemeControlDisabled">#F0F0F2</Color>
+                        <Color x:Key="ThemeControlDisabledText">#70747D</Color>
 
                         <!-- Text Colors (AA on ThemeBackgroundBase/Card: Primary ~16:1, Secondary ~9:1, Muted ~4.6:1) -->
-                        <Color x:Key="ThemeTextPrimary">#202020</Color>
-                        <Color x:Key="ThemeTextSecondary">#535353</Color>
-                        <Color x:Key="ThemeTextMuted">#707070</Color>
+                        <Color x:Key="ThemeTextPrimary">#30333C</Color>
+                        <Color x:Key="ThemeTextSecondary">#4E515B</Color>
+                        <Color x:Key="ThemeTextMuted">#626675</Color>
 
                         <!-- Semantic Colors - darkened from the Dark palette so they clear 4.5:1 on white -->
-                        <Color x:Key="ThemeSuccessColor">#1A7F37</Color>
-                        <Color x:Key="ThemeSuccessGlow">#1A7F3733</Color>
-                        <Color x:Key="ThemeErrorColor">#CF222E</Color>
-                        <Color x:Key="ThemeErrorGlow">#CF222E33</Color>
-                        <Color x:Key="ThemeWarningColor">#9A6700</Color>
-                        <Color x:Key="ThemeWarningGlow">#9A670033</Color>
-                        <Color x:Key="ThemeShinyColor">#E3350D</Color>
+                        <Color x:Key="ThemeSuccessColor">#4B7761</Color>
+                        <Color x:Key="ThemeSuccessGlow">#4B776133</Color>
+                        <Color x:Key="ThemeErrorColor">#B4232E</Color>
+                        <Color x:Key="ThemeErrorGlow">#B4232E33</Color>
+                        <Color x:Key="ThemeWarningColor">#8A5A00</Color>
+                        <Color x:Key="ThemeWarningGlow">#8A5A0033</Color>
+                        <Color x:Key="ThemeShinyColor">#C63D16</Color>
                         <Color x:Key="ThemeShinyGoldColor">#7A5D00</Color>
 
                         <Color x:Key="ThemeOverlayScrim">#80000000</Color>
@@ -199,12 +212,24 @@
                         <SolidColorBrush x:Key="ThemeOverlayScrimBrush" Color="{StaticResource ThemeOverlayScrim}" />
                         <SolidColorBrush x:Key="ThemeOverlayForegroundBrush" Color="{StaticResource ThemeOverlayForeground}" />
 
+                        <!-- Compact PKHeX semantic palette. Light action text uses a dark rose
+                             foreground on surfaces while the action background carries white text. -->
+                        <SolidColorBrush x:Key="CompactAccentBrush" Color="#AD4D53" />
+                        <SolidColorBrush x:Key="CompactAccentHoverBrush" Color="#B05763" />
+                        <SolidColorBrush x:Key="CompactAccentPressedBrush" Color="#913F4A" />
+                        <SolidColorBrush x:Key="CompactOnAccentBrush" Color="#FFFFFF" />
+                        <SolidColorBrush x:Key="CompactAccentTextBrush" Color="#913F4A" />
+                        <SolidColorBrush x:Key="CompactSelectionBrush" Color="#F5E8EA" />
+                        <SolidColorBrush x:Key="CompactSelectionBorderBrush" Color="#B66A73" />
+                        <SolidColorBrush x:Key="CompactFocusBrush" Color="#913F4A" />
+                        <SolidColorBrush x:Key="CompactIconBrush" Color="#913F4A" />
+
                         <!-- Box Shadow Effects - lighter, since shadows read differently on light surfaces -->
                         <BoxShadows x:Key="ThemeShadowSmall">0 1 3 0 #00000020</BoxShadows>
                         <BoxShadows x:Key="ThemeShadowMedium">0 4 12 0 #00000025</BoxShadows>
                         <BoxShadows x:Key="ThemeShadowLarge">0 8 24 0 #00000030</BoxShadows>
-                        <BoxShadows x:Key="ThemeGlowSuccess">0 0 16 0 #1A7F3730</BoxShadows>
-                        <BoxShadows x:Key="ThemeGlowError">0 0 16 0 #CF222E30</BoxShadows>
+                        <BoxShadows x:Key="ThemeGlowSuccess">0 0 16 0 #4B776130</BoxShadows>
+                        <BoxShadows x:Key="ThemeGlowError">0 0 16 0 #B4232E30</BoxShadows>
                     </ResourceDictionary>
 
                     <!-- ═══════════════════════ HighContrast ═══════════════════════ -->
@@ -304,6 +329,152 @@
         </Style.Resources>
     </Style>
 
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         COMPACT UI COMPONENT CONTRACT
+         These classes are opt-in so the compact redesign can compose native controls without
+         changing every legacy button, tab or slot in the application at once. Each state uses a
+         DynamicResource so an already-open window follows a live theme change.
+         ═══════════════════════════════════════════════════════════════════════════ -->
+
+    <Style Selector="Button.compact-primary">
+        <Setter Property="Background" Value="{DynamicResource CompactAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactOnAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityPrimaryButtonPadding}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="Button.compact-primary:pointerover">
+        <Setter Property="Background" Value="{DynamicResource CompactAccentHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentHoverBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactOnAccentBrush}" />
+    </Style>
+
+    <Style Selector="Button.compact-primary:pressed">
+        <Setter Property="Background" Value="{DynamicResource CompactAccentPressedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentPressedBrush}" />
+    </Style>
+
+    <Style Selector="Button.compact-primary:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="Button.compact-secondary">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityFormFieldPadding}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="Button.compact-secondary:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderHoverBrush}" />
+    </Style>
+
+    <Style Selector="Button.compact-secondary:pressed">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundPressedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
+    </Style>
+
+    <Style Selector="Button.compact-secondary:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="TabControl.compact-editor-tabs">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style Selector="TabControl.compact-editor-tabs TabItem, TabItem.compact-editor-tabs">
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="Padding" Value="{DynamicResource UiDensityEditorTabPadding}" />
+        <Setter Property="Margin" Value="{DynamicResource UiDensityEditorTabMargin}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TabControl.compact-editor-tabs TabItem:pointerover, TabItem.compact-editor-tabs:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="TabControl.compact-editor-tabs TabItem:selected, TabItem.compact-editor-tabs:selected">
+        <Setter Property="Foreground" Value="{DynamicResource CompactAccentTextBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="TabControl.compact-editor-tabs TabItem:selected /template/ Border#PART_SelectedPipe, TabItem.compact-editor-tabs:selected /template/ Border#PART_SelectedPipe">
+        <Setter Property="IsVisible" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource CompactSelectionBorderBrush}" />
+        <Setter Property="Height" Value="2" />
+    </Style>
+
+    <Style Selector="TabControl.compact-editor-tabs TabItem:focus-visible, TabItem.compact-editor-tabs:focus-visible">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlFocusGlowBrush}" />
+    </Style>
+
+    <Style Selector="Button.compact-slot">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <Style Selector="Button.compact-slot:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactSelectionBorderBrush}" />
+    </Style>
+
+    <Style Selector="Button.compact-slot.selected">
+        <Setter Property="Background" Value="{DynamicResource CompactSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactSelectionBorderBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="Button.compact-slot:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="Window.compact-settings">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBaseBrush}" />
+    </Style>
+
+    <Style Selector="Border.compact-settings">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBaseBrush}" />
+    </Style>
+
+    <Style Selector="Border.compact-party-strip">
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="{DynamicResource CompactPanePadding}" />
+        <Setter Property="MinHeight" Value="{DynamicResource CompactPartyStripHeight}" />
+    </Style>
+
     <!-- ─────────────────────────────────────────────────────────────────────────
          Card Style - Elevated container with subtle depth
          ───────────────────────────────────────────────────────────────────────── -->
@@ -333,7 +504,7 @@
     </Style>
 
     <Style Selector="Button:focus-visible">
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderThickness" Value="2" />
     </Style>
 
@@ -393,27 +564,27 @@
 
     <Style Selector="Button.slot:pointerover">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <!-- Selected State - use the neutral appearance accent -->
     <Style Selector="Button.slot.selected">
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentSubtleBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource CompactSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactSelectionBorderBrush}" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="ZIndex" Value="10" />
     </Style>
 
     <!-- Focus State - use the neutral appearance accent and keep focus quiet -->
     <Style Selector="Button.slot:focus">
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="ZIndex" Value="10" />
     </Style>
 
     <!-- Deep Focus Override -->
     <Style Selector="Button.slot:focus /template/ Border#PART_Border">
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
     </Style>
 
     <Style Selector="TextBlock.slot-number">
@@ -436,8 +607,8 @@
          Accent Button - Primary action button with gradient
          ───────────────────────────────────────────────────────────────────────── -->
     <Style Selector="Button.accent-gradient">
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentPressedBrush}" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{DynamicResource CompactAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactOnAccentBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="{DynamicResource UiDensityCardRadius}" />
         <Setter Property="Padding" Value="{DynamicResource UiDensityPrimaryButtonPadding}" />
@@ -558,7 +729,7 @@
 
     <Style Selector="TabControl.pouch-tabs TabItem:selected">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontWeight" Value="SemiBold" />
@@ -566,7 +737,7 @@
 
     <Style Selector="TabControl.pouch-tabs TabItem:selected /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="Height" Value="2" />
         <Setter Property="Margin" Value="0" />
     </Style>
@@ -621,13 +792,13 @@
 
     <Style Selector="DataGrid.save-grid DataGridRow:selected /template/ Border#RowBorder">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
     <Style Selector="DataGrid.save-grid DataGridRow:selected:pointerover /template/ Border#RowBorder">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <Style Selector="DataGrid.save-grid DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
@@ -731,7 +902,7 @@
 
     <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="4" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
@@ -739,7 +910,7 @@
 
     <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <Style Selector="ListBox.list-surface">
@@ -789,7 +960,7 @@
 
     <Style Selector="Border.pokedex-species-list ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="4" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
@@ -797,7 +968,7 @@
 
     <Style Selector="Border.pokedex-species-list ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <Style Selector="DataGrid.database-grid">
@@ -860,8 +1031,8 @@
          Accent Button - Styled primary action button
          ───────────────────────────────────────────────────────────────────────── -->
     <Style Selector="Button.accent">
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentPressedBrush}" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{DynamicResource CompactAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactOnAccentBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="{DynamicResource UiDensityCardRadius}" />
         <Setter Property="Padding" Value="{DynamicResource UiDensityPrimaryButtonPadding}" />
@@ -869,7 +1040,7 @@
     </Style>
 
     <Style Selector="Button.accent:pointerover">
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="Opacity" Value="1" />
     </Style>
 
@@ -885,7 +1056,7 @@
     </Style>
 
     <Style Selector="TabItem:selected">
-        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <!-- Pokémon editor section strip: compact, horizontal tabs with one quiet selected rule. -->
@@ -910,7 +1081,7 @@
 
     <Style Selector="TabControl.editor-tabs TabItem:selected">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontWeight" Value="SemiBold" />
@@ -922,14 +1093,14 @@
 
     <Style Selector="TabControl.editor-tabs TabItem:selected /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="Height" Value="2" />
         <Setter Property="Margin" Value="0,0,0,0" />
     </Style>
 
     <Style Selector="TabControl.editor-tabs TabItem:focus-visible /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <Style Selector="TabControl.editor-tabs /template/ ItemsPresenter#PART_ItemsPresenter">
@@ -973,7 +1144,7 @@
     </Style>
 
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:selected">
-        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="Transparent" />
@@ -986,14 +1157,14 @@
 
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:selected /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="Height" Value="2" />
         <Setter Property="Margin" Value="0,0,0,0" />
     </Style>
 
     <Style Selector="TabControl.workspace-tabs TabItem.workspace-tab:focus-visible /template/ Border#PART_SelectedPipe">
         <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <Style Selector="TabControl.workspace-tabs /template/ ItemsPresenter#PART_ItemsPresenter">
@@ -1054,7 +1225,7 @@
     </Style>
 
     <Style Selector="ComboBox:pointerover">
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════════════════════════
@@ -1076,7 +1247,7 @@
     </Style>
 
     <Style Selector="NumericUpDown:pointerover">
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <!-- Compact: Hides spinners, ideal for DataGrid cells and inline editing -->
@@ -1186,7 +1357,7 @@
     </Style>
 
     <Style Selector="Border.ribbon-item:pointerover">
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -1201,7 +1372,7 @@
     </Style>
 
     <Style Selector="TextBox:focus">
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────────────
@@ -1253,7 +1424,7 @@
     </Style>
 
     <Style Selector="GridSplitter.pane-splitter:pointerover /template/ Border > Border">
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════════════════════════
@@ -1286,7 +1457,7 @@
         <Setter Property="Height" Value="44" />
         <Setter Property="Padding" Value="5" />
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="12" />
     </Style>
@@ -1333,7 +1504,7 @@
 
     <Style Selector="Button.header-tool-button:pointerover">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <Style Selector="Button PathIcon">
@@ -1343,7 +1514,7 @@
     </Style>
 
     <Style Selector="Button:pointerover PathIcon">
-        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <Style Selector="Border.welcome-surface">
@@ -1366,7 +1537,7 @@
         <Setter Property="Height" Value="76" />
         <Setter Property="Padding" Value="9" />
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentSubtleBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactSelectionBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="22" />
     </Style>
@@ -1415,7 +1586,7 @@
 
     <Style Selector="ToggleButton.workspace-nav-item:checked">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
     </Style>
@@ -1429,18 +1600,18 @@
          compositor, including the checked+pointerover state. -->
     <Style Selector="ToggleButton.workspace-nav-item:checked /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
     <Style Selector="ToggleButton.workspace-nav-item:checked:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
     <Style Selector="ToggleButton.workspace-nav-item:focus-visible">
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <Style Selector="Border.workspace-nav-icon">
@@ -1455,17 +1626,17 @@
     <Style Selector="Border.workspace-nav-icon &gt; PathIcon">
         <Setter Property="Width" Value="20" />
         <Setter Property="Height" Value="20" />
-        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralIconBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactIconBrush}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="ToggleButton.workspace-nav-item:pointerover Border.workspace-nav-icon &gt; PathIcon">
-        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralIconBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactIconBrush}" />
     </Style>
 
     <Style Selector="ToggleButton.workspace-nav-item:checked Border.workspace-nav-icon &gt; PathIcon">
-        <Setter Property="Foreground" Value="{StaticResource PkhexNeutralIconBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactIconBrush}" />
     </Style>
 
     <Style Selector="TextBlock.workspace-nav-title">
@@ -1516,11 +1687,11 @@
 
     <Style Selector="Button.report-tool-card:pointerover">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentHoverBrush}" />
     </Style>
 
     <Style Selector="Button.report-tool-card:focus-visible">
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
         <Setter Property="BorderThickness" Value="2" />
     </Style>
 
@@ -1532,7 +1703,7 @@
     </Style>
 
     <Style Selector="Border.report-tool-icon &gt; Path">
-        <Setter Property="Stroke" Value="{StaticResource PkhexNeutralIconBrush}" />
+        <Setter Property="Stroke" Value="{DynamicResource CompactIconBrush}" />
         <Setter Property="Fill" Value="Transparent" />
         <Setter Property="StrokeThickness" Value="1.5" />
         <Setter Property="Width" Value="19" />
@@ -1543,7 +1714,7 @@
     </Style>
 
     <Style Selector="Button.report-tool-card:pointerover Border.report-tool-icon &gt; Path">
-        <Setter Property="Stroke" Value="{StaticResource PkhexNeutralIconBrush}" />
+        <Setter Property="Stroke" Value="{DynamicResource CompactIconBrush}" />
     </Style>
 
     <Style Selector="PathIcon.report-tool-arrow">
@@ -1705,8 +1876,8 @@
     </Style>
 
     <Style Selector="Button.launcher-item:pointerover">
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentSubtleBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource CompactSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentTextBrush}" />
     </Style>
 
     <Style Selector="Border.launcher-item-icon">
@@ -1719,7 +1890,7 @@
     </Style>
 
     <Style Selector="Border.launcher-item-icon &gt; Path">
-        <Setter Property="Stroke" Value="{StaticResource PkhexNeutralIconBrush}" />
+        <Setter Property="Stroke" Value="{DynamicResource CompactIconBrush}" />
         <Setter Property="Fill" Value="Transparent" />
         <Setter Property="StrokeThickness" Value="1.4" />
         <Setter Property="Width" Value="18" />

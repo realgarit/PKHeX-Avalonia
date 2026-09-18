@@ -163,8 +163,8 @@
     </Style>
 
     <Style Selector="ComboBoxItem:selected:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentPressedBrush}" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{DynamicResource CompactAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CompactOnAccentBrush}" />
     </Style>
 
     <!-- AutoCompleteBox is the native Fluent search/dropdown surface. FilterableComboBox only adds
@@ -387,8 +387,13 @@
     </Style>
 
     <Style Selector="ToggleSwitch /template/ Border#SwitchKnobBounds">
-        <Setter Property="Background" Value="{StaticResource PkhexNeutralAccentPressedBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBorderBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+    </Style>
+
+    <Style Selector="ToggleSwitch:checked /template/ Border#SwitchKnobBounds">
+        <Setter Property="Background" Value="{DynamicResource CompactAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactSelectionBorderBrush}" />
     </Style>
 
     <Style Selector="ToggleSwitch /template/ Ellipse#SwitchKnobOn, ToggleSwitch /template/ Ellipse#SwitchKnobOff">
