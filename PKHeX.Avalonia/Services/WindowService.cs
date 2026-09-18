@@ -33,15 +33,19 @@ public sealed class WindowService : IWindowService
             Title = title,
             Content = ViewLocator.Build(viewModel),
             SizeToContent = isSettings ? SizeToContent.Manual : SizeToContent.WidthAndHeight,
-            Width = isSettings ? 390 : double.NaN,
-            Height = isSettings ? 492 : double.NaN,
-            MinWidth = isSettings ? 390 : double.NaN,
-            MinHeight = isSettings ? 420 : double.NaN,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
             CanResize = true,
             MaxWidth = isSettings ? 620 : 1400,
             MaxHeight = 820,
         };
+
+        if (isSettings)
+        {
+            dialog.Width = 390;
+            dialog.Height = 492;
+            dialog.MinWidth = 390;
+            dialog.MinHeight = 420;
+        }
 
         if (viewModel is ICloseableDialog closeable)
             closeable.CloseRequested = dialog.Close;
