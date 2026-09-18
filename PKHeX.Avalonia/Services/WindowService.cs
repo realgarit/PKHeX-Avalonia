@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using PKHeX.Application.Abstractions;
+using PKHeX.Presentation.ViewModels;
 
 namespace PKHeX.Avalonia.Services;
 
@@ -26,14 +27,19 @@ public sealed class WindowService : IWindowService
         var owner = MainWindow;
         if (owner is null) return;
 
+        var isSettings = viewModel is SettingsViewModel;
         var dialog = new Window
         {
             Title = title,
             Content = ViewLocator.Build(viewModel),
-            SizeToContent = SizeToContent.WidthAndHeight,
+            SizeToContent = isSettings ? SizeToContent.Manual : SizeToContent.WidthAndHeight,
+            Width = isSettings ? 390 : double.NaN,
+            Height = isSettings ? 492 : double.NaN,
+            MinWidth = isSettings ? 390 : double.NaN,
+            MinHeight = isSettings ? 420 : double.NaN,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
             CanResize = true,
-            MaxWidth = 1400,
+            MaxWidth = isSettings ? 620 : 1400,
             MaxHeight = 820,
         };
 
