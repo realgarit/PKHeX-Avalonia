@@ -1,7 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
-        xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
         xmlns:views="using:PKHeX.Avalonia.Views"
         xmlns:controls="using:PKHeX.Avalonia.Controls"
         xmlns:conv="using:PKHeX.Avalonia.Converters"
@@ -309,42 +308,7 @@
                                 </TabItem.Header>
                                 <Grid RowDefinitions="*,Auto">
                                     <views:BoxViewer Grid.Row="0" DataContext="{Binding BoxViewer}" />
-                                    <Border Grid.Row="1" Classes="party-strip">
-                                        <Grid ColumnDefinitions="Auto,*">
-                                            <StackPanel Classes="party-strip-label" Spacing="2">
-                                                <TextBlock Text="{loc:Loc Tab_Party}" />
-                                                <TextBlock Text="{loc:Loc Workspace_PartySlots}" />
-                                            </StackPanel>
-                                            <ItemsControl Grid.Column="1"
-                                                          x:CompileBindings="False"
-                                                          ItemsSource="{Binding #MainShell.DataContext.PartyViewer.Slots}">
-                                                <ItemsControl.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <UniformGrid Columns="6" Rows="1" />
-                                                    </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate x:DataType="models:PartySlotData">
-                                                        <Border Classes="party-strip-slot">
-                                                            <Grid>
-                                                                <Border Classes="party-strip-empty" IsVisible="{Binding IsEmpty}" />
-                                                                <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}"
-                                                                       Stretch="Uniform"
-                                                                       IsVisible="{Binding !IsEmpty}"
-                                                                       Margin="4" />
-                                                                <TextBlock Text="{Binding Nickname}"
-                                                                           Classes="party-strip-name"
-                                                                           IsVisible="{Binding !IsEmpty}"
-                                                                           VerticalAlignment="Bottom"
-                                                                           HorizontalAlignment="Center"
-                                                                           TextTrimming="CharacterEllipsis" />
-                                                            </Grid>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </Grid>
-                                    </Border>
+                                    <views:PartyStrip Grid.Row="1" DataContext="{Binding PartyViewer}" />
                                 </Grid>
                             </TabItem>
                             <TabItem Classes="workspace-tab" IsVisible="{Binding IsPokemonWorkspace}">
