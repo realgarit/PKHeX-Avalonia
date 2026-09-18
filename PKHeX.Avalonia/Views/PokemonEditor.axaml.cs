@@ -1,6 +1,7 @@
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using PKHeX.Presentation.ViewModels;
 
@@ -8,9 +9,60 @@ namespace PKHeX.Avalonia.Views;
 
 public partial class PokemonEditor : UserControl
 {
+    private Button[] _primaryTabButtons = [];
+
     public PokemonEditor()
     {
         InitializeComponent();
+        _primaryTabButtons =
+        [
+            MainTabButton,
+            StatsTabButton,
+            MetTabButton,
+            MovesTabButton,
+            OtMiscTabButton,
+        ];
+        UpdateTabNavigation(EditorTabs.SelectedIndex);
+    }
+
+    private void OnPrimaryTabClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Control { Tag: string tag } || !int.TryParse(tag, out var index))
+            return;
+
+        EditorTabs.SelectedIndex = index;
+        e.Handled = true;
+    }
+
+    private void OnAdvancedTabClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Control { Tag: string tag } || !int.TryParse(tag, out var index))
+            return;
+
+        EditorTabs.SelectedIndex = index;
+        e.Handled = true;
+    }
+
+    private void OnEditorTabSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        // The compiled XAML raises the initial selection event while InitializeComponent is still
+        // materializing named controls. Ignore that early event; the constructor synchronizes the
+        // navigation once all buttons are available.
+        if (EditorTabs is null || MoreSectionsButton is null)
+            return;
+
+        UpdateTabNavigation(EditorTabs.SelectedIndex);
+    }
+
+    private void UpdateTabNavigation(int selectedIndex)
+    {
+        if (MoreSectionsButton is null)
+            return;
+
+        foreach (var button in _primaryTabButtons)
+            button.Classes.Set("selected", button.Tag is string tag && int.TryParse(tag, out var index) && index == selectedIndex);
+
+        MoreSectionsButton.Classes.Set("selected", selectedIndex >= _primaryTabButtons.Length);
     }
 
     // Only OS file drops are meaningful here (no in-app slot payload), so always show the "copy" cursor.
