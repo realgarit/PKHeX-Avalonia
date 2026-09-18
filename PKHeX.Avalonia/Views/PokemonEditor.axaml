@@ -9,7 +9,9 @@
              KeyboardNavigation.IsTabStop="False">
 
     <UserControl.Styles>
-        <!-- Keep the editor on the shared neutral focus treatment. -->
+        <!-- Keep the editor on the shared neutral focus treatment. The editor navigation is a
+             local composition around the native TabControl so the compact column does not make
+             the production tab strip clip or discard advanced sections. -->
         <Style Selector="Border">
             <Setter Property="FocusAdorner" Value="{x:Null}" />
         </Style>
@@ -18,6 +20,59 @@
         </Style>
         <Style Selector="ContentControl">
             <Setter Property="FocusAdorner" Value="{x:Null}" />
+        </Style>
+        <Style Selector="Button.editor-nav">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Padding" Value="7,3,7,4" />
+            <Setter Property="MinHeight" Value="30" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FocusAdorner" Value="{x:Null}" />
+        </Style>
+        <Style Selector="Button.editor-nav:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        </Style>
+        <Style Selector="Button.editor-nav:focus-visible">
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
+        </Style>
+        <Style Selector="Button.editor-nav.selected">
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource PkhexNeutralAccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="Button.editor-more">
+            <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Padding" Value="7,3" />
+            <Setter Property="MinHeight" Value="28" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FocusAdorner" Value="{x:Null}" />
+        </Style>
+        <Style Selector="Button.editor-more:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundHoverBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderHoverBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        </Style>
+        <Style Selector="Button.editor-more.selected">
+            <Setter Property="BorderBrush" Value="{DynamicResource PkhexNeutralAccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        </Style>
+        <!-- Avalonia's TabStripPlacement has no None value. Hide only this editor's native strip
+             while retaining the real TabControl/content selection underneath the compact buttons. -->
+        <Style Selector="TabControl.editor-tabs /template/ ItemsPresenter#PART_ItemsPresenter">
+            <Setter Property="IsVisible" Value="False" />
         </Style>
     </UserControl.Styles>
 
@@ -28,22 +83,22 @@
                 DragDrop.AllowDrop="True"
                 DragDrop.Drop="OnEditorDrop"
                 DragDrop.DragOver="OnEditorDragOver">
-            <Grid RowDefinitions="Auto,*" VerticalAlignment="Stretch">
+            <Grid RowDefinitions="Auto,Auto,*" VerticalAlignment="Stretch">
                 <!-- Header Section -->
                 <Border Grid.Row="0" Classes="entity-summary">
-                    <Grid ColumnDefinitions="Auto,*" Margin="2,0,2,0">
+                    <Grid ColumnDefinitions="Auto,*" Margin="2,0,2,2" MinHeight="80">
                     <!-- Left: Sprite Card -->
                     <Border Grid.Column="0"
                             Background="{DynamicResource ThemeBackgroundCardBrush}"
                             BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                             BorderThickness="1"
                             CornerRadius="8"
-                            Width="64" Height="54"
+                            Width="72" Height="72"
                             BoxShadow="{DynamicResource ThemeShadowSmall}"
                             ClipToBounds="True">
                         <Panel>
                             <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}"
-                                   Width="52" Height="42"
+                                   Width="64" Height="64"
                                    RenderOptions.BitmapInterpolationMode="HighQuality"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -55,7 +110,7 @@
                                   HorizontalAlignment="Right" 
                                   VerticalAlignment="Top"
                                   IsVisible="{Binding !IsLegal}"
-                                  Margin="0,2,4,0"
+                                  Margin="0,3,4,0"
                                   Width="12" Height="10"
                                   AutomationProperties.Name="Illegal Pokémon"
                                   ToolTip.Tip="{loc:Loc PokemonEditor_IllegalTooltip}" />
@@ -112,9 +167,46 @@
                     </Grid>
                 </Border>
 
+                <!-- Compact primary navigation. The content remains a real TabControl below, so
+                     existing consumers and index-based tests retain their current tab ordering. -->
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,2,0,4">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="2">
+                        <Button x:Name="MainTabButton" Classes="editor-nav" Tag="0" Click="OnPrimaryTabClick"
+                                Content="{loc:Loc PokemonEditor_TabMain}"
+                                AutomationProperties.Name="{loc:Loc PokemonEditor_TabMain}" />
+                        <Button x:Name="StatsTabButton" Classes="editor-nav" Tag="1" Click="OnPrimaryTabClick"
+                                Content="{loc:Loc PokemonEditor_TabStats}"
+                                AutomationProperties.Name="{loc:Loc PokemonEditor_TabStats}" />
+                        <Button x:Name="MetTabButton" Classes="editor-nav" Tag="2" Click="OnPrimaryTabClick"
+                                Content="{loc:Loc PokemonEditor_TabMet}"
+                                AutomationProperties.Name="{loc:Loc PokemonEditor_TabMet}" />
+                        <Button x:Name="MovesTabButton" Classes="editor-nav" Tag="3" Click="OnPrimaryTabClick"
+                                Content="{loc:Loc PokemonEditor_TabMoves}"
+                                AutomationProperties.Name="{loc:Loc PokemonEditor_TabMoves}" />
+                        <Button x:Name="OtMiscTabButton" Classes="editor-nav" Tag="4" Click="OnPrimaryTabClick"
+                                Content="{loc:Loc PokemonEditor_TabOtMisc}"
+                                AutomationProperties.Name="{loc:Loc PokemonEditor_TabOtMisc}" />
+                    </StackPanel>
+                    <Button x:Name="MoreSectionsButton" Grid.Column="1" Classes="editor-more"
+                            Content="{loc:Loc CompactUI_MoreSections}"
+                            AutomationProperties.Name="{loc:Loc CompactUI_MoreSections}">
+                        <Button.Flyout>
+                            <MenuFlyout Placement="BottomEdgeAlignedRight">
+                                <MenuItem Header="{loc:Loc PokemonEditor_TabContest}" Tag="5"
+                                          IsVisible="{Binding HasContestStats}" Click="OnAdvancedTabClick" />
+                                <MenuItem Header="{loc:Loc PokemonEditor_TabMemory}" Tag="6"
+                                          IsVisible="{Binding HasMemories}" Click="OnAdvancedTabClick" />
+                                <MenuItem Header="{loc:Loc PokemonEditor_TabRibbons}" Tag="7"
+                                          IsVisible="{Binding HasRibbons}" Click="OnAdvancedTabClick" />
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+                </Grid>
+
                 <!-- Tab Control -->
-                <TabControl Grid.Row="1" Classes="editor-tabs" TabStripPlacement="Top" Focusable="False"
+                <TabControl x:Name="EditorTabs" Grid.Row="2" Classes="editor-tabs" TabStripPlacement="Top" Focusable="False"
                             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            SelectionChanged="OnEditorTabSelectionChanged"
                             ClipToBounds="True">
                                     <!-- Main Tab -->
                                     <TabItem Classes="editor-tab" Header="{loc:Loc PokemonEditor_TabMain}">
@@ -137,7 +229,7 @@
                                     <!-- Nickname -->
                                     <StackPanel Grid.Row="1" Grid.Column="2">
                                         <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_Nickname}" FontWeight="SemiBold" Margin="0,0,0,4" />
-                                        <TextBox Text="{Binding Nickname}" />
+                                        <TextBox x:Name="NicknameField" Text="{Binding Nickname}" />
                                     </StackPanel>
 
                                     <!-- Form -->
