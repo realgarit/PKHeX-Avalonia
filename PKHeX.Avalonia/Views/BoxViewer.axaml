@@ -31,8 +31,8 @@
     <Border Classes="view-container">
         <DockPanel>
             <!-- Box Navigation Header -->
-            <Border DockPanel.Dock="Top" Classes="card" Padding="0" Margin="{DynamicResource UiDensityViewSectionMargin}">
-                <Grid ColumnDefinitions="48,*,42,42,42,42" Height="44">
+            <Border DockPanel.Dock="Top" Classes="card compact-box-header" Padding="0" Margin="{DynamicResource UiDensityViewSectionMargin}">
+                <Grid ColumnDefinitions="36,*,38,38,38,38" Height="40">
                     <Button Grid.Column="0"
                             Command="{Binding PreviousBoxCommand}"
                             ToolTip.Tip="{loc:Loc BoxViewer_PreviousBoxTooltip}"
@@ -132,20 +132,18 @@
                        Margin="{DynamicResource UiDensityViewFooterMargin}" />
 
             <!-- Box Grid (6 columns x 5 rows = 30 slots) - Fills available space -->
-            <Border Classes="card-elevated" Padding="{DynamicResource UiDensityCardPadding}">
+            <Border Classes="card-elevated compact-storage-grid" Padding="{DynamicResource CompactPanePadding}">
                 <ItemsControl ItemsSource="{Binding Slots}" x:Name="SlotGrid">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="6" Rows="5" />
+                            <UniformGrid Columns="6" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:SlotData">
-                            <Button Classes="slot"
+                            <Button Classes="slot compact-slot"
                                     Classes.selected="{Binding IsSelected}"
-                                    Margin="1"
-                                    Width="NaN"
-                                    Height="NaN"
+                                    Margin="{DynamicResource CompactSlotGap}"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     PointerMoved="OnSlotPointerMoved"
@@ -199,6 +197,14 @@
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Top"
                                                 Margin="6,5,0,0" />
+
+                                     <TextBlock Text="★"
+                                                Foreground="{DynamicResource ThemeShinyBrush}"
+                                                FontSize="10"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top"
+                                                Margin="0,4,5,0"
+                                                IsVisible="{Binding IsShiny}" />
 
                                      <Border Classes="slot-label-surface"
                                              VerticalAlignment="Bottom"

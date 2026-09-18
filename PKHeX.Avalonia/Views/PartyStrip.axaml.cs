@@ -1,4 +1,3 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -6,9 +5,14 @@ using PKHeX.Avalonia.Controls;
 
 namespace PKHeX.Avalonia.Views;
 
-public partial class PartyViewer : UserControl
+/// <summary>
+/// Compact, interactive party strip for the box workspace. It deliberately accepts the existing
+/// <see cref="PKHeX.Presentation.ViewModels.PartyViewerViewModel"/> through DataContext so the strip
+/// and detached PartyViewer share one slot collection and one operation service.
+/// </summary>
+public partial class PartyStrip : UserControl
 {
-    public PartyViewer()
+    public PartyStrip()
     {
         InitializeComponent();
         PartySlotInteraction.Attach(this);
