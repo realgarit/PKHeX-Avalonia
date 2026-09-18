@@ -158,6 +158,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _settingsStore = settingsStore;
         _themeService = themeService;
         _uiDensityService = uiDensityService;
+        SelectedTheme = _themeService.CurrentTheme;
         _undoRedo = undoRedo;
         _languageService = languageService;
         _autoLegalityService = autoLegalityService;

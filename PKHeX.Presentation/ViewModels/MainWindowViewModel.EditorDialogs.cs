@@ -29,6 +29,7 @@ public partial class MainWindowViewModel
     {
         var vm = new SettingsViewModel(_settings, _settingsStore, _themeService, _uiDensityService, _languageService, _updateCoordinator);
         await _windowService.ShowDialogAsync(vm, T("Dialog_Settings"));
+        RefreshThemeSelection();
 
         // The sprite preference may have changed; re-apply the style and refresh open views.
         if (CurrentSave is not null)

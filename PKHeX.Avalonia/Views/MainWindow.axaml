@@ -4,6 +4,7 @@
         xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
         xmlns:views="using:PKHeX.Avalonia.Views"
         xmlns:controls="using:PKHeX.Avalonia.Controls"
+        xmlns:conv="using:PKHeX.Avalonia.Converters"
         xmlns:loc="using:PKHeX.Avalonia.Localization"
         x:Class="PKHeX.Avalonia.Views.MainWindow"
         x:Name="MainShell"
@@ -11,10 +12,14 @@
         Background="{DynamicResource ThemeBackgroundDeepBrush}"
         Title="{Binding WindowTitle}"
         Icon="/Assets/Icons/icon.ico"
-        Width="1024" Height="720"
-        MinWidth="900" MinHeight="560"
+        Width="900" Height="600"
+        MinWidth="900" MinHeight="600"
         DragDrop.AllowDrop="True"
         DragDrop.Drop="OnWindowDrop">
+
+    <Window.Resources>
+        <conv:AppThemeLabelConverter x:Key="AppThemeLabel" />
+    </Window.Resources>
 
     <Window.KeyBindings>
         <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}" />
@@ -90,11 +95,11 @@
         <Border DockPanel.Dock="Top" Classes="app-header">
             <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Classes="brand-mark">
+                    <Border Classes="brand-mark" Width="26" Height="26">
                         <Image Source="avares://PKHeX.Avalonia/Assets/Icons/icon.png"
-                               Width="32" Height="32" />
+                               Width="22" Height="22" />
                     </Border>
-                    <StackPanel Margin="12,0,0,0" Spacing="1" VerticalAlignment="Center">
+                    <StackPanel Margin="8,0,0,0" Spacing="1" VerticalAlignment="Center">
                         <TextBlock Text="{loc:Loc App_ProductName}" Classes="app-brand-name" />
                         <TextBlock Text="{loc:Loc App_Subtitle}" Classes="app-brand-subtitle" />
                     </StackPanel>
@@ -118,7 +123,17 @@
                     </Grid>
                 </Border>
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
+                    <ComboBox Width="92"
+                              ItemsSource="{Binding Themes}"
+                              SelectedItem="{Binding SelectedTheme}"
+                              AutomationProperties.Name="{loc:Loc Settings_Theme}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:CompileBindings="False">
+                                <TextBlock Text="{Binding Converter={StaticResource AppThemeLabel}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                     <Button Classes="header-tool-button"
                             Content="{loc:Loc Launcher_Title}"
                             Command="{Binding OpenToolLauncherCommand}"
@@ -187,11 +202,11 @@
                  present only for the Pokémon task; Save and Reports reclaim that width. -->
             <Grid IsVisible="{Binding HasSave}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="176" />
+                    <ColumnDefinition Width="0" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0" Classes="workspace-rail">
+                <Border Grid.Column="0" Classes="workspace-rail" IsVisible="False">
                     <Grid RowDefinitions="Auto,*">
                         <StackPanel Grid.Row="0" Spacing="4">
                             <TextBlock Text="{loc:Loc Workspace_SectionLabel}" Classes="rail-eyebrow" />
@@ -253,17 +268,17 @@
                     </Grid>
                 </Border>
 
-                <Grid Grid.Column="1" Margin="12">
+                <Grid Grid.Column="1" Margin="0">
                     <!-- Pokémon and Save share the real existing workspace control. Auto columns
                          collapse the editor and splitter when Save is the active task. -->
                     <Grid IsVisible="{Binding !IsReportsWorkspace}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" MinWidth="0" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="4" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <Border x:Name="EditorPane" Grid.Column="0" Width="360" MinWidth="320" MaxWidth="440"
+                        <Border x:Name="EditorPane" Grid.Column="0" Width="306" MinWidth="300" MaxWidth="360"
                                 Background="{DynamicResource ThemeBackgroundBaseBrush}"
                                 BorderThickness="0,0,1,0"
                                 BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
