@@ -89,24 +89,36 @@ public sealed class ResponsiveShellTests
         {
             var name = dictionary.Groups["name"].Value;
             var body = dictionary.Groups["body"].Value;
-            var tokens = System.Text.RegularExpressions.Regex.Matches(
-                body,
-                "<Color x:Key=\"(?<key>Theme(?:Background|Border|Control|Text|Accent)[^\"]*)\">#(?<hex>[0-9A-Fa-f]{6,8})</Color>");
+            var expectedCanvas = name == "Dark" ? "191B22" : "F7F7F9";
+            var expectedPane = name == "Dark" ? "22252E" : "FFFFFF";
+            var expectedInput = name == "Dark" ? "292D37" : "FBFBFC";
+            var expectedAccent = name == "Dark" ? "B05763" : "AD4D53";
+            var expectedOnAccent = "FFFFFF";
+            var expectedAccentText = name == "Dark" ? "D98B95" : "913F4A";
+            var expectedSelection = name == "Dark" ? "403039" : "F5E8EA";
+            var expectedSelectionBorder = name == "Dark" ? "C4717B" : "B66A73";
+            var expectedFocus = name == "Dark" ? "F1A1A9" : "913F4A";
 
-            Assert.NotEmpty(tokens);
-            foreach (System.Text.RegularExpressions.Match token in tokens)
-                AssertNeutralColor(name, token.Groups["key"].Value, token.Groups["hex"].Value);
+            Assert.Equal(expectedCanvas, GetThemeHex(body, "ThemeBackgroundBase"));
+            Assert.Equal(expectedPane, GetThemeHex(body, "ThemeBackgroundCard"));
+            Assert.Equal(expectedInput, GetThemeHex(body, "ThemeControlBackground"));
+            Assert.Equal(expectedAccent, GetBrushHex(body, "CompactAccentBrush"));
+            Assert.Equal(expectedOnAccent, GetBrushHex(body, "CompactOnAccentBrush"));
+            Assert.Equal(expectedAccentText, GetBrushHex(body, "CompactAccentTextBrush"));
+            Assert.Equal(expectedSelection, GetBrushHex(body, "CompactSelectionBrush"));
+            Assert.Equal(expectedSelectionBorder, GetBrushHex(body, "CompactSelectionBorderBrush"));
+            Assert.Equal(expectedFocus, GetBrushHex(body, "CompactFocusBrush"));
 
-            foreach (System.Text.RegularExpressions.Match gradient in System.Text.RegularExpressions.Regex.Matches(
-                         body,
-                         "<LinearGradientBrush x:Key=\"Theme(?:Accent|Card|Header)Gradient\".*?</LinearGradientBrush>",
-                         System.Text.RegularExpressions.RegexOptions.Singleline))
-            {
-                foreach (System.Text.RegularExpressions.Match color in System.Text.RegularExpressions.Regex.Matches(
-                             gradient.Value,
-                             "Color=\"#(?<hex>[0-9A-Fa-f]{6,8})\""))
-                    AssertNeutralColor(name, "gradient", color.Groups["hex"].Value);
-            }
+            Assert.True(ContrastRatio(GetThemeHex(body, "ThemeTextPrimary"), expectedCanvas) >= 4.5,
+                $"{name} primary text must meet normal-text contrast on the canvas.");
+            Assert.True(ContrastRatio(GetThemeHex(body, "ThemeTextMuted"), expectedPane) >= 4.5,
+                $"{name} muted text must meet normal-text contrast on a pane.");
+            Assert.True(ContrastRatio(expectedOnAccent, expectedAccent) >= 4.5,
+                $"{name} action text must meet normal-text contrast on its action background.");
+            Assert.True(ContrastRatio(expectedAccentText, expectedPane) >= 4.5,
+                $"{name} accent text must meet normal-text contrast on a pane.");
+            Assert.True(ContrastRatio(expectedFocus, expectedInput) >= 3,
+                $"{name} focus boundary must meet non-text contrast against an input.");
         }
     }
 
@@ -264,23 +276,23 @@ public sealed class ResponsiveShellTests
     [Fact]
     public void AppearanceAccent_IsStaticAndAchromaticAcrossViewStyles()
     {
-        var app = ReadSourceFile("App.axaml");
         var theme = ReadSourceFile("Styles", "Theme.axaml");
-        Assert.Contains("PkhexNeutralAccentBrush", app);
-        Assert.Contains("Color=\"#707070\"", app);
-        Assert.DoesNotContain("ThemeAccentPrimary", theme);
-        Assert.DoesNotContain("ThemeAccentSecondary", theme);
-        Assert.DoesNotContain("ThemeAccentGlow", theme);
-        Assert.DoesNotContain("ThemeHeaderGradient", theme);
+        var controls = ReadSourceFile("Styles", "ControlSystem.axaml");
 
-        var avaloniaDirectory = Path.Combine(FindRepoRoot(), "PKHeX.Avalonia");
-        foreach (var path in Directory.EnumerateFiles(avaloniaDirectory, "*.axaml", SearchOption.AllDirectories))
-        {
-            var source = File.ReadAllText(path);
-            Assert.DoesNotContain("DynamicResource ThemeAccentPrimaryBrush", source);
-            Assert.DoesNotContain("DynamicResource ThemeAccentSecondaryBrush", source);
-            Assert.DoesNotContain("DynamicResource ThemeAccentGlowBrush", source);
-        }
+        Assert.Contains("CompactAccentBrush", theme);
+        Assert.Contains("CompactOnAccentBrush", theme);
+        Assert.Contains("CompactAccentTextBrush", theme);
+        Assert.Contains("CompactSelectionBrush", theme);
+        Assert.Contains("CompactSelectionBorderBrush", theme);
+        Assert.Contains("CompactFocusBrush", theme);
+        Assert.DoesNotContain("StaticResource PkhexNeutral", theme);
+        Assert.DoesNotContain("StaticResource PkhexNeutral", controls);
+        Assert.Contains("Button.compact-primary", theme);
+        Assert.Contains("Button.compact-secondary", theme);
+        Assert.Contains("TabControl.compact-editor-tabs", theme);
+        Assert.Contains("Button.compact-slot", theme);
+        Assert.Contains("Window.compact-settings", theme);
+        Assert.Contains("Border.compact-party-strip", theme);
     }
 
     [Fact]
@@ -632,12 +644,41 @@ public sealed class ResponsiveShellTests
         return dir;
     }
 
-    private static void AssertNeutralColor(string theme, string token, string hex)
+    private static string GetThemeHex(string dictionary, string key)
     {
-        var red = Convert.ToInt32(hex[..2], 16);
-        var green = Convert.ToInt32(hex[2..4], 16);
-        var blue = Convert.ToInt32(hex[4..6], 16);
-        var spread = Math.Max(red, Math.Max(green, blue)) - Math.Min(red, Math.Min(green, blue));
-        Assert.True(spread == 0, $"{theme} token {token} is tinted ({hex}).");
+        var match = System.Text.RegularExpressions.Regex.Match(
+            dictionary,
+            $"<Color x:Key=\"{System.Text.RegularExpressions.Regex.Escape(key)}\">#(?<hex>[0-9A-Fa-f]{{6}})</Color>");
+        Assert.True(match.Success, $"Theme color '{key}' was not declared.");
+        return match.Groups["hex"].Value.ToUpperInvariant();
+    }
+
+    private static string GetBrushHex(string dictionary, string key)
+    {
+        var match = System.Text.RegularExpressions.Regex.Match(
+            dictionary,
+            $"<SolidColorBrush x:Key=\"{System.Text.RegularExpressions.Regex.Escape(key)}\" Color=\"#(?<hex>[0-9A-Fa-f]{{6}})\" />");
+        Assert.True(match.Success, $"Theme brush '{key}' was not declared.");
+        return match.Groups["hex"].Value.ToUpperInvariant();
+    }
+
+    private static double ContrastRatio(string foreground, string background)
+    {
+        var foregroundLuminance = RelativeLuminance(foreground);
+        var backgroundLuminance = RelativeLuminance(background);
+        var lighter = Math.Max(foregroundLuminance, backgroundLuminance);
+        var darker = Math.Min(foregroundLuminance, backgroundLuminance);
+        return (lighter + 0.05) / (darker + 0.05);
+    }
+
+    private static double RelativeLuminance(string hex)
+    {
+        var red = Convert.ToInt32(hex[..2], 16) / 255d;
+        var green = Convert.ToInt32(hex[2..4], 16) / 255d;
+        var blue = Convert.ToInt32(hex[4..6], 16) / 255d;
+        static double Linearize(double value) => value <= 0.03928
+            ? value / 12.92
+            : Math.Pow((value + 0.055) / 1.055, 2.4);
+        return 0.2126 * Linearize(red) + 0.7152 * Linearize(green) + 0.0722 * Linearize(blue);
     }
 }

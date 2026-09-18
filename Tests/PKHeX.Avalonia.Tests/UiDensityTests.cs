@@ -34,6 +34,12 @@ public class UiDensityTests
         AssertStyleSetter(theme, "NumericUpDown.form-field", "Padding", "{DynamicResource UiDensityFormFieldPadding}");
         AssertStyleSetter(theme, "DataGridRow", "MinHeight", "{DynamicResource UiDensityDataGridRowHeight}");
         AssertStyleSetter(theme, "DataGridCell", "Padding", "{DynamicResource UiDensityDataGridCellPadding}");
+        Assert.Contains("Button.compact-primary", theme);
+        Assert.Contains("Button.compact-secondary", theme);
+        Assert.Contains("TabControl.compact-editor-tabs", theme);
+        Assert.Contains("Button.compact-slot", theme);
+        Assert.Contains("Window.compact-settings", theme);
+        Assert.Contains("Border.compact-party-strip", theme);
     }
 
     [Fact]
@@ -178,6 +184,31 @@ public class UiDensityTests
         Assert.Equal(AppDensity.Comfortable, service.CurrentDensity);
         Assert.Equal(AppDensity.Comfortable, settings.Density.Selected);
         Assert.Same(settings, store.Saved);
+    }
+
+    [AvaloniaFact]
+    public void UiDensityService_ExposesStableCompactShellContract()
+    {
+        using var app = new HeadlessAppFixture();
+        var density = app.Services.GetRequiredService<IUiDensityService>();
+        var resources = global::Avalonia.Application.Current!.Resources;
+
+        density.ApplyDensity(AppDensity.Compact);
+        app.Pump();
+        Assert.Equal(30d, resources["UiDensityControlHeight"]);
+        Assert.Equal(306d, resources["CompactShellEditorWidth"]);
+        Assert.Equal(35d, resources["CompactShellMenuHeight"]);
+        Assert.Equal(49d, resources["CompactShellContextHeight"]);
+        Assert.Equal(27d, resources["CompactShellStatusHeight"]);
+        Assert.Equal(76d, resources["CompactPartyStripHeight"]);
+        Assert.Equal(new Thickness(16), resources["CompactPanePadding"]);
+        Assert.Equal(new Thickness(0, 0, 5, 5), resources["CompactSlotGap"]);
+
+        density.ApplyDensity(AppDensity.Comfortable);
+        app.Pump();
+        Assert.Equal(36d, resources["UiDensityControlHeight"]);
+        Assert.Equal(306d, resources["CompactShellEditorWidth"]);
+        Assert.Equal(76d, resources["CompactPartyStripHeight"]);
     }
 
     [AvaloniaFact]
