@@ -277,7 +277,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <Border x:Name="EditorPane" Grid.Column="0" Width="306" MinWidth="300" MaxWidth="360"
+                        <Border x:Name="EditorPane" Grid.Column="0" Width="{DynamicResource CompactShellEditorWidth}" MinWidth="300" MaxWidth="360"
                                 Background="{DynamicResource ThemeBackgroundBaseBrush}"
                                 BorderThickness="0,0,1,0"
                                 BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"

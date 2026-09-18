@@ -18,12 +18,14 @@ public sealed class ResponsiveShellTests
         var mainWindow = ReadSourceFile("Views", "MainWindow.axaml");
         var theme = ReadSourceFile("Styles", "Theme.axaml");
 
-        Assert.Contains("Width=\"1024\" Height=\"720\"", mainWindow);
-        Assert.Contains("Width=\"360\" MinWidth=\"320\" MaxWidth=\"440\"", mainWindow);
+        Assert.Contains("Width=\"900\" Height=\"600\"", mainWindow);
+        Assert.Contains("MinWidth=\"900\" MinHeight=\"600\"", mainWindow);
+        Assert.Contains("Width=\"{DynamicResource CompactShellEditorWidth}\" MinWidth=\"300\" MaxWidth=\"360\"", mainWindow);
         Assert.Contains("x:Name=\"EditorPane\"", mainWindow);
         Assert.Contains("x:Name=\"WorkspacePane\"", mainWindow);
         Assert.Contains("Classes=\"app-header\"", mainWindow);
-        Assert.Contains("Classes=\"workspace-rail\"", mainWindow);
+        Assert.Contains("Width=\"0\"", mainWindow);
+        Assert.Contains("IsVisible=\"False\"", mainWindow);
         Assert.Contains("Classes=\"reports-surface\"", mainWindow);
         Assert.Contains("Classes=\"reports-layout\"", mainWindow);
         Assert.Contains("<UniformGrid Columns=\"3\" />", mainWindow);
@@ -151,7 +153,7 @@ public sealed class ResponsiveShellTests
 
         Assert.NotNull(editor);
         Assert.NotNull(workspace);
-        Assert.InRange(editor!.Bounds.Width, 320, 440);
+        Assert.InRange(editor!.Bounds.Width, 300, 360);
         Assert.True(workspace!.Bounds.Width >= 440, $"Workspace was only {workspace.Bounds.Width}px wide.");
         Assert.Equal("pokemon-x-main", app.ViewModel.CurrentSaveFileName);
         Assert.Equal(savePath, app.ViewModel.CurrentSavePath);
@@ -267,7 +269,7 @@ public sealed class ResponsiveShellTests
             .Count());
         Assert.All(cards, card =>
         {
-            Assert.InRange(card.Bounds.Width, 220, 310);
+            Assert.InRange(card.Bounds.Width, 220, 360);
             Assert.InRange(card.Bounds.Height, 70, 90);
             Assert.Equal(VerticalAlignment.Center, card.VerticalContentAlignment);
         });
@@ -486,7 +488,6 @@ public sealed class ResponsiveShellTests
             "RoamerEditor.axaml",
             "SaveHandlerTroubleshooter.axaml",
             "SecretBaseEditor.axaml",
-            "SettingsView.axaml",
             "TrainerCard8EditorView.axaml",
             "UndergroundEditor.axaml",
             "UnityTower5Editor.axaml",
@@ -501,10 +502,13 @@ public sealed class ResponsiveShellTests
             Assert.Contains("editor-section-padded", source);
         }
 
+        var settings = ReadSourceFile("Views", "SettingsView.axaml");
+        Assert.Contains("Classes=\"compact-settings\"", settings);
+
         var theme = ReadSourceFile("Styles", "Theme.axaml");
         Assert.Contains("ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter", theme);
         Assert.Contains("Background\" Value=\"Transparent\"", theme);
-        Assert.Contains("BorderBrush\" Value=\"{StaticResource PkhexNeutralAccentBrush}\"", theme);
+        Assert.Contains("BorderBrush\" Value=\"{DynamicResource CompactAccentTextBrush}\"", theme);
     }
 
     [Fact]

@@ -67,7 +67,7 @@ public class UiDensityTests
             "<Border\\s+DockPanel.Dock=\"Bottom\"[^>]*>",
             RegexOptions.Singleline);
 
-        Assert.Contains("Width=\"360\" MinWidth=\"320\" MaxWidth=\"440\"", mainWindow);
+        Assert.Contains("Width=\"{DynamicResource CompactShellEditorWidth}\" MinWidth=\"300\" MaxWidth=\"360\"", mainWindow);
         Assert.DoesNotContain("ColumnDefinitions=\"520,*\"", mainWindow);
         Assert.True(statusBar.Success, "Status bar Border was not found.");
         Assert.Contains("Padding=\"{DynamicResource UiDensityStatusBarPadding}\"", statusBar.Value);

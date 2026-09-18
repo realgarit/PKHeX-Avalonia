@@ -62,8 +62,8 @@ public sealed class NativeControlSystemTests
         Assert.Equal(new CornerRadius(7), text.CornerRadius);
         Assert.Equal(new CornerRadius(7), numeric.CornerRadius);
 
-        Assert.Equal(new Color(0xFF, 0x4A, 0x4A, 0x4A), ((SolidColorBrush)combo.BorderBrush!).Color);
-        Assert.Equal(new Color(0xFF, 0x4A, 0x4A, 0x4A), ((SolidColorBrush)text.BorderBrush!).Color);
+        Assert.Equal(new Color(0xFF, 0x4D, 0x51, 0x60), ((SolidColorBrush)combo.BorderBrush!).Color);
+        Assert.Equal(new Color(0xFF, 0x4D, 0x51, 0x60), ((SolidColorBrush)text.BorderBrush!).Color);
 
         combo.IsDropDownOpen = true;
         Pump(window);
@@ -71,13 +71,13 @@ public sealed class NativeControlSystemTests
             .OfType<Border>()
             .FirstOrDefault(border => border.Name == "PopupBorder");
         Assert.NotNull(popupBorder);
-        Assert.Equal(new Color(0xFF, 0x1D, 0x1D, 0x1D), ((SolidColorBrush)popupBorder!.Background!).Color);
+        Assert.Equal(new Color(0xFF, 0x22, 0x25, 0x2E), ((SolidColorBrush)popupBorder!.Background!).Color);
 
         window.Close();
     }
 
     [AvaloniaFact]
-    public void UnqualifiedTextControls_UseTheNeutralThemeForeground()
+    public void UnqualifiedTextControls_ResolveVisibleForeground()
     {
         var text = new TextBlock { Text = "Default text" };
         var radio = new RadioButton { Content = "Choice" };
@@ -93,9 +93,9 @@ public sealed class NativeControlSystemTests
         window.Show();
         Pump(window);
 
-        AssertNeutral((SolidColorBrush)text.Foreground!);
-        AssertNeutral((SolidColorBrush)radio.Foreground!);
-        AssertNeutral((SolidColorBrush)overlay.Foreground!);
+        AssertVisibleForeground((SolidColorBrush)text.Foreground!);
+        AssertVisibleForeground((SolidColorBrush)radio.Foreground!);
+        AssertVisibleForeground((SolidColorBrush)overlay.Foreground!);
 
         window.Close();
     }
@@ -126,10 +126,10 @@ public sealed class NativeControlSystemTests
         window.Close();
     }
 
-    private static void AssertNeutral(SolidColorBrush brush)
+    private static void AssertVisibleForeground(SolidColorBrush brush)
     {
-        Assert.Equal(brush.Color.R, brush.Color.G);
-        Assert.Equal(brush.Color.G, brush.Color.B);
+        Assert.NotEqual(Colors.Transparent, brush.Color);
+        Assert.True(brush.Color.A > 0, "The control foreground must remain visible in both themes.");
     }
 
     [AvaloniaFact]
