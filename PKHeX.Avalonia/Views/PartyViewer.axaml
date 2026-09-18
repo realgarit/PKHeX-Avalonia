@@ -12,7 +12,7 @@
         <KeyBinding Gesture="Down" Command="{Binding MoveSelectionCommand}" CommandParameter="Down" />
         <KeyBinding Gesture="Enter" Command="{Binding ActivateSlotCommand}" />
         <KeyBinding Gesture="Space" Command="{Binding ActivateSlotCommand}" />
-        <!-- Keyboard-only slot operations, mirroring the mouse modifier-clicks below -->
+        <!-- Keyboard-only slot operations, mirroring the tunneled modifier clicks. -->
         <KeyBinding Gesture="Ctrl+C" Command="{Binding ViewSlotCommand}" CommandParameter="{Binding SelectedSlot}" />
         <KeyBinding Gesture="Ctrl+V" Command="{Binding SetSlotCommand}" CommandParameter="{Binding SelectedSlot}" />
         <KeyBinding Gesture="Delete" Command="{Binding DeleteSlotCommand}" CommandParameter="{Binding SelectedSlot}" />
@@ -20,8 +20,10 @@
 
     <Border Classes="view-container">
         <DockPanel>
-            <!-- Header -->
-            <Grid DockPanel.Dock="Top" ColumnDefinitions="*,42,42" Margin="{DynamicResource UiDensityViewSectionMargin}">
+            <Grid DockPanel.Dock="Top"
+                  ColumnDefinitions="*,42,42"
+                  Height="40"
+                  Margin="{DynamicResource UiDensityViewSectionMargin}">
                 <TextBlock Grid.Column="0"
                            Text="{loc:Loc PartyViewer_Title}"
                            Classes="view-title"
@@ -45,14 +47,13 @@
                         Command="{Binding MoveToBoxCommand}"
                         CommandParameter="{Binding SelectedSlot}"
                         ToolTip.Tip="{loc:Loc Slot_MoveSelectedToBoxTooltip}"
-                        AutomationProperties.Name="Move selected Pokémon to Box"
+                        AutomationProperties.Name="{loc:Loc Slot_MoveSelectedToBoxTooltip}"
                         Background="Transparent"
                         BorderThickness="0"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
-                        FontSize="18"
                         IsVisible="{Binding CanMoveToBox}"
                         IsEnabled="{Binding SelectedSlot.IsEmpty, Converter={StaticResource ObjectFalseConverter}}">
                     <Path Data="M 14,8 H 3 M 8,3 L 3,8 L 8,13"
@@ -62,13 +63,15 @@
                 </Button>
             </Grid>
 
-            <!-- Footer -->
             <TextBlock DockPanel.Dock="Bottom"
                        Text="{loc:Loc PartyViewer_Footer}"
-                       Opacity="0.5" FontSize="11" HorizontalAlignment="Center" Margin="{DynamicResource UiDensityViewFooterMargin}" />
-            
-            <!-- Party Grid - 2 columns, 3 rows -->
-            <Border Classes="editor-section-padded" Padding="{DynamicResource UiDensitySectionPadding}">
+                       Foreground="{DynamicResource ThemeTextMutedBrush}"
+                       FontSize="10"
+                       HorizontalAlignment="Center"
+                       Margin="{DynamicResource UiDensityViewFooterMargin}" />
+
+            <Border Classes="editor-section-padded compact-party-viewer"
+                    Padding="{DynamicResource CompactPanePadding}">
                 <ItemsControl ItemsSource="{Binding Slots}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -77,7 +80,8 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:PartySlotData">
-                            <Button PointerMoved="OnSlotPointerMoved"
+                            <Button Classes="party-slot compact-slot"
+                                    PointerMoved="OnSlotPointerMoved"
                                     DragDrop.AllowDrop="True"
                                     DragDrop.Drop="OnSlotDrop"
                                     DragDrop.DragOver="OnSlotDragOver"
@@ -86,14 +90,12 @@
                                     Click="OnSlotClicked"
                                     DoubleTapped="OnSlotDoubleTapped"
                                     Tag="{Binding}"
-                                    Padding="8"
-                                    Margin="4"
+                                    Padding="6"
+                                    Margin="{DynamicResource CompactSlotGap}"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
                                     Classes.selected="{Binding IsSelected}">
-                                
-                                <!-- Context Menu -->
                                 <Button.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="{loc:Loc PartyViewer_ViewMenuItem}"
@@ -115,21 +117,16 @@
                                                   IsEnabled="{Binding !IsEmpty}" />
                                     </ContextMenu>
                                 </Button.ContextMenu>
-                                
+
                                 <Button.Styles>
-                                    <Style Selector="Button">
+                                    <Style Selector="Button.party-slot">
                                         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
                                         <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
                                         <Setter Property="BorderThickness" Value="1" />
-                                        <Setter Property="CornerRadius" Value="8" />
-                                        <!-- Local template (replacing Fluent's default). PART_Border MUST stay
-                                             hit-test-visible with a non-null Background so a pointer press/release
-                                             resolves to this Button and its Click fires; a templated Button has no
-                                             hittable surface of its own, so an IsHitTestVisible="False" root excludes
-                                             the whole subtree from hit-testing and kills clicks (and drops). Drop
-                                             targeting still works: Avalonia walks UP from the hit element to the
-                                             nearest DragDrop.AllowDrop (this Button). The card content Panel below is
-                                             kept IsHitTestVisible="False" only so hits resolve here, not to the sprite. -->
+                                        <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
+                                        <Setter Property="MinHeight" Value="64" />
+                                        <Setter Property="FocusAdorner" Value="{x:Null}" />
+                                        <!-- Keep the root hit-testable so clicks and drops reach this Button. -->
                                         <Setter Property="Template">
                                             <ControlTemplate>
                                                 <Border Name="PART_Border"
@@ -147,64 +144,74 @@
                                             </ControlTemplate>
                                         </Setter>
                                     </Style>
-                                    <Style Selector="Button:pointerover">
-                                        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+                                    <Style Selector="Button.party-slot:pointerover">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderHoverBrush}" />
                                     </Style>
-                                    <Style Selector="Button.selected">
-                                        <Setter Property="BorderBrush" Value="{StaticResource PkhexNeutralAccentBrush}" />
+                                    <Style Selector="Button.party-slot.selected">
+                                        <Setter Property="Background" Value="{DynamicResource CompactSelectionBrush}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource CompactSelectionBorderBrush}" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                    </Style>
+                                    <Style Selector="Button.party-slot:focus-visible">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
                                         <Setter Property="BorderThickness" Value="2" />
                                     </Style>
                                 </Button.Styles>
-                                
-                                <!-- Card Content - Sprite centered with overlay info. Hit-test-transparent
-                                     so drag/drop hit-testing resolves to the Button itself (which
-                                     carries DragDrop.AllowDrop) rather than the sprite Image swallowing it. -->
+
+                                <!-- Content stays hit-test-transparent so the Button remains the slot
+                                     target for pointer routing and drag/drop. -->
                                 <Panel IsHitTestVisible="False">
-                                    <!-- Empty slot -->
-                                    <Border Background="{DynamicResource ThemeBackgroundCardBrush}"
-                                            IsVisible="{Binding IsEmpty}"
-                                            Height="70">
+                                    <Border Classes="party-slot-empty"
+                                            IsVisible="{Binding IsEmpty}">
                                         <TextBlock Text="{loc:Loc PartyViewer_Empty}"
-                                                   Opacity="0.4"
-                                                   HorizontalAlignment="Center" 
+                                                   Foreground="{DynamicResource ThemeTextMutedBrush}"
+                                                   HorizontalAlignment="Center"
                                                    VerticalAlignment="Center" />
                                     </Border>
-                                    
-                                    <!-- Filled slot -->
+
                                     <Grid RowDefinitions="*,Auto" IsVisible="{Binding !IsEmpty}">
-                                        <!-- Sprite with warning indicator -->
                                         <Panel Grid.Row="0" HorizontalAlignment="Center">
-                                            <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}" 
-                                                   Width="56" Height="48" 
+                                            <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}"
+                                                   Width="56" Height="48"
+                                                   Stretch="Uniform"
                                                    RenderOptions.BitmapInterpolationMode="HighQuality" />
-                                            
-                                            <!-- Illegal Warning -->
-                                            <Path Data="M 8,0 L 16,14 L 0,14 Z M 8.5,12 H 7.5 V 10.5 H 8.5 V 12 Z M 8.5,9 H 7.5 V 4.5 H 8.5 V 9 Z" 
+                                            <TextBlock Text="★"
+                                                       Foreground="{DynamicResource ThemeShinyBrush}"
+                                                       FontSize="10"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Top"
+                                                       IsVisible="{Binding IsShiny}" />
+                                            <Path Data="M 8,0 L 16,14 L 0,14 Z M 8.5,12 H 7.5 V 10.5 H 8.5 V 12 Z M 8.5,9 H 7.5 V 4.5 H 8.5 V 9 Z"
                                                   Fill="{DynamicResource ThemeShinyBrush}"
                                                   HorizontalAlignment="Right"
                                                   VerticalAlignment="Top"
                                                   IsVisible="{Binding !IsLegal}"
-                                                  Margin="0,0,0,0"
-                                                  Width="10" Height="9"/>
+                                                  Width="10" Height="9" />
                                         </Panel>
-                                        
-                                        <!-- Info: Nickname only, with level badge -->
-                                        <DockPanel Grid.Row="1" Margin="0,4,0,0">
-                                            <Border DockPanel.Dock="Right" 
-                                                    Background="{DynamicResource ThemeBackgroundCardBrush}" 
-                                                    CornerRadius="3" 
+                                        <DockPanel Grid.Row="1" Margin="0,3,0,0">
+                                            <Border DockPanel.Dock="Right"
+                                                    Background="{DynamicResource ThemeBackgroundCardBrush}"
+                                                    CornerRadius="3"
                                                     Padding="4,1">
-                                                <TextBlock Text="{Binding Level, StringFormat='Lv.{0}'}" 
-                                                           FontSize="10" 
-                                                           Opacity="0.8" />
+                                                <TextBlock Text="{Binding Level, StringFormat='Lv.{0}'}"
+                                                           Foreground="{DynamicResource ThemeTextSecondaryBrush}"
+                                                           FontSize="10" />
                                             </Border>
-                                            <TextBlock Text="{Binding Nickname}" 
-                                                       FontWeight="SemiBold" 
-                                                       FontSize="12"
+                                            <TextBlock Text="{Binding Nickname}"
+                                                       Foreground="{DynamicResource ThemeTextPrimaryBrush}"
+                                                       FontWeight="SemiBold"
+                                                       FontSize="11"
                                                        TextTrimming="CharacterEllipsis"
                                                        VerticalAlignment="Center" />
                                         </DockPanel>
                                     </Grid>
+
+                                    <TextBlock Text="{Binding Slot, StringFormat='{}{0}'}"
+                                               Foreground="{DynamicResource ThemeTextMutedBrush}"
+                                               FontSize="9"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"
+                                               Margin="5,4,0,0" />
                                 </Panel>
                             </Button>
                         </DataTemplate>
