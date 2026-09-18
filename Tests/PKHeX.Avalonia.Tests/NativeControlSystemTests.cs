@@ -48,6 +48,7 @@ public sealed class NativeControlSystemTests
             },
             Width = 420,
             Height = 300,
+            RequestedThemeVariant = global::Avalonia.Styling.ThemeVariant.Dark,
         };
 
         window.Show();

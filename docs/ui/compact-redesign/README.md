@@ -1,8 +1,8 @@
 # Compact PKHeX UI: implementation handoff
 
-Status: **production implementation available locally for user review; goal paused**. See [current review checkpoint](REVIEW.md).
+Status: **production implementation with reviewed visual evidence**. See [implementation evidence](REVIEW.md); live integration status is tracked by the repository pull requests and releases.
 Prepared 2026-09-18 against `74177bbbc48930ad5baee692cc87a460a44674d9`.
-The user explicitly requested this checked-in plan and runnable starting point, then authorized implementation. This directory is a narrow exception to the root AGENTS.md ban on planning documents. The initial parallel implementation was followed by a personally integrated visual pass to match the prototype. The user has now paused the goal pending review; do not restart implementation or shipping from this historical dispatch plan without renewed direction.
+The user explicitly requested this checked-in plan and runnable starting point, then authorized implementation. This directory is a narrow exception to the root AGENTS.md ban on planning documents. The initial parallel implementation was followed by a personally integrated visual pass to match the prototype. After the local review checkpoint, the user resumed the goal to complete validation and integration. The dispatch instructions below describe the original implementation split, not a request to start duplicate work.
 
 ## Start here
 

@@ -1,6 +1,6 @@
 # Compact UI review checkpoint — 2026-09-18
 
-The current implementation is on `codex/compact-ui-implementation`. The user paused the goal after asking for this visual pass to be finished and shown. No push, PR, merge, or release has been performed for the current implementation.
+The implementation branch is `codex/compact-ui-implementation`. The user reviewed a local checkpoint, then resumed the goal to complete validation and integration. The pull request and release history are authoritative for live shipping status.
 
 ## Result
 
@@ -14,6 +14,8 @@ The current implementation is on `codex/compact-ui-implementation`. The user pau
 
 ## Validation
 
+The table records the first complete local checkpoint. The final pre-merge gate also includes the language-refresh regression tests described below; consult CI for that revision's exact totals.
+
 | Gate | Result |
 |---|---|
 | Release solution build | 0 warnings, 0 errors |
@@ -24,9 +26,14 @@ The current implementation is on `codex/compact-ui-implementation`. The user pau
 | MVVM review | Findings resolved: navigation in the ViewModel, truthful HaX status, horizontal party keys, restored totals |
 | Production renders | Light/Dark main, Stats/Met/Moves/OT, dropdown, Settings, legal fixture, German/Japanese inspected |
 
+Follow-up regression coverage changes UI language to German and Japanese with a populated Pokémon. It checks that native dropdown selections remain visible and the prepared Pokémon bytes remain identical. Native palette tests explicitly choose their theme to avoid dependence on the previously executed test's appearance.
+
+![Reviewed production light layout](evidence/production-light.png)
+![Reviewed production dark layout](evidence/production-dark.png)
+
 The actual production composition is instantiated for the render tests, with temporary settings and synthetic Pokémon for the populated reference scene. Synthetic entities correctly show invalid reports. The separate Kingambit scene uses a real legal Core fixture and verifies legality before rendering. No labels are forced to Legal for screenshots.
 
-Images are in `tmp/compact-ui-captures/`; the independently published executable is `tmp/compact-review/PKHeX.Avalonia.exe`. These generated files are intentionally outside git. Recreate images from repository root:
+The full image set is in `tmp/compact-ui-captures/`; the independently published executable is `tmp/compact-review/PKHeX.Avalonia.exe`. Those generated files are outside git; two representative reviewed frames are retained in `evidence/`. Recreate images from repository root:
 
 ```powershell
 $env:PKHEX_HEADLESS_CAPTURE='1'

@@ -20,6 +20,37 @@ namespace PKHeX.Avalonia.Tests;
 /// </summary>
 public sealed class CompactPokemonEditorTests
 {
+    [AvaloniaTheory]
+    [InlineData("de")]
+    [InlineData("ja")]
+    public void LanguageChangePreservesGenderAndKeepsItsSelectionVisible(string language)
+    {
+        using var app = new HeadlessAppFixture();
+        app.LoadSaveInstance(new SAV9SV());
+        var editor = app.ViewModel.CurrentPokemonEditor!;
+        var pk = new PK9 { Species = (ushort)Species.Gardevoir, Gender = 1, CurrentLevel = 50, Language = 2 };
+        pk.RefreshAbility(0);
+        editor.LoadPKM(pk);
+        app.Pump();
+        var before = editor.PreparePKM().Data.ToArray();
+        try
+        {
+            app.ViewModel.LanguageService.SetLanguage(language);
+            app.Pump();
+            Assert.Equal(1, editor.Gender);
+            Assert.Equal(1, editor.PreparePKM().Gender);
+            Assert.Equal(before, editor.PreparePKM().Data.ToArray());
+            var field = app.Window.GetVisualDescendants().OfType<ComboBox>().Single(combo =>
+                combo.ItemsSource is IEnumerable<ComboItem> items && items.Select(item => item.Value).SequenceEqual(new[] { 0, 1, 2 }));
+            Assert.NotNull(field.SelectedItem);
+            Assert.Equal(1, Assert.IsType<ComboItem>(field.SelectedItem).Value);
+            Assert.All(app.Window.GetVisualDescendants().OfType<ComboBox>().Where(combo =>
+                combo.IsEffectivelyVisible && combo.ItemsSource is IEnumerable<ComboItem> items && items.Any()),
+                combo => Assert.NotNull(combo.SelectedItem));
+        }
+        finally { app.ViewModel.LanguageService.SetLanguage("en"); }
+    }
+
     [AvaloniaFact]
     public void HaXModeDoesNotDisplayAnAffirmativeLegalPill()
     {

@@ -21,6 +21,7 @@ public sealed class CompactUiCaptureTests
     public async Task CompactNavigationRemainsInsideTheEditorWhenLocalized(string language)
     {
         using var app = new HeadlessAppFixture();
+        app.Services.GetRequiredService<IThemeService>().ApplyTheme(AppTheme.Dark);
         app.Window.Width = 900;
         app.Window.Height = 600;
         app.LoadSaveInstance(new SAV6XY());

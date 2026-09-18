@@ -244,6 +244,18 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
         // Notify that the PKM name etc might have changed
         LoadFromPKM();
+
+        // Replacing a dropdown's items clears its visual selection even when the stored value
+        // did not change. Reapply values after all localized lists have been replaced.
+        foreach (var property in new[]
+        {
+            nameof(Species), nameof(Form), nameof(Gender), nameof(Nature), nameof(StatAlignment),
+            nameof(Ability), nameof(HeldItem), nameof(Ball), nameof(Language), nameof(OriginGame),
+            nameof(MetLocation), nameof(EggLocation), nameof(Move1), nameof(Move2), nameof(Move3),
+            nameof(Move4), nameof(RelearnMove1), nameof(RelearnMove2), nameof(RelearnMove3),
+            nameof(RelearnMove4), nameof(OriginalTrainerGender), nameof(HandlingTrainerGender),
+        })
+            OnPropertyChanged(property);
     }
 
     private void LoadFromPKM()
