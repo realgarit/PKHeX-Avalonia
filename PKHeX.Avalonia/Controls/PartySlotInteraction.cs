@@ -35,7 +35,9 @@ internal static class PartySlotInteraction
             (sender, args) => OnSlotPointerPressed(owner, args),
             RoutingStrategies.Tunnel,
             handledEventsToo: true);
-        owner.AttachedToVisualTree += (_, _) => owner.Focus();
+        // The inline strip must not steal initial keyboard focus from the box grid.
+        if (owner is PartyViewer)
+            owner.AttachedToVisualTree += (_, _) => owner.Focus();
     }
 
     public static void OnSlotPointerPressed(UserControl owner, PointerPressedEventArgs e)

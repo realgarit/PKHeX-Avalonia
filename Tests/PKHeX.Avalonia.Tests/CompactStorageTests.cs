@@ -27,6 +27,52 @@ namespace PKHeX.Avalonia.Tests;
 public sealed class CompactStorageTests
 {
     [Fact]
+    public void RefreshRetainsSelectedSlotAndDoesNotMarkEmptyStorageShiny()
+    {
+        var save = new SAV6XY();
+        var box = new BoxViewerViewModel(save, Mock.Of<ISpriteRenderer>());
+        box.SelectedIndex = 5;
+        box.RefreshCurrentBox();
+        Assert.True(box.Slots[5].IsSelected);
+        Assert.Single(box.Slots, slot => slot.IsSelected);
+        Assert.All(box.Slots, slot => Assert.False(slot.IsShiny));
+        Assert.Equal($"0 / {save.BoxSlotCount}", box.OccupancyText);
+
+        var party = new PartyViewerViewModel(save, Mock.Of<ISpriteRenderer>());
+        party.SelectedIndex = 3;
+        party.RefreshParty();
+        Assert.True(party.Slots[3].IsSelected);
+        Assert.All(party.Slots, slot => Assert.False(slot.IsShiny));
+    }
+
+    [AvaloniaFact]
+    public void InlineParty_HidesForUnsupportedSave_AndUsesHorizontalArrowKeys()
+    {
+        var unsupported = new PartyStrip { DataContext = new PartyViewerViewModel(new SAV7b(), Mock.Of<ISpriteRenderer>()) };
+        var unsupportedWindow = new Window { Content = unsupported };
+        unsupportedWindow.Show();
+        Pump(unsupportedWindow);
+        Assert.False(unsupported.IsVisible);
+        unsupportedWindow.Close();
+
+        var vm = new PartyViewerViewModel(new SAV6XY(), Mock.Of<ISpriteRenderer>());
+        var strip = new PartyStrip { DataContext = vm };
+        var window = new Window { Content = strip, Width = 560, Height = 76 };
+        window.Show();
+        Pump(window);
+        strip.Focus();
+        window.KeyPressQwerty(PhysicalKey.ArrowRight, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.ArrowRight, RawInputModifiers.None);
+        Pump(window);
+        Assert.Equal(1, vm.SelectedIndex);
+        window.KeyPressQwerty(PhysicalKey.ArrowLeft, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.ArrowLeft, RawInputModifiers.None);
+        Pump(window);
+        Assert.Equal(0, vm.SelectedIndex);
+        window.Close();
+    }
+
+    [Fact]
     public void BoxViewer_UsesCompactStorageClasses_AndKeepsActualCapacity()
     {
         var xml = File.ReadAllText(Path.Combine(FindRepoRoot(), "PKHeX.Avalonia", "Views", "BoxViewer.axaml"));
@@ -47,7 +93,7 @@ public sealed class CompactStorageTests
         var xml = File.ReadAllText(Path.Combine(FindRepoRoot(), "PKHeX.Avalonia", "Views", "PartyStrip.axaml"));
 
         Assert.Contains("x:DataType=\"vm:PartyViewerViewModel\"", xml);
-        Assert.Contains("Classes=\"party-strip compact-party-strip\"", xml);
+        Assert.Contains("IsVisible=\"{Binding HasParty}\"", xml);
         Assert.Contains("ItemsSource=\"{Binding Slots}\"", xml);
         Assert.Contains("UniformGrid Columns=\"6\" Rows=\"1\"", xml);
         Assert.Contains("DragDrop.AllowDrop=\"True\"", xml);

@@ -90,7 +90,8 @@ public class UiDensityTests
     {
         var pokemonEditor = ReadSourceFile("Views", "PokemonEditor.axaml");
 
-        Assert.Equal(2, Regex.Matches(pokemonEditor, "SelectedDateFormat=\"Long\"").Count);
+        Assert.Equal(2, Regex.Matches(pokemonEditor, "SelectedDateFormat=\"Short\"").Count);
+        Assert.Contains("ColumnDefinitions=\"64,12,*\"", pokemonEditor);
         Assert.Equal(2, Regex.Matches(pokemonEditor, "Watermark=\"{loc:Loc PokemonEditor_SelectDate}\"").Count);
     }
 
@@ -134,8 +135,8 @@ public class UiDensityTests
         Assert.Equal(7, topLevelContentStacks.Count);
         Assert.All(topLevelContentStacks, stack =>
         {
-            Assert.Contains("Spacing=\"8\"", stack.Value);
-            Assert.Contains("Margin=\"6,6,6,12\"", stack.Value);
+            Assert.Matches("Spacing=\"[89]\"", stack.Value);
+            Assert.Contains("Margin=\"0,8,0,4\"", stack.Value);
         });
     }
 
@@ -219,9 +220,8 @@ public class UiDensityTests
 
         var boxView = app.Find<BoxViewer>();
         Assert.NotNull(boxView);
-        var viewContainer = boxView!.GetVisualDescendants()
-            .OfType<Border>()
-            .Single(border => border.Classes.Contains("view-container"));
+        var nicknameField = app.FindByName<TextBox>("NicknameField");
+        Assert.NotNull(nicknameField);
         var editorTitle = app.Window.GetVisualDescendants()
             .OfType<TextBlock>()
             .Single(textBlock => textBlock.Text == "Empty Slot");
@@ -229,12 +229,12 @@ public class UiDensityTests
 
         service.ApplyDensity(AppDensity.Compact);
         app.Pump();
-        Assert.Equal(new Thickness(8), viewContainer.Padding);
+        Assert.Equal(30d, nicknameField!.MinHeight);
         Assert.True(editorTitle.Bounds.Width > 0, "The editor header title must remain realized in Compact mode.");
 
         service.ApplyDensity(AppDensity.Comfortable);
         app.Pump();
-        Assert.Equal(new Thickness(16), viewContainer.Padding);
+        Assert.Equal(36d, nicknameField!.MinHeight);
         Assert.True(editorTitle.Bounds.Width > 0, "The editor header title must remain realized in Comfortable mode.");
 
         service.ApplyDensity(AppDensity.Compact);

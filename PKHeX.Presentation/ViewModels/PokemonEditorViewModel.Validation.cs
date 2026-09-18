@@ -8,6 +8,7 @@ namespace PKHeX.Presentation.ViewModels;
 
 public partial class PokemonEditorViewModel
 {
+    public bool ShowLegalityStatus => Species != 0 && !IsHaXMode;
     [ObservableProperty]
     private bool _isLegal;
 

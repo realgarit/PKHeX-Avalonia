@@ -146,7 +146,8 @@ public class SpriteStyleTests
         window.Show();
         Dispatcher.UIThread.RunJobs();
 
-        var combo = view.GetVisualDescendants().OfType<ComboBox>().FirstOrDefault();
+        var combo = view.GetVisualDescendants().OfType<ComboBox>()
+            .FirstOrDefault(candidate => ReferenceEquals(candidate.ItemsSource, vm.SpritePreferences));
         Assert.NotNull(combo);
         Assert.Equal(4, combo!.ItemCount);
         Assert.Equal(vm.SpritePreference, combo.SelectedItem);

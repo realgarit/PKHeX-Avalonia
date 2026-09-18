@@ -86,6 +86,7 @@ public sealed class NativeControlSystemTests
         var window = new Window
         {
             Content = new StackPanel { Children = { text, radio, overlay } },
+            RequestedThemeVariant = global::Avalonia.Styling.ThemeVariant.Dark,
             Width = 240,
             Height = 120,
         };
@@ -128,8 +129,15 @@ public sealed class NativeControlSystemTests
 
     private static void AssertVisibleForeground(SolidColorBrush brush)
     {
-        Assert.NotEqual(Colors.Transparent, brush.Color);
-        Assert.True(brush.Color.A > 0, "The control foreground must remain visible in both themes.");
+        Assert.Equal(255, brush.Color.A);
+        static double Linear(byte value)
+        {
+            var channel = value / 255d;
+            return channel <= 0.04045 ? channel / 12.92 : Math.Pow((channel + 0.055) / 1.055, 2.4);
+        }
+        static double Luminance(Color color) => 0.2126 * Linear(color.R) + 0.7152 * Linear(color.G) + 0.0722 * Linear(color.B);
+        var contrast = (Luminance(brush.Color) + 0.05) / (Luminance(Color.Parse("#191B22")) + 0.05);
+        Assert.True(contrast >= 4.5, $"Actual control text contrast was only {contrast:F2}:1.");
     }
 
     [AvaloniaFact]
@@ -163,7 +171,7 @@ public sealed class NativeControlSystemTests
 
         var actions = view.GetVisualDescendants()
             .OfType<Button>()
-            .Where(button => button.Classes.Contains("entity-status-action"))
+            .Where(button => button.Name is "LegalityPill" or "ShinyToggle")
             .ToArray();
 
         Assert.Equal(2, actions.Length);

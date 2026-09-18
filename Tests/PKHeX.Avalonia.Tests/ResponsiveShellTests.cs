@@ -23,9 +23,9 @@ public sealed class ResponsiveShellTests
         Assert.Contains("Width=\"{DynamicResource CompactShellEditorWidth}\" MinWidth=\"300\" MaxWidth=\"360\"", mainWindow);
         Assert.Contains("x:Name=\"EditorPane\"", mainWindow);
         Assert.Contains("x:Name=\"WorkspacePane\"", mainWindow);
-        Assert.Contains("Classes=\"app-header\"", mainWindow);
-        Assert.Contains("Width=\"0\"", mainWindow);
-        Assert.Contains("IsVisible=\"False\"", mainWindow);
+        Assert.Contains("MinHeight=\"49\"", mainWindow);
+        Assert.DoesNotContain("Classes=\"workspace-rail\"", mainWindow);
+        Assert.DoesNotContain("Classes=\"app-header\"", mainWindow);
         Assert.Contains("Classes=\"reports-surface\"", mainWindow);
         Assert.Contains("Classes=\"reports-layout\"", mainWindow);
         Assert.Contains("<UniformGrid Columns=\"3\" />", mainWindow);
@@ -66,7 +66,7 @@ public sealed class ResponsiveShellTests
 
         // Save identity is intentionally a single piece of application chrome: the top header owns
         // the filename, while the left rail and bottom status bar carry only task/status context.
-        Assert.Single(System.Text.RegularExpressions.Regex.Matches(mainWindow, "Text=\"\\{Binding CurrentSaveFileName\\}\""));
+        Assert.Single(System.Text.RegularExpressions.Regex.Matches(mainWindow, "ToolTip.Tip=\"\\{Binding CurrentSaveFileName\\}\""));
         Assert.DoesNotContain("rail-save-card", mainWindow);
         Assert.DoesNotContain("rail-status", mainWindow);
         var statusBar = System.Text.RegularExpressions.Regex.Match(
@@ -503,7 +503,8 @@ public sealed class ResponsiveShellTests
         }
 
         var settings = ReadSourceFile("Views", "SettingsView.axaml");
-        Assert.Contains("Classes=\"compact-settings\"", settings);
+        Assert.Contains("RowDefinitions=\"70,*,54\"", settings);
+        Assert.Contains("Command=\"{Binding SaveCommand}\"", settings);
 
         var theme = ReadSourceFile("Styles", "Theme.axaml");
         Assert.Contains("ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter", theme);

@@ -3,12 +3,15 @@
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
              xmlns:loc="using:PKHeX.Avalonia.Localization"
+             xmlns:controls="using:PKHeX.Avalonia.Controls"
              x:Class="PKHeX.Avalonia.Views.PartyStrip"
              x:DataType="vm:PartyViewerViewModel"
-             Classes="party-strip compact-party-strip"
+             IsVisible="{Binding HasParty}"
              Focusable="True">
 
     <UserControl.KeyBindings>
+        <KeyBinding Gesture="Left" Command="{Binding MoveSelectionCommand}" CommandParameter="Up" />
+        <KeyBinding Gesture="Right" Command="{Binding MoveSelectionCommand}" CommandParameter="Down" />
         <KeyBinding Gesture="Up" Command="{Binding MoveSelectionCommand}" CommandParameter="Up" />
         <KeyBinding Gesture="Down" Command="{Binding MoveSelectionCommand}" CommandParameter="Down" />
         <KeyBinding Gesture="Enter" Command="{Binding ActivateSlotCommand}" />
@@ -18,17 +21,12 @@
         <KeyBinding Gesture="Delete" Command="{Binding DeleteSlotCommand}" CommandParameter="{Binding SelectedSlot}" />
     </UserControl.KeyBindings>
 
-    <Border Classes="party-strip compact-party-strip"
-            Padding="{DynamicResource CompactPanePadding}">
-        <Grid ColumnDefinitions="Auto,*">
-            <StackPanel Classes="party-strip-label"
-                        Spacing="2"
-                        VerticalAlignment="Center">
-                <TextBlock Text="{loc:Loc Tab_Party}" />
-                <TextBlock Text="{loc:Loc Workspace_PartySlots}" />
-            </StackPanel>
-
-            <ItemsControl Grid.Column="1" ItemsSource="{Binding Slots}">
+    <Border Padding="0" Margin="0,5,0,0">
+        <Grid RowDefinitions="20,46">
+            <controls:DoubleTapCommandBorder Command="{Binding OpenDetachedToolCommand}" ToolTip.Tip="{loc:Loc PartyViewer_PopOut}" Background="Transparent">
+                <TextBlock Text="{loc:Loc Tab_Party}" FontSize="10" Foreground="{DynamicResource ThemeTextMutedBrush}" />
+            </controls:DoubleTapCommandBorder>
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding Slots}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="6" Rows="1" />
@@ -48,7 +46,7 @@
                                 Tag="{Binding}"
                                 Padding="2"
                                 Margin="{DynamicResource CompactSlotGap}"
-                                MinHeight="54"
+                                MinHeight="0"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 HorizontalContentAlignment="Stretch"
@@ -77,7 +75,7 @@
 
                             <Button.Styles>
                                 <Style Selector="Button.party-strip-slot">
-                                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+                                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
                                     <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderDefaultBrush}" />
                                     <Setter Property="BorderThickness" Value="1" />
                                     <Setter Property="CornerRadius" Value="{DynamicResource UiDensityControlRadius}" />
@@ -118,15 +116,15 @@
                             <Panel IsHitTestVisible="False">
                                 <Border Classes="party-strip-empty"
                                         IsVisible="{Binding IsEmpty}" />
-                                <Grid RowDefinitions="*,Auto" IsVisible="{Binding !IsEmpty}">
+                                <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding !IsEmpty}">
                                     <Panel Grid.Row="0" HorizontalAlignment="Center">
                                         <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}"
                                                Stretch="Uniform"
-                                               Width="46" Height="38"
+                                               Width="36" Height="30"
                                                RenderOptions.BitmapInterpolationMode="HighQuality" />
                                         <TextBlock Text="★"
                                                    Foreground="{DynamicResource ThemeShinyBrush}"
-                                                   FontSize="9"
+                                                   FontSize="10"
                                                    HorizontalAlignment="Right"
                                                    VerticalAlignment="Top"
                                                    IsVisible="{Binding IsShiny}" />
@@ -137,21 +135,15 @@
                                               IsVisible="{Binding !IsLegal}"
                                               Width="9" Height="8" />
                                     </Panel>
-                                    <DockPanel Grid.Row="1" Margin="2,0,2,1">
-                                        <TextBlock Text="{Binding Nickname}"
-                                                   Classes="party-strip-name"
-                                                   Foreground="{DynamicResource ThemeTextPrimaryBrush}"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" />
-                                        <TextBlock Text="{Binding Level, StringFormat='Lv.{0}'}"
+                                    <DockPanel Grid.Column="1" Margin="1,0,2,0">
+                                        <TextBlock Text="{Binding Level}"
                                                    Foreground="{DynamicResource ThemeTextMutedBrush}"
                                                    FontSize="9"
                                                    HorizontalAlignment="Right"
                                                    VerticalAlignment="Center" />
                                     </DockPanel>
                                 </Grid>
-                                <TextBlock Text="{Binding Slot, StringFormat='{}{0}'}"
+                                <TextBlock Text="{Binding SlotNumber}"
                                            Foreground="{DynamicResource ThemeTextMutedBrush}"
                                            FontSize="8"
                                            HorizontalAlignment="Left"

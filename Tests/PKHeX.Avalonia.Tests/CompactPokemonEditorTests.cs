@@ -21,6 +21,18 @@ namespace PKHeX.Avalonia.Tests;
 public sealed class CompactPokemonEditorTests
 {
     [AvaloniaFact]
+    public void HaXModeDoesNotDisplayAnAffirmativeLegalPill()
+    {
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(new PK9 { Species = 282 }, new SAV9SV(), haXMode: true);
+        var view = new PokemonEditor { DataContext = vm };
+        var window = Show(view, 306, 480);
+        Assert.True(vm.IsHaXMode);
+        Assert.True(vm.IsLegal); // Existing suppression flag, not proof of legality.
+        Assert.False(view.FindControl<Button>("LegalityPill")!.IsVisible);
+        window.Close();
+    }
+
+    [AvaloniaFact]
     public void CompactNavigation_UsesPrimaryButtonsAndLocalizedMoreMenu()
     {
         var save = new SAV9SV();

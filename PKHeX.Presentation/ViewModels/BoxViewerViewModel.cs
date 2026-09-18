@@ -41,6 +41,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
 
     public int BoxCount => _sav.BoxCount;
     public int SlotsPerBox => _sav.BoxSlotCount;
+    public string OccupancyText => $"{Slots.Count(slot => !slot.IsEmpty)} / {Slots.Count}";
     public bool CanMoveToParty => _sav.HasParty;
     /// <summary>
     /// The immutable save-session identity captured when this viewer was created. A viewer from a
@@ -137,7 +138,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
                 Species = pk.Species,
                 Sprite = _spriteRenderer.GetSprite(pk),
                 IsEmpty = isEmpty,
-                IsShiny = pk.IsShiny,
+                IsShiny = !isEmpty && pk.IsShiny,
                 Nickname = isEmpty ? string.Empty : pk.Nickname,
                 SpeciesName = isEmpty ? string.Empty : StringResourceLookup.Species(pk.Species),
                 Level = pk.CurrentLevel,
@@ -160,7 +161,8 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
 
         // Restore selection position (clamped to valid range)
         SelectedIndex = Math.Clamp(previousIndex, 0, Math.Max(0, Slots.Count - 1));
-        OnPropertyChanged(nameof(SelectedSlot));
+        OnSelectedIndexChanged(SelectedIndex);
+        OnPropertyChanged(nameof(OccupancyText));
     }
 
     [RelayCommand]

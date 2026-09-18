@@ -38,6 +38,7 @@ public partial class PartyViewerViewModel : ViewModelBase
     public event Action<int>? SetSlotRequested;
     public event Action<int>? DeleteSlotRequested;
     public bool CanMoveToBox => _sav.HasBox;
+    public bool HasParty => _sav.HasParty;
     /// <summary>
     /// The immutable save-session identity captured when this viewer was created. A viewer from a
     /// previous save must keep its original token so its detached drag payloads cannot become valid
@@ -91,7 +92,7 @@ public partial class PartyViewerViewModel : ViewModelBase
                 Species = pk.Species,
                 Sprite = _spriteRenderer.GetSprite(pk),
                 IsEmpty = isEmpty,
-                IsShiny = pk.IsShiny,
+                IsShiny = !isEmpty && pk.IsShiny,
                 Nickname = isEmpty ? string.Empty : pk.Nickname,
                 SpeciesName = isEmpty ? string.Empty : StringResourceLookup.Species(pk.Species),
                 Level = pk.CurrentLevel,
@@ -109,7 +110,7 @@ public partial class PartyViewerViewModel : ViewModelBase
         
         // Restore selection position (clamped to valid range)
         SelectedIndex = Math.Clamp(previousIndex, 0, Slots.Count - 1);
-        OnPropertyChanged(nameof(SelectedSlot));
+        OnSelectedIndexChanged(SelectedIndex);
     }
 
     [RelayCommand]
