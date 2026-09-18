@@ -1,9 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
-        xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
         xmlns:views="using:PKHeX.Avalonia.Views"
         xmlns:controls="using:PKHeX.Avalonia.Controls"
+        xmlns:conv="using:PKHeX.Avalonia.Converters"
+        xmlns:strings="clr-namespace:PKHeX.Presentation.Localization;assembly=PKHeX.Presentation"
         xmlns:loc="using:PKHeX.Avalonia.Localization"
         x:Class="PKHeX.Avalonia.Views.MainWindow"
         x:Name="MainShell"
@@ -11,10 +12,24 @@
         Background="{DynamicResource ThemeBackgroundDeepBrush}"
         Title="{Binding WindowTitle}"
         Icon="/Assets/Icons/icon.ico"
-        Width="1024" Height="720"
-        MinWidth="900" MinHeight="560"
+        Width="900" Height="600"
+        MinWidth="900" MinHeight="600"
         DragDrop.AllowDrop="True"
         DragDrop.Drop="OnWindowDrop">
+
+    <Window.Resources>
+        <conv:AppThemeLabelConverter x:Key="AppThemeLabel" />
+    </Window.Resources>
+
+    <Window.Styles>
+        <Style Selector="TabControl.workspace-tabs.pokemon /template/ ItemsPresenter#PART_ItemsPresenter">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="TabControl.workspace-tabs">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </Window.Styles>
 
     <Window.KeyBindings>
         <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}" />
@@ -28,8 +43,10 @@
     </Window.KeyBindings>
 
     <DockPanel>
-        <!-- Menu Bar -->
-        <Menu DockPanel.Dock="Top">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" MinHeight="35" Background="{DynamicResource ThemeBackgroundCardBrush}">
+            <Image Source="avares://PKHeX.Avalonia/Assets/Icons/icon.png" Width="22" Height="22" Margin="14,0,12,0" />
+
+        <Menu Grid.Column="1" FontSize="11" VerticalAlignment="Center" Background="Transparent">
             <MenuItem Header="{loc:Loc Menu_File}">
                 <MenuItem Header="{loc:Loc Menu_File_Open}" Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O" />
                 <MenuItem Header="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" InputGesture="Ctrl+S" />
@@ -84,50 +101,30 @@
             </MenuItem>
         </Menu>
 
-        <!-- Persistent application context. Menus retain expert access; the header keeps the
-             current save, task launcher, and primary save action visible without consuming a
-             permanent editor rail. -->
-        <Border DockPanel.Dock="Top" Classes="app-header">
-            <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Classes="brand-mark">
-                        <Image Source="avares://PKHeX.Avalonia/Assets/Icons/icon.png"
-                               Width="32" Height="32" />
-                    </Border>
-                    <StackPanel Margin="12,0,0,0" Spacing="1" VerticalAlignment="Center">
-                        <TextBlock Text="{loc:Loc App_ProductName}" Classes="app-brand-name" />
-                        <TextBlock Text="{loc:Loc App_Subtitle}" Classes="app-brand-subtitle" />
-                    </StackPanel>
-                </StackPanel>
 
-                <Border Grid.Column="1" Classes="save-context" Margin="24,0,24,0">
-                    <Grid ColumnDefinitions="Auto,*">
-                        <Ellipse Width="8" Height="8"
-                                 Fill="{DynamicResource ThemeSuccessBrush}"
-                                 VerticalAlignment="Center"
-                                 IsVisible="{Binding HasSave}" />
-                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="1">
-                            <TextBlock Text="{Binding CurrentSaveFileName}"
-                                       IsVisible="{Binding CurrentSaveFileName, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                       Classes="save-context-name"
-                                       TextTrimming="CharacterEllipsis" />
-                            <TextBlock Text="{Binding StatusText}"
-                                       Classes="save-context-status"
-                                       TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
-                    </Grid>
-                </Border>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" Margin="0,0,16,0" VerticalAlignment="Center">
+                <Button Content="{loc:Loc Settings_Title}" Command="{Binding OpenSettingsCommand}" FontSize="11" Background="Transparent" Padding="8,3" MinHeight="27" />
+                <ComboBox Width="92"
+                              ItemsSource="{Binding Themes}"
+                              SelectedItem="{Binding SelectedTheme}"
+                              AutomationProperties.Name="{loc:Loc Settings_Theme}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:CompileBindings="False">
+                                <TextBlock><TextBlock.Text><MultiBinding Converter="{StaticResource AppThemeLabel}"><Binding /><Binding Source="{x:Static strings:LocalizedStrings.Instance}" Path="CurrentLanguage" /></MultiBinding></TextBlock.Text></TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+            </StackPanel>
+        </Grid>
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
-                    <Button Classes="header-tool-button"
-                            Content="{loc:Loc Launcher_Title}"
-                            Command="{Binding OpenToolLauncherCommand}"
-                            AutomationProperties.Name="{loc:Loc Launcher_Title}" />
-                    <Button Classes="accent"
-                            Content="{loc:Loc Menu_File_Save}"
-                            Command="{Binding SaveFileCommand}"
-                            AutomationProperties.Name="{loc:Loc Menu_File_Save}" />
+        <Border DockPanel.Dock="Top" MinHeight="49" Padding="17,6" Background="{DynamicResource ThemeBackgroundBaseBrush}"
+                BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,1,0,1">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding CurrentGameName}" ToolTip.Tip="{Binding CurrentSaveFileName}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxWidth="250" />
+                    <TextBlock Text="{Binding CurrentTrainerName}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="200" />
                 </StackPanel>
+                <Button Grid.Column="1" Classes="compact-primary" Content="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" Padding="12,5" FontSize="11" />
             </Grid>
         </Border>
 
@@ -149,7 +146,7 @@
                         IsVisible="{Binding UpdateNotification, Converter={x:Static ObjectConverters.IsNotNull}}">
                     <StackPanel Orientation="Horizontal" Spacing="8" DataContext="{Binding UpdateNotification}">
                         <TextBlock Text="{Binding Message}"
-                                   Foreground="{StaticResource PkhexNeutralAccentBrush}"
+                                   Foreground="{DynamicResource CompactAccentTextBrush}"
                                    FontSize="12" VerticalAlignment="Center" />
                         <Button Content="{loc:Loc Update_WhatsNew}" Command="{Binding ShowChangelogCommand}" Padding="8,2" FontSize="11" />
                         <Button Content="{loc:Loc Update_Download}" Command="{Binding DownloadCommand}" Padding="8,2" FontSize="11" />
@@ -183,77 +180,10 @@
                 </StackPanel>
             </Border>
 
-            <!-- Save loaded state: task rail + task-aware content. The Pokémon editor column is
+            <!-- Save loaded state: compact task-aware content. The Pokémon editor column is
                  present only for the Pokémon task; Save and Reports reclaim that width. -->
             <Grid IsVisible="{Binding HasSave}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="176" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Border Grid.Column="0" Classes="workspace-rail">
-                    <Grid RowDefinitions="Auto,*">
-                        <StackPanel Grid.Row="0" Spacing="4">
-                            <TextBlock Text="{loc:Loc Workspace_SectionLabel}" Classes="rail-eyebrow" />
-                        </StackPanel>
-
-                        <StackPanel Grid.Row="1" Margin="0,20,0,0" Spacing="6">
-                            <ToggleButton Classes="workspace-nav-item"
-                                          IsChecked="{Binding IsPokemonWorkspace, Mode=OneWay}"
-                                          Command="{Binding SelectWorkspaceCommand}"
-                                          CommandParameter="{x:Static vm:MainWorkspace.Pokemon}"
-                                          AutomationProperties.Name="{loc:Loc Workspace_Pokemon}">
-                                <Grid ColumnDefinitions="Auto,*">
-                                    <Border Classes="workspace-nav-icon">
-                                        <!-- Fluent-style Poké Ball glyph: recognizable storage/editor entry point. -->
-                                        <PathIcon Data="M10 2.25a7.75 7.75 0 1 0 0 15.5 7.75 7.75 0 0 0 0-15.5m0 1.5a6.25 6.25 0 0 1 6.15 5.15h-3.03a3.25 3.25 0 0 0-6.24 0H3.85A6.25 6.25 0 0 1 10 3.75m0 12.5a6.25 6.25 0 0 1-6.15-5.15h3.03a3.25 3.25 0 0 0 6.24 0h3.03A6.25 6.25 0 0 1 10 16.25m0-5a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5" />
-                                    </Border>
-                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
-                                        <TextBlock Text="{loc:Loc Workspace_Pokemon}" Classes="workspace-nav-title" TextWrapping="Wrap" />
-                                        <TextBlock Text="{loc:Loc Workspace_Pokemon_Desc}" Classes="workspace-nav-description" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </Grid>
-                            </ToggleButton>
-
-                            <ToggleButton Classes="workspace-nav-item"
-                                          IsChecked="{Binding IsSaveWorkspace, Mode=OneWay}"
-                                          Command="{Binding SelectWorkspaceCommand}"
-                                          CommandParameter="{x:Static vm:MainWorkspace.Save}"
-                                          AutomationProperties.Name="{loc:Loc Workspace_Save}">
-                                <Grid ColumnDefinitions="Auto,*">
-                                    <Border Classes="workspace-nav-icon">
-                                        <!-- Microsoft Fluent UI System Icon: Save20Regular. -->
-                                        <PathIcon Data="M3 5c0-1.1.9-2 2-2h8.38a2 2 0 0 1 1.41.59l1.62 1.62A2 2 0 0 1 17 6.62V15a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1v-4.5c0-.83.67-1.5 1.5-1.5h7c.83 0 1.5.67 1.5 1.5V16a1 1 0 0 0 1-1V6.62a1 1 0 0 0-.3-.7L14.1 4.28a1 1 0 0 0-.71-.29H13v2.5c0 .83-.67 1.5-1.5 1.5h-4A1.5 1.5 0 0 1 6 6.5V4zm2 0v2.5c0 .28.22.5.5.5h4a.5.5 0 0 0 .5-.5V4zm7 12v-4.5a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5V16z" />
-                                    </Border>
-                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
-                                        <TextBlock Text="{loc:Loc Workspace_Save}" Classes="workspace-nav-title" TextWrapping="Wrap" />
-                                        <TextBlock Text="{loc:Loc Workspace_Save_Desc}" Classes="workspace-nav-description" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </Grid>
-                            </ToggleButton>
-
-                            <ToggleButton Classes="workspace-nav-item"
-                                          IsChecked="{Binding IsReportsWorkspace, Mode=OneWay}"
-                                          Command="{Binding SelectWorkspaceCommand}"
-                                          CommandParameter="{x:Static vm:MainWorkspace.Reports}"
-                                          AutomationProperties.Name="{loc:Loc Workspace_Reports}">
-                                <Grid ColumnDefinitions="Auto,*">
-                                    <Border Classes="workspace-nav-icon">
-                                        <!-- Microsoft Fluent UI System Icon: DataBarVertical20Regular. -->
-                                        <PathIcon Data="M5 3a2 2 0 0 0-2 2v10a2 2 0 1 0 4 0V5a2 2 0 0 0-2-2M4 5a1 1 0 0 1 2 0v10a1 1 0 1 1-2 0zm4 3a2 2 0 1 1 4 0v7a2 2 0 1 1-4 0zm2-1a1 1 0 0 1-1 1v7a1 1 0 1 0 2 0V8a1 1 0 0 1-1-1m3 4a2 2 0 1 1 4 0v4a2 2 0 1 1-4 0zm2-1a1 1 0 0 1-1 1v4a1 1 0 1 0 2 0v-4a1 1 0 0 0-1-1z" />
-                                    </Border>
-                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="2">
-                                        <TextBlock Text="{loc:Loc Workspace_Reports}" Classes="workspace-nav-title" TextWrapping="Wrap" />
-                                        <TextBlock Text="{loc:Loc Workspace_Reports_Desc}" Classes="workspace-nav-description" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </Grid>
-                            </ToggleButton>
-                        </StackPanel>
-
-                    </Grid>
-                </Border>
-
-                <Grid Grid.Column="1" Margin="12">
+                <Grid Margin="0">
                     <!-- Pokémon and Save share the real existing workspace control. Auto columns
                          collapse the editor and splitter when Save is the active task. -->
                     <Grid IsVisible="{Binding !IsReportsWorkspace}">
@@ -263,8 +193,8 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <Border x:Name="EditorPane" Grid.Column="0" Width="360" MinWidth="320" MaxWidth="440"
-                                Background="{DynamicResource ThemeBackgroundBaseBrush}"
+                        <Border x:Name="EditorPane" Grid.Column="0" Width="{DynamicResource CompactShellEditorWidth}" MinWidth="300" MaxWidth="360"
+                                Background="{DynamicResource ThemeBackgroundCardBrush}"
                                 BorderThickness="0,0,1,0"
                                 BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                                 Focusable="False"
@@ -279,12 +209,12 @@
                             </ContentControl>
                         </Border>
 
-                        <GridSplitter Grid.Column="1" Width="8"
+                        <GridSplitter Grid.Column="1" Width="1"
                                       Classes="pane-splitter shell-divider"
                                       IsVisible="{Binding IsPokemonWorkspace}"
                                       AutomationProperties.Name="{loc:Loc MainWindow_ResizeEditor}" />
 
-                        <TabControl x:Name="WorkspacePane" Grid.Column="2" Margin="0" Classes="workspace-tabs"
+                        <TabControl x:Name="WorkspacePane" Grid.Column="2" Margin="16,5,16,12" Classes="workspace-tabs" Classes.pokemon="{Binding IsPokemonWorkspace}"
                                     SelectedIndex="{Binding SelectedWorkspaceIndex, Mode=TwoWay}">
                             <TabItem Classes="workspace-tab" IsVisible="{Binding IsPokemonWorkspace}">
                                 <TabItem.Header>
@@ -294,42 +224,7 @@
                                 </TabItem.Header>
                                 <Grid RowDefinitions="*,Auto">
                                     <views:BoxViewer Grid.Row="0" DataContext="{Binding BoxViewer}" />
-                                    <Border Grid.Row="1" Classes="party-strip">
-                                        <Grid ColumnDefinitions="Auto,*">
-                                            <StackPanel Classes="party-strip-label" Spacing="2">
-                                                <TextBlock Text="{loc:Loc Tab_Party}" />
-                                                <TextBlock Text="{loc:Loc Workspace_PartySlots}" />
-                                            </StackPanel>
-                                            <ItemsControl Grid.Column="1"
-                                                          x:CompileBindings="False"
-                                                          ItemsSource="{Binding #MainShell.DataContext.PartyViewer.Slots}">
-                                                <ItemsControl.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <UniformGrid Columns="6" Rows="1" />
-                                                    </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate x:DataType="models:PartySlotData">
-                                                        <Border Classes="party-strip-slot">
-                                                            <Grid>
-                                                                <Border Classes="party-strip-empty" IsVisible="{Binding IsEmpty}" />
-                                                                <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}"
-                                                                       Stretch="Uniform"
-                                                                       IsVisible="{Binding !IsEmpty}"
-                                                                       Margin="4" />
-                                                                <TextBlock Text="{Binding Nickname}"
-                                                                           Classes="party-strip-name"
-                                                                           IsVisible="{Binding !IsEmpty}"
-                                                                           VerticalAlignment="Bottom"
-                                                                           HorizontalAlignment="Center"
-                                                                           TextTrimming="CharacterEllipsis" />
-                                                            </Grid>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </Grid>
-                                    </Border>
+                                    <views:PartyStrip Grid.Row="1" DataContext="{Binding PartyViewer}" />
                                 </Grid>
                             </TabItem>
                             <TabItem Classes="workspace-tab" IsVisible="{Binding IsPokemonWorkspace}">

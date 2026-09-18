@@ -1,0 +1,22 @@
+[
+  {
+    "file": "compact-dark.png",
+    "sha256": "e935d1bff2bf5ca7029af232bca53e3e87ceb204c1be66a694f122aaaed84419",
+    "origin": "Approved compact prototype client-area render, 2026-09-18"
+  },
+  {
+    "file": "compact-light.png",
+    "sha256": "01c36869c1d93cc02e5523c2f1571b8c6331f8cdf915482c2a5d9814c0a8f0f2",
+    "origin": "Approved compact prototype client-area render, 2026-09-18"
+  },
+  {
+    "file": "preferences-dark.png",
+    "sha256": "035d8352823bc71f7d81385206c3cda73caf95271151c80d6e1af205c764a620",
+    "origin": "Approved compact prototype client-area render, 2026-09-18"
+  },
+  {
+    "file": "preferences-light.png",
+    "sha256": "5dc6038a195d917663fba71fe7a88682383bc403c18ae05c42d7950dec86a205",
+    "origin": "Approved compact prototype client-area render, 2026-09-18"
+  }
+]

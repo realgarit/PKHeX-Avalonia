@@ -72,9 +72,9 @@ public sealed class Task2BWorkspaceUiTests
 
         var headers = app.Window.GetVisualDescendants().OfType<DoubleTapCommandBorder>().ToArray();
         var boxHeader = Assert.Single(headers, header =>
-            ReferenceEquals(header.Command, app.ViewModel.OpenBoxWorkspaceCommand));
+            ReferenceEquals(header.Command, app.BoxViewer!.OpenDetachedToolCommand));
         var partyHeader = Assert.Single(headers, header =>
-            ReferenceEquals(header.Command, app.ViewModel.OpenPartyWorkspaceCommand));
+            ReferenceEquals(header.Command, app.ViewModel.PartyViewer!.OpenDetachedToolCommand));
 
         boxHeader.RaiseEvent(new TappedEventArgs(InputElement.DoubleTappedEvent, null!));
         partyHeader.RaiseEvent(new TappedEventArgs(InputElement.DoubleTappedEvent, null!));

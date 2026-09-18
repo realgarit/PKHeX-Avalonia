@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>WinExe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><PackageReference Include="Avalonia.Desktop" Version="11.3.18"/><PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.18"/><PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.18"/></ItemGroup>
+<ItemGroup>
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_282.png" Link="Assets/a_282.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_6.png" Link="Assets/a_6.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_658.png" Link="Assets/a_658.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_448.png" Link="Assets/a_448.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_700.png" Link="Assets/a_700.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_149.png" Link="Assets/a_149.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_25.png" Link="Assets/a_25.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_196.png" Link="Assets/a_196.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_197.png" Link="Assets/a_197.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_470.png" Link="Assets/a_470.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_471.png" Link="Assets/a_471.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_133.png" Link="Assets/a_133.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_94.png" Link="Assets/a_94.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_778.png" Link="Assets/a_778.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_38.png" Link="Assets/a_38.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_59.png" Link="Assets/a_59.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_350.png" Link="Assets/a_350.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_359.png" Link="Assets/a_359.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_373.png" Link="Assets/a_373.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_445.png" Link="Assets/a_445.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_376.png" Link="Assets/a_376.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_248.png" Link="Assets/a_248.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_468.png" Link="Assets/a_468.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../../PKHeX.Avalonia/Assets/Images/Artwork Pokemon Sprites/a_407.png" Link="Assets/a_407.png" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+</Project>

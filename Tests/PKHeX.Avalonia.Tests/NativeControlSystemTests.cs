@@ -18,66 +18,77 @@ public sealed class NativeControlSystemTests
     [AvaloniaFact]
     public void NativeFields_ResolveSharedDensityGeometry()
     {
-        var combo = new ComboBox
+        var app = global::Avalonia.Application.Current!;
+        var previousTheme = app.RequestedThemeVariant;
+        app.RequestedThemeVariant = global::Avalonia.Styling.ThemeVariant.Dark;
+        try
         {
-            ItemsSource = new[]
+            var combo = new ComboBox
             {
-                new ComboItem("Male", 0),
-                new ComboItem("Female", 1),
-            },
-            SelectedIndex = 0,
-        };
-        var filterable = new FilterableComboBox
+                ItemsSource = new[]
+                {
+                    new ComboItem("Male", 0),
+                    new ComboItem("Female", 1),
+                },
+                SelectedIndex = 0,
+            };
+            var filterable = new FilterableComboBox
+            {
+                ItemsSource = new[]
+                {
+                    new ComboItem("Bulbasaur", 1),
+                    new ComboItem("Ivysaur", 2),
+                },
+                SelectedValue = 1,
+            };
+            var text = new TextBox { Text = "PKHeX" };
+            var numeric = new NumericUpDown { Value = 25, Minimum = 0, Maximum = 100 };
+            var date = new CalendarDatePicker { SelectedDate = new DateTime(2026, 9, 17) };
+            var window = new Window
+            {
+                Content = new StackPanel
+                {
+                    Spacing = 8,
+                    Children = { combo, filterable, text, numeric, date },
+                },
+                Width = 420,
+                Height = 300,
+                RequestedThemeVariant = global::Avalonia.Styling.ThemeVariant.Dark,
+            };
+
+            window.Show();
+            Pump(window);
+
+            Assert.Equal(new Thickness(12, 5, 0, 7), combo.Padding);
+            Assert.Equal(new Thickness(10, 6, 6, 5), filterable.Padding);
+            Assert.Equal(new Thickness(10, 5), text.Padding);
+            Assert.Equal(new Thickness(10, 4), numeric.Padding);
+            Assert.Equal(new Thickness(10, 5), date.Padding);
+            Assert.Equal(new CornerRadius(7), combo.CornerRadius);
+            Assert.Equal(new CornerRadius(7), text.CornerRadius);
+            Assert.Equal(new CornerRadius(7), numeric.CornerRadius);
+
+            Assert.Equal(new Color(0xFF, 0x4D, 0x51, 0x60), ((SolidColorBrush)combo.BorderBrush!).Color);
+            Assert.Equal(new Color(0xFF, 0x4D, 0x51, 0x60), ((SolidColorBrush)text.BorderBrush!).Color);
+
+            combo.IsDropDownOpen = true;
+            Pump(window);
+            var popupBorder = window.GetVisualDescendants()
+                .OfType<Border>()
+                .FirstOrDefault(border => border.Name == "PopupBorder");
+            Assert.NotNull(popupBorder);
+            Assert.Equal(new Color(0xFF, 0x22, 0x25, 0x2E), ((SolidColorBrush)popupBorder!.Background!).Color);
+
+            window.Close();
+        }
+        finally
         {
-            ItemsSource = new[]
-            {
-                new ComboItem("Bulbasaur", 1),
-                new ComboItem("Ivysaur", 2),
-            },
-            SelectedValue = 1,
-        };
-        var text = new TextBox { Text = "PKHeX" };
-        var numeric = new NumericUpDown { Value = 25, Minimum = 0, Maximum = 100 };
-        var date = new CalendarDatePicker { SelectedDate = new DateTime(2026, 9, 17) };
-        var window = new Window
-        {
-            Content = new StackPanel
-            {
-                Spacing = 8,
-                Children = { combo, filterable, text, numeric, date },
-            },
-            Width = 420,
-            Height = 300,
-        };
-
-        window.Show();
-        Pump(window);
-
-        Assert.Equal(new Thickness(12, 5, 0, 7), combo.Padding);
-        Assert.Equal(new Thickness(10, 6, 6, 5), filterable.Padding);
-        Assert.Equal(new Thickness(10, 5), text.Padding);
-        Assert.Equal(new Thickness(10, 4), numeric.Padding);
-        Assert.Equal(new Thickness(10, 5), date.Padding);
-        Assert.Equal(new CornerRadius(7), combo.CornerRadius);
-        Assert.Equal(new CornerRadius(7), text.CornerRadius);
-        Assert.Equal(new CornerRadius(7), numeric.CornerRadius);
-
-        Assert.Equal(new Color(0xFF, 0x4A, 0x4A, 0x4A), ((SolidColorBrush)combo.BorderBrush!).Color);
-        Assert.Equal(new Color(0xFF, 0x4A, 0x4A, 0x4A), ((SolidColorBrush)text.BorderBrush!).Color);
-
-        combo.IsDropDownOpen = true;
-        Pump(window);
-        var popupBorder = window.GetVisualDescendants()
-            .OfType<Border>()
-            .FirstOrDefault(border => border.Name == "PopupBorder");
-        Assert.NotNull(popupBorder);
-        Assert.Equal(new Color(0xFF, 0x1D, 0x1D, 0x1D), ((SolidColorBrush)popupBorder!.Background!).Color);
-
-        window.Close();
+            app.RequestedThemeVariant = previousTheme;
+        }
     }
 
     [AvaloniaFact]
-    public void UnqualifiedTextControls_UseTheNeutralThemeForeground()
+    public void UnqualifiedTextControls_ResolveVisibleForeground()
     {
         var text = new TextBlock { Text = "Default text" };
         var radio = new RadioButton { Content = "Choice" };
@@ -86,6 +97,7 @@ public sealed class NativeControlSystemTests
         var window = new Window
         {
             Content = new StackPanel { Children = { text, radio, overlay } },
+            RequestedThemeVariant = global::Avalonia.Styling.ThemeVariant.Dark,
             Width = 240,
             Height = 120,
         };
@@ -93,9 +105,9 @@ public sealed class NativeControlSystemTests
         window.Show();
         Pump(window);
 
-        AssertNeutral((SolidColorBrush)text.Foreground!);
-        AssertNeutral((SolidColorBrush)radio.Foreground!);
-        AssertNeutral((SolidColorBrush)overlay.Foreground!);
+        AssertVisibleForeground((SolidColorBrush)text.Foreground!);
+        AssertVisibleForeground((SolidColorBrush)radio.Foreground!);
+        AssertVisibleForeground((SolidColorBrush)overlay.Foreground!);
 
         window.Close();
     }
@@ -126,10 +138,17 @@ public sealed class NativeControlSystemTests
         window.Close();
     }
 
-    private static void AssertNeutral(SolidColorBrush brush)
+    private static void AssertVisibleForeground(SolidColorBrush brush)
     {
-        Assert.Equal(brush.Color.R, brush.Color.G);
-        Assert.Equal(brush.Color.G, brush.Color.B);
+        Assert.Equal(255, brush.Color.A);
+        static double Linear(byte value)
+        {
+            var channel = value / 255d;
+            return channel <= 0.04045 ? channel / 12.92 : Math.Pow((channel + 0.055) / 1.055, 2.4);
+        }
+        static double Luminance(Color color) => 0.2126 * Linear(color.R) + 0.7152 * Linear(color.G) + 0.0722 * Linear(color.B);
+        var contrast = (Luminance(brush.Color) + 0.05) / (Luminance(Color.Parse("#191B22")) + 0.05);
+        Assert.True(contrast >= 4.5, $"Actual control text contrast was only {contrast:F2}:1.");
     }
 
     [AvaloniaFact]
@@ -163,7 +182,7 @@ public sealed class NativeControlSystemTests
 
         var actions = view.GetVisualDescendants()
             .OfType<Button>()
-            .Where(button => button.Classes.Contains("entity-status-action"))
+            .Where(button => button.Name is "LegalityPill" or "ShinyToggle")
             .ToArray();
 
         Assert.Equal(2, actions.Length);

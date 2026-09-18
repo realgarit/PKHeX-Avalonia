@@ -484,7 +484,8 @@ public class ComprehensiveTests
 
         var exclusions = new HashSet<string> 
         { 
-            "SelectedTab", "Stat_HP", "Stat_ATK", "Stat_DEF", "Stat_SPA", "Stat_SPD", "Stat_SPE",
+            // Navigation is presentation state and is deliberately not serialized into a PKM.
+            "SelectedTab", nameof(PokemonEditorViewModel.SelectedEditorSection), "Stat_HP", "Stat_ATK", "Stat_DEF", "Stat_SPA", "Stat_SPD", "Stat_SPE",
             "HaXStatHP", "HaXStatATK", "HaXStatDEF", "HaXStatSPA", "HaXStatSPD", "HaXStatSPE",
             "Species", "Form", "Ability", "Level", "TargetPKM", "Nature", "Gender",
             "EggLocation", "MetLocation", "MetLevel", "OriginalTrainerGender", "Ball",

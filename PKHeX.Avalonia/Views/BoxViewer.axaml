@@ -3,9 +3,26 @@
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
              xmlns:loc="using:PKHeX.Avalonia.Localization"
+             xmlns:controls="using:PKHeX.Avalonia.Controls"
              x:Class="PKHeX.Avalonia.Views.BoxViewer"
              x:DataType="vm:BoxViewerViewModel"
              Focusable="True">
+
+    <UserControl.Styles>
+        <Style Selector="Button.compact-slot">
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundCardBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMutedBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="7" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
+        <Style Selector="Button.compact-slot.selected">
+            <Setter Property="Background" Value="{DynamicResource CompactSelectionBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CompactSelectionBorderBrush}" />
+        </Style>
+    </UserControl.Styles>
 
     <!-- Keyboard Navigation -->
     <UserControl.KeyBindings>
@@ -28,12 +45,12 @@
         <KeyBinding Gesture="Delete" Command="{Binding DeleteSlotCommand}" CommandParameter="{Binding SelectedSlot}" />
     </UserControl.KeyBindings>
 
-    <Border Classes="view-container">
+    <Border Padding="0" Background="Transparent">
         <DockPanel>
             <!-- Box Navigation Header -->
-            <Border DockPanel.Dock="Top" Classes="card" Padding="0" Margin="{DynamicResource UiDensityViewSectionMargin}">
-                <Grid ColumnDefinitions="48,*,42,42,42,42" Height="44">
-                    <Button Grid.Column="0"
+            <Border DockPanel.Dock="Top" Padding="0" Margin="0" Height="39">
+                <Grid ColumnDefinitions="*,28,28,28,28,28" Height="34">
+                    <Button Grid.Column="1"
                             Command="{Binding PreviousBoxCommand}"
                             ToolTip.Tip="{loc:Loc BoxViewer_PreviousBoxTooltip}"
                             AutomationProperties.Name="Previous Box"
@@ -44,15 +61,15 @@
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             FontSize="16">
-                        <PathIcon Data="M 12,2 L 4,8 L 12,14 Z" />
+                        <Path Width="8" Height="12" Data="M7 1 L1 6 L7 11" Stroke="{DynamicResource ThemeTextMutedBrush}" StrokeThickness="1.5" />
                     </Button>
                     
-                    <TextBlock Grid.Column="1" 
-                               Text="{Binding BoxName}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontWeight="SemiBold"
-                               FontSize="16" />
+                    <controls:DoubleTapCommandBorder Grid.Column="0" Command="{Binding OpenDetachedToolCommand}" ToolTip.Tip="{loc:Loc BoxViewer_PopOut}" Background="Transparent">
+                    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding BoxName}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding OccupancyText}" FontSize="10" Foreground="{DynamicResource ThemeTextMutedBrush}" VerticalAlignment="Center" />
+                    </StackPanel>
+                    </controls:DoubleTapCommandBorder>
 
                     <Button Grid.Column="2"
                             Command="{Binding NextBoxCommand}"
@@ -65,7 +82,7 @@
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             FontSize="16">
-                        <PathIcon Data="M 4,2 L 12,8 L 4,14 Z" />
+                        <Path Width="8" Height="12" Data="M1 1 L7 6 L1 11" Stroke="{DynamicResource ThemeTextMutedBrush}" StrokeThickness="1.5" />
                     </Button>
 
                     <Button Grid.Column="3"
@@ -125,27 +142,27 @@
 
             <!-- Footer -->
             <TextBlock DockPanel.Dock="Bottom"
-                       Text="{loc:Loc BoxViewer_FooterHelp}"
+                       Text="{loc:Loc CompactUI_SlotHint}"
+                       ToolTip.Tip="{loc:Loc BoxViewer_FooterHelp}"
+                       TextTrimming="CharacterEllipsis"
                        Foreground="{DynamicResource ThemeTextMutedBrush}"
                        FontSize="11"
-                       HorizontalAlignment="Center"
-                       Margin="{DynamicResource UiDensityViewFooterMargin}" />
+                       HorizontalAlignment="Left"
+                       Margin="0,5,0,4" />
 
             <!-- Box Grid (6 columns x 5 rows = 30 slots) - Fills available space -->
-            <Border Classes="card-elevated" Padding="{DynamicResource UiDensityCardPadding}">
+            <Border Padding="0" Background="Transparent">
                 <ItemsControl ItemsSource="{Binding Slots}" x:Name="SlotGrid">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="6" Rows="5" />
+                            <UniformGrid Columns="6" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:SlotData">
-                            <Button Classes="slot"
+                            <Button Classes="slot compact-slot"
                                     Classes.selected="{Binding IsSelected}"
-                                    Margin="1"
-                                    Width="NaN"
-                                    Height="NaN"
+                                    Margin="{DynamicResource CompactSlotGap}"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     PointerMoved="OnSlotPointerMoved"
@@ -192,20 +209,28 @@
                                             Stretch="Uniform"
                                             RenderOptions.BitmapInterpolationMode="HighQuality"
                                             IsVisible="{Binding !IsEmpty}"
-                                            Margin="4,4,4,18" />
+                                            MaxHeight="47" VerticalAlignment="Center" Margin="4,0,4,14" />
 
                                      <TextBlock Text="{Binding SlotNumber}"
-                                                Classes="slot-number"
+                                                FontSize="8" Foreground="{DynamicResource ThemeTextMutedBrush}" Opacity="0.7"
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Top"
-                                                Margin="6,5,0,0" />
+                                                Margin="4,3,0,0" />
 
-                                     <Border Classes="slot-label-surface"
+                                     <TextBlock Text="★"
+                                                Foreground="{DynamicResource ThemeShinyBrush}"
+                                                FontSize="10"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top"
+                                                Margin="0,4,5,0"
+                                                IsVisible="{Binding IsShiny}" />
+
+                                     <Border Background="Transparent"
                                              VerticalAlignment="Bottom"
                                              HorizontalAlignment="Stretch"
                                              IsVisible="{Binding !IsEmpty}">
                                          <TextBlock Text="{Binding Nickname}"
-                                                    Classes="slot-label"
+                                                    FontSize="10" Foreground="{DynamicResource ThemeTextPrimaryBrush}"
                                                     TextTrimming="CharacterEllipsis"
                                                     HorizontalAlignment="Center" />
                                      </Border>

@@ -49,10 +49,10 @@ public partial class PokemonEditorViewModel : ViewModelBase
         OnPropertyChanged(nameof(HyperTrainedSpeAutomationName));
     }
     
-    public IReadOnlyList<ComboItem> GenderList { get; } = [
-        new ComboItem("Male", 0),
-        new ComboItem("Female", 1),
-        new ComboItem("Genderless", 2)
+    public IReadOnlyList<ComboItem> GenderList => [
+        new ComboItem(LocalizedStrings.Instance["Pokedex8Editor_GenderMale"], 0),
+        new ComboItem(LocalizedStrings.Instance["Pokedex8Editor_GenderFemale"], 1),
+        new ComboItem(LocalizedStrings.Instance["Pokedex8Editor_GenderGenderless"], 2)
     ];
 
     /// <summary>
@@ -79,7 +79,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     // Basic Info
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Title), nameof(Sprite), nameof(FormList), nameof(AbilityList), nameof(Ability), nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(Base_HP), nameof(Base_ATK), nameof(Base_DEF), nameof(Base_SPA), nameof(Base_SPD), nameof(Base_SPE))]
+    [NotifyPropertyChangedFor(nameof(Title), nameof(Sprite), nameof(FormList), nameof(AbilityList), nameof(Ability), nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(Base_HP), nameof(Base_ATK), nameof(Base_DEF), nameof(Base_SPA), nameof(Base_SPD), nameof(Base_SPE), nameof(ShowLegalityStatus))]
     private int _species;
 
     [ObservableProperty]
@@ -229,6 +229,8 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     public void RefreshLanguage()
     {
+        OnPropertyChanged(nameof(GenderList));
+        OnPropertyChanged(nameof(PokemonGenderList));
         var filtered = GameInfo.FilteredSources;
         SpeciesList = filtered.Species;
         MoveList = filtered.Moves;
@@ -242,6 +244,18 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
         // Notify that the PKM name etc might have changed
         LoadFromPKM();
+
+        // Replacing a dropdown's items clears its visual selection even when the stored value
+        // did not change. Reapply values after all localized lists have been replaced.
+        foreach (var property in new[]
+        {
+            nameof(Species), nameof(Form), nameof(Gender), nameof(Nature), nameof(StatAlignment),
+            nameof(Ability), nameof(HeldItem), nameof(Ball), nameof(Language), nameof(OriginGame),
+            nameof(MetLocation), nameof(EggLocation), nameof(Move1), nameof(Move2), nameof(Move3),
+            nameof(Move4), nameof(RelearnMove1), nameof(RelearnMove2), nameof(RelearnMove3),
+            nameof(RelearnMove4), nameof(OriginalTrainerGender), nameof(HandlingTrainerGender),
+        })
+            OnPropertyChanged(property);
     }
 
     private void LoadFromPKM()

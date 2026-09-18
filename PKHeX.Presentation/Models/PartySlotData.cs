@@ -8,6 +8,7 @@ namespace PKHeX.Presentation.Models;
 public partial class PartySlotData : ObservableObject
 {
     public SlotLocation Location => SlotLocation.FromParty(Slot);
+    public int SlotNumber => Slot + 1;
     
     [ObservableProperty] private int _slot;
     [ObservableProperty] private ushort _species;

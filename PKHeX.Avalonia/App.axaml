@@ -15,33 +15,15 @@
                 <!-- Add other resources here if needed -->
             </ResourceDictionary.MergedDictionaries>
 
-            <!--
-                Override FluentTheme accent colors with restrained neutral graphite/silver. Kept as a single constant
-                (not a per-theme token) intentionally: this is the app's brand accent, consumed
-                internally by FluentTheme's own built-in controls, and must stay in
-                Application.Resources (not a Style's resources) to reliably take precedence over
-                FluentTheme's own SystemAccentColor* resources.
-            -->
-            <Color x:Key="SystemAccentColor">#777777</Color>
-            <Color x:Key="SystemAccentColorDark1">#5A5A5A</Color>
-            <Color x:Key="SystemAccentColorDark2">#444444</Color>
-            <Color x:Key="SystemAccentColorDark3">#303030</Color>
-            <Color x:Key="SystemAccentColorLight1">#949494</Color>
-            <Color x:Key="SystemAccentColorLight2">#ADADAD</Color>
-            <Color x:Key="SystemAccentColorLight3">#C7C7C7</Color>
-
-            <!--
-                Appearance accent: deliberately static and achromatic. Fluent's platform accent can
-                otherwise leak into custom PathIcon/Border compositions on a fresh top-level window,
-                producing a yellow or blue cast even when the selected theme dictionary is neutral.
-                Dark and Light still own the surfaces and text contrast; interaction emphasis uses this
-                one product-neutral graphite value in both modes.
-            -->
-            <SolidColorBrush x:Key="PkhexNeutralAccentBrush" Color="#707070" />
-            <SolidColorBrush x:Key="PkhexNeutralAccentHoverBrush" Color="#8A8A8A" />
-            <SolidColorBrush x:Key="PkhexNeutralAccentPressedBrush" Color="#5A5A5A" />
-            <SolidColorBrush x:Key="PkhexNeutralAccentSubtleBrush" Color="#70707030" />
-            <SolidColorBrush x:Key="PkhexNeutralIconBrush" Color="#808080" />
+            <!-- Native Fluent controls share the compact UI's rose accent. Surface, text,
+                 selection and focus brushes are supplied by the Light/Dark dictionaries. -->
+            <Color x:Key="SystemAccentColor">#AD4D53</Color>
+            <Color x:Key="SystemAccentColorDark1">#913F4A</Color>
+            <Color x:Key="SystemAccentColorDark2">#74323B</Color>
+            <Color x:Key="SystemAccentColorDark3">#57252D</Color>
+            <Color x:Key="SystemAccentColorLight1">#C4717B</Color>
+            <Color x:Key="SystemAccentColorLight2">#D98B95</Color>
+            <Color x:Key="SystemAccentColorLight3">#F1A1A9</Color>
 
             <!-- Override Focus Visuals to remove yellow/accent border -->
             <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="Transparent" />

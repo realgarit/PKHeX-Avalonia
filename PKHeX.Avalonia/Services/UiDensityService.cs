@@ -54,7 +54,10 @@ public sealed class UiDensityService : IUiDensityService
         Set(resources, UiDensityResourceKeys.SectionRadius, compact ? new CornerRadius(6) : new CornerRadius(8));
         Set(resources, UiDensityResourceKeys.ViewPadding, compact ? new Thickness(8) : new Thickness(16));
         Set(resources, UiDensityResourceKeys.StatusBarPadding, compact ? new Thickness(8, 4) : new Thickness(12, 6));
-        Set(resources, UiDensityResourceKeys.ControlHeight, compact ? 32d : 36d);
+        // The compact reference keeps native controls at 30 DIPs. Comfortable increases the
+        // surrounding padding while preserving the shell geometry so switching density does not
+        // move the editor/storage split or hide a required action.
+        Set(resources, UiDensityResourceKeys.ControlHeight, compact ? 30d : 36d);
         Set(resources, UiDensityResourceKeys.FormFieldPadding, compact ? new Thickness(6, 3) : new Thickness(8, 5));
         Set(resources, UiDensityResourceKeys.InputPadding, compact ? new Thickness(10, 5) : new Thickness(12, 7));
         Set(resources, UiDensityResourceKeys.ComboBoxPadding, compact ? new Thickness(12, 5, 0, 7) : new Thickness(14, 7, 0, 9));
@@ -78,6 +81,17 @@ public sealed class UiDensityService : IUiDensityService
         Set(resources, UiDensityResourceKeys.ViewSectionMargin, compact ? new Thickness(0, 0, 0, 12) : new Thickness(0, 0, 0, 16));
         Set(resources, UiDensityResourceKeys.ViewFooterMargin, compact ? new Thickness(0, 12, 0, 0) : new Thickness(0, 16, 0, 0));
         Set(resources, UiDensityResourceKeys.SectionHeaderMargin, compact ? new Thickness(0, 0, 0, 8) : new Thickness(0, 0, 0, 12));
+
+        // Compact shell geometry is a stable contract consumed by the shell, editor, storage and
+        // party lanes. Comfortable intentionally retains these bounds and only relaxes control
+        // padding/spacing above.
+        Set(resources, UiDensityResourceKeys.CompactShellEditorWidth, 306d);
+        Set(resources, UiDensityResourceKeys.CompactShellMenuHeight, 35d);
+        Set(resources, UiDensityResourceKeys.CompactShellContextHeight, 49d);
+        Set(resources, UiDensityResourceKeys.CompactShellStatusHeight, 27d);
+        Set(resources, UiDensityResourceKeys.CompactPartyStripHeight, 76d);
+        Set(resources, UiDensityResourceKeys.CompactPanePadding, new Thickness(16));
+        Set(resources, UiDensityResourceKeys.CompactSlotGap, new Thickness(0, 0, 5, 5));
     }
 
     private static void Set(IResourceDictionary resources, string key, object value) => resources[key] = value;
@@ -120,4 +134,11 @@ internal static class UiDensityResourceKeys
     public const string ViewSectionMargin = "UiDensityViewSectionMargin";
     public const string ViewFooterMargin = "UiDensityViewFooterMargin";
     public const string SectionHeaderMargin = "UiDensitySectionHeaderMargin";
+    public const string CompactShellEditorWidth = "CompactShellEditorWidth";
+    public const string CompactShellMenuHeight = "CompactShellMenuHeight";
+    public const string CompactShellContextHeight = "CompactShellContextHeight";
+    public const string CompactShellStatusHeight = "CompactShellStatusHeight";
+    public const string CompactPartyStripHeight = "CompactPartyStripHeight";
+    public const string CompactPanePadding = "CompactPanePadding";
+    public const string CompactSlotGap = "CompactSlotGap";
 }

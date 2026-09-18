@@ -45,6 +45,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(StatusText))]
     [NotifyPropertyChangedFor(nameof(CurrentSaveFileName))]
     [NotifyPropertyChangedFor(nameof(CurrentSavePath))]
+    [NotifyPropertyChangedFor(nameof(CurrentGameName))]
+    [NotifyPropertyChangedFor(nameof(CurrentTrainerName))]
     [NotifyCanExecuteChangedFor(nameof(SaveFileCommand))]
     [NotifyCanExecuteChangedFor(nameof(SaveFileAsCommand))]
     [NotifyCanExecuteChangedFor(nameof(CloseFileCommand))]
@@ -123,6 +125,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public LanguageService LanguageService => _languageService;
 
+    public string CurrentGameName => CurrentSave is { } save ? GameInfo.GetVersionName(save.Version) : string.Empty;
+    public string CurrentTrainerName => CurrentSave?.OT ?? string.Empty;
+
     public MainWindowViewModel(
         ISaveFileGateway saveFileService,
         IDialogService dialogService,
@@ -158,6 +163,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _settingsStore = settingsStore;
         _themeService = themeService;
         _uiDensityService = uiDensityService;
+        SelectedTheme = _themeService.CurrentTheme;
         _undoRedo = undoRedo;
         _languageService = languageService;
         _autoLegalityService = autoLegalityService;

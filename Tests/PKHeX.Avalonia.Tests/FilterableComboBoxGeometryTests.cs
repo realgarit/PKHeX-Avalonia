@@ -102,11 +102,12 @@ public sealed class FilterableComboBoxGeometryTests
         field.ApplyTemplate();
 
         Assert.NotNull(field.Template);
-        Assert.Equal(FluentTextControlPadding, field.Padding);
+        var expectedPadding = field.Classes.Contains("compact-select") ? new Thickness(9, 5, 24, 5) : FluentTextControlPadding;
+        Assert.Equal(expectedPadding, field.Padding);
         Assert.Null(field.InnerRightContent);
 
         var textBox = field.GetVisualDescendants().OfType<TextBox>().Single();
-        Assert.Equal(FluentTextControlPadding, textBox.Padding);
+        Assert.Equal(expectedPadding, textBox.Padding);
         Assert.Equal(TextAlignment.Start, textBox.TextAlignment);
         Assert.Equal(VerticalAlignment.Center, textBox.VerticalContentAlignment);
 
