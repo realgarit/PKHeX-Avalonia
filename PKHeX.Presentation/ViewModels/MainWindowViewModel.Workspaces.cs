@@ -8,6 +8,14 @@ namespace PKHeX.Presentation.ViewModels;
 
 public partial class MainWindowViewModel
 {
+    // MenuItem.CommandParameter is an object. Keep the workspace-tab values typed so Avalonia's
+    // MenuItem can call RelayCommand<int>.CanExecute while a submenu opens; a XAML attribute such as
+    // CommandParameter="0" remains a string and throws before the user can select the menu item.
+    public const int BoxWorkspaceTabIndex = 0;
+    public const int PartyWorkspaceTabIndex = 1;
+    public const int TrainerWorkspaceTabIndex = 2;
+    public const int InventoryWorkspaceTabIndex = 3;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsPokemonWorkspace))]
     [NotifyPropertyChangedFor(nameof(IsSaveWorkspace))]
