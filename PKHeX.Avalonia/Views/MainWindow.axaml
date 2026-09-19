@@ -43,10 +43,8 @@
     </Window.KeyBindings>
 
     <DockPanel>
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" MinHeight="35" Background="{DynamicResource ThemeBackgroundCardBrush}">
-            <Image Source="avares://PKHeX.Avalonia/Assets/Icons/icon.png" Width="22" Height="22" Margin="14,0,12,0" />
-
-        <Menu Grid.Column="1" FontSize="11" VerticalAlignment="Center" Background="Transparent">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" MinHeight="35" Background="{DynamicResource ThemeBackgroundCardBrush}">
+        <Menu Grid.Column="0" FontSize="11" VerticalAlignment="Center" Background="Transparent">
             <MenuItem Header="{loc:Loc Menu_File}">
                 <MenuItem Header="{loc:Loc Menu_File_Open}" Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O" />
                 <MenuItem Header="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" InputGesture="Ctrl+S" />
@@ -63,22 +61,21 @@
                 <MenuItem Header="{loc:Loc Tab_Inventory}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.InventoryWorkspaceTabIndex}" />
             </MenuItem>
             <MenuItem Header="{loc:Loc Menu_Tools}" ItemsSource="{Binding AvailableToolMenuGroups}">
-                <MenuItem.ItemTemplate>
-                    <DataTemplate x:DataType="vm:ToolMenuGroup">
-                        <MenuItem Header="{Binding Title}"
-                                  AutomationProperties.Name="{Binding Title}"
-                                  ItemsSource="{Binding Items}">
-                            <MenuItem.ItemTemplate>
-                                <DataTemplate x:DataType="vm:ToolLauncherItem">
-                                    <MenuItem Header="{Binding Title}"
-                                              AutomationProperties.Name="{Binding Title}"
-                                              Command="{Binding Command}"
-                                              IsEnabled="{Binding IsAvailable}" />
-                                </DataTemplate>
-                            </MenuItem.ItemTemplate>
-                        </MenuItem>
-                    </DataTemplate>
-                </MenuItem.ItemTemplate>
+                <MenuItem.ItemContainerTheme>
+                    <ControlTheme x:CompileBindings="False" TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                        <Setter Property="Header" Value="{Binding Title}" />
+                        <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
+                        <Setter Property="ItemsSource" Value="{Binding Items}" />
+                        <Setter Property="ItemContainerTheme">
+                            <ControlTheme x:CompileBindings="False" TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                                <Setter Property="Header" Value="{Binding Title}" />
+                                <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
+                                <Setter Property="Command" Value="{Binding Command}" />
+                                <Setter Property="IsEnabled" Value="{Binding IsAvailable}" />
+                            </ControlTheme>
+                        </Setter>
+                    </ControlTheme>
+                </MenuItem.ItemContainerTheme>
             </MenuItem>
             <MenuItem Header="{loc:Loc Menu_Window}">
                 <MenuItem Header="{loc:Loc Workspace_Pokemon}" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Pokemon}" />
@@ -102,9 +99,9 @@
         </Menu>
 
 
-            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" Margin="0,0,16,0" VerticalAlignment="Center">
-                <Button Content="{loc:Loc Settings_Title}" Command="{Binding OpenSettingsCommand}" FontSize="11" Background="Transparent" Padding="8,3" MinHeight="27" />
-                <ComboBox Width="92"
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0,0,16,0" VerticalAlignment="Center">
+                <Button Classes="topbar-control" Content="{loc:Loc Settings_Title}" Command="{Binding OpenSettingsCommand}" Background="Transparent" Padding="8,3" />
+                <ComboBox Classes="topbar-control" Width="92"
                               ItemsSource="{Binding Themes}"
                               SelectedItem="{Binding SelectedTheme}"
                               AutomationProperties.Name="{loc:Loc Settings_Theme}">

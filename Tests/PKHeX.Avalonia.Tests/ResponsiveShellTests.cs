@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Headless.XUnit;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
@@ -34,6 +35,12 @@ public sealed class ResponsiveShellTests
         Assert.Contains("Classes=\"pane-splitter shell-divider\"", mainWindow);
         Assert.Contains("Classes=\"workspace-tabs\"", mainWindow);
         Assert.Contains("ItemsSource=\"{Binding AvailableToolMenuGroups}\"", mainWindow);
+        Assert.Contains("MenuItem.ItemContainerTheme", mainWindow);
+        Assert.Contains("BasedOn=\"{StaticResource {x:Type MenuItem}}\"", mainWindow);
+        Assert.DoesNotContain("MenuItem.ItemTemplate", mainWindow);
+        Assert.Contains("Classes=\"topbar-control\"", mainWindow);
+        Assert.Contains("ColumnDefinitions=\"*,Auto\"", mainWindow);
+        Assert.DoesNotContain("Assets/Icons/icon.png\" Width=\"22\" Height=\"22\"", mainWindow);
         Assert.DoesNotContain("<MenuItem Header=\"{loc:Loc Menu_Pokemon}\"", mainWindow);
         Assert.DoesNotContain("<MenuItem Header=\"{loc:Loc Menu_Gen1}\"", mainWindow);
         Assert.DoesNotContain("ThemeAccentBrush\"", mainWindow);
@@ -105,6 +112,23 @@ public sealed class ResponsiveShellTests
             menu.IsSubMenuOpen = false;
             app.Pump();
         }
+    }
+
+    [AvaloniaFact]
+    public void TopBarSettingsAndThemeShareHeightAndTypography()
+    {
+        using var app = new HeadlessAppFixture();
+        app.LoadSaveInstance(new SAV6XY());
+
+        var settings = app.Window.GetVisualDescendants()
+            .OfType<Button>()
+            .Single(button => Equals(button.Content, LocalizedStrings.Instance["Settings_Title"]));
+        var theme = app.Window.GetVisualDescendants()
+            .OfType<ComboBox>()
+            .Single(combo => AutomationProperties.GetName(combo) == LocalizedStrings.Instance["Settings_Theme"]);
+
+        Assert.Equal(settings.Bounds.Height, theme.Bounds.Height);
+        Assert.Equal(settings.FontSize, theme.FontSize);
     }
 
     [AvaloniaFact]

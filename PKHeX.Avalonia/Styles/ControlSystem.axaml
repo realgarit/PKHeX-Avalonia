@@ -74,6 +74,21 @@
         <Setter Property="Spacing" Value="0" />
     </Style>
 
+    <!-- The Settings action and theme selector share one native top-bar control contract. -->
+    <Style Selector="Button.topbar-control, ComboBox.topbar-control">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Height" Value="{DynamicResource UiDensityControlHeight}" />
+        <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+    </Style>
+
+    <Style Selector="Button.topbar-control">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="ComboBox.topbar-control">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
     <!-- Selection controls -->
     <Style Selector="ComboBox">
         <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
