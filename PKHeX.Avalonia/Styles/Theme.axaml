@@ -42,7 +42,8 @@
                         <Color x:Key="ThemeControlBorder">#4D5160</Color>
                         <Color x:Key="ThemeControlBorderHover">#7E8394</Color>
                         <Color x:Key="ThemeControlBorderFocus">#F1A1A9</Color>
-                        <Color x:Key="ThemeControlFocusGlow">#F1A1A933</Color>
+                        <!-- Avalonia colors use #AARRGGBB; keep the focus glow translucent pink. -->
+                        <Color x:Key="ThemeControlFocusGlow">#33F1A1A9</Color>
                         <Color x:Key="ThemeControlPopup">#22252E</Color>
                         <Color x:Key="ThemeControlPopupHover">#343743</Color>
                         <Color x:Key="ThemeControlPopupSelected">#403039</Color>
@@ -85,6 +86,8 @@
                         <SolidColorBrush x:Key="ThemeControlBorderHoverBrush" Color="{StaticResource ThemeControlBorderHover}" />
                         <SolidColorBrush x:Key="ThemeControlBorderFocusBrush" Color="{StaticResource ThemeControlBorderFocus}" />
                         <SolidColorBrush x:Key="ThemeControlFocusGlowBrush" Color="{StaticResource ThemeControlFocusGlow}" />
+                        <SolidColorBrush x:Key="ComboBoxBackgroundUnfocused" Color="{StaticResource ThemeControlBackground}" />
+                        <SolidColorBrush x:Key="ComboBoxBackgroundBorderBrushUnfocused" Color="{StaticResource ThemeControlBorder}" />
                         <SolidColorBrush x:Key="ThemeControlPopupBrush" Color="{StaticResource ThemeControlPopup}" />
                         <SolidColorBrush x:Key="ThemeControlPopupHoverBrush" Color="{StaticResource ThemeControlPopupHover}" />
                         <SolidColorBrush x:Key="ThemeControlPopupSelectedBrush" Color="{StaticResource ThemeControlPopupSelected}" />
@@ -148,7 +151,7 @@
                         <Color x:Key="ThemeControlBorder">#BFC1C8</Color>
                         <Color x:Key="ThemeControlBorderHover">#83868F</Color>
                         <Color x:Key="ThemeControlBorderFocus">#913F4A</Color>
-                        <Color x:Key="ThemeControlFocusGlow">#913F4A22</Color>
+                        <Color x:Key="ThemeControlFocusGlow">#22913F4A</Color>
                         <Color x:Key="ThemeControlPopup">#FFFFFF</Color>
                         <Color x:Key="ThemeControlPopupHover">#F1F1F4</Color>
                         <Color x:Key="ThemeControlPopupSelected">#F5E8EA</Color>
@@ -190,6 +193,8 @@
                         <SolidColorBrush x:Key="ThemeControlBorderHoverBrush" Color="{StaticResource ThemeControlBorderHover}" />
                         <SolidColorBrush x:Key="ThemeControlBorderFocusBrush" Color="{StaticResource ThemeControlBorderFocus}" />
                         <SolidColorBrush x:Key="ThemeControlFocusGlowBrush" Color="{StaticResource ThemeControlFocusGlow}" />
+                        <SolidColorBrush x:Key="ComboBoxBackgroundUnfocused" Color="{StaticResource ThemeControlBackground}" />
+                        <SolidColorBrush x:Key="ComboBoxBackgroundBorderBrushUnfocused" Color="{StaticResource ThemeControlBorder}" />
                         <SolidColorBrush x:Key="ThemeControlPopupBrush" Color="{StaticResource ThemeControlPopup}" />
                         <SolidColorBrush x:Key="ThemeControlPopupHoverBrush" Color="{StaticResource ThemeControlPopupHover}" />
                         <SolidColorBrush x:Key="ThemeControlPopupSelectedBrush" Color="{StaticResource ThemeControlPopupSelected}" />
@@ -252,7 +257,7 @@
                         <Color x:Key="ThemeControlBorder">#FFFFFF</Color>
                         <Color x:Key="ThemeControlBorderHover">#FFFFFF</Color>
                         <Color x:Key="ThemeControlBorderFocus">#FF4500</Color>
-                        <Color x:Key="ThemeControlFocusGlow">#FF450066</Color>
+                        <Color x:Key="ThemeControlFocusGlow">#66FF4500</Color>
                         <Color x:Key="ThemeControlPopup">#000000</Color>
                         <Color x:Key="ThemeControlPopupHover">#333333</Color>
                         <Color x:Key="ThemeControlPopupSelected">#5A1A00</Color>
@@ -294,6 +299,8 @@
                         <SolidColorBrush x:Key="ThemeControlBorderHoverBrush" Color="{StaticResource ThemeControlBorderHover}" />
                         <SolidColorBrush x:Key="ThemeControlBorderFocusBrush" Color="{StaticResource ThemeControlBorderFocus}" />
                         <SolidColorBrush x:Key="ThemeControlFocusGlowBrush" Color="{StaticResource ThemeControlFocusGlow}" />
+                        <SolidColorBrush x:Key="ComboBoxBackgroundUnfocused" Color="{StaticResource ThemeControlBackground}" />
+                        <SolidColorBrush x:Key="ComboBoxBackgroundBorderBrushUnfocused" Color="{StaticResource ThemeControlBorder}" />
                         <SolidColorBrush x:Key="ThemeControlPopupBrush" Color="{StaticResource ThemeControlPopup}" />
                         <SolidColorBrush x:Key="ThemeControlPopupHoverBrush" Color="{StaticResource ThemeControlPopupHover}" />
                         <SolidColorBrush x:Key="ThemeControlPopupSelectedBrush" Color="{StaticResource ThemeControlPopupSelected}" />

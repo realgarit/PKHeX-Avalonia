@@ -155,9 +155,9 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="{loc:Loc PKMDatabaseView_Species}" Binding="{Binding SpeciesName}" Width="*"/>
-                        <DataGridTextColumn Header="{loc:Loc PKMDatabaseView_Lv}" Binding="{Binding Level}" Width="50"/>
-                        <DataGridTextColumn Header="{loc:Loc PKMDatabaseView_Nature}" Binding="{Binding NatureName}" Width="100"/>
-                        <DataGridTextColumn Header="{loc:Loc PKMDatabaseView_Sex}" Binding="{Binding Gender}" Width="50"/>
+                        <DataGridTextColumn Header="{loc:Loc PKMDatabaseView_Lv}" Binding="{Binding Level}" Width="64"/>
+                        <DataGridTextColumn Header="{loc:Loc PKMDatabaseView_Nature}" Binding="{Binding NatureName}" Width="112"/>
+                        <DataGridTextColumn Header="{loc:Loc PKMDatabaseView_Sex}" Binding="{Binding Gender}" Width="72"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>

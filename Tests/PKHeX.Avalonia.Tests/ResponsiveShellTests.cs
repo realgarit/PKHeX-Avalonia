@@ -17,6 +17,7 @@ public sealed class ResponsiveShellTests
     {
         var mainWindow = ReadSourceFile("Views", "MainWindow.axaml");
         var theme = ReadSourceFile("Styles", "Theme.axaml");
+        var controlSystem = ReadSourceFile("Styles", "ControlSystem.axaml");
 
         Assert.Contains("Width=\"900\" Height=\"600\"", mainWindow);
         Assert.Contains("MinWidth=\"900\" MinHeight=\"600\"", mainWindow);
@@ -48,6 +49,13 @@ public sealed class ResponsiveShellTests
         Assert.Contains("MenuItem:pointerover /template/ Border#PART_LayoutRoot", theme);
         Assert.Contains("MenuItem:selected /template/ Border#PART_LayoutRoot", theme);
         Assert.Contains("MenuItem:selected:pointerover /template/ Border#PART_LayoutRoot", theme);
+        Assert.Contains("<Color x:Key=\"ThemeControlFocusGlow\">#33F1A1A9</Color>", theme);
+        Assert.Contains("<Color x:Key=\"ThemeControlFocusGlow\">#22913F4A</Color>", theme);
+        Assert.Contains("<Color x:Key=\"ThemeControlFocusGlow\">#66FF4500</Color>", theme);
+        Assert.Contains("<SolidColorBrush x:Key=\"ComboBoxBackgroundUnfocused\"", theme);
+        Assert.Contains("<SolidColorBrush x:Key=\"ComboBoxBackgroundBorderBrushUnfocused\"", theme);
+        Assert.Contains("ComboBox:focus-visible /template/ Border#HighlightBackground", controlSystem);
+        Assert.Contains("<Setter Property=\"IsVisible\" Value=\"False\" />", controlSystem);
         var selectedRailStyle = System.Text.RegularExpressions.Regex.Match(
             theme,
             "<Style Selector=\"ToggleButton\\.workspace-nav-item:checked\">(?<body>.*?)</Style>",

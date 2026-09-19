@@ -9,6 +9,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Headless.XUnit;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using PKHeX.Avalonia.Controls;
 using PKHeX.Core;
 using Xunit;
@@ -69,6 +70,26 @@ public class FilterableComboBoxTests
         control.ApplyTemplate();
 
         Assert.NotNull(control.Template);
+    }
+
+    [AvaloniaFact]
+    public void ComboBoxFocus_HidesFluentHighlightSurface()
+    {
+        var control = new ComboBox { ItemsSource = Items(), SelectedIndex = 0, Width = 200 };
+        var window = new Window { Content = control, Width = 220, Height = 60 };
+        window.Show();
+
+        Dispatcher.UIThread.RunJobs();
+        control.ApplyTemplate();
+        Assert.True(control.Focus());
+        Dispatcher.UIThread.RunJobs();
+
+        var highlight = control.GetVisualDescendants()
+            .OfType<Border>()
+            .Single(border => border.Name == "HighlightBackground");
+
+        Assert.False(highlight.IsVisible);
+        window.Close();
     }
 
     [AvaloniaFact]

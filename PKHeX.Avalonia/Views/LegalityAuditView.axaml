@@ -43,10 +43,10 @@
                   DoubleTapped="OnRowDoubleTapped"
                   ToolTip.Tip="{loc:Loc LegalityAuditView_RowTooltip}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="{loc:Loc LegalityAuditView_Location}" Binding="{Binding Position}" Width="90"/>
+                <DataGridTextColumn Header="{loc:Loc LegalityAuditView_Location}" Binding="{Binding Position}" Width="112"/>
                 <DataGridTextColumn Header="{loc:Loc LegalityAuditView_Species}" Binding="{Binding Species}" Width="120"/>
                 <DataGridTextColumn Header="{loc:Loc LegalityAuditView_Nickname}" Binding="{Binding Nickname}" Width="110"/>
-                <DataGridTextColumn Header="{loc:Loc LegalityAuditView_VerdictHeader}" Binding="{Binding Verdict}" Width="70"/>
+                <DataGridTextColumn Header="{loc:Loc LegalityAuditView_VerdictHeader}" Binding="{Binding Verdict}" Width="90"/>
                 <DataGridTextColumn Header="{loc:Loc LegalityAuditView_FailedChecks}" Binding="{Binding FailureSummary}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

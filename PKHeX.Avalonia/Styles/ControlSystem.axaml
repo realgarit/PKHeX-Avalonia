@@ -104,18 +104,28 @@
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
     </Style>
 
-    <Style Selector="ComboBox:focus /template/ Border#HighlightBackground">
-        <Setter Property="IsVisible" Value="True" />
-        <Setter Property="Background" Value="{DynamicResource ThemeControlFocusGlowBrush}" />
+    <!-- Fluent's focused ComboBox template adds a second HighlightBackground surface. It is
+         intentionally hidden here so focus does not look like a native overlay on top of the
+         compact field; the outer control keeps the application border treatment instead. -->
+    <Style Selector="ComboBox:focus /template/ Border#HighlightBackground,
+                    ComboBox:focus-visible /template/ Border#HighlightBackground">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="ComboBox:focus /template/ Border#Background,
+                    ComboBox:focus-visible /template/ Border#Background">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
-    <Style Selector="ComboBox:focus /template/ ContentControl#ContentPresenter">
+    <Style Selector="ComboBox:focus /template/ ContentControl#ContentPresenter,
+                    ComboBox:focus-visible /template/ ContentControl#ContentPresenter">
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
     </Style>
 
-    <Style Selector="ComboBox:focus /template/ PathIcon#DropDownGlyph">
+    <Style Selector="ComboBox:focus /template/ PathIcon#DropDownGlyph,
+                    ComboBox:focus-visible /template/ PathIcon#DropDownGlyph">
         <Setter Property="Foreground" Value="{DynamicResource ThemeControlBorderFocusBrush}" />
     </Style>
 
