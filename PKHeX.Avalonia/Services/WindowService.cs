@@ -66,13 +66,14 @@ public sealed class WindowService : IWindowService
         if (owner is null) return;
 
         var key = viewModel.GetType().FullName ?? viewModel.GetType().Name;
+        var maxToolHeight = GetToolMaxHeight(owner);
         var window = new Window
         {
             Title = title,
             Content = ViewLocator.Build(viewModel),
             CanResize = true,
             MaxWidth = 1400,
-            MaxHeight = 820,
+            MaxHeight = maxToolHeight,
         };
 
         if (ToolBounds.TryGetValue(key, out var bounds))
@@ -80,7 +81,7 @@ public sealed class WindowService : IWindowService
             window.WindowStartupLocation = WindowStartupLocation.Manual;
             window.Position = bounds.Position;
             window.Width = bounds.Width;
-            window.Height = bounds.Height;
+            window.Height = Math.Min(bounds.Height, maxToolHeight);
         }
         else
         {
@@ -113,4 +114,18 @@ public sealed class WindowService : IWindowService
 
     private static Window? MainWindow =>
         (global::Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+    private static double GetToolMaxHeight(Window owner)
+    {
+        var screen = owner.Screens.ScreenFromWindow(owner) ?? owner.Screens.Primary;
+        if (screen is null)
+            return 760;
+
+        var scaling = owner.RenderScaling > 0 ? owner.RenderScaling : 1;
+        var workingHeight = screen.WorkingArea.Height / scaling;
+
+        // Leave room for the native title bar and a small work-area margin. Without this,
+        // SizeToContent tools can consume the full working area and clip their close button.
+        return Math.Max(420, workingHeight - 48);
+    }
 }

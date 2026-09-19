@@ -30,13 +30,13 @@
                   DoubleTapped="OnRowDoubleTapped"
                   ToolTip.Tip="{loc:Loc BoxReportView_RowTooltip}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="{loc:Loc BoxReportView_PositionHeader}" Binding="{Binding Position}" Width="70"/>
+                <DataGridTextColumn Header="{loc:Loc BoxReportView_PositionHeader}" Binding="{Binding Position}" Width="92"/>
                 <DataGridTextColumn Header="{loc:Loc BoxReportView_SpeciesHeader}" Binding="{Binding Species}" Width="110"/>
                 <DataGridTextColumn Header="{loc:Loc BoxReportView_NicknameHeader}" Binding="{Binding Nickname}" Width="100"/>
-                <DataGridTextColumn Header="{loc:Loc BoxReportView_LvlHeader}" Binding="{Binding Level}" Width="45"/>
-                <DataGridTextColumn Header="{loc:Loc BoxReportView_NatureHeader}" Binding="{Binding Nature}" Width="80"/>
-                <DataGridTextColumn Header="{loc:Loc BoxReportView_GenderHeader}" Binding="{Binding Gender}" Width="60"/>
-                <DataGridTextColumn Header="{loc:Loc BoxReportView_EsvHeader}" Binding="{Binding ESV}" Width="55"/>
+                <DataGridTextColumn Header="{loc:Loc BoxReportView_LvlHeader}" Binding="{Binding Level}" Width="58"/>
+                <DataGridTextColumn Header="{loc:Loc BoxReportView_NatureHeader}" Binding="{Binding Nature}" Width="96"/>
+                <DataGridTextColumn Header="{loc:Loc BoxReportView_GenderHeader}" Binding="{Binding Gender}" Width="76"/>
+                <DataGridTextColumn Header="{loc:Loc BoxReportView_EsvHeader}" Binding="{Binding ESV}" Width="64"/>
                 <DataGridTextColumn Header="{loc:Loc BoxReportView_HpTypeHeader}" Binding="{Binding HP_Type}" Width="75"/>
                 <DataGridTextColumn Header="{loc:Loc BoxReportView_AbilityHeader}" Binding="{Binding Ability}" Width="110"/>
                 <DataGridTextColumn Header="{loc:Loc BoxReportView_ItemHeader}" Binding="{Binding HeldItem}" Width="110"/>
