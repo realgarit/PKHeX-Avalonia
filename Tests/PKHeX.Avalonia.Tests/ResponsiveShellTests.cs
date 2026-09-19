@@ -45,6 +45,9 @@ public sealed class ResponsiveShellTests
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:selected", theme);
         Assert.Contains("TabControl.editor-tabs TabItem:focus-visible", theme);
         Assert.Contains("TabControl.workspace-tabs TabItem.workspace-tab:focus-visible", theme);
+        Assert.Contains("MenuItem:pointerover /template/ Border#PART_LayoutRoot", theme);
+        Assert.Contains("MenuItem:selected /template/ Border#PART_LayoutRoot", theme);
+        Assert.Contains("MenuItem:selected:pointerover /template/ Border#PART_LayoutRoot", theme);
         var selectedRailStyle = System.Text.RegularExpressions.Regex.Match(
             theme,
             "<Style Selector=\"ToggleButton\\.workspace-nav-item:checked\">(?<body>.*?)</Style>",
@@ -94,6 +97,36 @@ public sealed class ResponsiveShellTests
             menu.IsSubMenuOpen = false;
             app.Pump();
         }
+    }
+
+    [AvaloniaFact]
+    public void ToolsMenu_ClosesPreviousDynamicSubmenuWhenSiblingOpens()
+    {
+        using var app = new HeadlessAppFixture();
+        app.LoadSaveInstance(new SAV6XY());
+        var tools = app.Window.GetVisualDescendants().OfType<MenuItem>()
+            .Single(item => Equals(item.Header, LocalizedStrings.Instance["Menu_Tools"]));
+        tools.IsSubMenuOpen = true;
+        app.Pump();
+
+        var items = app.Window.GetVisualDescendants().OfType<MenuItem>()
+            .Where(item => item.Header is "Data" or "Pokémon" or "WORKSPACES")
+            .ToArray();
+        var data = items.Single(item => Equals(item.Header, "Data"));
+        var pokemon = items.Single(item => Equals(item.Header, "Pokémon"));
+        data.IsSubMenuOpen = true;
+        app.Pump();
+        pokemon.IsSubMenuOpen = true;
+        app.Pump();
+        Assert.False(data.IsSubMenuOpen);
+        Assert.True(pokemon.IsSubMenuOpen);
+
+        var window = app.Window.GetVisualDescendants().OfType<MenuItem>()
+            .Single(item => Equals(item.Header, LocalizedStrings.Instance["Menu_Window"]));
+        window.IsSubMenuOpen = true;
+        app.Pump();
+        Assert.False(tools.IsSubMenuOpen);
+        Assert.True(window.IsSubMenuOpen);
     }
 
     [Fact]
