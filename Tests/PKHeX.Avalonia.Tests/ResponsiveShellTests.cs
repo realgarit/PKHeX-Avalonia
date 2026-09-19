@@ -77,6 +77,25 @@ public sealed class ResponsiveShellTests
         Assert.DoesNotContain("CurrentSaveFileName", statusBar.Groups["body"].Value);
     }
 
+    [AvaloniaFact]
+    public void SaveAndWindowMenus_OpenWithoutThrowing()
+    {
+        using var app = new HeadlessAppFixture();
+        app.LoadSaveInstance(new SAV6XY());
+
+        foreach (var header in new[] { LocalizedStrings.Instance["Menu_Save"], LocalizedStrings.Instance["Menu_Window"] })
+        {
+            var menu = app.Window.GetVisualDescendants()
+                .OfType<MenuItem>()
+                .Single(item => Equals(item.Header, header));
+
+            menu.IsSubMenuOpen = true;
+            app.Pump();
+            menu.IsSubMenuOpen = false;
+            app.Pump();
+        }
+    }
+
     [Fact]
     public void VisibleThemeTokensStayNeutral()
     {

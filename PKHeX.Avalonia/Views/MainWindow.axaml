@@ -59,8 +59,8 @@
                 <MenuItem Header="{loc:Loc Menu_Options_Redo}" Command="{Binding RedoCommand}" InputGesture="Ctrl+Y" />
             </MenuItem>
             <MenuItem Header="{loc:Loc Menu_Save}">
-                <MenuItem Header="{loc:Loc Tab_Trainer}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="2" />
-                <MenuItem Header="{loc:Loc Tab_Inventory}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="3" />
+                <MenuItem Header="{loc:Loc Tab_Trainer}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.TrainerWorkspaceTabIndex}" />
+                <MenuItem Header="{loc:Loc Tab_Inventory}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.InventoryWorkspaceTabIndex}" />
             </MenuItem>
             <MenuItem Header="{loc:Loc Menu_Tools}" ItemsSource="{Binding AvailableToolMenuGroups}">
                 <MenuItem.ItemTemplate>
@@ -85,8 +85,8 @@
                 <MenuItem Header="{loc:Loc Workspace_Save}" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Save}" />
                 <MenuItem Header="{loc:Loc Workspace_Reports}" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Reports}" />
                 <Separator />
-                <MenuItem Header="{loc:Loc Tab_Box}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="0" />
-                <MenuItem Header="{loc:Loc Tab_Party}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="1" />
+                <MenuItem Header="{loc:Loc Tab_Box}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.BoxWorkspaceTabIndex}" />
+                <MenuItem Header="{loc:Loc Tab_Party}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.PartyWorkspaceTabIndex}" />
             </MenuItem>
             <MenuItem Header="{loc:Loc Menu_Help}">
                 <MenuItem Header="{loc:Loc Menu_Options_Language}">
