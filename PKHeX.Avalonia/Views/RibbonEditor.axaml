@@ -37,7 +37,7 @@
                                 <Border Background="{DynamicResource ThemeBackgroundElevatedBrush}"
                                         Padding="8,6"
                                         Margin="0,1">
-                                    <Grid ColumnDefinitions="40,*,80">
+                                    <Grid ColumnDefinitions="40,*,110,80">
                                         <!-- Icon -->
                                         <Image Grid.Column="0"
                                                Source="{Binding IconResource, Converter={StaticResource RibbonIcon}}"
@@ -51,8 +51,16 @@
                                                    Margin="12,0,0,0"
                                                    TextTrimming="CharacterEllipsis" />
                                         
+                                        <!-- Legality status -->
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding StatusText}"
+                                                   IsVisible="{Binding HasStatus}"
+                                                   VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Opacity="0.8" />
+
                                         <!-- Control -->
-                                        <Panel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                        <Panel Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right">
                                             <!-- Boolean Ribbon: Checkbox -->
                                             <CheckBox IsVisible="{Binding IsBooleanRibbon}" 
                                                       IsChecked="{Binding HasRibbon}"

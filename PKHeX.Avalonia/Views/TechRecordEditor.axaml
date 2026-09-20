@@ -11,7 +11,9 @@
     <Border Classes="view-container">
     <Grid RowDefinitions="Auto, *">
         <StackPanel Grid.Row="0" Classes="save-editor-header" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+            <Button Content="{loc:Loc TechRecordEditor_GiveCurrent}" Command="{Binding GiveCurrentCommand}"/>
             <Button Content="{loc:Loc TechRecordEditor_GiveAll}" Command="{Binding GiveAllCommand}"/>
+            <Button Content="{loc:Loc TechRecordEditor_ForceAll}" Command="{Binding ForceAllCommand}"/>
             <Button Content="{loc:Loc TechRecordEditor_RemoveAll}" Command="{Binding RemoveAllCommand}"/>
             <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CloseCommand}"/>
             <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent"/>
@@ -20,10 +22,11 @@
         <DataGrid Grid.Row="1" Classes="save-grid" ItemsSource="{Binding Records}" CanUserSortColumns="True" IsReadOnly="False">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Header="{loc:Loc TechRecordEditor_Active}" Binding="{Binding IsActive}" Width="80"/>
-                <DataGridTextColumn Header="#" Binding="{Binding Index}" IsReadOnly="True" Width="50"/>
+                <DataGridTextColumn Header="#" Binding="{Binding DisplayIndex}" IsReadOnly="True" Width="50"/>
                 <DataGridTextColumn Header="{loc:Loc TechRecordEditor_Type}" Binding="{Binding TypeName}" IsReadOnly="True" Width="90"/>
                 <DataGridCheckBoxColumn Header="{loc:Loc TechRecordEditor_Learned}" Binding="{Binding IsLearned}" IsReadOnly="True" Width="105"/>
-                <DataGridCheckBoxColumn Header="{loc:Loc TechRecordEditor_Legal}" Binding="{Binding IsValid}" IsReadOnly="True" Width="85"/>
+                <DataGridCheckBoxColumn Header="{loc:Loc TechRecordEditor_Direct}" Binding="{Binding IsDirectlyPermitted}" IsReadOnly="True" Width="85"/>
+                <DataGridCheckBoxColumn Header="{loc:Loc TechRecordEditor_Legal}" Binding="{Binding IsEvolutionPermitted}" IsReadOnly="True" Width="85"/>
                 <DataGridTextColumn Header="{loc:Loc TechRecordEditor_Move}" Binding="{Binding Name}" IsReadOnly="True" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

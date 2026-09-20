@@ -11,7 +11,10 @@ namespace PKHeX.Presentation.ViewModels;
 
 public partial class TechRecordItemViewModel : ObservableObject
 {
+    /// <summary>The zero-based bit index used by the Core record implementation.</summary>
     public int Index { get; init; }
+    /// <summary>The user-facing index. Legends: Z-A displays TM entries one-based.</summary>
+    public int DisplayIndex { get; init; }
     public string Name { get; init; } = "";
     public string TypeName { get; init; } = "";
     public int TypeId { get; init; }
@@ -19,7 +22,8 @@ public partial class TechRecordItemViewModel : ObservableObject
     
     // Status
     [ObservableProperty] private bool _isActive;
-    [ObservableProperty] private bool _isValid;
+    [ObservableProperty] private bool _isDirectlyPermitted;
+    [ObservableProperty] private bool _isEvolutionPermitted;
     [ObservableProperty] private bool _isLearned; // If the Pokemon currently knows this move
 }
 
@@ -51,7 +55,8 @@ public partial class TechRecordEditorViewModel : ViewModelBase, ICloseableDialog
         var permit = _techRecord.Permit;
         var indexes = permit.RecordPermitIndexes;
         var context = _workingPkm.Context;
-        var baseRecordIndex = context == EntityContext.Gen9a ? 1 : 0;
+        var displayOffset = context == EntityContext.Gen9a ? 1 : 0;
+        var evos = _legality.Info.EvoChainsAllGens.Get(context);
         
         var moveNames = GameInfo.Strings.Move;
         Span<ushort> currentMoves = stackalloc ushort[4];
@@ -64,17 +69,9 @@ public partial class TechRecordEditorViewModel : ViewModelBase, ICloseableDialog
             var move = indexes[i];
             var type = MoveInfo.GetType(move, context);
             
-            // Validity
-            bool isValid = permit.IsRecordPermitted(i);
-            // Note: WinForms also checked permit.IsRecordPermitted(evos, i) for "Hint" color (yellow)
-            
-            bool isActive = _techRecord.GetMoveRecordFlag(i + baseRecordIndex); // Logic from WinForms: row.Cells[ColumnHasFlag].Value = Record.GetMoveRecordFlag(index); where index is from ColumnIndex.
-            // WinForms ColumnIndex value was (i + baseRecordIndex).
-            // WinForms GetMoveRecordFlag takes the 'index' which is the TR Index (0..99).
-            // Re-verifying WinForms logic:
-            // cells[ColumnIndex].Value = (i+ baseRecordIndex).ToString("000");
-            // LoadRecords: index = int.Parse(row...Value); Record.GetMoveRecordFlag(index);
-            // So yes, GetMoveRecordFlag takes the displayed index.
+            bool isDirectlyPermitted = permit.IsRecordPermitted(i);
+            bool isEvolutionPermitted = _techRecord.IsRecordPermitted(evos, i);
+            bool isActive = _techRecord.GetMoveRecordFlag(i);
             
             bool isLearned = currentMoves.Contains(move);
             
@@ -87,11 +84,13 @@ public partial class TechRecordEditorViewModel : ViewModelBase, ICloseableDialog
             
             list.Add(new TechRecordItemViewModel
             {
-                Index = i + baseRecordIndex,
+                Index = i,
+                DisplayIndex = i + displayOffset,
                 Name = moveNames[move],
                 TypeId = type,
                 TypeName = ((MoveType)type).ToString(),
-                IsValid = isValid,
+                IsDirectlyPermitted = isDirectlyPermitted,
+                IsEvolutionPermitted = isEvolutionPermitted,
                 IsActive = isActive,
                 IsLearned = isLearned,
             });
@@ -115,8 +114,22 @@ public partial class TechRecordEditorViewModel : ViewModelBase, ICloseableDialog
     [RelayCommand]
     private void GiveAll()
     {
-         _techRecord.SetRecordFlags(_workingPkm, TechnicalRecordApplicatorOption.LegalAll);
-         Reload();
+        _techRecord.SetRecordFlags(_workingPkm, TechnicalRecordApplicatorOption.LegalAll);
+        Reload();
+    }
+
+    [RelayCommand]
+    private void GiveCurrent()
+    {
+        _techRecord.SetRecordFlags(_workingPkm, TechnicalRecordApplicatorOption.LegalCurrent);
+        Reload();
+    }
+
+    [RelayCommand]
+    private void ForceAll()
+    {
+        _techRecord.SetRecordFlags(_workingPkm, TechnicalRecordApplicatorOption.ForceAll);
+        Reload();
     }
     
     [RelayCommand]

@@ -988,6 +988,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         await _windowService.ShowDialogAsync(view, LocalizedStrings.Instance["PokemonEditor_RibbonEditorTitle"]);
         LoadRibbons();
         OnPropertyChanged(nameof(RibbonCount));
+        Validate();
     }
 
     [RelayCommand]

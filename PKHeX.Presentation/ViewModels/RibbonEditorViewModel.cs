@@ -20,9 +20,6 @@ public partial class RibbonEditorViewModel : ViewModelBase, ICloseableDialog
     [ObservableProperty]
     private ObservableCollection<RibbonItemViewModel> _ribbons = new();
 
-    [ObservableProperty]
-    private bool _showAll; // Toggle to show all or just valid
-
     public RibbonEditorViewModel(PKM pkm, Action? closeHelper = null)
     {
         _sourcePkm = pkm;
@@ -51,7 +48,8 @@ public partial class RibbonEditorViewModel : ViewModelBase, ICloseableDialog
         var list = new List<RibbonItemViewModel>();
         foreach (var info in allRibbons)
         {
-            var vm = new RibbonItemViewModel(_workingPkm, info);
+            var vm = new RibbonItemViewModel(_workingPkm, info,
+                dict.TryGetValue(info.Name, out var verification) ? verification : null);
 
             // Compute the ribbon icon resource name; the View resolves it to an image asset.
             // Name mapping: lowercase, remove "CountG3" -> "G3".
