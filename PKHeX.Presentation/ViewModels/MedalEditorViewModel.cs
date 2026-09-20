@@ -21,8 +21,15 @@ public partial class MedalEditorViewModel : ViewModelBase
     private readonly IDialogService? _dialogService;
     private readonly MedalList5? _medals;
     private HabitatList5? _habitat;
+    private readonly string[] _medalNames;
 
     private bool _suppressSettingsWrite;
+
+    private static string[] LoadMedalNames()
+    {
+        var names = GameLanguage.GetStrings("medals", PKHeX.Core.GameInfo.Strings.Language.GetLanguageCode());
+        return names.Length == MaxMedals ? names : Enumerable.Range(0, MaxMedals).Select(i => $"#{i}").ToArray();
+    }
 
     public MedalEditorViewModel(SaveFile sav) : this(sav, null) { }
 
@@ -30,6 +37,7 @@ public partial class MedalEditorViewModel : ViewModelBase
     {
         _sav = sav;
         _dialogService = dialogService;
+        _medalNames = LoadMedalNames();
 
         if (sav is SAV5B2W2 b2w2)
         {
@@ -154,6 +162,8 @@ public partial class MedalEditorViewModel : ViewModelBase
     }
 
     internal Medal5 GetMedal(int index) => _medals![index];
+
+    internal string GetMedalName(int index) => _medalNames[index];
 
     internal HabitatStatus5 GetHabitat(int index) => _habitat!.GetHabitat(index);
 
@@ -374,11 +384,13 @@ public partial class MedalItemViewModel : ViewModelBase
         _parent = parent;
         Index = index;
         Type = MedalList5.GetMedalType(index).ToString();
+        Name = parent.GetMedalName(index);
         RefreshFromSave();
     }
 
     public int Index { get; }
     public string Type { get; }
+    public string Name { get; }
 
     [ObservableProperty]
     private int _stateIndex;

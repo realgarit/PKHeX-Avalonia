@@ -9,7 +9,7 @@ namespace PKHeX.Avalonia.Tests;
 /// <summary>
 /// Behavioral tests for DaycareEditorViewModel.
 /// Daycare is generation-specific: Gen2 (Crystal), Gen3-6 expose IDaycareExperience,
-/// Gen7/8b have paired slots, Gen1/Gen7b/9 have no daycare at all.
+/// Gen7/8b have paired slots, while LGPE and SWSH expose read-only nursery data.
 /// </summary>
 public class DaycareEditorTests(ITestOutputHelper output)
 {
@@ -66,14 +66,61 @@ public class DaycareEditorTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public void Daycare_Gen7b_HasNoDaycare()
+    public void Daycare_Gen7b_ExposesReadOnlyStoredSlot()
     {
         var sav = BlankSaveFile.Get(GameVersion.GP);
         var vm = new DaycareEditorViewModel(sav, SpriteMock().Object);
 
-        Assert.False(vm.HasDaycare);
-        Assert.Equal(0, vm.SlotCount);
-        output.WriteLine("Gen7b LGPE: HasDaycare=false, no slots ✓");
+        Assert.True(vm.HasDaycare);
+        Assert.True(vm.IsReadOnly);
+        Assert.Equal(1, vm.SlotCount);
+        Assert.True(vm.Slots[0].IsReadOnly);
+        output.WriteLine("Gen7b LGPE: one read-only stored slot ✓");
+    }
+
+    [Fact]
+    public void Daycare_SwSh_ExposesFourReadOnlyNurserySlots()
+    {
+        var sav = BlankSaveFile.Get(GameVersion.SW);
+        var vm = new DaycareEditorViewModel(sav, SpriteMock().Object);
+
+        Assert.True(vm.HasDaycare);
+        Assert.True(vm.IsReadOnly);
+        Assert.Equal(4, vm.SlotCount);
+        Assert.All(vm.Slots, slot => Assert.True(slot.IsReadOnly));
+        Assert.Contains("Nursery", vm.Slots[0].Location, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void Daycare_Lgpe_ReadOnlySlotDisplaysStoredPokemon()
+    {
+        var sav = (SAV7b)BlankSaveFile.Get(GameVersion.GP);
+        var stored = new PK7 { Species = (ushort)Species.Pikachu, CurrentLevel = 15 };
+        stored.WriteEncryptedDataStored(sav.Daycare.Stored.Span);
+
+        var vm = new DaycareEditorViewModel(sav, SpriteMock().Object);
+
+        Assert.Equal("Pikachu", vm.Slots[0].Species);
+        Assert.Equal("Lv. 15", vm.Slots[0].Level);
+        Assert.True(vm.Slots[0].IsReadOnly);
+    }
+
+    [Fact]
+    public void Daycare_SwSh_ReadOnlySlotsDisplayBothNurseryLocations()
+    {
+        var sav = (SAV8SWSH)BlankSaveFile.Get(GameVersion.SW);
+        for (int i = 0; i < 4; i++)
+        {
+            var stored = new PK8 { Species = (ushort)((ushort)Species.Pikachu + i), CurrentLevel = (byte)(20 + i) };
+            stored.WriteEncryptedDataStored(sav.Daycare[i].Slice(0, sav.SIZE_STORED).Span);
+        }
+
+        var vm = new DaycareEditorViewModel(sav, SpriteMock().Object);
+
+        Assert.Equal(4, vm.Slots.Count);
+        Assert.All(vm.Slots, slot => Assert.True(slot.Pk?.Species > 0));
+        Assert.Contains("Nursery 1", vm.Slots[0].Location, StringComparison.Ordinal);
+        Assert.Contains("Nursery 2", vm.Slots[2].Location, StringComparison.Ordinal);
     }
 
     // -----------------------------------------------------------------------

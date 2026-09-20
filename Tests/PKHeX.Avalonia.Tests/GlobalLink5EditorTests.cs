@@ -121,4 +121,45 @@ public class GlobalLink5EditorTests
 
         Assert.False(sav.State.Edited);
     }
+
+    [Fact]
+    public void GlobalLink5_UploadDate_DistinguishesEmptyValidAndInvalid()
+    {
+        var empty = new SAV5B2W2();
+        var emptyVm = new GlobalLink5EditorViewModel(empty);
+        Assert.False(emptyVm.HasInvalidUploadDate);
+        Assert.Null(emptyVm.UploadDateValue);
+
+        var valid = new SAV5B2W2();
+        valid.GlobalLink.UploadDate.FromDateOnly(new DateOnly(2026, 9, 20));
+        var validVm = new GlobalLink5EditorViewModel(valid);
+        Assert.False(validVm.HasInvalidUploadDate);
+        Assert.Equal(new DateTime(2026, 9, 20), validVm.UploadDateValue);
+
+        var invalid = new SAV5B2W2();
+        var raw = invalid.GlobalLink.UploadDate;
+        raw.DayOfWeek = 1;
+        raw.Day = 1;
+        raw.Month = 13;
+        raw.Year = 18;
+        var invalidVm = new GlobalLink5EditorViewModel(invalid);
+        Assert.True(invalidVm.HasInvalidUploadDate);
+        Assert.Null(invalidVm.UploadDateValue);
+    }
+
+    [Fact]
+    public void GlobalLink5_UploadDate_SetAndClearAreExplicitAndRoundTrip()
+    {
+        var sav = new SAV5B2W2();
+        var vm = new GlobalLink5EditorViewModel(sav);
+
+        vm.UploadDateValue = new DateTime(2026, 9, 20);
+        Assert.True(sav.GlobalLink.UploadDate.IsValid);
+        Assert.Equal(new DateOnly(2026, 9, 20), sav.GlobalLink.UploadDate.ToDateOnly());
+        Assert.True(sav.State.Edited);
+
+        vm.ClearUploadDateCommand.Execute(null);
+        Assert.True(sav.GlobalLink.UploadDate.IsEmpty);
+        Assert.Null(vm.UploadDateValue);
+    }
 }

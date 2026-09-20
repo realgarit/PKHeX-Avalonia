@@ -1,34 +1,41 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PKHeX.Application.Abstractions;
 using PKHeX.Core;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class BoxLayoutEditorViewModel : ViewModelBase
+public partial class BoxLayoutEditorViewModel : ViewModelBase, ICloseableDialog
 {
-    private readonly SaveFile _sav;
+    private readonly SaveFile _source;
+    private readonly SaveFile _working;
     private readonly IBoxDetailNameRead? _nameReader;
     private readonly IBoxDetailName? _nameWriter;
     private readonly IBoxDetailWallpaper? _wallpaper;
 
+    public Action? CloseRequested { get; set; }
+
     public BoxLayoutEditorViewModel(SaveFile sav)
     {
-        _sav = sav;
-        _nameReader = sav as IBoxDetailNameRead;
-        _nameWriter = sav as IBoxDetailName;
-        _wallpaper = sav as IBoxDetailWallpaper;
+        _source = sav;
+        var editedBeforeClone = sav.State.Edited;
+        _working = sav.Clone();
+        sav.State.Edited = editedBeforeClone;
+        _nameReader = _working as IBoxDetailNameRead;
+        _nameWriter = _working as IBoxDetailName;
+        _wallpaper = _working as IBoxDetailWallpaper;
 
         IsSupported = _nameReader is not null || _wallpaper is not null;
         CanEditNames = _nameWriter is not null;
         CanEditWallpaper = _wallpaper is not null;
-        CanEditUnlocked = sav.BoxesUnlocked > 0;
+        CanEditUnlocked = _working.BoxesUnlocked > 0;
 
         // Build list of possible unlocked box counts
-        for (int i = 0; i <= sav.BoxCount; i++)
+        for (int i = 0; i <= _working.BoxCount; i++)
             UnlockedOptions.Add(i);
         
-        _unlockedBoxes = Math.Min(sav.BoxCount, sav.BoxesUnlocked);
+        _unlockedBoxes = Math.Min(_working.BoxCount, _working.BoxesUnlocked);
 
         LoadWallpaperNames();
         LoadBoxes();
@@ -53,7 +60,8 @@ public partial class BoxLayoutEditorViewModel : ViewModelBase
 
     partial void OnUnlockedBoxesChanged(int value)
     {
-        _sav.BoxesUnlocked = value;
+        if (CanEditUnlocked && value >= 0 && value <= _working.BoxCount)
+            _working.BoxesUnlocked = value;
     }
 
     private void LoadWallpaperNames()
@@ -61,12 +69,12 @@ public partial class BoxLayoutEditorViewModel : ViewModelBase
         WallpaperNames.Clear();
         var names = GameInfo.Strings.wallpapernames;
         
-        int count = _sav.Generation switch
+        int count = _working.Generation switch
         {
-            3 when _sav is SAV3 or SAV3RSBox => 16,
+            3 when _working is SAV3 or SAV3RSBox => 16,
             4 or 5 or 6 => 24,
             7 => 16,
-            8 when _sav is SAV8BS => 32,
+            8 when _working is SAV8BS => 32,
             8 => 19,
             9 => 20,
             _ => 0
@@ -84,7 +92,7 @@ public partial class BoxLayoutEditorViewModel : ViewModelBase
     private void LoadBoxes()
     {
         Boxes.Clear();
-        for (int i = 0; i < _sav.BoxCount; i++)
+        for (int i = 0; i < _working.BoxCount; i++)
         {
             var name = _nameReader?.GetBoxName(i) ?? BoxDetailNameExtensions.GetDefaultBoxName(i);
             var wallpaper = _wallpaper?.GetBoxWallpaper(i) ?? 0;
@@ -99,8 +107,22 @@ public partial class BoxLayoutEditorViewModel : ViewModelBase
 
     private void OnBoxWallpaperChanged(int box, int wallpaper)
     {
-        _wallpaper?.SetBoxWallpaper(box, wallpaper);
+        if (_wallpaper is not null && wallpaper >= 0 && wallpaper < WallpaperNames.Count)
+            _wallpaper.SetBoxWallpaper(box, wallpaper);
     }
+
+    [RelayCommand]
+    private void Save()
+    {
+        if (!IsSupported)
+            return;
+
+        _source.CopyChangesFrom(_working);
+        CloseRequested?.Invoke();
+    }
+
+    [RelayCommand]
+    private void Cancel() => CloseRequested?.Invoke();
 
     [RelayCommand]
     private void MoveUp()

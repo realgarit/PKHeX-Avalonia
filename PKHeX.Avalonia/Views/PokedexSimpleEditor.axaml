@@ -20,6 +20,10 @@
                     <Button Content="{loc:Loc PokedexSimpleEditor_CaughtAll}" Command="{Binding CaughtAllCommand}" Margin="0,0,8,8" />
                     <Button Content="{loc:Loc PokedexSimpleEditor_CaughtNone}" Command="{Binding CaughtNoneCommand}" Margin="0,0,8,8" />
                 </WrapPanel>
+                <CheckBox Content="{loc:Loc PokedexSimpleEditor_NationalDexUnlocked}"
+                          IsChecked="{Binding NationalDexUnlocked}"
+                          IsVisible="{Binding IsEmerald}"
+                          Margin="0,0,0,8" />
                 </StackPanel>
                 <Button Grid.Column="1" Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" HorizontalContentAlignment="Center" />
             </Grid>

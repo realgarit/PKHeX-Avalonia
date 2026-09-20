@@ -9,6 +9,7 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase
 {
     private readonly SaveFile _sav;
     private readonly SAV7? _sav7;
+    private bool _loading;
 
     public ZygardeCellEditorViewModel(SaveFile sav)
     {
@@ -21,14 +22,19 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase
     }
 
     public bool IsSupported { get; }
+    public bool IsTotemSticker => _sav7 is SAV7USUM;
+    public bool IsZygardeCell => !IsTotemSticker;
 
     [ObservableProperty]
     private int _cellsTotal;
 
     partial void OnCellsTotalChanged(int value)
     {
-        if (_sav7?.EventWork is { } ew)
+        if (!_loading && _sav7?.EventWork is { } ew)
+        {
             ew.ZygardeCellTotal = (ushort)value;
+            _sav.State.Edited = true;
+        }
     }
 
     [ObservableProperty]
@@ -36,11 +42,12 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase
 
     partial void OnCellsCollectedChanged(int value)
     {
-        if (_sav7?.EventWork is { } ew)
+        if (!_loading && _sav7?.EventWork is { } ew)
         {
             ew.ZygardeCellCount = (ushort)value;
             if (_sav7 is SAV7USUM)
                 _sav7.SetRecord(72, value);
+            _sav.State.Edited = true;
         }
     }
 
@@ -51,24 +58,36 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase
     {
         if (_sav7?.EventWork is not { } ew) return;
 
-        CellsTotal = ew.ZygardeCellTotal;
-        CellsCollected = ew.ZygardeCellCount;
-
-        Cells.Clear();
-        var locations = _sav7 is SAV7SM ? LocationsSM : LocationsUSUM;
-        var count = ew.TotalZygardeCellCount;
-
-        for (int i = 0; i < count; i++)
+        _loading = true;
+        try
         {
-            var state = ew.GetZygardeCell(i);
-            var locationName = i < locations.Length ? locations[i] : $"Cell {i + 1}";
-            Cells.Add(new ZygardeCellViewModel(i, locationName, state, SetCellState));
+            CellsTotal = ew.ZygardeCellTotal;
+            CellsCollected = ew.ZygardeCellCount;
+
+            Cells.Clear();
+            var locations = _sav7 is SAV7SM ? LocationsSM : LocationsUSUM;
+            var count = ew.TotalZygardeCellCount;
+
+            for (int i = 0; i < count; i++)
+            {
+                var state = ew.GetZygardeCell(i);
+                var locationName = i < locations.Length ? locations[i] : $"Cell {i + 1}";
+                Cells.Add(new ZygardeCellViewModel(i, locationName, state, SetCellState));
+            }
+        }
+        finally
+        {
+            _loading = false;
         }
     }
 
     private void SetCellState(int index, int state)
     {
-        _sav7?.EventWork.SetZygardeCell(index, (ushort)state);
+        if (_loading || _sav7 is null)
+            return;
+
+        _sav7.EventWork.SetZygardeCell(index, (ushort)state);
+        _sav.State.Edited = true;
     }
 
     [RelayCommand]

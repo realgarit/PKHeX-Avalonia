@@ -11,9 +11,13 @@ public partial class PokedexSimpleEditorViewModel : ViewModelBase
 {
     private readonly SaveFile _sav;
     public int MaxSpeciesID { get; }
+    public bool IsEmerald => _sav is SAV3E;
 
     public ObservableCollection<PokedexEntryViewModel> Entries { get; } = [];
     public ObservableCollection<PokedexEntryViewModel> FilteredEntries { get; private set; } = [];
+
+    [ObservableProperty]
+    private bool _nationalDexUnlocked;
 
     private string _searchText = "";
     public string SearchText
@@ -30,6 +34,7 @@ public partial class PokedexSimpleEditorViewModel : ViewModelBase
     {
         _sav = sav;
         MaxSpeciesID = sav.MaxSpeciesID;
+        _nationalDexUnlocked = sav is SAV3E emerald && emerald.NationalDex;
         Load();
     }
 
@@ -70,6 +75,10 @@ public partial class PokedexSimpleEditorViewModel : ViewModelBase
             _sav.SetSeen(entry.Species, entry.IsSeen);
             _sav.SetCaught(entry.Species, entry.IsCaught);
         }
+
+        if (_sav is SAV3E emerald)
+            emerald.NationalDex = NationalDexUnlocked;
+
         _sav.State.Edited = true;
     }
 

@@ -40,7 +40,22 @@
                                                Classes="compact" Margin="0,0,0,6" />
 
                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{loc:Loc GlobalLink5Editor_UploadDate}" VerticalAlignment="Center" Margin="0,0,8,0" />
-                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UploadDate}" VerticalAlignment="Center" />
+                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                                    <CalendarDatePicker SelectedDate="{Binding UploadDateValue}"
+                                                        SelectedDateFormat="Short"
+                                                        AutomationProperties.Name="{loc:Loc GlobalLink5Editor_UploadDate}" />
+                                    <Button Content="{loc:Loc GlobalLink5Editor_ClearUploadDate}"
+                                            Command="{Binding ClearUploadDateCommand}"
+                                            AutomationProperties.Name="{loc:Loc GlobalLink5Editor_ClearUploadDate}" />
+                                    <TextBlock Text="{Binding UploadDate}"
+                                               IsVisible="{Binding !HasInvalidUploadDate}"
+                                               Foreground="{DynamicResource ThemeTextSecondaryBrush}"
+                                               VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding UploadDate}"
+                                               IsVisible="{Binding HasInvalidUploadDate}"
+                                               Foreground="{DynamicResource ThemeWarningBrush}"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
                             </Grid>
                         </StackPanel>
                     </Border>

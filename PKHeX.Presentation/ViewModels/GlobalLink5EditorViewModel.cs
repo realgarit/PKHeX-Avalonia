@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -14,7 +16,7 @@ public partial class GlobalLink5EditorViewModel : ViewModelBase
     private readonly SAV5? _sav;
     private readonly GlobalLink5? _block;
     private readonly ISpriteRenderer? _spriteRenderer;
-    private readonly bool _loading;
+    private bool _loading;
 
     public bool IsSupported { get; }
 
@@ -48,10 +50,7 @@ public partial class GlobalLink5EditorViewModel : ViewModelBase
         _cGearSkin = _block.CGearSkin;
         _dexSkin = _block.DexSkin;
 
-        // Upload date (DateQuad5 has setters, but the block exposes it as a read-only computed
-        // property over a fresh slice, so we surface it read-only here).
-        var date = _block.UploadDate;
-        UploadDate = date.IsEmpty ? "Never" : date.ToDateOnly().ToString("yyyy-MM-dd");
+        RefreshUploadDate();
 
         // Build the item-name list for the combo. Global Link items are arbitrary held items,
         // so every id 0..MaxItemID is offered (mirrors InventoryEditor's name-list fallback).
@@ -85,7 +84,14 @@ public partial class GlobalLink5EditorViewModel : ViewModelBase
     [ObservableProperty]
     private byte _uploadStatus;
 
-    public string UploadDate { get; } = "Never";
+    [ObservableProperty]
+    private string _uploadDate = string.Empty;
+
+    [ObservableProperty]
+    private DateTime? _uploadDateValue;
+
+    [ObservableProperty]
+    private bool _hasInvalidUploadDate;
 
     // ---- Flags ----
 
@@ -141,6 +147,43 @@ public partial class GlobalLink5EditorViewModel : ViewModelBase
     partial void OnMusicalChanged(byte value) => Apply(b => b.Musical = value);
     partial void OnCGearSkinChanged(byte value) => Apply(b => b.CGearSkin = value);
     partial void OnDexSkinChanged(byte value) => Apply(b => b.DexSkin = value);
+
+    partial void OnUploadDateValueChanged(DateTime? value)
+    {
+        if (_loading || _block is null)
+            return;
+
+        var date = _block.UploadDate;
+        if (value is { } selected)
+            date.FromDateOnly(DateOnly.FromDateTime(selected.Date));
+        else
+            date.SetEmpty();
+
+        MarkEdited();
+        RefreshUploadDate();
+    }
+
+    private void RefreshUploadDate()
+    {
+        if (_block is null)
+            return;
+
+        var date = _block.UploadDate;
+        _loading = true;
+        UploadDateValue = date.IsValid ? date.ToDateOnly().ToDateTime(TimeOnly.MinValue) : null;
+        _loading = false;
+
+        HasInvalidUploadDate = !date.IsEmpty && !date.IsValid;
+        UploadDate = date switch
+        {
+            { IsEmpty: true } => LocalizedStrings.Instance["GlobalLink5Editor_UploadDateNever"],
+            { IsValid: true } => date.ToDateOnly().ToString("yyyy-MM-dd"),
+            _ => LocalizedStrings.Instance["GlobalLink5Editor_UploadDateInvalid"],
+        };
+    }
+
+    [RelayCommand]
+    private void ClearUploadDate() => UploadDateValue = null;
 
     private void Apply(System.Action<GlobalLink5> write)
     {
