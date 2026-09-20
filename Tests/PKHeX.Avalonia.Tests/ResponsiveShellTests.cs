@@ -37,6 +37,14 @@ public sealed class ResponsiveShellTests
         Assert.Contains("ItemsSource=\"{Binding AvailableToolMenuGroups}\"", mainWindow);
         Assert.Contains("MenuItem.ItemContainerTheme", mainWindow);
         Assert.Contains("BasedOn=\"{StaticResource {x:Type MenuItem}}\"", mainWindow);
+        var languageMenu = System.Text.RegularExpressions.Regex.Match(
+            mainWindow,
+            "<MenuItem Header=\"\\{loc:Loc Menu_Options_Language\\}\"(?<body>.*?)</MenuItem>",
+            System.Text.RegularExpressions.RegexOptions.Singleline);
+        Assert.True(languageMenu.Success);
+        Assert.Contains("ItemsSource=\"{Binding LanguageService.AvailableLanguages}\"", languageMenu.Groups["body"].Value);
+        Assert.Contains("ToggleType\" Value=\"Radio\"", languageMenu.Groups["body"].Value);
+        Assert.DoesNotContain("<ComboBox", languageMenu.Groups["body"].Value);
         Assert.DoesNotContain("MenuItem.ItemTemplate", mainWindow);
         Assert.Contains("Classes=\"topbar-control\"", mainWindow);
         Assert.Contains("ColumnDefinitions=\"*,Auto\"", mainWindow);
@@ -110,6 +118,56 @@ public sealed class ResponsiveShellTests
             menu.IsSubMenuOpen = true;
             app.Pump();
             menu.IsSubMenuOpen = false;
+            app.Pump();
+        }
+    }
+
+    [AvaloniaFact]
+    public void LanguageMenuUsesNativeRadioItemsAndChangesLanguage()
+    {
+        using var app = new HeadlessAppFixture();
+        app.LoadSaveInstance(new SAV6XY());
+        app.ViewModel.LanguageService.SetLanguage("en");
+        app.Pump();
+
+        try
+        {
+            var helpMenu = app.Window.GetVisualDescendants()
+                .OfType<MenuItem>()
+                .Single(item => Equals(item.Header, LocalizedStrings.Instance["Menu_Help"]));
+            helpMenu.IsSubMenuOpen = true;
+            app.Pump();
+
+            var languageMenu = app.Window.GetVisualDescendants()
+                .OfType<MenuItem>()
+                .Single(item => Equals(item.Header, LocalizedStrings.Instance["Menu_Options_Language"]));
+
+            Assert.Empty(languageMenu.GetVisualDescendants().OfType<ComboBox>());
+            languageMenu.IsSubMenuOpen = true;
+            app.Pump();
+
+            var languageItems = app.Window.GetVisualDescendants()
+                .OfType<MenuItem>()
+                .Where(item => item.Header is "English" or "日本語" or "Français" or "Italiano" or "Deutsch" or "Español" or "한국어" or "简体中文" or "繁體中文")
+                .ToList();
+
+            Assert.Equal(9, languageItems.Count);
+            var english = languageItems.Single(item => Equals(item.Header, "English"));
+            var german = languageItems.Single(item => Equals(item.Header, "Deutsch"));
+            Assert.True(english.IsChecked);
+            Assert.False(german.IsChecked);
+            Assert.NotNull(german.Command);
+
+            german.Command!.Execute(german.CommandParameter);
+            app.Pump();
+
+            Assert.Equal("de", app.ViewModel.LanguageService.CurrentLanguage);
+            Assert.False(english.IsChecked);
+            Assert.True(german.IsChecked);
+        }
+        finally
+        {
+            app.ViewModel.LanguageService.SetLanguage("en");
             app.Pump();
         }
     }
