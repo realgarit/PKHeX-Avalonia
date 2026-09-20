@@ -26,10 +26,24 @@ public partial class HallOfFame3EditorViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<HallOfFame3EntryViewModel> _entries = [];
 
+    public bool HasEntries => Entries.Count != 0;
+
     private void LoadData(SAV3 sav3)
     {
         Entries.Clear();
-        var hofEntries = HallFame3Entry.GetEntries(sav3);
+        OnPropertyChanged(nameof(HasEntries));
+        HallFame3Entry[] hofEntries;
+        try
+        {
+            hofEntries = HallFame3Entry.GetEntries(sav3);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            // Blank or incomplete Gen 3 saves can omit the optional Hall of Fame block. Treat that
+            // representation as an empty viewer instead of surfacing a global editor error.
+            OnPropertyChanged(nameof(HasEntries));
+            return;
+        }
         var speciesNames = Core.GameInfo.Strings.Species;
 
         for (int i = 0; i < hofEntries.Length; i++)
@@ -50,6 +64,8 @@ public partial class HallOfFame3EditorViewModel : ViewModelBase
             }
             Entries.Add(entryVm);
         }
+
+        OnPropertyChanged(nameof(HasEntries));
     }
 
     [RelayCommand]

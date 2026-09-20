@@ -77,6 +77,7 @@ public partial class HallOfFame1EditorViewModel : ViewModelBase
 
     partial void OnSelectedTeamChanged(HallOfFameTeam1ViewModel? value)
     {
+        DeleteTeamCommand.NotifyCanExecuteChanged();
         if (value is null)
             return;
 
@@ -139,6 +140,7 @@ public partial class HallOfFame1EditorViewModel : ViewModelBase
 
         UpdateTeamSummary();
         SelectedTeam.MemberCount = _fame.GetTeamMemberCount(SelectedTeam.TeamIndex);
+        DeleteTeamCommand.NotifyCanExecuteChanged();
     }
 
     private void UpdateTeamSummary()
@@ -163,9 +165,12 @@ public partial class HallOfFame1EditorViewModel : ViewModelBase
         LoadSlot(SelectedTeam.TeamIndex, SelectedSlotIndex);
         UpdateTeamSummary();
         SelectedTeam.MemberCount = _fame.GetTeamMemberCount(SelectedTeam.TeamIndex);
+        DeleteTeamCommand.NotifyCanExecuteChanged();
     }
 
-    [RelayCommand]
+    private bool CanDeleteTeam() => SelectedTeam is { TeamIndex: > 0, MemberCount: > 0 };
+
+    [RelayCommand(CanExecute = nameof(CanDeleteTeam))]
     private void DeleteTeam()
     {
         if (SelectedTeam is null || SelectedTeam.TeamIndex == 0)

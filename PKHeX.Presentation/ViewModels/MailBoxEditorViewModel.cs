@@ -189,6 +189,7 @@ public partial class MailBoxEditorViewModel : ViewModelBase
 
     partial void OnSelectedMailChanged(MailEntryViewModel? value)
     {
+        DeleteMailCommand.NotifyCanExecuteChanged();
         if (value is null)
             return;
 
@@ -297,7 +298,9 @@ public partial class MailBoxEditorViewModel : ViewModelBase
         return cbIndex > 0 ? cbIndex - 1 : 0xFF;
     }
 
-    [RelayCommand]
+    private bool CanDeleteMail() => SelectedMail?.Mail.IsEmpty == false;
+
+    [RelayCommand(CanExecute = nameof(CanDeleteMail))]
     private void DeleteMail()
     {
         if (SelectedMail is null)
@@ -306,6 +309,7 @@ public partial class MailBoxEditorViewModel : ViewModelBase
         SelectedMail.Mail.SetBlank();
         SelectedMail.Refresh();
         LoadMailDetails(SelectedMail.Mail);
+        DeleteMailCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand]

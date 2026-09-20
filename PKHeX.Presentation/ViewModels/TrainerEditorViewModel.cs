@@ -34,9 +34,11 @@ public partial class TrainerEditorViewModel : ViewModelBase
     private ushort _sid16;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private uint _displayTid;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private uint _displaySid;
 
     [ObservableProperty]
@@ -83,9 +85,23 @@ public partial class TrainerEditorViewModel : ViewModelBase
 
     public bool UsesSixDigitTrainerIds => _sav.TrainerIDDisplayFormat == TrainerIDFormat.SixDigit;
     public uint MaxDisplayTid => UsesSixDigitTrainerIds ? 999999u : ushort.MaxValue;
-    public uint MaxDisplaySid => UsesSixDigitTrainerIds ? uint.MaxValue / 1_000_000u : ushort.MaxValue;
+    public uint MaxDisplaySid => UsesSixDigitTrainerIds
+        ? (uint.MaxValue - Math.Min(DisplayTid, MaxDisplayTid)) / 1_000_000u
+        : ushort.MaxValue;
     public string DisplayTidFormat => UsesSixDigitTrainerIds ? "000000" : "00000";
     public string DisplaySidFormat => UsesSixDigitTrainerIds ? "0000" : "00000";
+
+    public bool IsDisplayIdValid => !UsesSixDigitTrainerIds || _sav.IsValidTrainerID7(DisplaySid, DisplayTid);
+
+    private bool CanSave() => IsDisplayIdValid;
+
+    partial void OnDisplayTidChanged(uint value)
+    {
+        OnPropertyChanged(nameof(MaxDisplaySid));
+        OnPropertyChanged(nameof(IsDisplayIdValid));
+    }
+
+    partial void OnDisplaySidChanged(uint value) => OnPropertyChanged(nameof(IsDisplayIdValid));
 
     private PropertyInfo? _badgesProperty;
     
@@ -393,14 +409,13 @@ public partial class TrainerEditorViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanSave))]
     private void Save()
     {
         _sav.OT = TrainerName;
         _sav.Gender = (byte)Gender;
         _sav.Money = Money;
-        _sav.DisplayTID = Math.Min(DisplayTid, MaxDisplayTid);
-        _sav.DisplaySID = Math.Min(DisplaySid, MaxDisplaySid);
+        _sav.SetDisplayID(DisplayTid, DisplaySid);
         Tid16 = _sav.TID16;
         Sid16 = _sav.SID16;
         _sav.Language = Language;
