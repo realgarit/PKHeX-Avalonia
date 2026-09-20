@@ -3,6 +3,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -227,9 +228,9 @@ public partial class HallOfFameTeam1ViewModel : ViewModelBase
 
     private string StateText => MemberCount switch
     {
-        0 => "✕",
-        6 => "✓",
-        _ => $"{MemberCount}/6",
+        0 => LocalizedStrings.Instance["HallOfFame1Editor_Empty"],
+        6 => LocalizedStrings.Instance["HallOfFame1Editor_Complete"],
+        _ => LocalizedStrings.Instance.Format("HallOfFame1Editor_Partial", MemberCount),
     };
 
     public HallOfFameTeam1ViewModel(int teamIndex, int memberCount)

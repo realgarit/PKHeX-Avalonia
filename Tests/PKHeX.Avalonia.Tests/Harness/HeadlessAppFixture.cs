@@ -328,11 +328,29 @@ public sealed class HeadlessAppFixture : IDisposable
     }
 
     /// <summary>
-    /// Left-clicks a box slot, selecting it (the real <c>SelectSlotByClick</c> path). To then load the
-    /// selected slot into the editor, use the keyboard: <c>PressKey(PhysicalKey.Enter)</c> (activate).
+    /// Left-clicks a box slot, selecting it (the real <c>SelectSlotByClick</c> path). Navigates to the
+    /// requested box first because #317 makes a newly loaded save honor its stored active box. To then
+    /// load the selected slot into the editor, use the keyboard: <c>PressKey(PhysicalKey.Enter)</c> (activate).
     /// </summary>
     public void ClickSlot(int box, int slot)
     {
+        if (BoxViewer is null)
+            throw new InvalidOperationException("No box viewer is available.");
+        if ((uint)box >= (uint)BoxViewer.BoxCount)
+            throw new ArgumentOutOfRangeException(nameof(box));
+        if ((uint)slot >= (uint)BoxViewer.SlotsPerBox)
+            throw new ArgumentOutOfRangeException(nameof(slot));
+
+        var distance = (box - BoxViewer.CurrentBox + BoxViewer.BoxCount) % BoxViewer.BoxCount;
+        for (var i = 0; i < distance; i++)
+        {
+            BoxViewer.NextBoxCommand.Execute(null);
+            Pump();
+        }
+
+        PumpUntil(
+            () => FindSlotButton(box, slot) is not null,
+            because: $"box {box}, slot {slot} to be realized after active-box navigation");
         var button = FindSlotButton(box, slot) ?? throw new InvalidOperationException($"No realized slot button for box {box}, slot {slot}.");
         Click(button);
     }

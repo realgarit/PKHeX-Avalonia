@@ -4,7 +4,7 @@
              xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.PoffinCaseEditorView"
              x:DataType="vm:PoffinCaseEditorViewModel"
-             Width="550" Height="450">
+             Width="900" Height="450">
     <DockPanel Margin="16">
         <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,12">
             <TextBlock Text="{loc:Loc PoffinCaseEditorView_Title}" FontSize="20" FontWeight="SemiBold" />
@@ -38,15 +38,15 @@
                       GridLinesVisibility="Horizontal"
                       CanUserSortColumns="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Slot}" Binding="{Binding SlotLabel}" Width="60" />
-                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Flavor}" Binding="{Binding FlavorName}" Width="100" />
-                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Level}" Binding="{Binding Level}" Width="60" />
-                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Smooth}" Binding="{Binding Smoothness}" Width="60" />
-                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Spicy}" Binding="{Binding Spicy}" Width="55" />
-                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Dry}" Binding="{Binding Dry}" Width="50" />
-                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Sweet}" Binding="{Binding Sweet}" Width="55" />
-                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Bitter}" Binding="{Binding Bitter}" Width="55" />
-                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Sour}" Binding="{Binding Sour}" Width="50" />
+                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Slot}" Binding="{Binding SlotLabel}" Width="90" />
+                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Flavor}" Binding="{Binding FlavorName}" Width="110" />
+                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Level}" Binding="{Binding Level}" Width="80" />
+                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Smooth}" Binding="{Binding Smoothness}" Width="90" />
+                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Spicy}" Binding="{Binding Spicy}" Width="80" />
+                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Dry}" Binding="{Binding Dry}" Width="72" />
+                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Sweet}" Binding="{Binding Sweet}" Width="80" />
+                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Bitter}" Binding="{Binding Bitter}" Width="80" />
+                    <DataGridTextColumn Header="{loc:Loc PoffinCaseEditorView_Sour}" Binding="{Binding Sour}" Width="72" />
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

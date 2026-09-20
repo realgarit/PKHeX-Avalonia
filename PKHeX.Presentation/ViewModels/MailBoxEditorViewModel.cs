@@ -3,6 +3,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -363,8 +364,11 @@ public partial class MailEntryViewModel : ViewModelBase
 
     public void Refresh()
     {
-        DisplayText = Mail.IsEmpty != true
-            ? $"{Index}: From {Mail.AuthorName}"
-            : $"{Index}: (empty)";
+        DisplayText = Mail.IsEmpty switch
+        {
+            true => $"{Index}: {LocalizedStrings.Instance["MailBoxEditor_Empty"]}",
+            false => $"{Index}: {LocalizedStrings.Instance["MailBoxEditor_From"]} {Mail.AuthorName}",
+            null => $"{Index}: {LocalizedStrings.Instance["MailBoxEditor_Invalid"]}",
+        };
     }
 }

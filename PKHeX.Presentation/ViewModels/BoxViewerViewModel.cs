@@ -80,7 +80,17 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
         _haXMode = haXMode;
         Seek = new EntitySeekViewModel(sav, this);
 
-        LoadBox(0);
+        LoadBox(GetInitialBoxIndex(sav));
+    }
+
+    private static int GetInitialBoxIndex(SaveFile sav)
+    {
+        if (sav.BoxCount <= 0)
+            return 0;
+
+        var current = sav.CurrentBox;
+        var boxCount = sav.BoxCount;
+        return current >= 0 && current < boxCount ? current : 0;
     }
 
     private bool IsSessionCurrent() => _slotService is null
@@ -116,6 +126,8 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
 
         var previousIndex = SelectedIndex;
         CurrentBox = box;
+        if (_sav.CurrentBox != box)
+            _sav.CurrentBox = box;
         BoxName = _sav is IBoxDetailNameRead r
             ? r.GetBoxName(box)
             : BoxDetailNameExtensions.GetDefaultBoxName(box);

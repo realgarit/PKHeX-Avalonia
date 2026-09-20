@@ -4,7 +4,7 @@
              xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.PokeBlock3CaseEditorView"
              x:DataType="vm:PokeBlock3CaseEditorViewModel"
-             Width="550" Height="450">
+             Width="900" Height="450">
     <DockPanel Margin="16">
         <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,12">
             <TextBlock Text="{loc:Loc PokeBlock3CaseEditorView_Title}" FontSize="20" FontWeight="SemiBold" />
@@ -38,15 +38,15 @@
                       GridLinesVisibility="Horizontal"
                       CanUserSortColumns="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Slot}" Binding="{Binding SlotLabel}" Width="55" />
-                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Color}" Binding="{Binding ColorName}" Width="80" />
-                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Level}" Binding="{Binding Level}" Width="55" />
-                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Feel}" Binding="{Binding Feel}" Width="50" />
-                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Spicy}" Binding="{Binding Spicy}" Width="50" />
-                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Dry}" Binding="{Binding Dry}" Width="45" />
-                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Sweet}" Binding="{Binding Sweet}" Width="50" />
-                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Bitter}" Binding="{Binding Bitter}" Width="50" />
-                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Sour}" Binding="{Binding Sour}" Width="45" />
+                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Slot}" Binding="{Binding SlotLabel}" Width="90" />
+                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Color}" Binding="{Binding ColorName}" Width="110" />
+                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Level}" Binding="{Binding Level}" Width="80" />
+                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Feel}" Binding="{Binding Feel}" Width="80" />
+                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Spicy}" Binding="{Binding Spicy}" Width="80" />
+                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Dry}" Binding="{Binding Dry}" Width="72" />
+                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Sweet}" Binding="{Binding Sweet}" Width="80" />
+                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Bitter}" Binding="{Binding Bitter}" Width="80" />
+                    <DataGridTextColumn Header="{loc:Loc PokeBlock3CaseEditorView_Sour}" Binding="{Binding Sour}" Width="72" />
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

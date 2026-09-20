@@ -44,11 +44,11 @@
                                 <Grid ColumnDefinitions="*,8,*">
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="{loc:Loc TrainerEditor_Tid}" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
-                                        <NumericUpDown Value="{Binding Tid16}" Minimum="0" Maximum="65535" FormatString="00000" ShowButtonSpinner="False" />
+                                        <NumericUpDown Value="{Binding DisplayTid}" Minimum="0" Maximum="{Binding MaxDisplayTid}" FormatString="{Binding DisplayTidFormat}" ShowButtonSpinner="False" AutomationProperties.Name="TID" />
                                     </StackPanel>
                                     <StackPanel Grid.Column="2">
                                         <TextBlock Text="{loc:Loc TrainerEditor_Sid}" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
-                                        <NumericUpDown Value="{Binding Sid16}" Minimum="0" Maximum="65535" FormatString="00000" ShowButtonSpinner="False" />
+                                        <NumericUpDown Value="{Binding DisplaySid}" Minimum="0" Maximum="{Binding MaxDisplaySid}" FormatString="{Binding DisplaySidFormat}" ShowButtonSpinner="False" AutomationProperties.Name="SID" />
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>
@@ -121,7 +121,14 @@
                 <Border IsVisible="{Binding HasBadges}" Classes="editor-section">
                     <StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc TrainerEditor_Badges}" FontWeight="SemiBold" Opacity="0.6" />
-                        <ItemsControl ItemsSource="{Binding Badges}">
+                        <NumericUpDown IsVisible="{Binding IsBadgeCount}"
+                                      Value="{Binding BadgeCount}"
+                                      Minimum="0"
+                                      Maximum="{Binding MaxBadgeCount}"
+                                      FormatString="0"
+                                      ShowButtonSpinner="False"
+                                      AutomationProperties.Name="{loc:Loc TrainerEditor_Badges}" />
+                        <ItemsControl IsVisible="{Binding !IsBadgeCount}" ItemsSource="{Binding Badges}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel Orientation="Horizontal" />
