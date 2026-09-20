@@ -35,5 +35,35 @@ Keep the full frame, readable text, and actual legality indicators. Do not retou
 the UI to imply behavior that the application does not have. After regeneration,
 update the source version above and verify both README image links.
 
-Other PNGs in this directory are earlier documentation assets. The current root
-README uses only the two `pokemon-editor-dark/light.png` captures above.
+## Expandable gallery
+
+The root README keeps a centered 600px preview and nine images inside five
+GitHub-native `details`/`summary` sections, collapsed by default.
+
+Seven additional images were captured on 2026-09-20 from the same application
+source using `HeadlessFeatureCaptureTests`:
+
+| Capture method | Generated file | Published file |
+|---|---|---|
+| `CaptureTaskAwareShellStates_WhenEnabled_WritesPng` | `shell-save.png` | `gallery-trainer.png` |
+| Same | `shell-inventory.png` | `gallery-inventory.png` |
+| Same | `shell-reports.png` | `gallery-reports.png` |
+| Same | `shell-launcher.png` | `gallery-launcher.png` |
+| `CaptureIssueSweepNextEditors_WhenEnabled_WritesPng` | `next-pokedex8b-editor.png` | `gallery-pokedex.png` |
+| Same | `next-seal-stickers-editor.png` | `gallery-stickers.png` |
+| Same | `next-tech-record-editor.png` | `gallery-records.png` |
+
+Use the capture environment variables above and filter for these methods to
+regenerate the gallery. The shell images use the checked-in
+`Tests/savefiles/gen9a_legendsza.main` fixture. The three auxiliary editors use
+blank/synthetic save and Pokémon objects. None use private user saves.
+
+For this capture session, the shell fixture explicitly applied `AppTheme.Light`
+and called `RefreshThemeSelection()` immediately after constructing
+`HeadlessAppFixture`, before loading the save. This temporary test-only setup
+kept the theme picker consistent with the rendered palette; it was removed
+after capture. Repeat that setup before building if regenerating these exact
+light-theme frames. Production application code was unchanged.
+
+Other PNGs in this directory are earlier documentation assets retained for
+existing consumers.

@@ -10,7 +10,9 @@ A native Pokémon save editor for **Windows, macOS, and Linux**, built with .NET
 
 [Download](#download) · [Getting started](#getting-started) · [Features](#features) · [Screenshots](#screenshots) · [Build](#building-from-source) · [Community](#community)
 
-![Compact Pokémon editor in dark theme with a populated box and party strip](docs/screenshots/pokemon-editor-dark.png)
+<p align="center">
+  <a href="docs/screenshots/pokemon-editor-dark.png"><img src="docs/screenshots/pokemon-editor-dark.png" alt="Compact Pokémon editor in dark theme with a populated box and party strip" width="600"></a>
+</p>
 
 The default 900×600 workspace keeps Pokémon editing, box navigation, and the party together. Advanced fields and game-specific tools are available through **More**, **Tools**, and the searchable tool launcher.
 
@@ -80,11 +82,58 @@ Use **Tools**, or **Ctrl+K** to search the tool launcher. The tool catalog refle
 
 ## Screenshots
 
-These are headless renders of the real Avalonia views from v1.49.12, not mockups. The populated editor uses synthetic demonstration Pokémon; its legality warnings are intentional.
+Expand any section to browse the app, then click its heading again to collapse it. Click an image for the full-size capture.
 
-### Light theme
+<details>
+<summary><strong>Pokémon editor — dark and light themes</strong></summary>
 
-![Compact editor in light theme with Pokémon fields, box navigation, and party](docs/screenshots/pokemon-editor-light.png)
+The compact editor keeps Pokémon fields, box navigation, and the party together.
+
+![Pokémon editor in dark theme](docs/screenshots/pokemon-editor-dark.png)
+![Pokémon editor in light theme](docs/screenshots/pokemon-editor-light.png)
+
+</details>
+
+<details>
+<summary><strong>Save editing — Trainer and Inventory</strong></summary>
+
+Trainer identity, currencies, and play time, followed by the inventory's item pouches and quantities.
+
+![Trainer editor for Legends Z-A](docs/screenshots/gallery-trainer.png)
+![Inventory editor with medicine items and counts](docs/screenshots/gallery-inventory.png)
+
+</details>
+
+<details>
+<summary><strong>Search &amp; Reports and the tool launcher</strong></summary>
+
+Access save reports and databases, or find an available tool with Ctrl+K.
+
+![Search and Reports workspace](docs/screenshots/gallery-reports.png)
+![Searchable tool launcher](docs/screenshots/gallery-launcher.png)
+
+</details>
+
+<details>
+<summary><strong>BDSP editors — Pokédex and Seal Stickers</strong></summary>
+
+Pokédex species, language, and form flags; sticker names, counts, totals, and obtained state.
+
+![BDSP Pokedex editor with species list and entry flags](docs/screenshots/gallery-pokedex.png)
+![BDSP Seal Stickers editor with Count Total and Obtained columns](docs/screenshots/gallery-stickers.png)
+
+</details>
+
+<details>
+<summary><strong>Technical Records</strong></summary>
+
+Inspect record flags, current moves, and permission indicators, with staged bulk actions and Save/Cancel.
+
+![Technical Records editor with move list and permission columns](docs/screenshots/gallery-records.png)
+
+</details>
+
+These are headless renders of the real Avalonia views, using synthetic Pokémon and checked-in test saves. The populated Pokémon editor's legality warnings are intentional. No private save data was used.
 
 The [screenshot guide](docs/screenshots/README.md) explains how to regenerate the images without opening a desktop window.
 
