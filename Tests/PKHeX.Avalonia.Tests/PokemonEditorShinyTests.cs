@@ -35,4 +35,41 @@ public sealed class PokemonEditorShinyTests
         Assert.Equal(prepared.PID.ToString("X8"), vm.Pid);
         Assert.Equal(prepared.EncryptionConstant.ToString("X8"), vm.EncryptionConstant);
     }
+
+    [Fact]
+    public void ModernEditor_ExposesLocalizedCharacteristicAndRefreshesAfterIvChanges()
+    {
+        var save = new SAV9SV();
+        var pkm = new PK9
+        {
+            Species = (ushort)Species.Gengar,
+            CurrentLevel = 50,
+            EncryptionConstant = 0x12345678,
+            IV_HP = 31,
+            IV_ATK = 0,
+            IV_DEF = 0,
+            IV_SPE = 0,
+            IV_SPA = 0,
+            IV_SPD = 0,
+        };
+
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, save);
+
+        Assert.True(vm.HasCharacteristic);
+        Assert.Equal(GameInfo.Strings.characteristics[vm.TargetPKM.Characteristic], vm.CharacteristicText);
+
+        vm.IvATK = 31;
+
+        Assert.Equal(GameInfo.Strings.characteristics[vm.TargetPKM.Characteristic], vm.CharacteristicText);
+    }
+
+    [Fact]
+    public void MetLocationTooltipIncludesTheThreeDigitLocationId()
+    {
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(new PK9 { Species = (ushort)Species.Pikachu }, new SAV9SV());
+
+        vm.MetLocation = 7;
+
+        Assert.EndsWith(": 007", vm.MetLocationTooltip, StringComparison.Ordinal);
+    }
 }

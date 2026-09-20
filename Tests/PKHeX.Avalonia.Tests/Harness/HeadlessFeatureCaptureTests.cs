@@ -391,6 +391,44 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
     }
 
     [AvaloniaFact]
+    public void CaptureIssueSweepNextEditors_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        var pokemon = new PK9
+        {
+            Species = (ushort)Species.Pikachu,
+            CurrentLevel = 50,
+            EncryptionConstant = 0x12345678,
+        };
+        CaptureAuxiliaryView(
+            new SealStickers8bEditor { DataContext = new SealStickers8bEditorViewModel(new SAV8BS()) },
+            "next-seal-stickers-editor.png",
+            900,
+            650,
+            "BDSP Seal Stickers editor");
+        CaptureAuxiliaryView(
+            new TechRecordEditor { DataContext = new TechRecordEditorViewModel((ITechRecord)pokemon, pokemon) },
+            "next-tech-record-editor.png",
+            760,
+            620,
+            "Technical Records editor");
+        CaptureAuxiliaryView(
+            new RibbonEditor { DataContext = new RibbonEditorViewModel(pokemon) },
+            "next-ribbon-editor.png",
+            760,
+            680,
+            "Ribbon editor");
+        CaptureAuxiliaryView(
+            new Pokedex8bEditor { DataContext = new Pokedex8bEditorViewModel(new SAV8BS()) },
+            "next-pokedex8b-editor.png",
+            1000,
+            720,
+            "BDSP Pokédex editor");
+    }
+
+    [AvaloniaFact]
     public void CaptureRemainingDialogStates_WhenEnabled_WritesPng()
     {
         if (SkipWhenCaptureDisabled())

@@ -1806,6 +1806,7 @@
   "PokemonEditor_ColEVs": "EP",
   "PokemonEditor_ClearEvsTooltip": "Alle EP löschen",
   "PokemonEditor_ColTotal": "Gesamt",
+  "PokemonEditor_Characteristic": "Charakteristik",
   "PokemonEditor_ColMax": "Max",
   "PokemonEditor_ColClear": "Leeren",
   "PokemonEditor_StatHp": "KP",
@@ -2040,6 +2041,8 @@
   "SealStickers8bEditor_ColumnName": "Name",
   "SealStickers8bEditor_ColumnCount": "Anzahl",
   "SealStickers8bEditor_ColumnUnlocked": "Freigeschaltet",
+  "SealStickers8bEditor_ColumnTotal": "Gesamt",
+  "SealStickers8bEditor_ColumnObtained": "Erhalten",
   "SecretBase3Editor_SecretBases": "Geheimbasen",
   "SecretBase3Editor_TrainerInfo": "Trainer-Info",
   "SecretBase3Editor_Name": "Name:",
@@ -2108,6 +2111,8 @@
   "TechRecordEditor_Active": "Aktiv",
   "TechRecordEditor_Type": "Typ",
   "TechRecordEditor_Move": "Attacke",
+  "TechRecordEditor_Learned": "Erlernt",
+  "TechRecordEditor_Legal": "Legal",
   "TechRecordEditor_GiveAll": "Alle geben",
   "TechRecordEditor_RemoveAll": "Alle entfernen",
   "TrainerCard8EditorView_Title": "Trainerpass",
@@ -2284,5 +2289,11 @@
   "BoxLayoutEditor_BoxName": "Boxname",
   "BoxLayoutEditor_Wallpaper": "Hintergrund",
   "BoxLayoutEditor_MoveUp": "Box nach oben verschieben",
-  "BoxLayoutEditor_MoveDown": "Box nach unten verschieben"
+  "BoxLayoutEditor_MoveDown": "Box nach unten verschieben",
+  "Settings_AllowBattleTowerTeamSwap": "Gen.-3-Kampfturm-Teamtausch erlauben",
+  "Settings_AllowBattleTowerTeamSwap_Desc": "Den Kampfturm-Teamtausch-Exploit aus Rubin/Saphir bei Legalitätsprüfungen akzeptieren.",
+  "Pokedex8bEditor_None": "Keine",
+  "Pokedex8bEditor_HeardOf": "Davon gehört",
+  "Pokedex8bEditor_Seen": "Gesehen",
+  "Pokedex8bEditor_Caught": "Gefangen"
 }

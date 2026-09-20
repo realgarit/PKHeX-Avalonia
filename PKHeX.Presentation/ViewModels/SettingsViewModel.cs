@@ -86,6 +86,7 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
     [ObservableProperty] private bool _setUpdatePKM;
     [ObservableProperty] private bool _setUpdateRecords;
     [ObservableProperty] private bool _modifyUnset;
+    [ObservableProperty] private bool _allowBattleTowerTeamSwap;
 
     // Sprites
     [ObservableProperty] private SpritePreference _spritePreference;
@@ -133,6 +134,7 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         SetUpdatePKM = _settings.SlotWrite.SetUpdatePKM;
         SetUpdateRecords = _settings.SlotWrite.SetUpdateRecords;
         ModifyUnset = _settings.SlotWrite.ModifyUnset;
+        AllowBattleTowerTeamSwap = _settings.Legality.Game.Gen3.AllowBattleTowerTeamSwap;
 
         SpritePreference = _settings.Sprite.SpritePreference;
         SelectedTheme = Themes.Contains(_themeService.CurrentTheme)
@@ -159,6 +161,7 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         _settings.SlotWrite.SetUpdatePKM = SetUpdatePKM;
         _settings.SlotWrite.SetUpdateRecords = SetUpdateRecords;
         _settings.SlotWrite.ModifyUnset = ModifyUnset;
+        _settings.Legality.Game.Gen3.AllowBattleTowerTeamSwap = AllowBattleTowerTeamSwap;
 
         _settings.Sprite.SpritePreference = SpritePreference;
 

@@ -18,6 +18,8 @@ public partial class PartyViewer : UserControl
 
     private void OnSlotDragOver(object? sender, DragEventArgs e) => PartySlotInteraction.OnSlotDragOver(this, sender, e);
 
+    private void OnSlotDragLeave(object? sender, DragEventArgs e) => PartySlotInteraction.OnSlotDragLeave(this, sender, e);
+
     private void OnSlotDrop(object? sender, DragEventArgs e) => PartySlotInteraction.OnSlotDrop(this, sender, e);
 
     private void OnSlotClicked(object? sender, RoutedEventArgs e) => PartySlotInteraction.OnSlotClicked(this, sender, e);

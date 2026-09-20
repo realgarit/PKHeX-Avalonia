@@ -1806,6 +1806,7 @@
   "PokemonEditor_ColEVs": "努力值",
   "PokemonEditor_ClearEvsTooltip": "清除所有努力值",
   "PokemonEditor_ColTotal": "總計",
+  "PokemonEditor_Characteristic": "個性",
   "PokemonEditor_ColMax": "最大",
   "PokemonEditor_ColClear": "清除",
   "PokemonEditor_StatHp": "HP",
@@ -2040,6 +2041,8 @@
   "SealStickers8bEditor_ColumnName": "名稱",
   "SealStickers8bEditor_ColumnCount": "數量",
   "SealStickers8bEditor_ColumnUnlocked": "已解鎖",
+  "SealStickers8bEditor_ColumnTotal": "總計",
+  "SealStickers8bEditor_ColumnObtained": "已取得",
   "SecretBase3Editor_SecretBases": "秘密基地",
   "SecretBase3Editor_TrainerInfo": "訓練家資訊",
   "SecretBase3Editor_Name": "名稱：",
@@ -2108,6 +2111,8 @@
   "TechRecordEditor_Active": "啟用",
   "TechRecordEditor_Type": "類型",
   "TechRecordEditor_Move": "招式",
+  "TechRecordEditor_Learned": "已學會",
+  "TechRecordEditor_Legal": "合法",
   "TechRecordEditor_GiveAll": "全部給予",
   "TechRecordEditor_RemoveAll": "全部移除",
   "TrainerCard8EditorView_Title": "訓練家卡片",
@@ -2284,5 +2289,11 @@
   "BoxLayoutEditor_BoxName": "盒子名稱",
   "BoxLayoutEditor_Wallpaper": "壁紙",
   "BoxLayoutEditor_MoveUp": "上移盒子",
-  "BoxLayoutEditor_MoveDown": "下移盒子"
+  "BoxLayoutEditor_MoveDown": "下移盒子",
+  "Settings_AllowBattleTowerTeamSwap": "允許第三世代對戰塔隊伍交換",
+  "Settings_AllowBattleTowerTeamSwap_Desc": "在合法性檢查中接受紅寶石／藍寶石對戰塔隊伍交換取得的緞帶。",
+  "Pokedex8bEditor_None": "無",
+  "Pokedex8bEditor_HeardOf": "聽說過",
+  "Pokedex8bEditor_Seen": "已見過",
+  "Pokedex8bEditor_Caught": "已捕獲"
 }

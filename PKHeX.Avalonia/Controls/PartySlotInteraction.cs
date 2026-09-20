@@ -24,6 +24,7 @@ internal static class PartySlotInteraction
     {
         public Point DragStartPoint;
         public bool IsDragging;
+        public Button? DragSourceButton;
     }
 
     private static readonly ConditionalWeakTable<UserControl, InteractionState> States = new();
@@ -86,6 +87,8 @@ internal static class PartySlotInteraction
             return;
 
         state.IsDragging = true;
+        state.DragSourceButton = button;
+        button.Classes.Add("drag-source");
         try
         {
             // Keep payload creation synchronous until DoDragDropAsync starts. Native macOS drag
@@ -103,6 +106,8 @@ internal static class PartySlotInteraction
         finally
         {
             state.IsDragging = false;
+            button.Classes.Remove("drag-source");
+            state.DragSourceButton = null;
         }
     }
 
@@ -130,13 +135,29 @@ internal static class PartySlotInteraction
             e.DragEffects = DragDropEffects.None;
         }
 
+        button.Classes.Remove("drop-valid");
+        button.Classes.Remove("drop-invalid");
+        button.Classes.Add(e.DragEffects == DragDropEffects.None ? "drop-invalid" : "drop-valid");
+
         e.Handled = true;
+    }
+
+    public static void OnSlotDragLeave(UserControl owner, object? sender, DragEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            button.Classes.Remove("drop-valid");
+            button.Classes.Remove("drop-invalid");
+        }
     }
 
     public static async void OnSlotDrop(UserControl owner, object? sender, DragEventArgs e)
     {
         if (sender is not Button button || button.Tag is not PartySlotData destSlot || owner.DataContext is not PartyViewerViewModel vm)
             return;
+
+        button.Classes.Remove("drop-valid");
+        button.Classes.Remove("drop-invalid");
 
         var data = SlotDragTransfer.TryGet(e.DataTransfer, vm.SessionId);
         if (data != null)

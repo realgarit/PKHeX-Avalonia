@@ -133,6 +133,27 @@ public sealed class EntityConverterSettingsTests : IDisposable
     }
 
     [Fact]
+    public void SettingsViewModel_PersistsBattleTowerTeamSwapAndAppliesLegalitySettings()
+    {
+        var settings = new AppSettings();
+        settings.Legality.Game.Gen3.AllowBattleTowerTeamSwap = true;
+        var vm = new SettingsViewModel(
+            settings,
+            new FakeSettingsStore(),
+            new Mock<IThemeService>().Object,
+            new Mock<IUiDensityService>().Object,
+            new LanguageService(),
+            UpdateTestDoubles.Coordinator());
+
+        Assert.True(vm.AllowBattleTowerTeamSwap);
+        vm.AllowBattleTowerTeamSwap = false;
+        vm.SaveCommand.Execute(null);
+
+        Assert.False(settings.Legality.Game.Gen3.AllowBattleTowerTeamSwap);
+        Assert.Same(settings.Legality, ParseSettings.Settings);
+    }
+
+    [Fact]
     public void Converter_JsonRoundTrip_PreservesNonDefaultValues()
     {
         var settings = new AppSettings { Converter = NonDefaultConverterSettings() };

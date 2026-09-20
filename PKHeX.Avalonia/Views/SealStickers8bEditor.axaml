@@ -12,22 +12,30 @@
         <StackPanel Grid.Row="0" Classes="save-editor-header" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
             <Button Content="{loc:Loc SealStickers8bEditor_SetAllMax}" Command="{Binding SetAllMaxCommand}" />
             <Button Content="{loc:Loc SealStickers8bEditor_SetAllNone}" Command="{Binding SetAllNoneCommand}" />
+            <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" />
             <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" />
         </StackPanel>
 
         <DataGrid Grid.Row="1" Classes="save-grid" ItemsSource="{Binding Items}" AutoGenerateColumns="False"
                   IsReadOnly="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="{loc:Loc SealStickers8bEditor_ColumnId}" Binding="{Binding Index, StringFormat=\{0:D3\}}" IsReadOnly="True" Width="50" />
-                <DataGridTextColumn Header="{loc:Loc SealStickers8bEditor_ColumnName}" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
-                <DataGridTemplateColumn Header="{loc:Loc SealStickers8bEditor_ColumnCount}" Width="80">
+                <DataGridTextColumn Header="{loc:Loc SealStickers8bEditor_ColumnId}" Binding="{Binding Index, StringFormat=\{0:D3\}}" IsReadOnly="True" Width="60" />
+                <DataGridTextColumn Header="{loc:Loc SealStickers8bEditor_ColumnName}" Binding="{Binding Name}" IsReadOnly="True" Width="*" MinWidth="170" />
+                <DataGridTemplateColumn Header="{loc:Loc SealStickers8bEditor_ColumnCount}" Width="90">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate x:DataType="vm:SealSticker8bViewModel">
                             <NumericUpDown Value="{Binding Count}" Minimum="0" Maximum="{Binding MaxValue}" HorizontalAlignment="Center" AutomationProperties.Name="Count" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn Header="{loc:Loc SealStickers8bEditor_ColumnUnlocked}" Binding="{Binding IsGet}" Width="80" />
+                <DataGridTemplateColumn Header="{loc:Loc SealStickers8bEditor_ColumnTotal}" Width="90">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="vm:SealSticker8bViewModel">
+                            <NumericUpDown Value="{Binding TotalCount}" Minimum="0" Maximum="{Binding MaxValue}" HorizontalAlignment="Center" AutomationProperties.Name="Total" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridCheckBoxColumn Header="{loc:Loc SealStickers8bEditor_ColumnObtained}" Binding="{Binding IsGet}" Width="105" />
             </DataGrid.Columns>
         </DataGrid>
 

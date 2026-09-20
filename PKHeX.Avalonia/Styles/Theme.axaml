@@ -465,6 +465,32 @@
         <Setter Property="BorderThickness" Value="2" />
     </Style>
 
+    <!-- Slot interaction states remain distinct when hover, selection, keyboard focus and drag
+         feedback overlap. The drop states use semantic colors and never rely on color alone: the
+         slot's accessible name and drag effect still provide the text equivalent. -->
+    <Style Selector="Button.compact-slot.selected:pointerover, Button.slot.selected:pointerover">
+        <Setter Property="Background" Value="{DynamicResource CompactSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactSelectionBorderBrush}" />
+    </Style>
+
+    <Style Selector="Button.compact-slot.drag-source, Button.slot.drag-source">
+        <Setter Property="Opacity" Value="0.62" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="Button.compact-slot.drop-valid, Button.slot.drop-valid">
+        <Setter Property="Background" Value="{DynamicResource ThemeSuccessGlowBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeSuccessBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="Button.compact-slot.drop-invalid, Button.slot.drop-invalid">
+        <Setter Property="Background" Value="{DynamicResource ThemeErrorGlowBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeErrorBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
     <Style Selector="Window.compact-settings">
         <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBaseBrush}" />
     </Style>

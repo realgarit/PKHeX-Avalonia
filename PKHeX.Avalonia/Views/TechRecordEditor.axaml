@@ -19,9 +19,11 @@
 
         <DataGrid Grid.Row="1" Classes="save-grid" ItemsSource="{Binding Records}" CanUserSortColumns="True" IsReadOnly="False">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="{loc:Loc TechRecordEditor_Active}" Binding="{Binding IsActive}" Width="60"/>
+                <DataGridCheckBoxColumn Header="{loc:Loc TechRecordEditor_Active}" Binding="{Binding IsActive}" Width="80"/>
                 <DataGridTextColumn Header="#" Binding="{Binding Index}" IsReadOnly="True" Width="50"/>
-                <DataGridTextColumn Header="{loc:Loc TechRecordEditor_Type}" Binding="{Binding TypeName}" IsReadOnly="True" Width="80"/>
+                <DataGridTextColumn Header="{loc:Loc TechRecordEditor_Type}" Binding="{Binding TypeName}" IsReadOnly="True" Width="90"/>
+                <DataGridCheckBoxColumn Header="{loc:Loc TechRecordEditor_Learned}" Binding="{Binding IsLearned}" IsReadOnly="True" Width="105"/>
+                <DataGridCheckBoxColumn Header="{loc:Loc TechRecordEditor_Legal}" Binding="{Binding IsValid}" IsReadOnly="True" Width="85"/>
                 <DataGridTextColumn Header="{loc:Loc TechRecordEditor_Move}" Binding="{Binding Name}" IsReadOnly="True" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

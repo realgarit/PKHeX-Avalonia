@@ -23,22 +23,25 @@ public partial class TechRecordItemViewModel : ObservableObject
     [ObservableProperty] private bool _isLearned; // If the Pokemon currently knows this move
 }
 
-public partial class TechRecordEditorViewModel : ViewModelBase
+public partial class TechRecordEditorViewModel : ViewModelBase, ICloseableDialog
 {
+    private readonly PKM _sourcePkm;
+    private readonly PKM _workingPkm;
     private readonly ITechRecord _techRecord;
-    private readonly PKM _pkm;
     private readonly LegalityAnalysis _legality;
-    private readonly Action? _closeRequested;
+
+    public Action? CloseRequested { get; set; }
 
     [ObservableProperty]
     private ObservableCollection<TechRecordItemViewModel> _records = new();
 
     public TechRecordEditorViewModel(ITechRecord techRecord, PKM pkm, Action? closeHelper = null)
     {
-        _techRecord = techRecord;
-        _pkm = pkm;
-        _legality = new LegalityAnalysis(pkm);
-        _closeRequested = closeHelper;
+        _sourcePkm = pkm;
+        _workingPkm = pkm.Clone();
+        _techRecord = (ITechRecord)_workingPkm;
+        _legality = new LegalityAnalysis(_workingPkm);
+        CloseRequested = closeHelper;
         
         LoadRecords();
     }
@@ -47,14 +50,13 @@ public partial class TechRecordEditorViewModel : ViewModelBase
     {
         var permit = _techRecord.Permit;
         var indexes = permit.RecordPermitIndexes;
-        var context = _pkm.Context;
+        var context = _workingPkm.Context;
         var baseRecordIndex = context == EntityContext.Gen9a ? 1 : 0;
         
         var moveNames = GameInfo.Strings.Move;
         Span<ushort> currentMoves = stackalloc ushort[4];
-        _pkm.GetMoves(currentMoves);
+        _workingPkm.GetMoves(currentMoves);
         
-        var evos = _legality.Info.EvoChainsAllGens.Get(context);
         var list = new List<TechRecordItemViewModel>();
 
         for (int i = 0; i < indexes.Length; i++)
@@ -105,13 +107,15 @@ public partial class TechRecordEditorViewModel : ViewModelBase
         {
             _techRecord.SetMoveRecordFlag(item.Index, item.IsActive);
         }
-        _closeRequested?.Invoke();
+        _workingPkm.Data.CopyTo(_sourcePkm.Data);
+        _sourcePkm.RefreshChecksum();
+        CloseRequested?.Invoke();
     }
     
     [RelayCommand]
     private void GiveAll()
     {
-         _techRecord.SetRecordFlags(_pkm, TechnicalRecordApplicatorOption.LegalAll);
+         _techRecord.SetRecordFlags(_workingPkm, TechnicalRecordApplicatorOption.LegalAll);
          Reload();
     }
     
@@ -131,5 +135,5 @@ public partial class TechRecordEditorViewModel : ViewModelBase
         }
     }
     [RelayCommand]
-    private void Close() => _closeRequested?.Invoke();
+    private void Close() => CloseRequested?.Invoke();
 }

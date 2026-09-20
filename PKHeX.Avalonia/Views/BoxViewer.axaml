@@ -169,6 +169,7 @@
                                     DragDrop.AllowDrop="True"
                                     DragDrop.Drop="OnSlotDrop"
                                     DragDrop.DragOver="OnSlotDragOver"
+                                    DragDrop.DragLeave="OnSlotDragLeave"
                                     ToolTip.Tip="{Binding ToolTipSummary}"
                                     AutomationProperties.Name="{Binding AccessibleName}"
                                     Click="OnSlotClicked"

@@ -219,8 +219,8 @@
                                     <StackPanel Spacing="4"><TextBlock Text="{loc:Loc PokemonEditor_Level}" FontSize="10" Foreground="{DynamicResource ThemeTextSecondaryBrush}" /><NumericUpDown Value="{Binding Level}" Minimum="1" Maximum="100" FormatString="0" ShowButtonSpinner="False" AutomationProperties.Name="{loc:Loc PokemonEditor_Level}" /></StackPanel>
                                     <Border Grid.Column="2"><StackPanel Spacing="4"><TextBlock Text="{loc:Loc PokemonEditor_Nature}" FontSize="10" Foreground="{DynamicResource ThemeTextSecondaryBrush}" /><ComboBox ItemsSource="{Binding NatureList}" SelectedValue="{Binding Nature}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc PokemonEditor_Nature}" /></StackPanel></Border>
                                 </Grid>
-                                <Grid ColumnDefinitions="71,*" ><TextBlock Text="{loc:Loc PokemonEditor_Ability}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><ComboBox ItemsSource="{Binding AbilityList}" SelectedValue="{Binding Ability}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc PokemonEditor_Ability}" /></Border></Grid>
-                                <Grid ColumnDefinitions="71,*" ><TextBlock Text="{loc:Loc PokemonEditor_HeldItem}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><Grid><controls:FilterableComboBox Classes="compact-select" ItemsSource="{Binding ItemList}" SelectedValue="{Binding HeldItem}" HorizontalAlignment="Stretch" Padding="9,5,24,5" AutomationProperties.Name="{loc:Loc PokemonEditor_HeldItem}" /><Path HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Width="10" Height="6" Data="M1 1 L5 5 L9 1" Stroke="{DynamicResource ThemeTextMutedBrush}" StrokeThickness="1" IsHitTestVisible="False" /></Grid></Border></Grid>
+                                <Grid ColumnDefinitions="71,*" ><TextBlock Text="{loc:Loc PokemonEditor_Ability}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><ComboBox ItemsSource="{Binding AbilityList}" SelectedValue="{Binding Ability}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" ToolTip.Tip="{Binding AbilityTooltip}" AutomationProperties.Name="{loc:Loc PokemonEditor_Ability}" /></Border></Grid>
+                                <Grid ColumnDefinitions="71,*" ><TextBlock Text="{loc:Loc PokemonEditor_HeldItem}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><Grid><controls:FilterableComboBox Classes="compact-select" ItemsSource="{Binding ItemList}" SelectedValue="{Binding HeldItem}" HorizontalAlignment="Stretch" Padding="9,5,24,5" ToolTip.Tip="{Binding HeldItemTooltip}" AutomationProperties.Name="{loc:Loc PokemonEditor_HeldItem}" /><Path HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Width="10" Height="6" Data="M1 1 L5 5 L9 1" Stroke="{DynamicResource ThemeTextMutedBrush}" StrokeThickness="1" IsHitTestVisible="False" /></Grid></Border></Grid>
                                 <Grid ColumnDefinitions="71,*" ><TextBlock Text="{loc:Loc PokemonEditor_Gender}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><ComboBox ItemsSource="{Binding PokemonGenderList}" SelectedValue="{Binding Gender}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc PokemonEditor_Gender}" /></Border></Grid>
                                 <Grid ColumnDefinitions="71,*" IsVisible="{Binding HasForms}"><TextBlock Text="{loc:Loc PokemonEditor_Form}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><ComboBox ItemsSource="{Binding FormList}" SelectedValue="{Binding Form}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc PokemonEditor_Form}" /></Border></Grid>
                                 <ToggleButton x:Name="MainDetailsToggle" AutomationProperties.Name="{loc:Loc CompactUI_Details}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Background="Transparent" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ThemeBorderMutedBrush}" Padding="0,6" MinHeight="30">
@@ -228,8 +228,8 @@
                                 </ToggleButton>
                                 <Border IsVisible="{Binding #MainDetailsToggle.IsChecked}">
                                     <StackPanel Spacing="9" Margin="0,6,0,0">
-                                        <Grid ColumnDefinitions="71,*" ><TextBlock Text="{loc:Loc PokemonEditor_Ball}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><ComboBox ItemsSource="{Binding BallList}" SelectedValue="{Binding Ball}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc PokemonEditor_Ball}" /></Border></Grid>
-                                        <Grid ColumnDefinitions="71,*" ><TextBlock Text="{loc:Loc PokemonEditor_Language}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><ComboBox ItemsSource="{Binding LanguageList}" SelectedValue="{Binding Language}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc PokemonEditor_Language}" /></Border></Grid>
+                                        <Grid ColumnDefinitions="71,*" ><TextBlock Text="{loc:Loc PokemonEditor_Ball}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><ComboBox ItemsSource="{Binding BallList}" SelectedValue="{Binding Ball}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" ToolTip.Tip="{Binding BallTooltip}" AutomationProperties.Name="{loc:Loc PokemonEditor_Ball}" /></Border></Grid>
+                                        <Grid ColumnDefinitions="71,*" ><TextBlock Text="{loc:Loc PokemonEditor_Language}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><ComboBox ItemsSource="{Binding LanguageList}" SelectedValue="{Binding Language}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" ToolTip.Tip="{Binding LanguageTooltip}" AutomationProperties.Name="{loc:Loc PokemonEditor_Language}" /></Border></Grid>
                                         <Grid ColumnDefinitions="71,*" IsVisible="{Binding ShowStatAlignment}"><TextBlock Text="{loc:Loc PokemonEditor_StatAlignment}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><ComboBox ItemsSource="{Binding NatureList}" SelectedValue="{Binding StatAlignment}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc PokemonEditor_StatAlignment}" /></Border></Grid>
                                         <Grid ColumnDefinitions="71,*" ><TextBlock Text="{loc:Loc PokemonEditor_Exp}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" /><Border Grid.Column="1"><NumericUpDown Value="{Binding Exp}" Minimum="0" Maximum="10000000" FormatString="0" ShowButtonSpinner="False" AutomationProperties.Name="{loc:Loc PokemonEditor_Exp}" /></Border></Grid>
                                         <Border x:Name="ExpBar"
@@ -268,11 +268,17 @@
                                    TextWrapping="Wrap"
                                    Margin="2,0,2,0" />
                         <Border Classes="editor-section">
-                            <Grid ColumnDefinitions="40,40,42,42,30,26" RowDefinitions="Auto,Auto,4,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                            <Grid ColumnDefinitions="40,40,42,42,30,26" RowDefinitions="Auto,Auto,4,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                                 <Grid Grid.Row="9" Grid.ColumnSpan="6" ColumnDefinitions="*,*" Margin="0,8,0,4">
                                     <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Text="{loc:Loc BoxReportView_IvTotalHeader}" Foreground="{DynamicResource ThemeTextMutedBrush}" /><TextBlock Text="{Binding IVTotal}" FontWeight="SemiBold" /></StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6"><TextBlock Text="{loc:Loc BoxReportView_EvTotalHeader}" Foreground="{DynamicResource ThemeTextMutedBrush}" /><TextBlock Text="{Binding EVTotal}" FontWeight="SemiBold" /></StackPanel>
                                 </Grid>
+                                <StackPanel Grid.Row="10" Grid.ColumnSpan="6" Orientation="Horizontal" Spacing="6"
+                                            IsVisible="{Binding HasCharacteristic}" Margin="0,0,0,4"
+                                            AutomationProperties.Name="{loc:Loc PokemonEditor_Characteristic}">
+                                    <TextBlock Text="{loc:Loc PokemonEditor_Characteristic}" Foreground="{DynamicResource ThemeTextMutedBrush}" />
+                                    <TextBlock Text="{Binding CharacteristicText}" FontWeight="SemiBold" />
+                                </StackPanel>
                                 <!-- Actions stay above the compact column labels so they never compete
                                      with IV/EV headers for horizontal space. -->
                                 <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Margin="0,0,0,4">
@@ -381,6 +387,7 @@
                                           SelectedValueBinding="{Binding Value}"
                                           DisplayMemberBinding="{Binding Text}"
                                           HorizontalAlignment="Stretch"
+                                          ToolTip.Tip="{Binding MetLocationTooltip}"
                                           AutomationProperties.Name="{loc:Loc PokemonEditor_MetLocation}" />
                             </StackPanel>
 
@@ -391,7 +398,7 @@
                                 <NumericUpDown Grid.Row="1" Value="{Binding MetLevel}" ShowButtonSpinner="False" Minimum="0" Maximum="100" FormatString="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" AutomationProperties.Name="{loc:Loc PokemonEditor_MetLevel}" />
                                 <CalendarDatePicker Grid.Row="1" Grid.Column="2" IsVisible="{Binding HasMetDate}" SelectedDate="{Binding MetDate}" SelectedDateFormat="Short"
                                                     Watermark="{loc:Loc PokemonEditor_SelectDate}"
-                                                    ToolTip.Tip="{loc:Loc PokemonEditor_SelectDate}"
+                                                    ToolTip.Tip="{Binding MetDateTooltip}"
                                                     HorizontalAlignment="Stretch" VerticalAlignment="Center"
                                                     AutomationProperties.Name="{loc:Loc PokemonEditor_MetDate}" />
                             </Grid>
@@ -412,7 +419,7 @@
                                 <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_EggDate}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                 <CalendarDatePicker SelectedDate="{Binding EggDate}" SelectedDateFormat="Short"
                                                     Watermark="{loc:Loc PokemonEditor_SelectDate}"
-                                                    ToolTip.Tip="{loc:Loc PokemonEditor_SelectDate}"
+                                                    ToolTip.Tip="{Binding EggDateTooltip}"
                                                     HorizontalAlignment="Stretch"
                                                     AutomationProperties.Name="{loc:Loc PokemonEditor_EggDate}" />
                             </StackPanel>

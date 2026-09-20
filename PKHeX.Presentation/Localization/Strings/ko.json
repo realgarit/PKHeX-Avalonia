@@ -1806,6 +1806,7 @@
   "PokemonEditor_ColEVs": "노력치",
   "PokemonEditor_ClearEvsTooltip": "모든 노력치 초기화",
   "PokemonEditor_ColTotal": "합계",
+  "PokemonEditor_Characteristic": "개성",
   "PokemonEditor_ColMax": "최대",
   "PokemonEditor_ColClear": "초기화",
   "PokemonEditor_StatHp": "HP",
@@ -2040,6 +2041,8 @@
   "SealStickers8bEditor_ColumnName": "이름",
   "SealStickers8bEditor_ColumnCount": "개수",
   "SealStickers8bEditor_ColumnUnlocked": "해금됨",
+  "SealStickers8bEditor_ColumnTotal": "합계",
+  "SealStickers8bEditor_ColumnObtained": "획득",
   "SecretBase3Editor_SecretBases": "비밀기지",
   "SecretBase3Editor_TrainerInfo": "트레이너 정보",
   "SecretBase3Editor_Name": "이름:",
@@ -2108,6 +2111,8 @@
   "TechRecordEditor_Active": "활성",
   "TechRecordEditor_Type": "타입",
   "TechRecordEditor_Move": "기술",
+  "TechRecordEditor_Learned": "배움",
+  "TechRecordEditor_Legal": "적법",
   "TechRecordEditor_GiveAll": "전부 지급",
   "TechRecordEditor_RemoveAll": "전부 제거",
   "TrainerCard8EditorView_Title": "트레이너 카드",
@@ -2284,5 +2289,11 @@
   "BoxLayoutEditor_BoxName": "박스 이름",
   "BoxLayoutEditor_Wallpaper": "배경",
   "BoxLayoutEditor_MoveUp": "박스를 위로 이동",
-  "BoxLayoutEditor_MoveDown": "박스를 아래로 이동"
+  "BoxLayoutEditor_MoveDown": "박스를 아래로 이동",
+  "Settings_AllowBattleTowerTeamSwap": "3세대 배틀타워 팀 교체 허용",
+  "Settings_AllowBattleTowerTeamSwap_Desc": "적법성 검사에서 루비/사파이어 배틀타워 팀 교체 버그로 얻은 리본을 허용합니다.",
+  "Pokedex8bEditor_None": "없음",
+  "Pokedex8bEditor_HeardOf": "들어봄",
+  "Pokedex8bEditor_Seen": "봄",
+  "Pokedex8bEditor_Caught": "잡음"
 }
