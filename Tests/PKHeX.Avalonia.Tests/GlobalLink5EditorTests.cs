@@ -145,6 +145,10 @@ public class GlobalLink5EditorTests
         var invalidVm = new GlobalLink5EditorViewModel(invalid);
         Assert.True(invalidVm.HasInvalidUploadDate);
         Assert.Null(invalidVm.UploadDateValue);
+
+        invalidVm.ClearUploadDateCommand.Execute(null);
+        Assert.True(invalid.GlobalLink.UploadDate.IsEmpty);
+        Assert.False(invalidVm.HasInvalidUploadDate);
     }
 
     [Fact]
@@ -157,6 +161,10 @@ public class GlobalLink5EditorTests
         Assert.True(sav.GlobalLink.UploadDate.IsValid);
         Assert.Equal(new DateOnly(2026, 9, 20), sav.GlobalLink.UploadDate.ToDateOnly());
         Assert.True(sav.State.Edited);
+
+        vm.UploadDateValue = new DateTime(2100, 1, 1);
+        Assert.Equal(new DateOnly(2026, 9, 20), sav.GlobalLink.UploadDate.ToDateOnly());
+        Assert.Equal(new DateTime(2026, 9, 20), vm.UploadDateValue);
 
         vm.ClearUploadDateCommand.Execute(null);
         Assert.True(sav.GlobalLink.UploadDate.IsEmpty);

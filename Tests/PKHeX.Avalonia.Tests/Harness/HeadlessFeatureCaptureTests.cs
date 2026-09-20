@@ -348,6 +348,49 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
     }
 
     [AvaloniaFact]
+    public void CaptureReviewFindingEditors_WhenEnabled_WritesPng()
+    {
+        if (SkipWhenCaptureDisabled())
+            return;
+
+        var dialog = new Mock<IDialogService>().Object;
+        var spriteRenderer = new Mock<ISpriteRenderer>().Object;
+        CaptureAuxiliaryView(
+            new BoxLayoutEditor { DataContext = new BoxLayoutEditorViewModel(new SAV4Pt()) },
+            "review-box-layout-editor.png",
+            980,
+            720,
+            "Box Layout editor review state");
+        CaptureAuxiliaryView(
+            new DaycareEditorView
+            {
+                DataContext = new DaycareEditorViewModel(new SAV8SWSH(), spriteRenderer),
+            },
+            "review-daycare-editor.png",
+            620,
+            520,
+            "Daycare editor review state");
+        CaptureAuxiliaryView(
+            new ZygardeCellEditor
+            {
+                DataContext = new ZygardeCellEditorViewModel(LoadCaptureSave<SAV7USUM>("gen7_ultrasun.main")),
+            },
+            "review-totem-sticker-editor.png",
+            900,
+            720,
+            "Totem Sticker editor review state");
+        CaptureAuxiliaryView(
+            new LegalityAuditView
+            {
+                DataContext = new LegalityAuditViewModel(LoadCaptureSave<SAV3E>("gen3_emerald.sav"), dialog),
+            },
+            "review-legality-audit.png",
+            1100,
+            700,
+            "Legality Audit review state");
+    }
+
+    [AvaloniaFact]
     public void CaptureRemainingDialogStates_WhenEnabled_WritesPng()
     {
         if (SkipWhenCaptureDisabled())

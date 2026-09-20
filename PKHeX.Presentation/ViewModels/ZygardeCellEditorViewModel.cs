@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -72,7 +74,7 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase
             {
                 var state = ew.GetZygardeCell(i);
                 var locationName = i < locations.Length ? locations[i] : $"Cell {i + 1}";
-                Cells.Add(new ZygardeCellViewModel(i, locationName, state, SetCellState));
+                Cells.Add(new ZygardeCellViewModel(i, locationName, state, _sav7 is SAV7USUM, SetCellState));
             }
         }
         finally
@@ -88,6 +90,21 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase
 
         _sav7.EventWork.SetZygardeCell(index, (ushort)state);
         _sav.State.Edited = true;
+        RecalculateCounters();
+    }
+
+    private void RecalculateCounters()
+    {
+        var received = Cells.Count(c => c.State == 2);
+        if (CellsCollected != received)
+            CellsCollected = received;
+
+        if (!IsTotemSticker)
+        {
+            var present = Cells.Count(c => c.State != 0);
+            if (CellsTotal != present)
+                CellsTotal = present;
+        }
     }
 
     [RelayCommand]
@@ -95,19 +112,13 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase
     {
         if (_sav7?.EventWork is not { } ew) return;
 
-        int added = 0;
         for (int i = 0; i < Cells.Count; i++)
         {
             if (Cells[i].State != 2)
-            {
-                added++;
                 Cells[i].State = 2;
-            }
         }
 
-        CellsCollected += added;
-        if (_sav7 is not SAV7USUM)
-            CellsTotal += added;
+        RecalculateCounters();
     }
 
     [RelayCommand]
@@ -191,13 +202,16 @@ public partial class ZygardeCellViewModel : ViewModelBase
 {
     private readonly System.Action<int, int> _onStateChanged;
 
-    public ZygardeCellViewModel(int index, string location, int state, System.Action<int, int> onStateChanged)
+    public ZygardeCellViewModel(int index, string location, int state, bool isTotemSticker, System.Action<int, int> onStateChanged)
     {
         Index = index;
         Location = location;
         _state = state;
+        _isTotemSticker = isTotemSticker;
         _onStateChanged = onStateChanged;
     }
+
+    private readonly bool _isTotemSticker;
 
     public int Index { get; }
     public string Location { get; }
@@ -214,9 +228,9 @@ public partial class ZygardeCellViewModel : ViewModelBase
 
     public string StateName => State switch
     {
-        0 => "None",
-        1 => "Available",
-        2 => "Received",
-        _ => "Unknown"
+        0 => LocalizedStrings.Instance[_isTotemSticker ? "ZygardeCellEditor_TotemStickerNone" : "ZygardeCellEditor_None"],
+        1 => LocalizedStrings.Instance[_isTotemSticker ? "ZygardeCellEditor_TotemStickerAvailable" : "ZygardeCellEditor_Available"],
+        2 => LocalizedStrings.Instance[_isTotemSticker ? "ZygardeCellEditor_TotemStickerReceived" : "ZygardeCellEditor_Received"],
+        _ => string.Empty
     };
 }

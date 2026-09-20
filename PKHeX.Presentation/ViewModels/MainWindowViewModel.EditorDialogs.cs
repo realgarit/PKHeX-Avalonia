@@ -271,7 +271,7 @@ public partial class MainWindowViewModel
         if (CurrentSave is null) return;
         await _windowService.ShowDialogAsync(
             new ZygardeCellEditorViewModel(CurrentSave),
-            T("Dialog_ZygardeCellEditor"));
+            T(CurrentSave is SAV7USUM ? "Dialog_TotemStickerEditor" : "Dialog_ZygardeCellEditor"));
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]

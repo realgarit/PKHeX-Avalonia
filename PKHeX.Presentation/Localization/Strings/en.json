@@ -226,6 +226,7 @@
   "Dialog_RoamerEditor": "Roamer Editor",
   "Dialog_OPowerEditor": "O-Power Editor",
   "Dialog_ZygardeCellEditor": "Zygarde Cell Editor",
+  "Dialog_TotemStickerEditor": "Totem Sticker Editor",
   "Dialog_TeraRaidEditor": "Tera Raid Editor",
   "Dialog_SevenStarTeraRaidEditor": "7-Star Tera Raid Editor",
   "Dialog_FashionEditor": "Fashion Editor",
@@ -1117,6 +1118,7 @@
   "MedalEditorView_Grass": "Grass",
   "MedalEditorView_Surf": "Surf",
   "MedalEditorView_Fish": "Fish",
+  "MedalEditorView_SearchWatermark": "Search medals by name, type, or number...",
   "MemoryEditor_Geolocation": "Geolocation",
   "MemoryEditor_CountryRegionData": "Country / Region data",
   "MemoryEditor_CountryId": "Country ID",
@@ -2237,6 +2239,7 @@
   "ZygardeCellEditor_TotemStickerNone": "None",
   "ZygardeCellEditor_TotemStickerAvailable": "Available",
   "ZygardeCellEditor_TotemStickerReceived": "Collected",
+  "ZygardeCellEditor_ChangesApplyImmediately": "Changes are applied immediately to the open save.",
   "BlockEditor_ImportBlockTitle": "Import Block",
   "LegalityAudit_ExportReportsTitle": "Export Legality Reports",
   "Link6Editor_ExportLinkDataTitle": "Export Link Data",
@@ -2277,5 +2280,9 @@
   "Update_Error_NeedsAdmin": "Updating this install needs administrator rights. Opening the download page instead.",
   "Update_Error_SwapFailed": "The update could not be applied. Your current version is unchanged.",
   "Update_Error_Generic": "The update could not be completed: {0}",
-  "PokemonEditor_RerollPidTooltip": "Re-roll PID"
+  "PokemonEditor_RerollPidTooltip": "Re-roll PID",
+  "BoxLayoutEditor_BoxName": "Box name",
+  "BoxLayoutEditor_Wallpaper": "Wallpaper",
+  "BoxLayoutEditor_MoveUp": "Move box up",
+  "BoxLayoutEditor_MoveDown": "Move box down"
 }

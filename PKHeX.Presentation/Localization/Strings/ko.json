@@ -226,6 +226,7 @@
   "Dialog_RoamerEditor": "방랑 포켓몬 편집기",
   "Dialog_OPowerEditor": "O-Power 편집기",
   "Dialog_ZygardeCellEditor": "지가르데 세포 편집기",
+  "Dialog_TotemStickerEditor": "토템 스티커 편집기",
   "Dialog_TeraRaidEditor": "테라 레이드 편집기",
   "Dialog_SevenStarTeraRaidEditor": "★7 테라 레이드 편집기",
   "Dialog_FashionEditor": "패션 편집기",
@@ -1117,6 +1118,7 @@
   "MedalEditorView_Grass": "풀숲",
   "MedalEditorView_Surf": "파도타기",
   "MedalEditorView_Fish": "낚시",
+  "MedalEditorView_SearchWatermark": "이름, 종류 또는 번호로 메달 검색...",
   "MemoryEditor_Geolocation": "위치 정보",
   "MemoryEditor_CountryRegionData": "국가 / 지역 데이터",
   "MemoryEditor_CountryId": "국가 ID",
@@ -2237,6 +2239,7 @@
   "ZygardeCellEditor_TotemStickerNone": "없음",
   "ZygardeCellEditor_TotemStickerAvailable": "사용 가능",
   "ZygardeCellEditor_TotemStickerReceived": "수집됨",
+  "ZygardeCellEditor_ChangesApplyImmediately": "변경 사항은 현재 열려 있는 저장 데이터에 즉시 적용됩니다.",
   "BlockEditor_ImportBlockTitle": "블록 가져오기",
   "LegalityAudit_ExportReportsTitle": "적법성 보고서 내보내기",
   "Link6Editor_ExportLinkDataTitle": "링크 데이터 내보내기",
@@ -2277,5 +2280,9 @@
   "Update_Error_NeedsAdmin": "이 설치를 업데이트하려면 관리자 권한이 필요합니다. 대신 다운로드 페이지를 엽니다.",
   "Update_Error_SwapFailed": "업데이트를 적용할 수 없습니다. 현재 버전은 변경되지 않았습니다.",
   "Update_Error_Generic": "업데이트를 완료할 수 없습니다: {0}",
-  "PokemonEditor_RerollPidTooltip": "PID 재생성"
+  "PokemonEditor_RerollPidTooltip": "PID 재생성",
+  "BoxLayoutEditor_BoxName": "박스 이름",
+  "BoxLayoutEditor_Wallpaper": "배경",
+  "BoxLayoutEditor_MoveUp": "박스를 위로 이동",
+  "BoxLayoutEditor_MoveDown": "박스를 아래로 이동"
 }

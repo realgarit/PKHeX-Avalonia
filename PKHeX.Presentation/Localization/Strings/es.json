@@ -226,6 +226,7 @@
   "Dialog_RoamerEditor": "Editor de Errante",
   "Dialog_OPowerEditor": "Editor de O-Power",
   "Dialog_ZygardeCellEditor": "Editor de Células de Zygarde",
+  "Dialog_TotemStickerEditor": "Editor de Pegatinas Tótem",
   "Dialog_TeraRaidEditor": "Editor de Teraincursiones",
   "Dialog_SevenStarTeraRaidEditor": "Editor de Teraincursiones de 7 estrellas",
   "Dialog_FashionEditor": "Editor de moda",
@@ -1117,6 +1118,7 @@
   "MedalEditorView_Grass": "Hierba",
   "MedalEditorView_Surf": "Surf",
   "MedalEditorView_Fish": "Pesca",
+  "MedalEditorView_SearchWatermark": "Buscar medallas por nombre, tipo o número...",
   "MemoryEditor_Geolocation": "Geolocalización",
   "MemoryEditor_CountryRegionData": "Datos de país / región",
   "MemoryEditor_CountryId": "ID de país",
@@ -2237,6 +2239,7 @@
   "ZygardeCellEditor_TotemStickerNone": "Ninguna",
   "ZygardeCellEditor_TotemStickerAvailable": "Disponible",
   "ZygardeCellEditor_TotemStickerReceived": "Recogida",
+  "ZygardeCellEditor_ChangesApplyImmediately": "Los cambios se aplican inmediatamente al archivo de guardado abierto.",
   "BlockEditor_ImportBlockTitle": "Importar bloque",
   "LegalityAudit_ExportReportsTitle": "Exportar informes de legalidad",
   "Link6Editor_ExportLinkDataTitle": "Exportar datos de enlace",
@@ -2277,5 +2280,9 @@
   "Update_Error_NeedsAdmin": "Actualizar esta instalación requiere permisos de administrador. Se abrirá la página de descarga en su lugar.",
   "Update_Error_SwapFailed": "No se pudo aplicar la actualización. Su versión actual no ha cambiado.",
   "Update_Error_Generic": "No se pudo completar la actualización: {0}",
-  "PokemonEditor_RerollPidTooltip": "Volver a generar PID"
+  "PokemonEditor_RerollPidTooltip": "Volver a generar PID",
+  "BoxLayoutEditor_BoxName": "Nombre de caja",
+  "BoxLayoutEditor_Wallpaper": "Fondo",
+  "BoxLayoutEditor_MoveUp": "Mover caja arriba",
+  "BoxLayoutEditor_MoveDown": "Mover caja abajo"
 }

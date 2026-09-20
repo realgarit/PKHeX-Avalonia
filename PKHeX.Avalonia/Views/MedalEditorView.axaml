@@ -62,9 +62,14 @@
                             </StackPanel>
                         </Border>
 
+                        <TextBox DockPanel.Dock="Top" Text="{Binding MedalSearchText}"
+                                 Watermark="{loc:Loc MedalEditorView_SearchWatermark}"
+                                 AutomationProperties.Name="{loc:Loc MedalEditorView_SearchWatermark}"
+                                 Margin="0,0,0,8" />
+
                         <!-- Editable Medal Grid -->
                         <Border Classes="editor-section-padded" Padding="0" ClipToBounds="True">
-                            <DataGrid Classes="save-grid" ItemsSource="{Binding MedalRows}"
+                            <DataGrid Classes="save-grid" ItemsSource="{Binding VisibleMedalRows}"
                                       AutoGenerateColumns="False"
                                       CanUserResizeColumns="True"
                                       CanUserSortColumns="False"

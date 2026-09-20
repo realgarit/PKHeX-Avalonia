@@ -23,6 +23,9 @@
                     </StackPanel>
                 </DockPanel>
 
+                <TextBlock DockPanel.Dock="Top" Text="{loc:Loc ZygardeCellEditor_ChangesApplyImmediately}"
+                           Classes="form-hint" Margin="0,0,0,8" />
+
                 <!-- Totals -->
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="16" Margin="0,0,0,12">
                     <StackPanel Orientation="Horizontal" Spacing="8">
@@ -45,12 +48,12 @@
                                 <Grid ColumnDefinitions="50,*,120" Margin="4">
                                     <TextBlock Text="{Binding Index, StringFormat='#{0}'}" VerticalAlignment="Center" FontWeight="SemiBold" />
                                     <TextBlock Grid.Column="1" Text="{Binding Location}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Location}" />
-                                    <ComboBox Grid.Column="2" SelectedIndex="{Binding State}" Width="110" IsVisible="{Binding $parent[UserControl].((vm:ZygardeCellEditorViewModel)DataContext).IsTotemSticker}" AutomationProperties.Name="Status">
+                                    <ComboBox Grid.Column="2" SelectedIndex="{Binding State}" Width="110" IsVisible="{Binding $parent[UserControl].((vm:ZygardeCellEditorViewModel)DataContext).IsTotemSticker}" AutomationProperties.Name="{Binding StateName}">
                                         <ComboBoxItem Content="{loc:Loc ZygardeCellEditor_TotemStickerNone}" />
                                         <ComboBoxItem Content="{loc:Loc ZygardeCellEditor_TotemStickerAvailable}" />
                                         <ComboBoxItem Content="{loc:Loc ZygardeCellEditor_TotemStickerReceived}" />
                                     </ComboBox>
-                                    <ComboBox Grid.Column="2" SelectedIndex="{Binding State}" Width="110" IsVisible="{Binding $parent[UserControl].((vm:ZygardeCellEditorViewModel)DataContext).IsZygardeCell}" AutomationProperties.Name="Status">
+                                    <ComboBox Grid.Column="2" SelectedIndex="{Binding State}" Width="110" IsVisible="{Binding $parent[UserControl].((vm:ZygardeCellEditorViewModel)DataContext).IsZygardeCell}" AutomationProperties.Name="{Binding StateName}">
                                         <ComboBoxItem Content="{loc:Loc ZygardeCellEditor_None}" />
                                         <ComboBoxItem Content="{loc:Loc ZygardeCellEditor_Available}" />
                                         <ComboBoxItem Content="{loc:Loc ZygardeCellEditor_Received}" />

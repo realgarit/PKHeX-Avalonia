@@ -64,6 +64,12 @@ public partial class MedalEditorViewModel : ViewModelBase
     private ObservableCollection<MedalItemViewModel> _medalRows = [];
 
     [ObservableProperty]
+    private ObservableCollection<MedalItemViewModel> _visibleMedalRows = [];
+
+    [ObservableProperty]
+    private string _medalSearchText = string.Empty;
+
+    [ObservableProperty]
     private ObservableCollection<HabitatRowViewModel> _habitatRows = [];
 
     [ObservableProperty]
@@ -139,6 +145,7 @@ public partial class MedalEditorViewModel : ViewModelBase
         RankIndex = (int)_medals.Rank;
         IsTutorialComplete = _medals.IsTutorialComplete;
         _suppressSettingsWrite = false;
+        ApplyMedalFilter();
     }
 
     private void LoadHabitatData()
@@ -182,6 +189,8 @@ public partial class MedalEditorViewModel : ViewModelBase
         _medals.PinnedMedal = (byte)value;
         MarkEdited();
     }
+
+    partial void OnMedalSearchTextChanged(string value) => ApplyMedalFilter();
 
     partial void OnRankIndexChanged(int value)
     {
@@ -326,6 +335,28 @@ public partial class MedalEditorViewModel : ViewModelBase
         foreach (var row in MedalRows)
             row.RefreshFromSave();
         RecountObtained();
+        ApplyMedalFilter();
+    }
+
+    private void ApplyMedalFilter()
+    {
+        if (MedalRows.Count == 0)
+        {
+            VisibleMedalRows = [];
+            return;
+        }
+
+        var query = MedalSearchText.Trim();
+        if (query.Length == 0)
+        {
+            VisibleMedalRows = new ObservableCollection<MedalItemViewModel>(MedalRows);
+            return;
+        }
+
+        VisibleMedalRows = new ObservableCollection<MedalItemViewModel>(MedalRows.Where(row =>
+            row.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase) ||
+            row.Type.Contains(query, StringComparison.CurrentCultureIgnoreCase) ||
+            row.Index.ToString().Contains(query, StringComparison.OrdinalIgnoreCase)));
     }
 
     private void RefreshHabitatRows()

@@ -93,6 +93,9 @@ public partial class GlobalLink5EditorViewModel : ViewModelBase
     [ObservableProperty]
     private bool _hasInvalidUploadDate;
 
+    public DateTime UploadDateMinimum { get; } = new(2000, 1, 1);
+    public DateTime UploadDateMaximum { get; } = new(2099, 12, 31);
+
     // ---- Flags ----
 
     [ObservableProperty]
@@ -155,9 +158,19 @@ public partial class GlobalLink5EditorViewModel : ViewModelBase
 
         var date = _block.UploadDate;
         if (value is { } selected)
+        {
+            if (selected.Date < UploadDateMinimum || selected.Date > UploadDateMaximum)
+            {
+                RefreshUploadDate();
+                return;
+            }
+
             date.FromDateOnly(DateOnly.FromDateTime(selected.Date));
+        }
         else
+        {
             date.SetEmpty();
+        }
 
         MarkEdited();
         RefreshUploadDate();
@@ -183,7 +196,19 @@ public partial class GlobalLink5EditorViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ClearUploadDate() => UploadDateValue = null;
+    private void ClearUploadDate()
+    {
+        if (_block is null)
+            return;
+
+        var date = _block.UploadDate;
+        if (date.IsEmpty)
+            return;
+
+        date.SetEmpty();
+        MarkEdited();
+        RefreshUploadDate();
+    }
 
     private void Apply(System.Action<GlobalLink5> write)
     {

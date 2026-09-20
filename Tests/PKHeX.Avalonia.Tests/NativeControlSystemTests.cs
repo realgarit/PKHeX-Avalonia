@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Headless.XUnit;
@@ -6,9 +7,12 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Moq;
 using PKHeX.Avalonia.Controls;
 using PKHeX.Avalonia.Views;
+using PKHeX.Application.Abstractions;
 using PKHeX.Core;
+using PKHeX.Presentation.ViewModels;
 using Xunit;
 
 namespace PKHeX.Avalonia.Tests;
@@ -41,9 +45,12 @@ public sealed class NativeControlSystemTests
                 },
                 SelectedValue = 1,
             };
+            AutomationProperties.SetName(filterable, "Species");
             var text = new TextBox { Text = "PKHeX" };
             var numeric = new NumericUpDown { Value = 25, Minimum = 0, Maximum = 100 };
+            AutomationProperties.SetName(numeric, "Level");
             var date = new CalendarDatePicker { SelectedDate = new DateTime(2026, 9, 17) };
+            AutomationProperties.SetName(date, "Date");
             var window = new Window
             {
                 Content = new StackPanel
@@ -70,6 +77,10 @@ public sealed class NativeControlSystemTests
 
             Assert.Equal(new Color(0xFF, 0x4D, 0x51, 0x60), ((SolidColorBrush)combo.BorderBrush!).Color);
             Assert.Equal(new Color(0xFF, 0x4D, 0x51, 0x60), ((SolidColorBrush)text.BorderBrush!).Color);
+
+            Assert.Equal("Species", AutomationProperties.GetName(filterable.GetVisualDescendants().OfType<TextBox>().Single()));
+            Assert.Equal("Level", AutomationProperties.GetName(numeric.GetVisualDescendants().OfType<TextBox>().Single(textBox => textBox.Name == "PART_TextBox")));
+            Assert.Equal("Date", AutomationProperties.GetName(date.GetVisualDescendants().OfType<TextBox>().Single(textBox => textBox.Name == "PART_TextBox")));
 
             combo.IsDropDownOpen = true;
             Pump(window);
@@ -166,6 +177,25 @@ public sealed class NativeControlSystemTests
         Assert.Equal(0, textBox.BorderThickness.Left);
         Assert.Equal(0, textBox.BorderThickness.Top);
 
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void LegalityAudit_StatusIsConfiguredAsPoliteLiveRegion()
+    {
+        var view = new LegalityAuditView
+        {
+            DataContext = new LegalityAuditViewModel(new SAV3E(), new Mock<IDialogService>().Object),
+        };
+        var window = new Window { Content = view, Width = 900, Height = 500 };
+        window.Show();
+        Pump(window);
+
+        var status = view.GetVisualDescendants()
+            .OfType<TextBlock>()
+            .Single(text => text.Name == "AuditStatus");
+
+        Assert.Equal(AutomationLiveSetting.Polite, AutomationProperties.GetLiveSetting(status));
         window.Close();
     }
 

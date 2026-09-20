@@ -226,6 +226,7 @@
   "Dialog_RoamerEditor": "徘徊ポケモンエディター",
   "Dialog_OPowerEditor": "O-Powerエディター",
   "Dialog_ZygardeCellEditor": "ジガルデセルエディター",
+  "Dialog_TotemStickerEditor": "ぬしステッカーエディター",
   "Dialog_TeraRaidEditor": "テラレイドエディター",
   "Dialog_SevenStarTeraRaidEditor": "★7テラレイドエディター",
   "Dialog_FashionEditor": "ファッションエディター",
@@ -1117,6 +1118,7 @@
   "MedalEditorView_Grass": "草むら",
   "MedalEditorView_Surf": "波乗り",
   "MedalEditorView_Fish": "つり",
+  "MedalEditorView_SearchWatermark": "名前、種類、番号でメダルを検索...",
   "MemoryEditor_Geolocation": "位置情報",
   "MemoryEditor_CountryRegionData": "国/地域データ",
   "MemoryEditor_CountryId": "国ID",
@@ -2237,6 +2239,7 @@
   "ZygardeCellEditor_TotemStickerNone": "なし",
   "ZygardeCellEditor_TotemStickerAvailable": "入手可能",
   "ZygardeCellEditor_TotemStickerReceived": "収集済み",
+  "ZygardeCellEditor_ChangesApplyImmediately": "変更は開いているセーブデータにすぐ適用されます。",
   "BlockEditor_ImportBlockTitle": "ブロックをインポート",
   "LegalityAudit_ExportReportsTitle": "適法性レポートをエクスポート",
   "Link6Editor_ExportLinkDataTitle": "リンクデータをエクスポート",
@@ -2277,5 +2280,9 @@
   "Update_Error_NeedsAdmin": "このインストールを更新するには管理者権限が必要です。代わりにダウンロードページを開きます。",
   "Update_Error_SwapFailed": "アップデートを適用できませんでした。現在のバージョンは変更されていません。",
   "Update_Error_Generic": "アップデートを完了できませんでした: {0}",
-  "PokemonEditor_RerollPidTooltip": "PIDを再生成"
+  "PokemonEditor_RerollPidTooltip": "PIDを再生成",
+  "BoxLayoutEditor_BoxName": "ボックス名",
+  "BoxLayoutEditor_Wallpaper": "壁紙",
+  "BoxLayoutEditor_MoveUp": "ボックスを上へ移動",
+  "BoxLayoutEditor_MoveDown": "ボックスを下へ移動"
 }
