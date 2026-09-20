@@ -86,12 +86,19 @@
                 <MenuItem Header="{loc:Loc Tab_Party}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.PartyWorkspaceTabIndex}" />
             </MenuItem>
             <MenuItem Header="{loc:Loc Menu_Help}">
-                <MenuItem Header="{loc:Loc Menu_Options_Language}">
-                    <ComboBox x:CompileBindings="False"
-                              ItemsSource="{Binding LanguageService.AvailableLanguages}"
-                              SelectedItem="{Binding LanguageService.CurrentLanguageOption, Mode=TwoWay}"
-                              Width="120"
-                              AutomationProperties.Name="Language Selection"/>
+                <MenuItem Header="{loc:Loc Menu_Options_Language}"
+                          ItemsSource="{Binding LanguageService.AvailableLanguages}">
+                    <MenuItem.ItemContainerTheme>
+                        <ControlTheme x:CompileBindings="False" TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                            <Setter Property="Header" Value="{Binding Name}" />
+                            <Setter Property="AutomationProperties.Name" Value="{Binding Name}" />
+                            <Setter Property="Command" Value="{Binding $parent[MenuItem].((vm:MainWindowViewModel)DataContext).ChangeLanguageCommand}" />
+                            <Setter Property="CommandParameter" Value="{Binding Code}" />
+                            <Setter Property="ToggleType" Value="Radio" />
+                            <Setter Property="GroupName" Value="ApplicationLanguage" />
+                            <Setter Property="IsChecked" Value="{Binding IsCurrent}" />
+                        </ControlTheme>
+                    </MenuItem.ItemContainerTheme>
                 </MenuItem>
                 <MenuItem Header="{loc:Loc Menu_Options_Settings}" Command="{Binding OpenSettingsCommand}" />
                 <MenuItem Header="{loc:Loc Menu_Options_About}" Command="{Binding OpenAboutCommand}" />

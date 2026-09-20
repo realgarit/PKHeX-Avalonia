@@ -49,7 +49,7 @@ public sealed class LanguageService : INotifyPropertyChanged
     public LanguageService()
     {
         AvailableLanguages = SupportedLanguages
-            .Select((code, i) => new LanguageOption(code, LanguageNames[i]))
+            .Select((code, i) => new LanguageOption(code, LanguageNames[i], code == _currentLanguage))
             .ToList();
     }
 
@@ -59,6 +59,8 @@ public sealed class LanguageService : INotifyPropertyChanged
             languageCode = "en";
 
         CurrentLanguage = languageCode;
+        foreach (var option in AvailableLanguages)
+            option.SetCurrent(option.Code == languageCode);
         OnPropertyChanged(nameof(CurrentLanguageOption));
         GameInfo.CurrentLanguage = languageCode;
         GameInfo.Strings = GameInfo.GetStrings(languageCode);
@@ -89,7 +91,29 @@ public sealed class LanguageService : INotifyPropertyChanged
     }
 }
 
-public record LanguageOption(string Code, string Name)
+public sealed class LanguageOption : INotifyPropertyChanged
 {
+    private bool _isCurrent;
+
+    public LanguageOption(string code, string name, bool isCurrent = false)
+    {
+        Code = code;
+        Name = name;
+        _isCurrent = isCurrent;
+    }
+
+    public string Code { get; }
+    public string Name { get; }
+    public bool IsCurrent => _isCurrent;
+
+    internal void SetCurrent(bool value)
+    {
+        if (_isCurrent == value) return;
+        _isCurrent = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCurrent)));
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     public override string ToString() => Name;
 }
