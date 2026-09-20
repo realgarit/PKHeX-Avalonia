@@ -34,6 +34,12 @@ public partial class TrainerEditorViewModel : ViewModelBase
     private ushort _sid16;
 
     [ObservableProperty]
+    private uint _displayTid;
+
+    [ObservableProperty]
+    private uint _displaySid;
+
+    [ObservableProperty]
     private int _language;
 
     // Play Time
@@ -65,7 +71,21 @@ public partial class TrainerEditorViewModel : ViewModelBase
     [ObservableProperty]
     private bool _hasBadges;
 
+    [ObservableProperty]
+    private bool _isBadgeCount;
+
+    [ObservableProperty]
+    private int _badgeCount;
+
     public ObservableCollection<BadgeItemViewModel> Badges { get; } = [];
+
+    public int MaxBadgeCount => 8;
+
+    public bool UsesSixDigitTrainerIds => _sav.TrainerIDDisplayFormat == TrainerIDFormat.SixDigit;
+    public uint MaxDisplayTid => UsesSixDigitTrainerIds ? 999999u : ushort.MaxValue;
+    public uint MaxDisplaySid => UsesSixDigitTrainerIds ? uint.MaxValue / 1_000_000u : ushort.MaxValue;
+    public string DisplayTidFormat => UsesSixDigitTrainerIds ? "000000" : "00000";
+    public string DisplaySidFormat => UsesSixDigitTrainerIds ? "0000" : "00000";
 
     private PropertyInfo? _badgesProperty;
     
@@ -176,6 +196,8 @@ public partial class TrainerEditorViewModel : ViewModelBase
         try { Money = _sav.Money; } catch { }
         Tid16 = _sav.TID16;
         Sid16 = _sav.SID16;
+        DisplayTid = _sav.DisplayTID;
+        DisplaySid = _sav.DisplaySID;
         Language = _sav.Language;
 
         try { PlayedHours = _sav.PlayedHours; } catch { }
@@ -342,6 +364,15 @@ public partial class TrainerEditorViewModel : ViewModelBase
         if (_badgesProperty != null && _badgesProperty.PropertyType == typeof(int))
         {
             HasBadges = true;
+
+            if (_sav is SAV8SWSH)
+            {
+                IsBadgeCount = true;
+                BadgeCount = Math.Clamp((int)_badgesProperty.GetValue(_sav)!, 0, MaxBadgeCount);
+                return;
+            }
+
+            IsBadgeCount = false;
             int badgeFlags = (int)_badgesProperty.GetValue(_sav)!;
             
             // Create 16 badge wrappers (standard max, usually 8 used)
@@ -357,6 +388,8 @@ public partial class TrainerEditorViewModel : ViewModelBase
         else
         {
             HasBadges = false;
+            IsBadgeCount = false;
+            BadgeCount = 0;
         }
     }
 
@@ -366,8 +399,10 @@ public partial class TrainerEditorViewModel : ViewModelBase
         _sav.OT = TrainerName;
         _sav.Gender = (byte)Gender;
         _sav.Money = Money;
-        _sav.TID16 = Tid16;
-        _sav.SID16 = Sid16;
+        _sav.DisplayTID = Math.Min(DisplayTid, MaxDisplayTid);
+        _sav.DisplaySID = Math.Min(DisplaySid, MaxDisplaySid);
+        Tid16 = _sav.TID16;
+        Sid16 = _sav.SID16;
         _sav.Language = Language;
 
         _sav.PlayedHours = PlayedHours;
@@ -517,6 +552,12 @@ public partial class TrainerEditorViewModel : ViewModelBase
     private void SaveBadges()
     {
         if (!HasBadges || _badgesProperty == null) return;
+
+        if (IsBadgeCount)
+        {
+            _badgesProperty.SetValue(_sav, Math.Clamp(BadgeCount, 0, MaxBadgeCount));
+            return;
+        }
 
         int badgeFlags = 0;
         for (int i = 0; i < Badges.Count; i++)

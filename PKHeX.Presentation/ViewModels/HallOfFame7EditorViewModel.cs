@@ -1,17 +1,23 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using PKHeX.Application.Abstractions;
 using PKHeX.Core;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class HallOfFame7EditorViewModel : ViewModelBase
+public partial class HallOfFame7EditorViewModel : ViewModelBase, ICloseableDialog
 {
+    private readonly SAV7? _source;
     private readonly SAV7? _sav7;
     private readonly HallOfFame7? _fame;
 
+    public Action? CloseRequested { get; set; }
+
     public HallOfFame7EditorViewModel(SaveFile sav)
     {
-        _sav7 = sav as SAV7;
+        _source = sav as SAV7;
+        _sav7 = _source is null ? null : (SAV7)_source.Clone();
         IsSupported = _sav7?.EventWork?.Fame is not null;
 
         if (_sav7 is not null)
@@ -49,6 +55,19 @@ public partial class HallOfFame7EditorViewModel : ViewModelBase
         if (_sav7 is SAV7USUM usum && uint.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out var ec))
             usum.Misc.StarterEncryptionConstant = ec;
     }
+
+    [RelayCommand]
+    private void Save()
+    {
+        if (_source is null || _sav7 is null || !IsSupported)
+            return;
+
+        _source.CopyChangesFrom(_sav7);
+        CloseRequested?.Invoke();
+    }
+
+    [RelayCommand]
+    private void Cancel() => CloseRequested?.Invoke();
 
     private void LoadSpeciesOptions()
     {

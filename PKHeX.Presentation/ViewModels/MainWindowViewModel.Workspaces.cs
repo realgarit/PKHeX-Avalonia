@@ -189,7 +189,6 @@ public partial class MainWindowViewModel
         RegisterMenuCapability("Menu_Gen4_PoketchDPPt", OpenPoketchCommand, "Menu_Gen4");
         RegisterMenuCapability("Menu_Gen4_BlockLayout", OpenBoxLayoutCommand, "Menu_Gen4");
         RegisterMenuCapability("Menu_Gen4_HoneyTrees", OpenHoneyTreeCommand, "Menu_Gen4");
-        RegisterMenuCapability("Menu_Roamer", OpenRoamerCommand, "Menu_Gen4");
         RegisterMenuCapability("Menu_Gen4_PokeGearHGSS", OpenPokeGear4Command, "Menu_Gen4");
         RegisterMenuCapability("Menu_Gen4_PokeathlonHGSS", OpenPokeathlonCommand, "Menu_Gen4");
         RegisterMenuCapability("Menu_Gen4_GeonetDPPt", OpenGeonet4Command, "Menu_Gen4");

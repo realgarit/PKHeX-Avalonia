@@ -9,6 +9,12 @@
         <vm:Misc7EditorViewModel />
     </Design.DataContext>
 
+    <UserControl.Styles>
+        <Style Selector="NumericUpDown.battle-tree-streak">
+            <Setter Property="MinHeight" Value="{DynamicResource UiDensityControlHeight}" />
+        </Style>
+    </UserControl.Styles>
+
     <Border Classes="view-container">
         <Grid RowDefinitions="Auto,*">
             <Grid Grid.Row="0" Classes="save-editor-header">
@@ -44,16 +50,16 @@
                                         <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Loc Misc7Editor_Max}" FontWeight="SemiBold" Opacity="0.7" HorizontalAlignment="Center" />
 
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Loc Misc7Editor_Single}" VerticalAlignment="Center" Width="80" />
-                                        <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding SingleCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Single Current Streak" />
-                                        <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding SingleMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Single Max Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="2" Grid.Column="1" Value="{Binding SingleCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Single Current Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="2" Grid.Column="2" Value="{Binding SingleMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Single Max Streak" />
 
                                         <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Loc Misc7Editor_Double}" VerticalAlignment="Center" />
-                                        <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding DoubleCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Double Current Streak" />
-                                        <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding DoubleMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Double Max Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="4" Grid.Column="1" Value="{Binding DoubleCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Double Current Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="4" Grid.Column="2" Value="{Binding DoubleMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Double Max Streak" />
 
                                         <TextBlock Grid.Row="6" Grid.Column="0" Text="{loc:Loc Misc7Editor_Multi}" VerticalAlignment="Center" />
-                                        <NumericUpDown Grid.Row="6" Grid.Column="1" Value="{Binding MultiCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Multi Current Streak" />
-                                        <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding MultiMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Multi Max Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="6" Grid.Column="1" Value="{Binding MultiCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Multi Current Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="6" Grid.Column="2" Value="{Binding MultiMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Multi Max Streak" />
                                     </Grid>
                                 </StackPanel>
                             </Border>
@@ -67,16 +73,16 @@
                                         <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Loc Misc7Editor_Max}" FontWeight="SemiBold" Opacity="0.7" HorizontalAlignment="Center" />
 
                                         <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Loc Misc7Editor_Single}" VerticalAlignment="Center" Width="80" />
-                                        <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding SuperSingleCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Super Single Current Streak" />
-                                        <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding SuperSingleMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Super Single Max Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="2" Grid.Column="1" Value="{Binding SuperSingleCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Super Single Current Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="2" Grid.Column="2" Value="{Binding SuperSingleMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Super Single Max Streak" />
 
                                         <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Loc Misc7Editor_Double}" VerticalAlignment="Center" />
-                                        <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding SuperDoubleCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Super Double Current Streak" />
-                                        <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding SuperDoubleMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Super Double Max Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="4" Grid.Column="1" Value="{Binding SuperDoubleCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Super Double Current Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="4" Grid.Column="2" Value="{Binding SuperDoubleMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Super Double Max Streak" />
 
                                         <TextBlock Grid.Row="6" Grid.Column="0" Text="{loc:Loc Misc7Editor_Multi}" VerticalAlignment="Center" />
-                                        <NumericUpDown Grid.Row="6" Grid.Column="1" Value="{Binding SuperMultiCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Super Multi Current Streak" />
-                                        <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding SuperMultiMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Super Multi Max Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="6" Grid.Column="1" Value="{Binding SuperMultiCurrentStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" Margin="0,0,8,0" AutomationProperties.Name="Super Multi Current Streak" />
+                                        <NumericUpDown Classes="battle-tree-streak" Grid.Row="6" Grid.Column="2" Value="{Binding SuperMultiMaxStreak}" Minimum="0" Maximum="9999" ShowButtonSpinner="False" AutomationProperties.Name="Super Multi Max Streak" />
                                     </Grid>
                                 </StackPanel>
                             </Border>
