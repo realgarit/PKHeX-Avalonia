@@ -31,10 +31,9 @@ public partial class RibbonItemViewModel : ObservableObject
         _propertyName = info.Name;
         IsBooleanRibbon = info.Type == RibbonValueType.Boolean;
         
-        // Clean up display name by removing "Ribbon" prefix
-        DisplayName = info.Name.StartsWith("Ribbon") 
-            ? info.Name[6..] // Remove "Ribbon" prefix
-            : info.Name;
+        DisplayName = GameInfo.Strings.Ribbons.GetNameSafe(info.Name, out var localizedName)
+            ? localizedName
+            : info.Name.StartsWith("Ribbon") ? info.Name[6..] : info.Name;
         
         if (IsBooleanRibbon)
         {

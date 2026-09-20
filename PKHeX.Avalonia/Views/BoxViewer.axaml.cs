@@ -84,6 +84,7 @@ public partial class BoxViewer : UserControl
             return;
 
         _isDragging = true;
+        button.Classes.Add("drag-source");
         try
         {
             // No await between here and DoDragDropAsync: on macOS, yielding the pointer-moved
@@ -102,6 +103,7 @@ public partial class BoxViewer : UserControl
         finally
         {
             _isDragging = false;
+            button.Classes.Remove("drag-source");
         }
     }
 
@@ -130,13 +132,29 @@ public partial class BoxViewer : UserControl
             e.DragEffects = DragDropEffects.None;
         }
 
+        button.Classes.Remove("drop-valid");
+        button.Classes.Remove("drop-invalid");
+        button.Classes.Add(e.DragEffects == DragDropEffects.None ? "drop-invalid" : "drop-valid");
+
         e.Handled = true;
+    }
+
+    private void OnSlotDragLeave(object? sender, DragEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            button.Classes.Remove("drop-valid");
+            button.Classes.Remove("drop-invalid");
+        }
     }
 
     private async void OnSlotDrop(object? sender, DragEventArgs e)
     {
         if (sender is not Button button || button.Tag is not SlotData destSlot || DataContext is not BoxViewerViewModel vm)
             return;
+
+        button.Classes.Remove("drop-valid");
+        button.Classes.Remove("drop-invalid");
 
         // In-app move/clone between box/party slots (existing behavior).
         var data = SlotDragTransfer.TryGet(e.DataTransfer, vm.SessionId);

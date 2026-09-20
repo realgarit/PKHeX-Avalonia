@@ -1806,6 +1806,7 @@
   "PokemonEditor_ColEVs": "EVs",
   "PokemonEditor_ClearEvsTooltip": "Clear all EVs",
   "PokemonEditor_ColTotal": "Total",
+  "PokemonEditor_Characteristic": "Characteristic",
   "PokemonEditor_ColMax": "Max",
   "PokemonEditor_ColClear": "Clear",
   "PokemonEditor_StatHp": "HP",
@@ -2040,6 +2041,8 @@
   "SealStickers8bEditor_ColumnName": "Name",
   "SealStickers8bEditor_ColumnCount": "Count",
   "SealStickers8bEditor_ColumnUnlocked": "Unlocked",
+  "SealStickers8bEditor_ColumnTotal": "Total",
+  "SealStickers8bEditor_ColumnObtained": "Obtained",
   "SecretBase3Editor_SecretBases": "Secret Bases",
   "SecretBase3Editor_TrainerInfo": "Trainer Info",
   "SecretBase3Editor_Name": "Name:",
@@ -2108,6 +2111,8 @@
   "TechRecordEditor_Active": "Active",
   "TechRecordEditor_Type": "Type",
   "TechRecordEditor_Move": "Move",
+  "TechRecordEditor_Learned": "Learned",
+  "TechRecordEditor_Legal": "Legal",
   "TechRecordEditor_GiveAll": "Give All",
   "TechRecordEditor_RemoveAll": "Remove All",
   "TrainerCard8EditorView_Title": "Trainer Card",
@@ -2284,5 +2289,11 @@
   "BoxLayoutEditor_BoxName": "Box name",
   "BoxLayoutEditor_Wallpaper": "Wallpaper",
   "BoxLayoutEditor_MoveUp": "Move box up",
-  "BoxLayoutEditor_MoveDown": "Move box down"
+  "BoxLayoutEditor_MoveDown": "Move box down",
+  "Settings_AllowBattleTowerTeamSwap": "Allow Gen 3 Battle Tower team swap",
+  "Settings_AllowBattleTowerTeamSwap_Desc": "Accept the Ruby/Sapphire Battle Tower team-swap ribbon exploit during legality checks.",
+  "Pokedex8bEditor_None": "None",
+  "Pokedex8bEditor_HeardOf": "Heard Of",
+  "Pokedex8bEditor_Seen": "Seen",
+  "Pokedex8bEditor_Caught": "Caught"
 }

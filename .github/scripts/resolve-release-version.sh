@@ -106,6 +106,31 @@ classify_title() {
   echo "patch|default:no-conventional-prefix"
 }
 
+# Lightweight mode used by the pull-request title gate. It deliberately calls the same
+# classifier as the release workflow so the pre-merge check and the published bump cannot drift.
+if [[ "${CLASSIFY_TITLE_ONLY:-false}" == "true" ]]; then
+  TITLE_VALUE="${TITLE:-}"
+  LABEL_VALUE="${LABELS:-}"
+  if [[ -z "$TITLE_VALUE" ]]; then
+    echo "::error::The pull request title is empty." >&2
+    exit 1
+  fi
+
+  IFS='|' read -r TITLE_BUMP TITLE_RULE <<< "$(classify_title "$TITLE_VALUE" "$LABEL_VALUE")"
+  if [[ "$TITLE_RULE" == default:* ]]; then
+    echo "::error::Use a conventional-commit PR title (feat, fix, chore, deps, refactor, docs, test, ci, build, perf, style, sync, or revert), optionally with a scope or !." >&2
+    exit 1
+  fi
+
+  if printf '%s' "${BODY:-}" | grep -Eqi 'BREAKING[[:space:]]+CHANGE:' && [[ "$TITLE_BUMP" != "major" ]]; then
+    echo "::error::BREAKING CHANGE in the PR body requires a ! prefix or the breaking label." >&2
+    exit 1
+  fi
+
+  echo "PR title accepted: ${TITLE_RULE} -> ${TITLE_BUMP}"
+  exit 0
+fi
+
 # ---------------------------------------------------------------------------
 # Resolve the merged PR for a commit. Three independent lookups so a single
 # API shape change cannot silently degrade every release to "default patch".

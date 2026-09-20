@@ -6,21 +6,25 @@ using PKHeX.Core;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class SealStickers8bEditorViewModel : ViewModelBase
+public partial class SealStickers8bEditorViewModel : ViewModelBase, ICloseableDialog
 {
-    private readonly SAV8BS? _sav;
+    private readonly SAV8BS? _source;
+    private readonly SAV8BS? _working;
     private readonly IReadOnlyList<SealSticker8b>? _allItems;
     private readonly string[] _itemNames;
 
+    public Action? CloseRequested { get; set; }
+
     public SealStickers8bEditorViewModel(SaveFile sav)
     {
-        _sav = sav as SAV8BS;
-        IsSupported = _sav is not null;
-        _itemNames = Util.GetStringList("seal", GameInfo.CurrentLanguage);
+        _source = sav as SAV8BS;
+        _working = _source?.Clone() as SAV8BS;
+        IsSupported = _working is not null;
+        _itemNames = Util.GetStringList("stickers", GameInfo.CurrentLanguage);
 
-        if (_sav is not null)
+        if (_working is not null)
         {
-            _allItems = _sav.SealList.ReadItems();
+            _allItems = _working.SealList.ReadItems();
             LoadItems();
         }
     }
@@ -48,22 +52,35 @@ public partial class SealStickers8bEditorViewModel : ViewModelBase
     private void SetAllMax()
     {
         foreach (var item in Items)
+        {
             item.Count = SealSticker8b.MaxValue;
+            item.TotalCount = SealSticker8b.MaxValue;
+            item.IsGet = true;
+        }
     }
 
     [RelayCommand]
     private void SetAllNone()
     {
         foreach (var item in Items)
+        {
             item.Count = 0;
+            item.TotalCount = 0;
+            item.IsGet = false;
+        }
     }
 
     [RelayCommand]
     private void Save()
     {
-        if (_sav is null || _allItems is null) return;
-        _sav.SealList.WriteItems(_allItems);
+        if (_source is null || _working is null) return;
+        _working.SealList.WriteItems(_allItems!);
+        _source.CopyChangesFrom(_working);
+        CloseRequested?.Invoke();
     }
+
+    [RelayCommand]
+    private void Cancel() => CloseRequested?.Invoke();
 }
 
 public partial class SealSticker8bViewModel : ViewModelBase
@@ -75,6 +92,7 @@ public partial class SealSticker8bViewModel : ViewModelBase
         _item = item;
         Name = name;
         _count = item.Count;
+        _totalCount = item.TotalCount;
         _isGet = item.IsGet;
     }
 
@@ -91,6 +109,11 @@ public partial class SealSticker8bViewModel : ViewModelBase
         if (value > 0 && !IsGet)
             IsGet = true;
     }
+
+    [ObservableProperty]
+    private int _totalCount;
+
+    partial void OnTotalCountChanged(int value) => _item.TotalCount = value;
 
     [ObservableProperty]
     private bool _isGet;

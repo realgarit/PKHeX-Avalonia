@@ -15,9 +15,9 @@
             <DockPanel Grid.Row="0" Margin="0,0,0,16">
                 <TextBlock Text="{loc:Loc RibbonEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                    <Button Content="{loc:Loc RibbonEditor_GiveAll}" Command="{Binding GiveAllCommand}" Padding="12,6" />
-                    <Button Content="{loc:Loc RibbonEditor_RemoveAll}" Command="{Binding RemoveAllCommand}" Padding="12,6" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                <Button Content="{loc:Loc RibbonEditor_GiveAll}" Command="{Binding GiveAllCommand}" Padding="12,6" />
+                <Button Content="{loc:Loc RibbonEditor_RemoveAll}" Command="{Binding RemoveAllCommand}" Padding="12,6" />
                 </StackPanel>
             </DockPanel>
             
@@ -76,6 +76,7 @@
             
             <!-- Footer -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,16,0,0">
+                <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" MinWidth="100" Padding="16,8" />
                 <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="100" Padding="16,8" />
             </StackPanel>
         </Grid>

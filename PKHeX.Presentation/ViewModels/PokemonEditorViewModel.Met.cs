@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -27,6 +28,9 @@ public partial class PokemonEditorViewModel
 
     [ObservableProperty] private ObservableCollection<ComboItem> _metLocationList = [];
     [ObservableProperty] private ObservableCollection<ComboItem> _eggLocationList = [];
+
+    /// <summary>Readable numeric ID for the selected met location.</summary>
+    public string MetLocationTooltip => $"{LocalizedStrings.Instance["PokemonEditor_MetLocation"]}: {MetLocation:000}";
 
     public bool HasMetDate => _sav.Generation >= 4;
 
@@ -58,10 +62,22 @@ public partial class PokemonEditorViewModel
             : EggLocationList.Count > 0 ? EggLocationList[0].Value : 0;
     }
 
-    partial void OnMetLocationChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnMetLocationChanged(int value)
+    {
+        OnPropertyChanged(nameof(MetLocationTooltip));
+        if (!_isLoading) Validate();
+    }
     partial void OnMetLevelChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnMetDateChanged(DateTime? value) { if (!_isLoading) Validate(); }
+    partial void OnMetDateChanged(DateTime? value)
+    {
+        OnPropertyChanged(nameof(MetDateTooltip));
+        if (!_isLoading) Validate();
+    }
     partial void OnEggLocationChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnEggDateChanged(DateTime? value) { if (!_isLoading) Validate(); }
+    partial void OnEggDateChanged(DateTime? value)
+    {
+        OnPropertyChanged(nameof(EggDateTooltip));
+        if (!_isLoading) Validate();
+    }
     partial void OnIsFatefulEncounterChanged(bool value) { if (!_isLoading) Validate(); }
 }

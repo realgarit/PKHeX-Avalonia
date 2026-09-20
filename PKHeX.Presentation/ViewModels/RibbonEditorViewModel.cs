@@ -10,10 +10,12 @@ using PKHeX.Core;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class RibbonEditorViewModel : ViewModelBase
+public partial class RibbonEditorViewModel : ViewModelBase, ICloseableDialog
 {
-    private readonly PKM _pkm;
-    private readonly Action? _closeRequested;
+    private readonly PKM _sourcePkm;
+    private readonly PKM _workingPkm;
+
+    public Action? CloseRequested { get; set; }
 
     [ObservableProperty]
     private ObservableCollection<RibbonItemViewModel> _ribbons = new();
@@ -23,20 +25,21 @@ public partial class RibbonEditorViewModel : ViewModelBase
 
     public RibbonEditorViewModel(PKM pkm, Action? closeHelper = null)
     {
-        _pkm = pkm;
-        _closeRequested = closeHelper;
+        _sourcePkm = pkm;
+        _workingPkm = pkm.Clone();
+        CloseRequested = closeHelper;
         LoadRibbons();
     }
 
     private void LoadRibbons()
     {
         // 1. Get all ribbons
-        var allRibbons = RibbonInfo.GetRibbonInfo(_pkm);
+        var allRibbons = RibbonInfo.GetRibbonInfo(_workingPkm);
         
         // 2. Verify validity (logic adapted from WinForms RibbonEditor.PopulateRibbons)
-        var la = new LegalityAnalysis(_pkm);
+        var la = new LegalityAnalysis(_workingPkm);
         Span<RibbonResult> results = stackalloc RibbonResult[allRibbons.Count];
-        var args = new RibbonVerifierArguments(_pkm, la.EncounterOriginal, la.Info.EvoChainsAllGens);
+        var args = new RibbonVerifierArguments(_workingPkm, la.EncounterOriginal, la.Info.EvoChainsAllGens);
         var count = RibbonVerifier.GetRibbonResults(args, results);
         var slice = results[..count];
         
@@ -48,7 +51,7 @@ public partial class RibbonEditorViewModel : ViewModelBase
         var list = new List<RibbonItemViewModel>();
         foreach (var info in allRibbons)
         {
-            var vm = new RibbonItemViewModel(_pkm, info);
+            var vm = new RibbonItemViewModel(_workingPkm, info);
 
             // Compute the ribbon icon resource name; the View resolves it to an image asset.
             // Name mapping: lowercase, remove "CountG3" -> "G3".
@@ -58,7 +61,7 @@ public partial class RibbonEditorViewModel : ViewModelBase
             if (info.Type == RibbonValueType.Byte)
             {
                 int max = info.MaxCount;
-                if (max == 8 && info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryBattle) && _pkm.Format >= 9)
+                if (max == 8 && info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryBattle) && _workingPkm.Format >= 9)
                     max = 7;
 
                 if ((info.Name == nameof(IRibbonSetMemory6.RibbonCountMemoryBattle) ||
@@ -80,21 +83,25 @@ public partial class RibbonEditorViewModel : ViewModelBase
     [RelayCommand]
     private void Save()
     {
-        // Changes are already applied to _pkm via RibbonItemViewModel bindings.
-        _closeRequested?.Invoke();
+        _workingPkm.Data.CopyTo(_sourcePkm.Data);
+        _sourcePkm.RefreshChecksum();
+        CloseRequested?.Invoke();
     }
     
     [RelayCommand]
     private void GiveAll()
     {
-        RibbonApplicator.SetAllValidRibbons(_pkm);
+        RibbonApplicator.SetAllValidRibbons(_workingPkm);
         LoadRibbons(); // Reload to reflect changes
     }
     
     [RelayCommand]
     private void RemoveAll()
     {
-        RibbonApplicator.RemoveAllValidRibbons(_pkm);
+        RibbonApplicator.RemoveAllValidRibbons(_workingPkm);
         LoadRibbons();
     }
+
+    [RelayCommand]
+    private void Cancel() => CloseRequested?.Invoke();
 }

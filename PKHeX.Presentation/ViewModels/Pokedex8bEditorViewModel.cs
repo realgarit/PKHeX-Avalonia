@@ -5,19 +5,24 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class Pokedex8bEditorViewModel : ViewModelBase
+public partial class Pokedex8bEditorViewModel : ViewModelBase, ICloseableDialog
 {
-    private readonly SAV8BS _sav;
+    private readonly SAV8BS _source;
+    private readonly SAV8BS _working;
     private readonly Zukan8b _zukan;
     private readonly List<ComboItem> _allSpecies;
 
+    public Action? CloseRequested { get; set; }
+
     public Pokedex8bEditorViewModel(SAV8BS sav)
     {
-        _sav = sav;
-        _zukan = sav.Zukan;
+        _source = sav;
+        _working = sav.Clone() as SAV8BS ?? throw new InvalidOperationException("The BDSP Pokédex clone was not a SAV8BS.");
+        _zukan = _working.Zukan;
 
         var speciesNames = GameInfo.Strings.Species;
         _allSpecies = Enumerable.Range(1, 493)
@@ -74,7 +79,13 @@ public partial class Pokedex8bEditorViewModel : ViewModelBase
 
     // Entry Properties
     [ObservableProperty] private int _state; // 0=None, 1=Heard, 2=Seen, 3=Caught
-    public string[] States => ["None", "Heard Of", "Seen", "Caught"];
+    public string[] States =>
+    [
+        LocalizedStrings.Instance["Pokedex8bEditor_None"],
+        LocalizedStrings.Instance["Pokedex8bEditor_HeardOf"],
+        LocalizedStrings.Instance["Pokedex8bEditor_Seen"],
+        LocalizedStrings.Instance["Pokedex8bEditor_Caught"],
+    ];
 
     [ObservableProperty] private bool _seenMale;
     [ObservableProperty] private bool _seenFemale;
@@ -121,7 +132,7 @@ public partial class Pokedex8bEditorViewModel : ViewModelBase
         LangChineseS = _zukan.GetLanguageFlag(uspecies, (int)LanguageID.ChineseS);
         LangChineseT = _zukan.GetLanguageFlag(uspecies, (int)LanguageID.ChineseT);
 
-        var pi = _sav.Personal[uspecies];
+        var pi = _working.Personal[uspecies];
         CanBeFemale = !pi.OnlyMale && !pi.Genderless;
         CanBeMale = !pi.OnlyFemale;
 
@@ -153,7 +164,7 @@ public partial class Pokedex8bEditorViewModel : ViewModelBase
         var count = Zukan8b.GetFormCount(species);
         if (count == 0) return;
 
-        var formNames = FormConverter.GetFormList(species, GameInfo.Strings.Types, GameInfo.Strings.forms, GameInfo.GenderSymbolASCII, _sav.Context);
+        var formNames = FormConverter.GetFormList(species, GameInfo.Strings.Types, GameInfo.Strings.forms, GameInfo.GenderSymbolASCII, _working.Context);
         for (int i = 0; i < count; i++)
         {
             var name = i < formNames.Length ? formNames[i] : $"Form {i}";
@@ -176,8 +187,19 @@ public partial class Pokedex8bEditorViewModel : ViewModelBase
     {
         if (SelectedSpecies != null)
             SaveEntry(SelectedSpecies.Value);
-        _sav.State.Edited = true;
+        _source.CopyChangesFrom(_working);
+        _source.State.Edited = true;
     }
+
+    [RelayCommand]
+    private void Save()
+    {
+        SaveCurrent();
+        CloseRequested?.Invoke();
+    }
+
+    [RelayCommand]
+    private void Cancel() => CloseRequested?.Invoke();
 
     [RelayCommand]
     private void SeenAll()

@@ -1806,6 +1806,7 @@
   "PokemonEditor_ColEVs": "努力値",
   "PokemonEditor_ClearEvsTooltip": "すべての努力値をクリア",
   "PokemonEditor_ColTotal": "合計",
+  "PokemonEditor_Characteristic": "個性",
   "PokemonEditor_ColMax": "最大",
   "PokemonEditor_ColClear": "クリア",
   "PokemonEditor_StatHp": "HP",
@@ -2040,6 +2041,8 @@
   "SealStickers8bEditor_ColumnName": "名前",
   "SealStickers8bEditor_ColumnCount": "個数",
   "SealStickers8bEditor_ColumnUnlocked": "解放済み",
+  "SealStickers8bEditor_ColumnTotal": "合計",
+  "SealStickers8bEditor_ColumnObtained": "入手済み",
   "SecretBase3Editor_SecretBases": "ひみつきち",
   "SecretBase3Editor_TrainerInfo": "トレーナー情報",
   "SecretBase3Editor_Name": "名前：",
@@ -2108,6 +2111,8 @@
   "TechRecordEditor_Active": "有効",
   "TechRecordEditor_Type": "タイプ",
   "TechRecordEditor_Move": "わざ",
+  "TechRecordEditor_Learned": "習得済み",
+  "TechRecordEditor_Legal": "使用可能",
   "TechRecordEditor_GiveAll": "すべて付与",
   "TechRecordEditor_RemoveAll": "すべて削除",
   "TrainerCard8EditorView_Title": "トレーナーカード",
@@ -2284,5 +2289,11 @@
   "BoxLayoutEditor_BoxName": "ボックス名",
   "BoxLayoutEditor_Wallpaper": "壁紙",
   "BoxLayoutEditor_MoveUp": "ボックスを上へ移動",
-  "BoxLayoutEditor_MoveDown": "ボックスを下へ移動"
+  "BoxLayoutEditor_MoveDown": "ボックスを下へ移動",
+  "Settings_AllowBattleTowerTeamSwap": "第3世代バトルタワーのチーム交換を許可",
+  "Settings_AllowBattleTowerTeamSwap_Desc": "判定時にルビー・サファイアのバトルタワーのチーム交換によるリボンを許可します。",
+  "Pokedex8bEditor_None": "なし",
+  "Pokedex8bEditor_HeardOf": "聞いたことがある",
+  "Pokedex8bEditor_Seen": "見つけた",
+  "Pokedex8bEditor_Caught": "捕まえた"
 }

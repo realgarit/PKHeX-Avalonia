@@ -66,6 +66,13 @@ public partial class PokemonEditorViewModel : ViewModelBase
     public string RelearnMove3AutomationName => GetMoveAutomationName("PokemonEditor_RelearnMoves", 3);
     public string RelearnMove4AutomationName => GetMoveAutomationName("PokemonEditor_RelearnMoves", 4);
 
+    public string AbilityTooltip => GetComboTooltip(AbilityList, Ability);
+    public string HeldItemTooltip => GetComboTooltip(ItemList, HeldItem);
+    public string BallTooltip => GetComboTooltip(BallList, Ball);
+    public string LanguageTooltip => GetComboTooltip(LanguageList, Language);
+    public string MetDateTooltip => MetDate?.ToString("D") ?? LocalizedStrings.Instance["PokemonEditor_SelectDate"];
+    public string EggDateTooltip => EggDate?.ToString("D") ?? LocalizedStrings.Instance["PokemonEditor_SelectDate"];
+
     private static string GetHyperTrainedAutomationName(string statKey) =>
         $"{LocalizedStrings.Instance["StatsHyperTrained"]} {LocalizedStrings.Instance[statKey]}";
 
@@ -77,6 +84,9 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     private static string GetMoveFieldAutomationName(string sectionKey, string fieldKey, int slot) =>
         $"{LocalizedStrings.Instance[sectionKey]}: {LocalizedStrings.Instance[fieldKey]} {slot}";
+
+    private static string GetComboTooltip(IEnumerable<ComboItem> items, int value) =>
+        items.FirstOrDefault(item => item.Value == value)?.Text ?? value.ToString();
 
     private void NotifyHyperTrainedAutomationNames()
     {
@@ -114,6 +124,12 @@ public partial class PokemonEditorViewModel : ViewModelBase
         OnPropertyChanged(nameof(RelearnMove2AutomationName));
         OnPropertyChanged(nameof(RelearnMove3AutomationName));
         OnPropertyChanged(nameof(RelearnMove4AutomationName));
+        OnPropertyChanged(nameof(AbilityTooltip));
+        OnPropertyChanged(nameof(HeldItemTooltip));
+        OnPropertyChanged(nameof(BallTooltip));
+        OnPropertyChanged(nameof(LanguageTooltip));
+        OnPropertyChanged(nameof(MetDateTooltip));
+        OnPropertyChanged(nameof(EggDateTooltip));
     }
     
     public IReadOnlyList<ComboItem> GenderList => [
@@ -523,6 +539,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
         OnPropertyChanged(nameof(IVTotal));
         OnPropertyChanged(nameof(EVTotal));
+        OnPropertyChanged(nameof(CharacteristicText));
         OnPropertyChanged(nameof(ExpPercent));
         UpdateSprite();
         Validate();
@@ -556,6 +573,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         if (_isLoading) return;
         if (value) _pk.SetShiny(); else _pk.SetUnshiny();
         SyncPidFieldsFromEntity();
+        OnPropertyChanged(nameof(CharacteristicText));
         UpdateSprite();
         Validate();
     }
@@ -569,6 +587,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
             _isLoading = true;
             IsShiny = _pk.IsShiny;
             _isLoading = false;
+            OnPropertyChanged(nameof(CharacteristicText));
             UpdateSprite();
             Validate();
         }
@@ -580,6 +599,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         if (uint.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out var ec))
         {
             _pk.EncryptionConstant = ec;
+            OnPropertyChanged(nameof(CharacteristicText));
             Validate();
         }
     }
@@ -648,6 +668,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     partial void OnLanguageChanged(int value)
     {
         if (_isLoading) return;
+        OnPropertyChanged(nameof(LanguageTooltip));
         _pk.Language = value;
         if (!IsNicknamed)
             UpdateDefaultNickname();
@@ -661,8 +682,16 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _abilitySelectionChanged = true;
         Validate();
     }
-    partial void OnHeldItemChanged(int value) { if (!_isLoading) Validate(); }
-    partial void OnBallChanged(int value) { if (!_isLoading) Validate(); }
+    partial void OnHeldItemChanged(int value)
+    {
+        OnPropertyChanged(nameof(HeldItemTooltip));
+        if (!_isLoading) Validate();
+    }
+    partial void OnBallChanged(int value)
+    {
+        OnPropertyChanged(nameof(BallTooltip));
+        if (!_isLoading) Validate();
+    }
     partial void OnGenderChanged(int value)
     {
         if (_isLoading)
@@ -695,6 +724,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         AbilityList = new ObservableCollection<ComboItem>(_haXMode
             ? GameInfo.FilteredSources.Abilities
             : GameInfo.FilteredSources.GetAbilityList(pi));
+        OnPropertyChanged(nameof(AbilityTooltip));
 
         if (_isLoading || !preserveSelection) return;
 
@@ -976,6 +1006,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
         var vm = new TechRecordEditorViewModel(tr, _pk);
         var view = vm;
         await _windowService.ShowDialogAsync(view, LocalizedStrings.Instance["PokemonEditor_TechnicalRecordEditorTitle"]);
+        LoadFromPKM();
     }
 
     public bool CanOpenTechRecord => _pk is ITechRecord;

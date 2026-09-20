@@ -1806,6 +1806,7 @@
   "PokemonEditor_ColEVs": "EVs",
   "PokemonEditor_ClearEvsTooltip": "Borrar todos los EVs",
   "PokemonEditor_ColTotal": "Total",
+  "PokemonEditor_Characteristic": "Característica",
   "PokemonEditor_ColMax": "Máx",
   "PokemonEditor_ColClear": "Borrar",
   "PokemonEditor_StatHp": "PS",
@@ -2040,6 +2041,8 @@
   "SealStickers8bEditor_ColumnName": "Nombre",
   "SealStickers8bEditor_ColumnCount": "Cantidad",
   "SealStickers8bEditor_ColumnUnlocked": "Desbloqueado",
+  "SealStickers8bEditor_ColumnTotal": "Total",
+  "SealStickers8bEditor_ColumnObtained": "Obtenido",
   "SecretBase3Editor_SecretBases": "Bases Secretas",
   "SecretBase3Editor_TrainerInfo": "Información del Entrenador",
   "SecretBase3Editor_Name": "Nombre:",
@@ -2108,6 +2111,8 @@
   "TechRecordEditor_Active": "Activo",
   "TechRecordEditor_Type": "Tipo",
   "TechRecordEditor_Move": "Movimiento",
+  "TechRecordEditor_Learned": "Aprendido",
+  "TechRecordEditor_Legal": "Legal",
   "TechRecordEditor_GiveAll": "Dar Todo",
   "TechRecordEditor_RemoveAll": "Quitar Todo",
   "TrainerCard8EditorView_Title": "Tarjeta de Entrenador",
@@ -2284,5 +2289,11 @@
   "BoxLayoutEditor_BoxName": "Nombre de caja",
   "BoxLayoutEditor_Wallpaper": "Fondo",
   "BoxLayoutEditor_MoveUp": "Mover caja arriba",
-  "BoxLayoutEditor_MoveDown": "Mover caja abajo"
+  "BoxLayoutEditor_MoveDown": "Mover caja abajo",
+  "Settings_AllowBattleTowerTeamSwap": "Permitir cambio de equipo de Torre de Combate (Gen. 3)",
+  "Settings_AllowBattleTowerTeamSwap_Desc": "Aceptar el exploit de cambio de equipo de Torre de Combate de Rubí/Zafiro durante las comprobaciones de legalidad.",
+  "Pokedex8bEditor_None": "Ninguno",
+  "Pokedex8bEditor_HeardOf": "Oído hablar",
+  "Pokedex8bEditor_Seen": "Visto",
+  "Pokedex8bEditor_Caught": "Capturado"
 }

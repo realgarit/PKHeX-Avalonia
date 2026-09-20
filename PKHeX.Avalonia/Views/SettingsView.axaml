@@ -54,7 +54,7 @@
 <Border BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,16">
                     <StackPanel Spacing="{DynamicResource UiDensityViewStackSpacing}">
                         <TextBlock Text="{loc:Loc Settings_EditorBehavior}" FontSize="13" FontWeight="SemiBold" />
-                        <Grid ColumnDefinitions="*,150" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                        <Grid ColumnDefinitions="*,150" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
                             <StackPanel Grid.Row="0" VerticalAlignment="Center" Spacing="2"><TextBlock Text="{loc:Loc Settings_UpdatePokedex}" FontSize="11" FontWeight="Normal" TextWrapping="Wrap" VerticalAlignment="Center" /></StackPanel>
                             <ToggleSwitch FontSize="11" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" IsChecked="{Binding SetUpdateDex}" OnContent="{loc:Loc Common_On}" OffContent="{loc:Loc Common_Off}" AutomationProperties.Name="{loc:Loc Settings_UpdatePokedex}" ToolTip.Tip="{loc:Loc Settings_UpdatePokedex_Desc}" />
                             <StackPanel Grid.Row="1" VerticalAlignment="Center" Spacing="2"><TextBlock Text="{loc:Loc Settings_AdaptPKM}" FontSize="11" FontWeight="Normal" TextWrapping="Wrap" VerticalAlignment="Center" /></StackPanel>
@@ -63,6 +63,8 @@
                             <ToggleSwitch FontSize="11" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" IsChecked="{Binding ModifyUnset}" OnContent="{loc:Loc Common_On}" OffContent="{loc:Loc Common_Off}" AutomationProperties.Name="{loc:Loc Settings_WarnClosingModified}" ToolTip.Tip="{loc:Loc Settings_WarnClosingModified_Desc}" />
                             <StackPanel Grid.Row="3" VerticalAlignment="Center" Spacing="2"><TextBlock Text="{loc:Loc Settings_ForceHaX}" FontSize="11" FontWeight="Normal" TextWrapping="Wrap" VerticalAlignment="Center" /></StackPanel>
                             <ToggleSwitch FontSize="11" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" IsChecked="{Binding ForceHaX}" OnContent="{loc:Loc Common_On}" OffContent="{loc:Loc Common_Off}" AutomationProperties.Name="{loc:Loc Settings_ForceHaX}" ToolTip.Tip="{loc:Loc Settings_ForceHaX_Desc}" />
+                            <StackPanel Grid.Row="4" VerticalAlignment="Center" Spacing="2"><TextBlock Text="{loc:Loc Settings_AllowBattleTowerTeamSwap}" FontSize="11" FontWeight="Normal" TextWrapping="Wrap" VerticalAlignment="Center" /></StackPanel>
+                            <ToggleSwitch FontSize="11" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" IsChecked="{Binding AllowBattleTowerTeamSwap}" OnContent="{loc:Loc Common_On}" OffContent="{loc:Loc Common_Off}" AutomationProperties.Name="{loc:Loc Settings_AllowBattleTowerTeamSwap}" ToolTip.Tip="{loc:Loc Settings_AllowBattleTowerTeamSwap_Desc}" />
                         </Grid>
                     </StackPanel>
                 </Border>

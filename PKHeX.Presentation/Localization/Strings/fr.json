@@ -1806,6 +1806,7 @@
   "PokemonEditor_ColEVs": "EV",
   "PokemonEditor_ClearEvsTooltip": "Effacer tous les EV",
   "PokemonEditor_ColTotal": "Total",
+  "PokemonEditor_Characteristic": "Caractéristique",
   "PokemonEditor_ColMax": "Max",
   "PokemonEditor_ColClear": "Effacer",
   "PokemonEditor_StatHp": "PV",
@@ -2040,6 +2041,8 @@
   "SealStickers8bEditor_ColumnName": "Nom",
   "SealStickers8bEditor_ColumnCount": "Nombre",
   "SealStickers8bEditor_ColumnUnlocked": "Débloqué",
+  "SealStickers8bEditor_ColumnTotal": "Total",
+  "SealStickers8bEditor_ColumnObtained": "Obtenu",
   "SecretBase3Editor_SecretBases": "Bases secrètes",
   "SecretBase3Editor_TrainerInfo": "Infos du dresseur",
   "SecretBase3Editor_Name": "Nom :",
@@ -2108,6 +2111,8 @@
   "TechRecordEditor_Active": "Actif",
   "TechRecordEditor_Type": "Type",
   "TechRecordEditor_Move": "Capacité",
+  "TechRecordEditor_Learned": "Apprise",
+  "TechRecordEditor_Legal": "Légale",
   "TechRecordEditor_GiveAll": "Tout donner",
   "TechRecordEditor_RemoveAll": "Tout retirer",
   "TrainerCard8EditorView_Title": "Carte de dresseur",
@@ -2284,5 +2289,11 @@
   "BoxLayoutEditor_BoxName": "Nom de boîte",
   "BoxLayoutEditor_Wallpaper": "Fond d'écran",
   "BoxLayoutEditor_MoveUp": "Monter la boîte",
-  "BoxLayoutEditor_MoveDown": "Descendre la boîte"
+  "BoxLayoutEditor_MoveDown": "Descendre la boîte",
+  "Settings_AllowBattleTowerTeamSwap": "Autoriser l'échange d'équipe de la Tour de Combat (gén. 3)",
+  "Settings_AllowBattleTowerTeamSwap_Desc": "Accepter l'exploit d'échange d'équipe de la Tour de Combat de Rubis/Saphir lors des contrôles de légalité.",
+  "Pokedex8bEditor_None": "Aucun",
+  "Pokedex8bEditor_HeardOf": "Entendu parler",
+  "Pokedex8bEditor_Seen": "Vu",
+  "Pokedex8bEditor_Caught": "Capturé"
 }

@@ -1806,6 +1806,7 @@
   "PokemonEditor_ColEVs": "EV",
   "PokemonEditor_ClearEvsTooltip": "Cancella tutti gli EV",
   "PokemonEditor_ColTotal": "Totale",
+  "PokemonEditor_Characteristic": "Caratteristica",
   "PokemonEditor_ColMax": "Massimo",
   "PokemonEditor_ColClear": "Cancella",
   "PokemonEditor_StatHp": "PS",
@@ -2040,6 +2041,8 @@
   "SealStickers8bEditor_ColumnName": "Nome",
   "SealStickers8bEditor_ColumnCount": "Conteggio",
   "SealStickers8bEditor_ColumnUnlocked": "Sbloccato",
+  "SealStickers8bEditor_ColumnTotal": "Totale",
+  "SealStickers8bEditor_ColumnObtained": "Ottenuto",
   "SecretBase3Editor_SecretBases": "Basi segrete",
   "SecretBase3Editor_TrainerInfo": "Info allenatore",
   "SecretBase3Editor_Name": "Nome:",
@@ -2108,6 +2111,8 @@
   "TechRecordEditor_Active": "Attivo",
   "TechRecordEditor_Type": "Tipo",
   "TechRecordEditor_Move": "Mossa",
+  "TechRecordEditor_Learned": "Appresa",
+  "TechRecordEditor_Legal": "Legale",
   "TechRecordEditor_GiveAll": "Dai tutto",
   "TechRecordEditor_RemoveAll": "Rimuovi tutto",
   "TrainerCard8EditorView_Title": "Tessera Allenatore",
@@ -2284,5 +2289,11 @@
   "BoxLayoutEditor_BoxName": "Nome box",
   "BoxLayoutEditor_Wallpaper": "Sfondo",
   "BoxLayoutEditor_MoveUp": "Sposta box su",
-  "BoxLayoutEditor_MoveDown": "Sposta box giù"
+  "BoxLayoutEditor_MoveDown": "Sposta box giù",
+  "Settings_AllowBattleTowerTeamSwap": "Consenti cambio squadra Torre Lotta (Gen. 3)",
+  "Settings_AllowBattleTowerTeamSwap_Desc": "Accetta l'exploit del cambio squadra della Torre Lotta di Rubino/Zaffiro durante i controlli di legalità.",
+  "Pokedex8bEditor_None": "Nessuno",
+  "Pokedex8bEditor_HeardOf": "Sentito parlare",
+  "Pokedex8bEditor_Seen": "Visto",
+  "Pokedex8bEditor_Caught": "Catturato"
 }
