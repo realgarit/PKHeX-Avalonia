@@ -112,6 +112,15 @@ public class LegalityAuditTests(ITestOutputHelper output)
 
         vm.SelectedRow = vm.Rows[0];
         Assert.True(vm.CopySelectedReportCommand.CanExecute(null));
+
+        vm.IsRunning = true;
+        Assert.False(vm.ExportCsvCommand.CanExecute(null));
+        Assert.False(vm.ExportTextCommand.CanExecute(null));
+        Assert.False(vm.CopySelectedReportCommand.CanExecute(null));
+        Assert.False(vm.ActivateSelectedRowCommand.CanExecute(null));
+        vm.IsRunning = false;
+
+        Assert.True(vm.CopySelectedReportCommand.CanExecute(null));
         await vm.CopySelectedReportCommand.ExecuteAsync(null);
         Assert.Equal(LocalizedStrings.Instance["LegalityAudit_CopiedSelectedReport"], vm.StatusText);
 

@@ -226,6 +226,7 @@
   "Dialog_RoamerEditor": "徘徊者编辑器",
   "Dialog_OPowerEditor": "O-Power 编辑器",
   "Dialog_ZygardeCellEditor": "基格尔德细胞编辑器",
+  "Dialog_TotemStickerEditor": "霸主贴纸编辑器",
   "Dialog_TeraRaidEditor": "太晶团体战编辑器",
   "Dialog_SevenStarTeraRaidEditor": "七星团体战编辑器",
   "Dialog_FashionEditor": "时装编辑器",
@@ -1117,6 +1118,7 @@
   "MedalEditorView_Grass": "草丛",
   "MedalEditorView_Surf": "冲浪",
   "MedalEditorView_Fish": "钓鱼",
+  "MedalEditorView_SearchWatermark": "按名称、类型或编号搜索奖章...",
   "MemoryEditor_Geolocation": "地理位置",
   "MemoryEditor_CountryRegionData": "国家 / 地区数据",
   "MemoryEditor_CountryId": "国家 ID",
@@ -2237,6 +2239,7 @@
   "ZygardeCellEditor_TotemStickerNone": "无",
   "ZygardeCellEditor_TotemStickerAvailable": "可用",
   "ZygardeCellEditor_TotemStickerReceived": "已收集",
+  "ZygardeCellEditor_ChangesApplyImmediately": "更改会立即应用到当前打开的存档。",
   "BlockEditor_ImportBlockTitle": "导入区块",
   "LegalityAudit_ExportReportsTitle": "导出合法性报告",
   "Link6Editor_ExportLinkDataTitle": "导出联络数据",
@@ -2277,5 +2280,9 @@
   "Update_Error_NeedsAdmin": "更新此安装需要管理员权限，将改为打开下载页面。",
   "Update_Error_SwapFailed": "无法应用更新。当前版本未更改。",
   "Update_Error_Generic": "无法完成更新：{0}",
-  "PokemonEditor_RerollPidTooltip": "重新生成PID"
+  "PokemonEditor_RerollPidTooltip": "重新生成PID",
+  "BoxLayoutEditor_BoxName": "盒子名称",
+  "BoxLayoutEditor_Wallpaper": "壁纸",
+  "BoxLayoutEditor_MoveUp": "上移盒子",
+  "BoxLayoutEditor_MoveDown": "下移盒子"
 }

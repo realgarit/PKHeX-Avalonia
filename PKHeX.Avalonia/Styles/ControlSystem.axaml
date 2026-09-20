@@ -215,6 +215,8 @@
     </Style>
 
     <Style Selector="AutoCompleteBox /template/ TextBox#PART_TextBox">
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(AutomationProperties.Name)}" />
         <Setter Property="Background" Value="{DynamicResource ThemeControlBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlBorderBrush}" />
@@ -256,6 +258,8 @@
          outer focus ring and disabled border read as one deliberate control instead of a clipped
          seam, especially when the spinner is enabled. -->
     <Style Selector="NumericUpDown:not(:disabled) /template/ TextBox#PART_TextBox">
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(AutomationProperties.Name)}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
@@ -265,6 +269,8 @@
     </Style>
 
     <Style Selector="NumericUpDown:disabled /template/ TextBox#PART_TextBox">
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(AutomationProperties.Name)}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
@@ -313,6 +319,8 @@
     </Style>
 
     <Style Selector="CalendarDatePicker /template/ TextBox#PART_TextBox">
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(AutomationProperties.Name)}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />

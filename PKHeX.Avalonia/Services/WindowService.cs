@@ -165,8 +165,10 @@ public sealed class WindowService : IWindowService
         double maxWidth,
         double maxHeight)
     {
-        var minWidth = Math.Min(760, maxWidth);
-        var minHeight = Math.Min(560, maxHeight);
+        // Keep compact editors compact. A broad global minimum made small native dialogs
+        // (notably Daycare and other read-only tools) open with large empty margins.
+        var minWidth = Math.Min(420, maxWidth);
+        var minHeight = Math.Min(300, maxHeight);
         var width = Math.Clamp(double.IsFinite(measuredWidth) && measuredWidth > 0 ? measuredWidth : minWidth, minWidth, maxWidth);
         var height = Math.Clamp(double.IsFinite(measuredHeight) && measuredHeight > 0 ? measuredHeight : minHeight, minHeight, maxHeight);
         return (width, height);

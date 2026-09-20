@@ -43,6 +43,27 @@ public class MedalEditorTests
     }
 
     [Fact]
+    public void Medal_SearchFiltersByNameTypeAndNumberAndClears()
+    {
+        var vm = new MedalEditorViewModel(NewSave());
+
+        vm.MedalSearchText = "First Step";
+        Assert.Single(vm.VisibleMedalRows);
+        Assert.Equal(0, vm.VisibleMedalRows[0].Index);
+
+        vm.MedalSearchText = "Battle";
+        Assert.NotEmpty(vm.VisibleMedalRows);
+        Assert.All(vm.VisibleMedalRows, row => Assert.Contains("Battle", row.Type));
+
+        vm.MedalSearchText = "236";
+        Assert.Single(vm.VisibleMedalRows);
+        Assert.Equal(236, vm.VisibleMedalRows[0].Index);
+
+        vm.MedalSearchText = string.Empty;
+        Assert.Equal(255, vm.VisibleMedalRows.Count);
+    }
+
+    [Fact]
     public void Medal_EditState_WritesThroughToSave()
     {
         var sav = NewSave();

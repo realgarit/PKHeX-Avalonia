@@ -226,6 +226,7 @@
   "Dialog_RoamerEditor": "Éditeur de Pokémon errant",
   "Dialog_OPowerEditor": "Éditeur d'O-Powers",
   "Dialog_ZygardeCellEditor": "Éditeur de cellules de Zygarde",
+  "Dialog_TotemStickerEditor": "Éditeur d'autocollants Totem",
   "Dialog_TeraRaidEditor": "Éditeur de Téra-Raid",
   "Dialog_SevenStarTeraRaidEditor": "Éditeur de Téra-Raid 7 étoiles",
   "Dialog_FashionEditor": "Éditeur de mode",
@@ -1117,6 +1118,7 @@
   "MedalEditorView_Grass": "Herbe",
   "MedalEditorView_Surf": "Surf",
   "MedalEditorView_Fish": "Pêche",
+  "MedalEditorView_SearchWatermark": "Rechercher des médailles par nom, type ou numéro...",
   "MemoryEditor_Geolocation": "Géolocalisation",
   "MemoryEditor_CountryRegionData": "Données de pays / région",
   "MemoryEditor_CountryId": "ID du pays",
@@ -2237,6 +2239,7 @@
   "ZygardeCellEditor_TotemStickerNone": "Aucun",
   "ZygardeCellEditor_TotemStickerAvailable": "Disponible",
   "ZygardeCellEditor_TotemStickerReceived": "Collecté",
+  "ZygardeCellEditor_ChangesApplyImmediately": "Les modifications sont appliquées immédiatement à la sauvegarde ouverte.",
   "BlockEditor_ImportBlockTitle": "Importer le bloc",
   "LegalityAudit_ExportReportsTitle": "Exporter les rapports de légalité",
   "Link6Editor_ExportLinkDataTitle": "Exporter les données de lien",
@@ -2277,5 +2280,9 @@
   "Update_Error_NeedsAdmin": "La mise à jour de cette installation nécessite des droits d'administrateur. Ouverture de la page de téléchargement à la place.",
   "Update_Error_SwapFailed": "La mise à jour n'a pas pu être appliquée. Votre version actuelle est inchangée.",
   "Update_Error_Generic": "La mise à jour n'a pas pu être terminée : {0}",
-  "PokemonEditor_RerollPidTooltip": "Re-générer le PID"
+  "PokemonEditor_RerollPidTooltip": "Re-générer le PID",
+  "BoxLayoutEditor_BoxName": "Nom de boîte",
+  "BoxLayoutEditor_Wallpaper": "Fond d'écran",
+  "BoxLayoutEditor_MoveUp": "Monter la boîte",
+  "BoxLayoutEditor_MoveDown": "Descendre la boîte"
 }

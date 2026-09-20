@@ -36,8 +36,10 @@
         </Border>
 
         <Border DockPanel.Dock="Bottom" Padding="12,8">
-            <TextBlock Text="{Binding StatusText}" Foreground="{DynamicResource ThemeTextMutedBrush}" FontSize="12"
-                       AutomationProperties.Name="{Binding StatusText}" />
+            <TextBlock Name="AuditStatus" Text="{Binding StatusText}" Foreground="{DynamicResource ThemeTextMutedBrush}" FontSize="12"
+                       ToolTip.Tip="{Binding StatusText}"
+                       AutomationProperties.Name="{Binding StatusText}"
+                       AutomationProperties.LiveSetting="Polite" />
         </Border>
 
         <DataGrid Name="AuditGrid" Classes="save-grid database-grid" ItemsSource="{Binding Rows}" SelectedItem="{Binding SelectedRow}"

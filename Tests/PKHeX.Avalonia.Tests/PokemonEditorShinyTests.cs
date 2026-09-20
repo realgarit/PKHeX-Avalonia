@@ -9,6 +9,7 @@ public sealed class PokemonEditorShinyTests
     public void Gen3OriginTransfer_ToggleShinyKeepsPidAndEcSynchronized()
     {
         var save = new SAV6XY();
+        const uint encryptionConstant = 0x87654321;
         var pkm = new PK6
         {
             Species = (ushort)Species.Mew,
@@ -16,9 +17,13 @@ public sealed class PokemonEditorShinyTests
             CurrentLevel = 30,
             TID16 = 0x1111,
             SID16 = 0x2222,
-            PID = 0x12345678,
-            EncryptionConstant = 0x87654321,
+            EncryptionConstant = encryptionConstant,
         };
+        pkm.PID = PK5.GetTransferPID(pkm.EncryptionConstant, pkm.ID32, out _);
+
+        // Start from an actually valid Gen 3-origin transfer relation. A random PID/EC
+        // pair would only test the editor's repair behavior, not the preserved legality path.
+        Assert.Equal(pkm.PID, PK5.GetTransferPID(pkm.EncryptionConstant, pkm.ID32, out _));
 
         var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, save);
         vm.IsShiny = true;

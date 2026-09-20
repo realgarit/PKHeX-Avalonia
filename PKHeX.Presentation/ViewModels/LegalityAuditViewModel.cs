@@ -44,6 +44,10 @@ public partial class LegalityAuditViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RunCommand))]
     [NotifyCanExecuteChangedFor(nameof(CancelCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ExportCsvCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ExportTextCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CopySelectedReportCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ActivateSelectedRowCommand))]
     private bool _isRunning;
 
     [ObservableProperty]
@@ -149,7 +153,7 @@ public partial class LegalityAuditViewModel : ViewModelBase
         RowActivated?.Invoke(SelectedRow!);
     }
 
-    private bool CanActivateSelectedRow() => SelectedRow is not null;
+    private bool CanActivateSelectedRow() => !IsRunning && SelectedRow is not null;
 
     [RelayCommand(CanExecute = nameof(CanExport))]
     private async Task ExportCsvAsync()
@@ -194,8 +198,8 @@ public partial class LegalityAuditViewModel : ViewModelBase
         StatusText = LocalizedStrings.Instance["LegalityAudit_CopiedSelectedReport"];
     }
 
-    private bool CanExport() => Rows.Count > 0;
-    private bool CanCopySelectedReport() => SelectedRow is not null;
+    private bool CanExport() => !IsRunning && Rows.Count > 0;
+    private bool CanCopySelectedReport() => !IsRunning && SelectedRow is not null;
 
     private static readonly (string Header, Func<LegalityAuditRow, object?> Get)[] CsvColumns =
     [

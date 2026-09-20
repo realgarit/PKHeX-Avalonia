@@ -33,14 +33,20 @@
                         <ItemsControl ItemsSource="{Binding Boxes}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="vm:BoxLayoutItemViewModel">
-                                    <Grid ColumnDefinitions="80,*,150" Margin="0,4" VerticalAlignment="Center">
+                                    <Grid ColumnDefinitions="80,*,150,Auto,Auto" Margin="0,4" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding DisplayIndex}" VerticalAlignment="Center" FontWeight="SemiBold" />
-                        <TextBox Grid.Column="1" Text="{Binding Name}" AutomationProperties.Name="Box Name" IsEnabled="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).CanEditNames}" Margin="8,0" />
-                        <ComboBox Grid.Column="2"
+                                        <TextBox Grid.Column="1" Text="{Binding Name}" AutomationProperties.Name="{loc:Loc BoxLayoutEditor_BoxName}" IsEnabled="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).CanEditNames}" Margin="8,0" />
+                                        <ComboBox Grid.Column="2"
                                                   ItemsSource="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).WallpaperNames}"
                                                   SelectedIndex="{Binding Wallpaper}"
                                                   IsEnabled="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).CanEditWallpaper}"
-                                                  AutomationProperties.Name="Wallpaper" />
+                                                  AutomationProperties.Name="{loc:Loc BoxLayoutEditor_Wallpaper}" />
+                                        <Button Grid.Column="3" Content="▲" Command="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).MoveUpCommand}" CommandParameter="{Binding}"
+                                                IsEnabled="{Binding CanMoveUp}" ToolTip.Tip="{loc:Loc BoxLayoutEditor_MoveUp}"
+                                                AutomationProperties.Name="{loc:Loc BoxLayoutEditor_MoveUp}" Padding="8,2" />
+                                        <Button Grid.Column="4" Content="▼" Command="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).MoveDownCommand}" CommandParameter="{Binding}"
+                                                IsEnabled="{Binding CanMoveDown}" ToolTip.Tip="{loc:Loc BoxLayoutEditor_MoveDown}"
+                                                AutomationProperties.Name="{loc:Loc BoxLayoutEditor_MoveDown}" Padding="8,2" />
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

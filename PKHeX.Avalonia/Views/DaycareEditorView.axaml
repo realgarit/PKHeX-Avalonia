@@ -4,7 +4,7 @@
              xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.DaycareEditorView"
              x:DataType="vm:DaycareEditorViewModel"
-             Width="400" Height="350">
+             MinWidth="400" MinHeight="280">
     <DockPanel Margin="16">
         <TextBlock DockPanel.Dock="Top" Text="{loc:Loc DaycareEditorView_Title}" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
 

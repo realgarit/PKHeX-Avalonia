@@ -17,9 +17,9 @@ public sealed class WindowServiceTests
     [Fact]
     public void ClampInitialBoundsProvidesStableMinimumForCompactTabs()
     {
-        var bounds = WindowService.ClampInitialBounds(352, 488, 978, 760);
+        var bounds = WindowService.ClampInitialBounds(352, 288, 978, 760);
 
-        Assert.Equal(760, bounds.Width);
-        Assert.Equal(560, bounds.Height);
+        Assert.Equal(420, bounds.Width);
+        Assert.Equal(300, bounds.Height);
     }
 }

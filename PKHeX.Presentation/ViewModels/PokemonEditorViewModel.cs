@@ -36,8 +36,47 @@ public partial class PokemonEditorViewModel : ViewModelBase
     public string HyperTrainedSpdAutomationName => GetHyperTrainedAutomationName("PokemonEditor_StatSpd");
     public string HyperTrainedSpeAutomationName => GetHyperTrainedAutomationName("PokemonEditor_StatSpe");
 
+    public string HpIvAutomationName => GetStatValueAutomationName("PokemonEditor_StatHp", "PokemonEditor_ColIVs");
+    public string HpEvAutomationName => GetStatValueAutomationName("PokemonEditor_StatHp", "PokemonEditor_ColEVs");
+    public string AtkIvAutomationName => GetStatValueAutomationName("PokemonEditor_StatAtk", "PokemonEditor_ColIVs");
+    public string AtkEvAutomationName => GetStatValueAutomationName("PokemonEditor_StatAtk", "PokemonEditor_ColEVs");
+    public string DefIvAutomationName => GetStatValueAutomationName("PokemonEditor_StatDef", "PokemonEditor_ColIVs");
+    public string DefEvAutomationName => GetStatValueAutomationName("PokemonEditor_StatDef", "PokemonEditor_ColEVs");
+    public string SpaIvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpa", "PokemonEditor_ColIVs");
+    public string SpaEvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpa", "PokemonEditor_ColEVs");
+    public string SpdIvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpd", "PokemonEditor_ColIVs");
+    public string SpdEvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpd", "PokemonEditor_ColEVs");
+    public string SpeIvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpe", "PokemonEditor_ColIVs");
+    public string SpeEvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpe", "PokemonEditor_ColEVs");
+
+    public string Move1AutomationName => GetMoveAutomationName("PokemonEditor_CurrentMoves", 1);
+    public string Move2AutomationName => GetMoveAutomationName("PokemonEditor_CurrentMoves", 2);
+    public string Move3AutomationName => GetMoveAutomationName("PokemonEditor_CurrentMoves", 3);
+    public string Move4AutomationName => GetMoveAutomationName("PokemonEditor_CurrentMoves", 4);
+    public string Pp1AutomationName => GetMoveFieldAutomationName("PokemonEditor_CurrentMoves", "PokemonEditor_Pp", 1);
+    public string Pp2AutomationName => GetMoveFieldAutomationName("PokemonEditor_CurrentMoves", "PokemonEditor_Pp", 2);
+    public string Pp3AutomationName => GetMoveFieldAutomationName("PokemonEditor_CurrentMoves", "PokemonEditor_Pp", 3);
+    public string Pp4AutomationName => GetMoveFieldAutomationName("PokemonEditor_CurrentMoves", "PokemonEditor_Pp", 4);
+    public string PpUps1AutomationName => GetMoveFieldAutomationName("PokemonEditor_CurrentMoves", "PokemonEditor_Ups", 1);
+    public string PpUps2AutomationName => GetMoveFieldAutomationName("PokemonEditor_CurrentMoves", "PokemonEditor_Ups", 2);
+    public string PpUps3AutomationName => GetMoveFieldAutomationName("PokemonEditor_CurrentMoves", "PokemonEditor_Ups", 3);
+    public string PpUps4AutomationName => GetMoveFieldAutomationName("PokemonEditor_CurrentMoves", "PokemonEditor_Ups", 4);
+    public string RelearnMove1AutomationName => GetMoveAutomationName("PokemonEditor_RelearnMoves", 1);
+    public string RelearnMove2AutomationName => GetMoveAutomationName("PokemonEditor_RelearnMoves", 2);
+    public string RelearnMove3AutomationName => GetMoveAutomationName("PokemonEditor_RelearnMoves", 3);
+    public string RelearnMove4AutomationName => GetMoveAutomationName("PokemonEditor_RelearnMoves", 4);
+
     private static string GetHyperTrainedAutomationName(string statKey) =>
         $"{LocalizedStrings.Instance["StatsHyperTrained"]} {LocalizedStrings.Instance[statKey]}";
+
+    private static string GetStatValueAutomationName(string statKey, string valueKey) =>
+        $"{LocalizedStrings.Instance[statKey]} {LocalizedStrings.Instance[valueKey]}";
+
+    private static string GetMoveAutomationName(string sectionKey, int slot) =>
+        $"{LocalizedStrings.Instance[sectionKey]}: {LocalizedStrings.Instance["PokemonEditor_Move"]} {slot}";
+
+    private static string GetMoveFieldAutomationName(string sectionKey, string fieldKey, int slot) =>
+        $"{LocalizedStrings.Instance[sectionKey]}: {LocalizedStrings.Instance[fieldKey]} {slot}";
 
     private void NotifyHyperTrainedAutomationNames()
     {
@@ -47,6 +86,34 @@ public partial class PokemonEditorViewModel : ViewModelBase
         OnPropertyChanged(nameof(HyperTrainedSpaAutomationName));
         OnPropertyChanged(nameof(HyperTrainedSpdAutomationName));
         OnPropertyChanged(nameof(HyperTrainedSpeAutomationName));
+        OnPropertyChanged(nameof(HpIvAutomationName));
+        OnPropertyChanged(nameof(HpEvAutomationName));
+        OnPropertyChanged(nameof(AtkIvAutomationName));
+        OnPropertyChanged(nameof(AtkEvAutomationName));
+        OnPropertyChanged(nameof(DefIvAutomationName));
+        OnPropertyChanged(nameof(DefEvAutomationName));
+        OnPropertyChanged(nameof(SpaIvAutomationName));
+        OnPropertyChanged(nameof(SpaEvAutomationName));
+        OnPropertyChanged(nameof(SpdIvAutomationName));
+        OnPropertyChanged(nameof(SpdEvAutomationName));
+        OnPropertyChanged(nameof(SpeIvAutomationName));
+        OnPropertyChanged(nameof(SpeEvAutomationName));
+        OnPropertyChanged(nameof(Move1AutomationName));
+        OnPropertyChanged(nameof(Move2AutomationName));
+        OnPropertyChanged(nameof(Move3AutomationName));
+        OnPropertyChanged(nameof(Move4AutomationName));
+        OnPropertyChanged(nameof(Pp1AutomationName));
+        OnPropertyChanged(nameof(Pp2AutomationName));
+        OnPropertyChanged(nameof(Pp3AutomationName));
+        OnPropertyChanged(nameof(Pp4AutomationName));
+        OnPropertyChanged(nameof(PpUps1AutomationName));
+        OnPropertyChanged(nameof(PpUps2AutomationName));
+        OnPropertyChanged(nameof(PpUps3AutomationName));
+        OnPropertyChanged(nameof(PpUps4AutomationName));
+        OnPropertyChanged(nameof(RelearnMove1AutomationName));
+        OnPropertyChanged(nameof(RelearnMove2AutomationName));
+        OnPropertyChanged(nameof(RelearnMove3AutomationName));
+        OnPropertyChanged(nameof(RelearnMove4AutomationName));
     }
     
     public IReadOnlyList<ComboItem> GenderList => [

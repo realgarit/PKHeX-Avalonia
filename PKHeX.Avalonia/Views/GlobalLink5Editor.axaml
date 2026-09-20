@@ -43,6 +43,8 @@
                                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="6">
                                     <CalendarDatePicker SelectedDate="{Binding UploadDateValue}"
                                                         SelectedDateFormat="Short"
+                                                        DisplayDateStart="{Binding UploadDateMinimum}"
+                                                        DisplayDateEnd="{Binding UploadDateMaximum}"
                                                         AutomationProperties.Name="{loc:Loc GlobalLink5Editor_UploadDate}" />
                                     <Button Content="{loc:Loc GlobalLink5Editor_ClearUploadDate}"
                                             Command="{Binding ClearUploadDateCommand}"

@@ -226,6 +226,7 @@
   "Dialog_RoamerEditor": "Wanderer-Editor",
   "Dialog_OPowerEditor": "O-Power-Editor",
   "Dialog_ZygardeCellEditor": "Zygarde-Zellen-Editor",
+  "Dialog_TotemStickerEditor": "Totem-Sticker-Editor",
   "Dialog_TeraRaidEditor": "Terakristall-Raid-Editor",
   "Dialog_SevenStarTeraRaidEditor": "7-Sterne-Terakristall-Raid-Editor",
   "Dialog_FashionEditor": "Mode-Editor",
@@ -1117,6 +1118,7 @@
   "MedalEditorView_Grass": "Gras",
   "MedalEditorView_Surf": "Surfen",
   "MedalEditorView_Fish": "Angeln",
+  "MedalEditorView_SearchWatermark": "Medaillen nach Name, Typ oder Nummer suchen ...",
   "MemoryEditor_Geolocation": "Geolokalisierung",
   "MemoryEditor_CountryRegionData": "Land-/Regionsdaten",
   "MemoryEditor_CountryId": "Länder-ID",
@@ -2237,6 +2239,7 @@
   "ZygardeCellEditor_TotemStickerNone": "Keine",
   "ZygardeCellEditor_TotemStickerAvailable": "Verfügbar",
   "ZygardeCellEditor_TotemStickerReceived": "Gesammelt",
+  "ZygardeCellEditor_ChangesApplyImmediately": "Änderungen werden sofort auf den geöffneten Spielstand angewendet.",
   "BlockEditor_ImportBlockTitle": "Block importieren",
   "LegalityAudit_ExportReportsTitle": "Legalitätsberichte exportieren",
   "Link6Editor_ExportLinkDataTitle": "Verbindungsdaten exportieren",
@@ -2277,5 +2280,9 @@
   "Update_Error_NeedsAdmin": "Die Aktualisierung dieser Installation erfordert Administratorrechte. Die Download-Seite wird stattdessen geöffnet.",
   "Update_Error_SwapFailed": "Das Update konnte nicht angewendet werden. Ihre aktuelle Version ist unverändert.",
   "Update_Error_Generic": "Das Update konnte nicht abgeschlossen werden: {0}",
-  "PokemonEditor_RerollPidTooltip": "PID neu würfeln"
+  "PokemonEditor_RerollPidTooltip": "PID neu würfeln",
+  "BoxLayoutEditor_BoxName": "Boxname",
+  "BoxLayoutEditor_Wallpaper": "Hintergrund",
+  "BoxLayoutEditor_MoveUp": "Box nach oben verschieben",
+  "BoxLayoutEditor_MoveDown": "Box nach unten verschieben"
 }

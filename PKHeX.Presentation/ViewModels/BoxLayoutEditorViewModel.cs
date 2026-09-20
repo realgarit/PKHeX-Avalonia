@@ -96,7 +96,7 @@ public partial class BoxLayoutEditorViewModel : ViewModelBase, ICloseableDialog
         {
             var name = _nameReader?.GetBoxName(i) ?? BoxDetailNameExtensions.GetDefaultBoxName(i);
             var wallpaper = _wallpaper?.GetBoxWallpaper(i) ?? 0;
-            Boxes.Add(new BoxLayoutItemViewModel(i, name, wallpaper, OnBoxNameChanged, OnBoxWallpaperChanged));
+            Boxes.Add(new BoxLayoutItemViewModel(i, _working.BoxCount, name, wallpaper, OnBoxNameChanged, OnBoxWallpaperChanged));
         }
     }
 
@@ -125,15 +125,23 @@ public partial class BoxLayoutEditorViewModel : ViewModelBase, ICloseableDialog
     private void Cancel() => CloseRequested?.Invoke();
 
     [RelayCommand]
-    private void MoveUp()
+    private void MoveUp(BoxLayoutItemViewModel? box)
     {
-        // Box reordering is complex (needs to move PKM data too) - skip for now
+        if (box is null || box.Index <= 0)
+            return;
+
+        if (_working.SwapBox(box.Index, box.Index - 1))
+            LoadBoxes();
     }
 
     [RelayCommand]
-    private void MoveDown()
+    private void MoveDown(BoxLayoutItemViewModel? box)
     {
-        // Box reordering is complex - skip for now
+        if (box is null || box.Index >= _working.BoxCount - 1)
+            return;
+
+        if (_working.SwapBox(box.Index, box.Index + 1))
+            LoadBoxes();
     }
 }
 
@@ -142,9 +150,10 @@ public partial class BoxLayoutItemViewModel : ViewModelBase
     private readonly Action<int, string> _onNameChanged;
     private readonly Action<int, int> _onWallpaperChanged;
 
-    public BoxLayoutItemViewModel(int index, string name, int wallpaper, Action<int, string> onNameChanged, Action<int, int> onWallpaperChanged)
+    public BoxLayoutItemViewModel(int index, int boxCount, string name, int wallpaper, Action<int, string> onNameChanged, Action<int, int> onWallpaperChanged)
     {
         Index = index;
+        BoxCount = boxCount;
         _name = name;
         _wallpaper = wallpaper;
         _onNameChanged = onNameChanged;
@@ -152,7 +161,10 @@ public partial class BoxLayoutItemViewModel : ViewModelBase
     }
 
     public int Index { get; }
+    public int BoxCount { get; }
     public string DisplayIndex => $"Box {Index + 1}";
+    public bool CanMoveUp => Index > 0;
+    public bool CanMoveDown => Index < BoxCount - 1;
 
     [ObservableProperty]
     private string _name;
