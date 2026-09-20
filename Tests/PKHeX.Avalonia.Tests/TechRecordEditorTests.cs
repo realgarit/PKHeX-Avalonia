@@ -41,4 +41,33 @@ public sealed class TechRecordEditorTests
 
         Assert.Equal(item.IsActive, records.GetMoveRecordFlag(item.Index));
     }
+
+    [Fact]
+    public void LegendsZaUsesZeroBasedStorageAndOneBasedDisplayIndex()
+    {
+        var pokemon = new PA9 { Species = (ushort)Species.Pikachu, CurrentLevel = 50 };
+        var records = (ITechRecord)pokemon;
+        var vm = new TechRecordEditorViewModel(records, pokemon);
+
+        var item = vm.Records[0];
+        Assert.Equal(0, item.Index);
+        Assert.Equal(1, item.DisplayIndex);
+
+        item.IsActive = true;
+        vm.SaveCommand.Execute(null);
+
+        Assert.True(records.GetMoveRecordFlag(0));
+        Assert.False(records.GetMoveRecordFlag(1));
+    }
+
+    [Fact]
+    public void ForceAllStagesAllSupportedRecords()
+    {
+        var pokemon = CreatePokemon();
+        var vm = new TechRecordEditorViewModel((ITechRecord)pokemon, pokemon);
+
+        vm.ForceAllCommand.Execute(null);
+
+        Assert.All(vm.Records, item => Assert.True(item.IsActive));
+    }
 }

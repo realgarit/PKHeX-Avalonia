@@ -14,6 +14,7 @@ public sealed class RibbonEditorTests
         var vm = new RibbonEditorViewModel(pokemon);
 
         Assert.NotEmpty(vm.Ribbons);
+        Assert.All(vm.Ribbons, ribbon => Assert.False(string.IsNullOrWhiteSpace(ribbon.StatusText)));
         vm.GiveAllCommand.Execute(null);
         vm.CancelCommand.Execute(null);
 

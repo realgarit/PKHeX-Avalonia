@@ -620,6 +620,17 @@
         <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
     </Style>
 
+    <!-- Focus remains visible when the selected slot is also hovered. -->
+    <Style Selector="Button.compact-slot.selected:focus-visible, Button.slot.selected:focus">
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="ZIndex" Value="10" />
+    </Style>
+
+    <Style Selector="Button.slot.selected:focus /template/ Border#PART_Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
+    </Style>
+
     <Style Selector="TextBlock.slot-number">
         <Setter Property="FontSize" Value="9" />
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextMutedBrush}" />

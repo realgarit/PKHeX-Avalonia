@@ -435,6 +435,7 @@ public sealed class ResponsiveShellTests
         Assert.Contains("Button.compact-secondary", theme);
         Assert.Contains("TabControl.compact-editor-tabs", theme);
         Assert.Contains("Button.compact-slot", theme);
+        Assert.Contains("Button.slot.selected:focus", theme);
         Assert.Contains("Window.compact-settings", theme);
         Assert.Contains("Border.compact-party-strip", theme);
     }

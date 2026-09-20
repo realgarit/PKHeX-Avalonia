@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -94,29 +95,94 @@ public partial class SealSticker8bViewModel : ViewModelBase
         _count = item.Count;
         _totalCount = item.TotalCount;
         _isGet = item.IsGet;
+        NormalizeValues();
     }
 
     public int Index => _item.Index;
     public string Name { get; }
     public int MaxValue => SealSticker8b.MaxValue;
 
-    [ObservableProperty]
     private int _count;
-
-    partial void OnCountChanged(int value)
+    public int Count
     {
-        _item.Count = value;
-        if (value > 0 && !IsGet)
-            IsGet = true;
+        get => _count;
+        set
+        {
+            if (SetProperty(ref _count, value))
+                NormalizeValues();
+        }
     }
 
-    [ObservableProperty]
     private int _totalCount;
+    public int TotalCount
+    {
+        get => _totalCount;
+        set
+        {
+            if (SetProperty(ref _totalCount, value))
+                NormalizeValues();
+        }
+    }
 
-    partial void OnTotalCountChanged(int value) => _item.TotalCount = value;
-
-    [ObservableProperty]
     private bool _isGet;
+    public bool IsGet
+    {
+        get => _isGet;
+        set
+        {
+            if (SetProperty(ref _isGet, value))
+            {
+                if (!value)
+                {
+                    _count = 0;
+                    _totalCount = 0;
+                    OnPropertyChanged(nameof(Count));
+                    OnPropertyChanged(nameof(TotalCount));
+                }
+                NormalizeValues();
+            }
+        }
+    }
 
-    partial void OnIsGetChanged(bool value) => _item.IsGet = value;
+    private void NormalizeValues()
+    {
+        var count = Math.Clamp(_count, 0, MaxValue);
+        var totalCount = Math.Clamp(_totalCount, 0, MaxValue);
+        var isGet = _isGet;
+
+        // A held sticker must have a lifetime total at least as large as its current count.
+        if (count > 0)
+        {
+            isGet = true;
+            totalCount = Math.Max(totalCount, count);
+        }
+
+        // Clearing Obtained clears both stored counters. This keeps the three persisted fields
+        // from representing a state the game itself cannot produce.
+        if (!isGet)
+        {
+            count = 0;
+            totalCount = 0;
+        }
+
+        if (_count != count)
+        {
+            _count = count;
+            OnPropertyChanged(nameof(Count));
+        }
+        if (_totalCount != totalCount)
+        {
+            _totalCount = totalCount;
+            OnPropertyChanged(nameof(TotalCount));
+        }
+        if (_isGet != isGet)
+        {
+            _isGet = isGet;
+            OnPropertyChanged(nameof(IsGet));
+        }
+
+        _item.Count = count;
+        _item.TotalCount = totalCount;
+        _item.IsGet = isGet;
+    }
 }

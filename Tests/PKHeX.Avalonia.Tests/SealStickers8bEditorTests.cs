@@ -31,10 +31,28 @@ public sealed class SealStickers8bEditorTests
         vm.SaveCommand.Execute(null);
 
         var saved = sav.SealList.ReadItems()[2];
-        Assert.Equal(7, saved.Count);
-        Assert.Equal(9, saved.TotalCount);
+        Assert.Equal(0, saved.Count);
+        Assert.Equal(0, saved.TotalCount);
         Assert.False(saved.IsGet);
         Assert.True(sav.State.Edited);
+    }
+
+    [Fact]
+    public void CounterEditsKeepCountWithinLifetimeTotal()
+    {
+        var vm = new SealStickers8bEditorViewModel(new SAV8BS());
+        var item = vm.Items[2];
+
+        item.IsGet = true;
+        item.TotalCount = 3;
+        item.Count = 5;
+
+        Assert.Equal(5, item.Count);
+        Assert.Equal(5, item.TotalCount);
+        Assert.True(item.IsGet);
+
+        item.TotalCount = 2;
+        Assert.Equal(5, item.TotalCount);
     }
 
     [Fact]

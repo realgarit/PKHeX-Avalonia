@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -12,6 +13,8 @@ public partial class RibbonItemViewModel : ObservableObject
     private readonly string _propertyName;
     
     public string DisplayName { get; }
+    public string StatusText { get; }
+    public bool HasStatus => !string.IsNullOrEmpty(StatusText);
     public bool IsBooleanRibbon { get; }
     public int MaxCount { get; }
     
@@ -25,7 +28,7 @@ public partial class RibbonItemViewModel : ObservableObject
     [ObservableProperty]
     private string? _iconResource;
     
-    public RibbonItemViewModel(PKM pk, RibbonInfo info)
+    public RibbonItemViewModel(PKM pk, RibbonInfo info, RibbonResult? verification = null)
     {
         _pk = pk;
         _propertyName = info.Name;
@@ -34,6 +37,12 @@ public partial class RibbonItemViewModel : ObservableObject
         DisplayName = GameInfo.Strings.Ribbons.GetNameSafe(info.Name, out var localizedName)
             ? localizedName
             : info.Name.StartsWith("Ribbon") ? info.Name[6..] : info.Name;
+
+        StatusText = verification is null
+            ? LocalizedStrings.Instance["RibbonEditor_Valid"]
+            : verification.Value.IsMissing
+                ? LocalizedStrings.Instance["RibbonEditor_Missing"]
+                : LocalizedStrings.Instance["RibbonEditor_Invalid"];
         
         if (IsBooleanRibbon)
         {
