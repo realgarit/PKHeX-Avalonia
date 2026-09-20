@@ -22,4 +22,4 @@ jobs:
           BODY: ${{ github.event.pull_request.body }}
           LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
           CLASSIFY_TITLE_ONLY: 'true'
-        run: .github/scripts/resolve-release-version.sh
+        run: bash .github/scripts/resolve-release-version.sh
