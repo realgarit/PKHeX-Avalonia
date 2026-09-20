@@ -72,7 +72,7 @@ Use **Tools**, or **Ctrl+K** to search the tool launcher. The tool catalog refle
 
 ### Desktop experience
 
-- Light, Dark, High Contrast, and System themes, switchable at runtime.
+- Light and Dark themes, switchable at runtime from the top bar or Settings.
 - Nine interface languages: English, German, Spanish, French, Italian, Japanese, Korean, Simplified Chinese, and Traditional Chinese. Switch through **Help → Language**.
 - Compact and comfortable density settings, a resizable shell, and Pokémon, Save, and Reports workspaces.
 - Keyboard navigation, contextual accessible control names, and visible focus. See [accessibility and shortcuts](docs/accessibility.md).
