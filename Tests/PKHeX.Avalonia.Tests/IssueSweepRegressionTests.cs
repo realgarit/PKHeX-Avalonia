@@ -21,10 +21,8 @@ public sealed class IssueSweepRegressionTests
     [AvaloniaFact]
     public void SecretBase6_ComposesWithProductionBooleanResource()
     {
-        var view = new SecretBase6Editor
-        {
-            DataContext = new SecretBase6EditorViewModel(new SAV6AO()),
-        };
+        var viewModel = new SecretBase6EditorViewModel(new SAV6AO());
+        var view = Assert.IsType<SecretBase6Editor>(PKHeX.Avalonia.ViewLocator.Build(viewModel));
         var window = Show(view, 900, 700);
         try
         {
@@ -61,7 +59,7 @@ public sealed class IssueSweepRegressionTests
                     .OrderBy(y => y)
                     .ToArray();
 
-            Assert.Equal(6, yPositions.Length);
+                Assert.Equal(6, yPositions.Length);
                 var distinctRows = yPositions
                     .Select(y => Math.Round(y, 1))
                     .Distinct()
@@ -90,7 +88,7 @@ public sealed class IssueSweepRegressionTests
         {
             var pokeBlockGrid = Assert.Single(pokeBlockView.GetVisualDescendants().OfType<DataGrid>());
             Assert.Equal(9, pokeBlockGrid.Columns.Count);
-            Assert.All(pokeBlockGrid.Columns, column => Assert.True(column.Width.Value >= 72, $"Pokéblock column measured/configured at {column.Width.Value}px."));
+            Assert.All(pokeBlockGrid.Columns, column => Assert.True(column.Width.IsSizeToHeader || column.Width.Value >= 72, $"Pokéblock column does not reserve a safe header width: {column.Width}."));
         }
         finally
         {
@@ -106,7 +104,7 @@ public sealed class IssueSweepRegressionTests
         {
             var poffinGrid = Assert.Single(poffinView.GetVisualDescendants().OfType<DataGrid>());
             Assert.Equal(9, poffinGrid.Columns.Count);
-            Assert.All(poffinGrid.Columns, column => Assert.True(column.Width.Value >= 72, $"Poffin column measured/configured at {column.Width.Value}px."));
+            Assert.All(poffinGrid.Columns, column => Assert.True(column.Width.IsSizeToHeader || column.Width.Value >= 72, $"Poffin column does not reserve a safe header width: {column.Width}."));
         }
         finally
         {
@@ -144,11 +142,15 @@ public sealed class IssueSweepRegressionTests
     {
         var save = new SAV8SWSH { Badges = 8 };
         var viewModel = new TrainerEditorViewModel(save);
+        var unchanged = save.Data.ToArray();
 
         Assert.True(viewModel.HasBadges);
         Assert.True(viewModel.IsBadgeCount);
         Assert.Empty(viewModel.Badges);
         Assert.Equal(8, viewModel.BadgeCount);
+
+        viewModel.SaveCommand.Execute(null);
+        Assert.Equal(unchanged, save.Data.ToArray());
 
         for (var count = 0; count <= viewModel.MaxBadgeCount; count++)
         {
@@ -181,6 +183,28 @@ public sealed class IssueSweepRegressionTests
         Assert.Equal(54_321u, legacyViewModel.DisplaySid);
         Assert.Equal(65_535u, legacyViewModel.MaxDisplayTid);
         Assert.Equal(65_535u, legacyViewModel.MaxDisplaySid);
+
+        foreach (var additional in new SaveFile[] { new SAV7SM(), new SAV8LA(), new SAV9SV(), new SAV9ZA() })
+        {
+            additional.ID32 = 2_287_321_660;
+            var additionalViewModel = new TrainerEditorViewModel(additional);
+            Assert.Equal(321_660u, additionalViewModel.DisplayTid);
+            Assert.Equal(2_287u, additionalViewModel.DisplaySid);
+        }
+    }
+
+    [Fact]
+    public void TrainerEditor_RejectsAnUnrepresentableModernIdPair()
+    {
+        var save = new SAV8SWSH { ID32 = 0 };
+        var viewModel = new TrainerEditorViewModel(save)
+        {
+            DisplayTid = 999_999,
+            DisplaySid = 4_294,
+        };
+
+        Assert.False(viewModel.SaveCommand.CanExecute(null));
+        Assert.Equal(0u, save.ID32);
     }
 
     [Fact]
@@ -266,6 +290,69 @@ public sealed class IssueSweepRegressionTests
     }
 
     [AvaloniaFact]
+    public void HallOfFame7_USUM_CancelPreservesStarterAndActionsExposeKeyboardSemantics()
+    {
+        var save = new SAV7USUM();
+        var before = save.Data.ToArray();
+        var viewModel = new HallOfFame7EditorViewModel(save);
+        viewModel.FirstEntries[0].SelectedSpecies = 25;
+        viewModel.CurrentEntries[0].SelectedSpecies = 6;
+        viewModel.StarterEc = "DEADBEEF";
+        viewModel.CancelCommand.Execute(null);
+
+        Assert.Equal(before, save.Data.ToArray());
+
+        var view = new HallOfFame7Editor { DataContext = new HallOfFame7EditorViewModel(save) };
+        var window = Show(view, 900, 700);
+        try
+        {
+            var actions = view.GetVisualDescendants().OfType<Button>().ToArray();
+            Assert.Contains(actions, button => button.IsCancel);
+            Assert.Contains(actions, button => button.IsDefault);
+        }
+        finally
+        {
+            window.Close();
+        }
+
+        var committedSave = new SAV7USUM();
+        var committedViewModel = new HallOfFame7EditorViewModel(committedSave);
+        var committedBefore = committedSave.Data.ToArray();
+        committedViewModel.FirstEntries[0].SelectedSpecies = 25;
+        committedViewModel.CurrentEntries[0].SelectedSpecies = 6;
+        committedViewModel.StarterEc = "DEADBEEF";
+        committedViewModel.SaveCommand.Execute(null);
+        Assert.NotEqual(committedBefore, committedSave.Data.ToArray());
+    }
+
+    [Fact]
+    public void EmptyRecordCommandsAreDisabled()
+    {
+        var hallOfFame = new HallOfFame1EditorViewModel(new SAV1());
+        hallOfFame.ClearAllCommand.Execute(null);
+        hallOfFame.SelectedTeam = hallOfFame.Teams[1];
+        Assert.False(hallOfFame.DeleteTeamCommand.CanExecute(null));
+
+        var mail = new MailBoxEditorViewModel(new SAV2());
+        mail.SelectedMail = mail.PartyMail[0];
+        Assert.False(mail.DeleteMailCommand.CanExecute(null));
+
+        var detail = new Mail2(new SAV2(), 0) { MailType = 0x9E, AuthorName = "Ash" };
+        var occupied = new MailEntryViewModel(0, detail, isParty: true);
+        mail.SelectedMail = null;
+        mail.PartyMail[0] = occupied;
+        mail.SelectedMail = occupied;
+        Assert.True(mail.DeleteMailCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public void Gen3HallOfFameExposesAnExplicitEmptyState()
+    {
+        var viewModel = new HallOfFame3EditorViewModel(new SAV3E());
+        Assert.False(viewModel.HasEntries);
+    }
+
+    [AvaloniaFact]
     public void Gen4MenuDoesNotAdvertiseUnsupportedRoamerEditor()
     {
         using var app = new HeadlessAppFixture();
@@ -288,6 +375,7 @@ public sealed class IssueSweepRegressionTests
         Capture(new PokeBlock3CaseEditorView { DataContext = new PokeBlock3CaseEditorViewModel(new SAV3E()) }, "issue-pokeblock-case.png", 1000, 500, directory);
         Capture(new PoffinCaseEditorView { DataContext = new PoffinCaseEditorViewModel(new SAV4DP()) }, "issue-poffin-case.png", 1000, 500, directory);
         Capture(new SecretBase6Editor { DataContext = new SecretBase6EditorViewModel(new SAV6AO()) }, "issue-secret-base6.png", 900, 700, directory);
+        Capture(new HallOfFame3EditorView { DataContext = new HallOfFame3EditorViewModel(new SAV3E()) }, "issue-hall-of-fame3-empty.png", 600, 500, directory);
         Capture(new HallOfFame7Editor { DataContext = new HallOfFame7EditorViewModel(new SAV7SM()) }, "issue-hall-of-fame7.png", 900, 700, directory);
         Capture(new TrainerEditor { DataContext = new TrainerEditorViewModel(new SAV8SWSH()) }, "issue-trainer-swsh.png", 900, 700, directory);
     }

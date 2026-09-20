@@ -51,25 +51,19 @@ public sealed class AppSettings : IProgramSettings
         if (!string.IsNullOrEmpty(DisplayLanguage))
             GameInfo.CurrentLanguage = DisplayLanguage;
 
-        // Core owns several of these settings behind protected static setters. Use its public
-        // startup seam so the Avalonia host applies the complete persisted configuration without
-        // reaching into Core through reflection. The adapter keeps MGDB refresh opt-in: startup
-        // initialization must not start a background database refresh merely because the settings
-        // screen was saved.
-        StartupUtil.ReloadSettings(new CoreInitializationSettings(this));
-    }
+        SaveFile.SetUpdateDex = SlotWrite.SetUpdateDex ? EntityImportOption.Enable : EntityImportOption.Disable;
+        SaveFile.SetUpdatePKM = SlotWrite.SetUpdatePKM ? EntityImportOption.Enable : EntityImportOption.Disable;
+        SaveFile.SetUpdateRecords = SlotWrite.SetUpdateRecords ? EntityImportOption.Enable : EntityImportOption.Disable;
+        CommonEdits.ShowdownSetIVMarkings = Import.ApplyMarkings;
+        CommonEdits.ShowdownSetBehaviorNature = Import.ApplyStatAlignment;
+        SaveLanguage.Apply();
+        ParseSettings.Initialize(Legality);
 
-    private sealed class CoreInitializationSettings(AppSettings source) : IProgramSettings
-    {
-        public IStartupSettings Startup => source.Startup;
-        public BackupSettings Backup => source.Backup;
-        public SaveLanguageSettings SaveLanguage => source.SaveLanguage;
-        public SlotWriteSettings SlotWrite => source.SlotWrite;
-        public SetImportSettings Import => source.Import;
-        public LegalitySettings Legality => source.Legality;
-        public EntityConverterSettings Converter => source.Converter;
-
-        public LocalResourceSettings LocalResources { get; } = new() { MGDatabasePath = string.Empty };
+        EntityConverter.AllowIncompatibleConversion = Converter.AllowIncompatibleConversion;
+        EntityConverter.RejuvenateHOME              = Converter.AllowGuessRejuvenateHOME;
+        EntityConverter.VirtualConsoleSourceGen1    = Converter.VirtualConsoleSourceGen1;
+        EntityConverter.VirtualConsoleSourceGen2    = Converter.VirtualConsoleSourceGen2;
+        EntityConverter.RetainMetDateTransfer45     = Converter.RetainMetDateTransfer45;
     }
 
     /// <summary>

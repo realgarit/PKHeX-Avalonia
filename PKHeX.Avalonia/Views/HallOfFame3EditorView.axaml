@@ -21,7 +21,14 @@
                     HorizontalAlignment="Center" Margin="0,12,0,0" Padding="16,8" />
 
             <!-- Entries List -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <TextBlock IsVisible="{Binding !HasEntries}"
+                       Text="{loc:Loc HallOfFame3EditorView_Empty}"
+                       Foreground="{DynamicResource ThemeTextSecondaryBrush}"
+                       FontStyle="Italic"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+
+            <ScrollViewer IsVisible="{Binding HasEntries}" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Entries}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="vm:HallOfFame3EntryViewModel">

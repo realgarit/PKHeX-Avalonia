@@ -51,6 +51,10 @@
                                         <NumericUpDown Value="{Binding DisplaySid}" Minimum="0" Maximum="{Binding MaxDisplaySid}" FormatString="{Binding DisplaySidFormat}" ShowButtonSpinner="False" AutomationProperties.Name="SID" />
                                     </StackPanel>
                                 </Grid>
+                                <TextBlock Text="{loc:Loc TrainerEditor_InvalidTrainerId}"
+                                           IsVisible="{Binding !IsDisplayIdValid}"
+                                           Foreground="{DynamicResource ThemeErrorBrush}"
+                                           TextWrapping="Wrap" />
                             </StackPanel>
                         </Border>
 
