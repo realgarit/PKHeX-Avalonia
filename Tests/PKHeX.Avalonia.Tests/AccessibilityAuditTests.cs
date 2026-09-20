@@ -93,6 +93,33 @@ public class AccessibilityAuditTests
             string.Join("\n", violations));
     }
 
+    [Fact]
+    public void PokemonEditor_BoundFormControlsHaveAutomationNames()
+    {
+        var repoRoot = FindRepoRoot();
+        var path = Path.Combine(repoRoot, "PKHeX.Avalonia", "Views", "PokemonEditor.axaml");
+        var xml = File.ReadAllText(path);
+        var violations = new List<string>();
+
+        foreach (var tag in new[] { "ComboBox", "controls:FilterableComboBox", "TextBox", "NumericUpDown", "CalendarDatePicker", "CheckBox" })
+        {
+            var pattern = new Regex($"(?s)<{Regex.Escape(tag)}\\b(?:(?!>).)*>", RegexOptions.Compiled);
+            foreach (Match match in pattern.Matches(xml))
+            {
+                var openingTag = match.Value;
+                if (openingTag.Contains("Binding", StringComparison.Ordinal) &&
+                    !AutomationNamePattern.IsMatch(openingTag))
+                {
+                    violations.Add(openingTag.Replace('\n', ' ').Replace('\r', ' ').Trim());
+                }
+            }
+        }
+
+        Assert.True(violations.Count == 0,
+            "Bound Pokémon editor form controls must expose AutomationProperties.Name:\n" +
+            string.Join("\n", violations));
+    }
+
     /// <summary>
     /// Fails if the allowlist accumulates stale entries for controls that no longer
     /// match the violation pattern (e.g. because someone already fixed them without

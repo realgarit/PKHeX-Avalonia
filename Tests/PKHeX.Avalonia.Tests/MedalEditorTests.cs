@@ -31,6 +31,18 @@ public class MedalEditorTests
     }
 
     [Fact]
+    public void Medal_RowsExposeLocalizedInGameNamesAcrossCategories()
+    {
+        var vm = new MedalEditorViewModel(NewSave());
+
+        Assert.Equal("First Step", vm.MedalRows[0].Name);
+        Assert.Equal("Light Walker", vm.MedalRows[7].Name);
+        Assert.Equal("Battle Learner", vm.MedalRows[105].Name);
+        Assert.Equal("Talented Cast Member", vm.MedalRows[167].Name);
+        Assert.Equal("Normal-type Champ", vm.MedalRows[236].Name);
+    }
+
+    [Fact]
     public void Medal_EditState_WritesThroughToSave()
     {
         var sav = NewSave();

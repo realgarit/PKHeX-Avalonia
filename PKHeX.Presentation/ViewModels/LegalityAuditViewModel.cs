@@ -29,9 +29,13 @@ public partial class LegalityAuditViewModel : ViewModelBase
     private CancellationTokenSource? _cts;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ExportCsvCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ExportTextCommand))]
     private ObservableCollection<LegalityAuditRow> _rows = [];
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CopySelectedReportCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ActivateSelectedRowCommand))]
     private LegalityAuditRow? _selectedRow;
 
     [ObservableProperty]
@@ -135,16 +139,19 @@ public partial class LegalityAuditViewModel : ViewModelBase
         }
 
         Rows = new ObservableCollection<LegalityAuditRow>(filtered);
+        if (SelectedRow is not null && !Rows.Contains(SelectedRow))
+            SelectedRow = null;
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanActivateSelectedRow))]
     private void ActivateSelectedRow()
     {
-        if (SelectedRow is not null)
-            RowActivated?.Invoke(SelectedRow);
+        RowActivated?.Invoke(SelectedRow!);
     }
 
-    [RelayCommand]
+    private bool CanActivateSelectedRow() => SelectedRow is not null;
+
+    [RelayCommand(CanExecute = nameof(CanExport))]
     private async Task ExportCsvAsync()
     {
         var path = await _dialogService.SaveFileAsync("Export Legality Audit", "LegalityAudit.csv");
@@ -162,7 +169,7 @@ public partial class LegalityAuditViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanExport))]
     private async Task ExportTextAsync()
     {
         var path = await _dialogService.SaveFileAsync(LocalizedStrings.Instance["LegalityAudit_ExportReportsTitle"], "LegalityAudit.txt");
@@ -180,14 +187,15 @@ public partial class LegalityAuditViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanCopySelectedReport))]
     private async Task CopySelectedReportAsync()
     {
-        if (SelectedRow is null)
-            return;
-
-        await _dialogService.SetClipboardTextAsync(SelectedRow.ReportText);
+        await _dialogService.SetClipboardTextAsync(SelectedRow!.ReportText);
+        StatusText = LocalizedStrings.Instance["LegalityAudit_CopiedSelectedReport"];
     }
+
+    private bool CanExport() => Rows.Count > 0;
+    private bool CanCopySelectedReport() => SelectedRow is not null;
 
     private static readonly (string Header, Func<LegalityAuditRow, object?> Get)[] CsvColumns =
     [

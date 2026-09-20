@@ -35,8 +35,8 @@ public sealed class WindowService : IWindowService
             SizeToContent = isSettings ? SizeToContent.Manual : SizeToContent.WidthAndHeight,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
             CanResize = true,
-            MaxWidth = isSettings ? 620 : 1400,
-            MaxHeight = 820,
+            MaxWidth = isSettings ? 620 : GetMaxWindowWidth(owner),
+            MaxHeight = isSettings ? 820 : GetToolMaxHeight(owner),
         };
 
         if (isSettings)
@@ -45,6 +45,10 @@ public sealed class WindowService : IWindowService
             dialog.Height = 492;
             dialog.MinWidth = 390;
             dialog.MinHeight = 420;
+        }
+        else
+        {
+            StabilizeInitialBounds(dialog);
         }
 
         if (viewModel is ICloseableDialog closeable)
@@ -72,7 +76,7 @@ public sealed class WindowService : IWindowService
             Title = title,
             Content = ViewLocator.Build(viewModel),
             CanResize = true,
-            MaxWidth = 1400,
+            MaxWidth = GetMaxWindowWidth(owner),
             MaxHeight = maxToolHeight,
         };
 
@@ -87,6 +91,7 @@ public sealed class WindowService : IWindowService
         {
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             window.SizeToContent = SizeToContent.WidthAndHeight;
+            StabilizeInitialBounds(window);
         }
 
         if (viewModel is ICloseableDialog closeable)
@@ -127,5 +132,43 @@ public sealed class WindowService : IWindowService
         // Leave room for the native title bar and a small work-area margin. Without this,
         // SizeToContent tools can consume the full working area and clip their close button.
         return Math.Max(420, workingHeight - 48);
+    }
+
+    private static double GetMaxWindowWidth(Window owner)
+    {
+        var screen = owner.Screens.ScreenFromWindow(owner) ?? owner.Screens.Primary;
+        if (screen is null)
+            return 1200;
+
+        var scaling = owner.RenderScaling > 0 ? owner.RenderScaling : 1;
+        var workingWidth = screen.WorkingArea.Width / scaling;
+        return Math.Clamp(workingWidth - 48, 620, 1200);
+    }
+
+    private static void StabilizeInitialBounds(Window window)
+    {
+        window.Opened += (_, _) =>
+        {
+            var measuredWidth = double.IsFinite(window.Width) && window.Width > 0 ? window.Width : window.Bounds.Width;
+            var measuredHeight = double.IsFinite(window.Height) && window.Height > 0 ? window.Height : window.Bounds.Height;
+            var (width, height) = ClampInitialBounds(measuredWidth, measuredHeight, window.MaxWidth, window.MaxHeight);
+
+            window.Width = width;
+            window.Height = height;
+            window.SizeToContent = SizeToContent.Manual;
+        };
+    }
+
+    internal static (double Width, double Height) ClampInitialBounds(
+        double measuredWidth,
+        double measuredHeight,
+        double maxWidth,
+        double maxHeight)
+    {
+        var minWidth = Math.Min(760, maxWidth);
+        var minHeight = Math.Min(560, maxHeight);
+        var width = Math.Clamp(double.IsFinite(measuredWidth) && measuredWidth > 0 ? measuredWidth : minWidth, minWidth, maxWidth);
+        var height = Math.Clamp(double.IsFinite(measuredHeight) && measuredHeight > 0 ? measuredHeight : minHeight, minHeight, maxHeight);
+        return (width, height);
     }
 }

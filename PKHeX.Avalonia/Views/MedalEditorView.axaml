@@ -72,6 +72,7 @@
                                       MinHeight="320">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="48" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="{loc:Loc GlobalLink5Editor_Name}" Binding="{Binding Name}" Width="*" IsReadOnly="True" />
                                     <DataGridTextColumn Header="{loc:Loc MedalEditorView_Type}" Binding="{Binding Type}" Width="120" IsReadOnly="True" />
                                     <DataGridTemplateColumn Header="{loc:Loc MedalEditorView_State}" Width="160">
                                         <DataGridTemplateColumn.CellTemplate>

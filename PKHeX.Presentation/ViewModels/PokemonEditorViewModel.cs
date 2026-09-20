@@ -488,9 +488,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     {
         if (_isLoading) return;
         if (value) _pk.SetShiny(); else _pk.SetUnshiny();
-        _isLoading = true;
-        Pid = _pk.PID.ToString("X8");
-        _isLoading = false;
+        SyncPidFieldsFromEntity();
         UpdateSprite();
         Validate();
     }
@@ -697,8 +695,18 @@ public partial class PokemonEditorViewModel : ViewModelBase
     {
         _pk.Species = (ushort)Species;
         _pk.Form = (byte)Form;
-        if (IsShiny) _pk.SetShiny(); else _pk.SetUnshiny();
+        if (IsShiny && !_pk.IsShiny) _pk.SetShiny();
+        else if (!IsShiny && _pk.IsShiny) _pk.SetUnshiny();
+        SyncPidFieldsFromEntity();
         Sprite = _spriteRenderer.GetSprite(_pk);
+    }
+
+    private void SyncPidFieldsFromEntity()
+    {
+        _isLoading = true;
+        Pid = _pk.PID.ToString("X8");
+        EncryptionConstant = _pk.EncryptionConstant.ToString("X8");
+        _isLoading = false;
     }
 
     private void UpdateTitle()
@@ -748,9 +756,9 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _pk.Gender = (byte)Gender;
         _pk.IsEgg = IsEgg;
 
-        if (IsShiny)
+        if (IsShiny && !_pk.IsShiny)
             _pk.SetShiny();
-        else
+        else if (!IsShiny && _pk.IsShiny)
             _pk.SetUnshiny();
 
         _pk.Move1 = (ushort)Move1;

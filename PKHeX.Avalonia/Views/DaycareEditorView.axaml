@@ -15,6 +15,11 @@
 
         <!-- Daycare Content -->
         <StackPanel IsVisible="{Binding HasDaycare}" Spacing="12">
+            <Border IsVisible="{Binding IsReadOnly}" Classes="editor-section-padded">
+                <TextBlock Text="{loc:Loc DaycareEditorView_ReadOnly}" TextWrapping="Wrap"
+                           Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+            </Border>
+
             <!-- Egg Available Toggle -->
             <Border IsVisible="{Binding HasEggState}" Classes="editor-section-padded">
                 <CheckBox Content="{loc:Loc DaycareEditorView_EggAvailable}" IsChecked="{Binding IsEggAvailable}" />
@@ -28,6 +33,7 @@
                             <Grid ColumnDefinitions="Auto,*,Auto">
                                 <Image Grid.Column="0" Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}" Width="56" Height="48" Margin="0,0,12,0" />
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock Text="{Binding Location}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
                                     <TextBlock Text="{Binding Species}" FontWeight="SemiBold" />
                                     <TextBlock Text="{Binding Level}" FontSize="12" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
                                 </StackPanel>

@@ -3,6 +3,7 @@ using Moq;
 using PKHeX.Application.UseCases;
 using PKHeX.Avalonia.Tests.Fixtures;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 using PKHeX.Presentation.ViewModels;
 using Xunit.Abstractions;
 
@@ -87,6 +88,36 @@ public class LegalityAuditTests(ITestOutputHelper output)
         var entries = useCase.Execute(sav);
 
         Assert.Empty(entries);
+    }
+
+    [AvaloniaFact]
+    public async Task Commands_ReflectAuditAndSelectionState()
+    {
+        var emptyVm = new LegalityAuditViewModel(new SAV3E(), _dialogServiceMock.Object);
+        Assert.False(emptyVm.ExportCsvCommand.CanExecute(null));
+        Assert.False(emptyVm.ExportTextCommand.CanExecute(null));
+        Assert.False(emptyVm.CopySelectedReportCommand.CanExecute(null));
+
+        var sav = new SAV3E();
+        var pk = new PK3 { Species = (ushort)Species.Mudkip, CurrentLevel = 5 };
+        pk.RefreshChecksum();
+        sav.SetBoxSlotAtIndex(pk, 0, 0);
+        var vm = new LegalityAuditViewModel(sav, _dialogServiceMock.Object);
+        await vm.RunCommand.ExecuteAsync(null);
+
+        Assert.NotEmpty(vm.Rows);
+        Assert.True(vm.ExportCsvCommand.CanExecute(null));
+        Assert.True(vm.ExportTextCommand.CanExecute(null));
+        Assert.False(vm.CopySelectedReportCommand.CanExecute(null));
+
+        vm.SelectedRow = vm.Rows[0];
+        Assert.True(vm.CopySelectedReportCommand.CanExecute(null));
+        await vm.CopySelectedReportCommand.ExecuteAsync(null);
+        Assert.Equal(LocalizedStrings.Instance["LegalityAudit_CopiedSelectedReport"], vm.StatusText);
+
+        vm.VerdictFilter = vm.Rows[0].Valid ? "Illegal" : "Legal";
+        Assert.Null(vm.SelectedRow);
+        Assert.False(vm.CopySelectedReportCommand.CanExecute(null));
     }
 
     [AvaloniaFact]
