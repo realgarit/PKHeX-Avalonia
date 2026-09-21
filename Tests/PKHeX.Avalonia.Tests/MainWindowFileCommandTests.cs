@@ -71,4 +71,22 @@ public sealed class MainWindowFileCommandTests
             catch { /* best effort */ }
         }
     }
+
+    [AvaloniaFact]
+    public async Task SaveFileChangedRaisedOffUiThread_MarshalsEditorBuildToUiThread()
+    {
+        using var app = new HeadlessAppFixture();
+        var save = BlankSaveFile.Get(GameVersion.SL);
+
+        // Native file pickers are allowed to resume their continuation off the UI thread. The
+        // production gateway therefore may raise SaveFileChanged from a worker too.
+        await Task.Run(() => app.Gateway.OpenLoadedSave(save, "worker.main"));
+
+        app.PumpUntil(
+            () => app.ViewModel.HasSave && app.ViewModel.BoxViewer is not null,
+            because: "save-change notification to be applied on the Avalonia UI thread");
+
+        Assert.Same(save, app.Save);
+        Assert.Empty(app.Dialogs.Errors);
+    }
 }
