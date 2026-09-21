@@ -231,7 +231,11 @@ public partial class MainWindowViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Send(new LanguageChangedMessage(_languageService.CurrentLanguage));
     }
 
-    private void OnSaveFileChanged(SaveFile? sav)
+    // Native file-picker continuations may complete off the UI thread. The adoption path raises
+    // bound command notifications and constructs UI-facing ViewModels, so marshal it as a unit.
+    private void OnSaveFileChanged(SaveFile? sav) => PostToUi(() => ApplySaveFileChanged(sav));
+
+    private void ApplySaveFileChanged(SaveFile? sav)
     {
         ActiveWorkspace = MainWorkspace.Pokemon;
         SelectedWorkspaceIndex = 0;
