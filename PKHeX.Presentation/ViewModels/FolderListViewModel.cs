@@ -4,26 +4,29 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PKHeX.Application.Abstractions;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class FolderListViewModel : ViewModelBase
+public partial class FolderListViewModel : ViewModelBase, ICloseableDialog, IDisposable
 {
     private readonly ISaveFileGateway _saveFileService;
     private readonly AppSettings _settings;
     private readonly IDialogService _dialogService;
-    private readonly CancellationTokenSource _cts = new();
+    private CancellationTokenSource _scanCts = new();
 
-    [ObservableProperty]
-    private ObservableCollection<SaveFilePreviewViewModel> _recentSaves = [];
+    public ObservableCollection<SaveFilePreviewViewModel> RecentSaves { get; } = [];
+    public ObservableCollection<SaveFilePreviewViewModel> FilteredRecentSaves { get; } = [];
 
-    [ObservableProperty]
-    private ObservableCollection<SaveFilePreviewViewModel> _backupSaves = [];
+    public ObservableCollection<SaveFilePreviewViewModel> BackupSaves { get; } = [];
+    public ObservableCollection<SaveFilePreviewViewModel> FilteredBackupSaves { get; } = [];
 
     [ObservableProperty]
     private SaveFilePreviewViewModel? _selectedRecentSave;
@@ -35,30 +38,56 @@ public partial class FolderListViewModel : ViewModelBase
     private bool _isLoading;
 
     [ObservableProperty]
-    private string _statusText = "Ready";
+    private string _statusText = LocalizedStrings.Instance["FolderList_Ready"];
     
     // Filter
     [ObservableProperty]
     private string _filterText = string.Empty;
 
-    public FolderListViewModel(ISaveFileGateway saveFileService, AppSettings settings, IDialogService dialogService)
+    public Action? CloseRequested { get; set; }
+
+    public FolderListViewModel(ISaveFileGateway saveFileService, AppSettings settings, IDialogService dialogService, bool loadOnConstruct = true)
     {
         _saveFileService = saveFileService;
         _settings = settings;
         _dialogService = dialogService;
 
-        LoadSavesAsync();
+        if (loadOnConstruct)
+            _ = LoadSavesAsync(_scanCts.Token);
     }
 
     partial void OnFilterTextChanged(string value)
+        => ApplyFilter();
+
+    private void ApplyFilter()
     {
-        // TODO: Implement filtering
+        var filter = FilterText.Trim();
+        FilteredRecentSaves.Clear();
+        FilteredBackupSaves.Clear();
+
+        foreach (var save in RecentSaves.Where(x => MatchesFilter(x, filter)))
+            FilteredRecentSaves.Add(save);
+        foreach (var save in BackupSaves.Where(x => MatchesFilter(x, filter)))
+            FilteredBackupSaves.Add(save);
     }
 
-    private async void LoadSavesAsync()
+    private static bool MatchesFilter(SaveFilePreviewViewModel save, string filter)
+    {
+        if (filter.Length == 0)
+            return true;
+
+        return save.FileName.Contains(filter, StringComparison.OrdinalIgnoreCase)
+            || save.FilePath.Contains(filter, StringComparison.OrdinalIgnoreCase)
+            || save.Version.Contains(filter, StringComparison.OrdinalIgnoreCase)
+            || save.TrainerName.Contains(filter, StringComparison.OrdinalIgnoreCase)
+            || save.PlayTime.Contains(filter, StringComparison.OrdinalIgnoreCase)
+            || save.BadgeCount.Contains(filter, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task LoadSavesAsync(CancellationToken cancellationToken)
     {
         IsLoading = true;
-        StatusText = "Scanning for save files...";
+        StatusText = LocalizedStrings.Instance["FolderList_Scanning"];
 
         try
         {
@@ -71,58 +100,138 @@ public partial class FolderListViewModel : ViewModelBase
             {
                 // 1. Recent Saves
                 var validRecents = new List<SaveFilePreviewViewModel>();
+                var seenPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 foreach (var path in recentFiles)
-                {
-                    if (File.Exists(path))
-                    {
-                        var info = new FileInfo(path);
-                        if (SaveUtil.IsSizeValid(info.Length))
-                        {
-                            var sav = SaveUtil.GetSaveFile(path);
-                            if (sav != null)
-                                validRecents.Add(new SaveFilePreviewViewModel(sav));
-                        }
-                    }
-                }
+                    TryLoadPreview(path, validRecents, seenPaths, cancellationToken);
 
                 // 2. Backup Saves
                 var validBackups = new List<SaveFilePreviewViewModel>();
                 var allBackupPaths = new List<string> { backupPath };
                 allBackupPaths.AddRange(extraPaths);
                 
-                foreach (var folder in allBackupPaths)
+                foreach (var folder in allBackupPaths.Distinct(StringComparer.OrdinalIgnoreCase))
                 {
-                    if (!Directory.Exists(folder)) continue;
-                    
-                    var files = Directory.GetFiles(folder, "*", SearchOption.AllDirectories);
-                    foreach (var f in files)
+                    if (!Directory.Exists(folder))
+                        continue;
+
+                    foreach (var path in EnumerateFilesSafe(folder, cancellationToken))
                     {
-                         var info = new FileInfo(f);
-                         if (SaveUtil.IsSizeValid(info.Length))
-                         {
-                             var sav = SaveUtil.GetSaveFile(f);
-                             if (sav != null)
-                                validBackups.Add(new SaveFilePreviewViewModel(sav));
-                         }
+                        TryLoadPreview(path, validBackups, seenPaths, cancellationToken);
                     }
                 }
 
                 return (validRecents, validBackups);
-            });
+            }, cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             // Back on the UI thread (async command continuation) — assign the observable collections.
-            RecentSaves = new ObservableCollection<SaveFilePreviewViewModel>(validRecents);
-            BackupSaves = new ObservableCollection<SaveFilePreviewViewModel>(validBackups);
-            StatusText = $"Loaded {RecentSaves.Count} recent, {BackupSaves.Count} backups.";
+            RecentSaves.Clear();
+            foreach (var save in validRecents)
+                RecentSaves.Add(save);
+            BackupSaves.Clear();
+            foreach (var save in validBackups)
+                BackupSaves.Add(save);
+            ApplyFilter();
+            StatusText = LocalizedStrings.Instance.Format("FolderList_Loaded", RecentSaves.Count, BackupSaves.Count);
+        }
+        catch (OperationCanceledException)
+        {
+            StatusText = LocalizedStrings.Instance["FolderList_Cancelled"];
         }
         catch (Exception ex)
         {
-            StatusText = $"Error: {ex.Message}";
+            StatusText = LocalizedStrings.Instance.Format("FolderList_Error", ex.Message);
         }
         finally
         {
-            IsLoading = false;
+            if (cancellationToken == _scanCts.Token)
+                IsLoading = false;
         }
+    }
+
+    private static IEnumerable<string> EnumerateFilesSafe(string root, CancellationToken cancellationToken)
+    {
+        var pending = new Stack<string>();
+        pending.Push(root);
+        while (pending.Count > 0)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var directory = pending.Pop();
+
+            string[] files;
+            try { files = Directory.EnumerateFiles(directory).ToArray(); }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                // Continue scanning sibling directories when one path is inaccessible.
+                files = [];
+            }
+
+            foreach (var file in files)
+                yield return file;
+
+            string[] children;
+            try { children = Directory.EnumerateDirectories(directory).ToArray(); }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                // Continue scanning sibling directories when one path is inaccessible.
+                children = [];
+            }
+
+            foreach (var child in children)
+                pending.Push(child);
+        }
+    }
+
+    private static void TryLoadPreview(string path, List<SaveFilePreviewViewModel> destination, HashSet<string> seenPaths, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        try
+        {
+            if (!File.Exists(path))
+                return;
+
+            var canonical = Path.GetFullPath(path);
+            if (!seenPaths.Add(canonical))
+                return;
+
+            var info = new FileInfo(canonical);
+            if (!SaveUtil.IsSizeValid(info.Length))
+                return;
+
+            var sav = SaveUtil.GetSaveFile(canonical);
+            if (sav != null)
+                destination.Add(new SaveFilePreviewViewModel(sav, canonical));
+        }
+        catch
+        {
+            // One inaccessible or malformed path must not abort the complete scan.
+        }
+    }
+
+    [RelayCommand]
+    private async Task Refresh()
+    {
+        _scanCts.Cancel();
+        _scanCts.Dispose();
+        _scanCts = new CancellationTokenSource();
+        await LoadSavesAsync(_scanCts.Token);
+    }
+
+    [RelayCommand]
+    private void CancelScan() => _scanCts.Cancel();
+
+    [RelayCommand]
+    private void Close()
+    {
+        _scanCts.Cancel();
+        CloseRequested?.Invoke();
+    }
+
+    public void Dispose()
+    {
+        _scanCts.Cancel();
+        _scanCts.Dispose();
     }
 
     [RelayCommand]
@@ -147,8 +256,6 @@ public partial class FolderListViewModel : ViewModelBase
         CloseRequested?.Invoke();
     }
     
-    public event Action? CloseRequested;
-
     [RelayCommand]
     private void OpenFolder(SaveFilePreviewViewModel? vm)
     {
@@ -186,17 +293,33 @@ public class SaveFilePreviewViewModel : ViewModelBase
     public DateTime LastModified { get; }
     public string BadgeCount { get; }
     
-    public SaveFilePreviewViewModel(SaveFile sav)
+    public SaveFilePreviewViewModel(SaveFile sav, string? sourcePath = null)
     {
-        FilePath = sav.Metadata.FilePath ?? "Unknown";
+        FilePath = sourcePath ?? sav.Metadata.FilePath ?? "Unknown";
         FileName = Path.GetFileName(FilePath);
         Version = sav.Version.ToString();
         TrainerName = sav.OT;
-        // PlayTime = sav.PlayTime;
-        PlayTime = ""; // sav.PlayTime not available in SaveFile base?
+        PlayTime = $"{sav.PlayedHours:00}:{sav.PlayedMinutes:00}:{sav.PlayedSeconds:00}";
         LastModified = File.Exists(FilePath) ? File.GetLastWriteTime(FilePath) : DateTime.MinValue;
-        // BadgeCount? 
-        // Not in simple metadata usually? Or implied.
-        BadgeCount = ""; 
+        BadgeCount = GetBadgeCount(sav);
+    }
+
+    private static string GetBadgeCount(SaveFile sav)
+    {
+        var property = sav.GetType().GetProperty("Badges");
+        if (property is null)
+            return string.Empty;
+
+        try
+        {
+            var flags = Convert.ToUInt64(property.GetValue(sav));
+            return sav is SAV8SWSH
+                ? flags.ToString()
+                : BitOperations.PopCount((ulong)flags).ToString();
+        }
+        catch
+        {
+            return string.Empty;
+        }
     }
 }

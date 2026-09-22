@@ -22,6 +22,11 @@ public sealed class AutoLegalityService : IAutoLegalityService
         // Use the destination save's own trainer data so generated Pokémon match the loaded save
         // (OT/TID/SID/language), rather than the engine's built-in "ALM" default trainer.
         APILegality.UseTrainerData = true;
+
+        // Allow explicit trainer lines carried by Living Dex regeneration templates. Ordinary
+        // Showdown sets do not contain these lines, so this stable process configuration avoids
+        // racing a timed-out vendor worker while preserving the normal legalization behavior.
+        APILegality.AllowTrainerOverride = true;
     }
 
     public AutoLegalityResult TryLegalizeShowdownSet(SaveFile sav, string? showdownText)

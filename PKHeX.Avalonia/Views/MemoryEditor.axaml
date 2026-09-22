@@ -11,7 +11,7 @@
     <Grid RowDefinitions="*,1, Auto" Margin="10">
         <TabControl Grid.Row="0">
             <!-- Geolocation -->
-            <TabItem Header="{loc:Loc MemoryEditor_Geolocation}">
+            <TabItem Header="{loc:Loc MemoryEditor_Geolocation}" IsVisible="{Binding HasGeolocation}">
                 <ScrollViewer>
                     <StackPanel Spacing="5" Margin="5">
                         <TextBlock Text="{loc:Loc MemoryEditor_CountryRegionData}" FontWeight="Bold"/>
@@ -58,7 +58,7 @@
             </TabItem>
 
             <!-- Memories -->
-            <TabItem Header="{loc:Loc MemoryEditor_Memories}">
+            <TabItem Header="{loc:Loc MemoryEditor_Memories}" IsVisible="{Binding HasMemories}">
                 <StackPanel Spacing="10" Margin="10">
                     <TextBlock Text="{loc:Loc MemoryEditor_OriginalTrainer}" FontWeight="Bold"/>
                      <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
@@ -98,11 +98,11 @@
             <TabItem Header="{loc:Loc MemoryEditor_Affection}">
                  <StackPanel Spacing="10" Margin="10">
                     <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc MemoryEditor_Fullness}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding Fullness}" Minimum="0" Maximum="255"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc MemoryEditor_Fullness}" VerticalAlignment="Center" Margin="0,0,10,0" IsVisible="{Binding HasFullnessEnjoyment}"/>
+                        <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding Fullness}" Minimum="0" Maximum="255" IsVisible="{Binding HasFullnessEnjoyment}"/>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{loc:Loc MemoryEditor_Enjoyment}" VerticalAlignment="Center"/>
-                        <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Enjoyment}" Minimum="0" Maximum="255"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{loc:Loc MemoryEditor_Enjoyment}" VerticalAlignment="Center" IsVisible="{Binding HasFullnessEnjoyment}"/>
+                        <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Enjoyment}" Minimum="0" Maximum="255" IsVisible="{Binding HasFullnessEnjoyment}"/>
 
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="{loc:Loc MemoryEditor_OtFriendship}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding OtFriendship}" Minimum="0" Maximum="255"/>
@@ -110,11 +110,11 @@
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="{loc:Loc MemoryEditor_HtFriendship}" VerticalAlignment="Center"/>
                         <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding HtFriendship}" Minimum="0" Maximum="255"/>
 
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Loc MemoryEditor_OtAffection}" VerticalAlignment="Center"/>
-                        <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding OtAffection}" Minimum="0" Maximum="255"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Loc MemoryEditor_OtAffection}" VerticalAlignment="Center" IsVisible="{Binding HasAffection}"/>
+                        <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding OtAffection}" Minimum="0" Maximum="255" IsVisible="{Binding HasAffection}"/>
 
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="{loc:Loc MemoryEditor_HtAffection}" VerticalAlignment="Center"/>
-                        <NumericUpDown Grid.Row="5" Grid.Column="1" Value="{Binding HtAffection}" Minimum="0" Maximum="255"/>
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="{loc:Loc MemoryEditor_HtAffection}" VerticalAlignment="Center" IsVisible="{Binding HasAffection}"/>
+                        <NumericUpDown Grid.Row="5" Grid.Column="1" Value="{Binding HtAffection}" Minimum="0" Maximum="255" IsVisible="{Binding HasAffection}"/>
                     </Grid>
                  </StackPanel>
             </TabItem>

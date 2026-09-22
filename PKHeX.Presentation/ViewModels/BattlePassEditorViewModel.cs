@@ -3,19 +3,24 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PKHeX.Application.Abstractions;
 using PKHeX.Core;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class BattlePassEditorViewModel : ViewModelBase
+public partial class BattlePassEditorViewModel : ViewModelBase, ICloseableDialog
 {
-    private readonly SAV4BR _sav;
-    private readonly BattlePassAccessor _accessor;
+    private readonly SAV4BR _source;
+    private SAV4BR _working;
+    private BattlePassAccessor _accessor;
+
+    public Action? CloseRequested { get; set; }
 
     public BattlePassEditorViewModel(SaveFile sav)
     {
-        _sav = (SAV4BR)sav;
-        _accessor = _sav.BattlePasses;
+        _source = (SAV4BR)sav;
+        _working = (SAV4BR)_source.Clone();
+        _accessor = _working.BattlePasses;
         IsSupported = true;
 
         LoadPasses();
@@ -35,7 +40,7 @@ public partial class BattlePassEditorViewModel : ViewModelBase
         for (int i = 0; i < BattlePassAccessor.PASS_COUNT; i++)
         {
             var pass = _accessor[i];
-            Passes.Add(new BattlePassEntryViewModel(i, pass, _sav));
+            Passes.Add(new BattlePassEntryViewModel(i, pass, _working));
         }
 
         if (Passes.Count > 0)
@@ -53,26 +58,31 @@ public partial class BattlePassEditorViewModel : ViewModelBase
     [RelayCommand]
     private void Save()
     {
-        // Changes are made directly to the pass objects which point to the save data
+        _source.CopyChangesFrom(_working);
+        _source.State.Edited = true;
+        CloseRequested?.Invoke();
     }
 
     [RelayCommand]
     private void Refresh()
     {
+        _working = (SAV4BR)_source.Clone();
+        _accessor = _working.BattlePasses;
         LoadPasses();
     }
+
+    [RelayCommand]
+    private void Cancel() => CloseRequested?.Invoke();
 }
 
 public partial class BattlePassEntryViewModel : ViewModelBase
 {
     private readonly BattlePass _pass;
-    private readonly SAV4BR _sav;
 
     public BattlePassEntryViewModel(int index, BattlePass pass, SAV4BR sav)
     {
         Index = index;
         _pass = pass;
-        _sav = sav;
 
         _name = pass.Name;
         _tid = pass.TID;

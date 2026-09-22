@@ -239,6 +239,25 @@ public class TrainerEditorTests
         // Let's skip the negative test for now unless we are sure about which one lacks it.
     }
 
+    [Fact]
+    public void SvTrainerData_UsesOneBlueberryPointsOwner()
+    {
+        var dir = SaveFileFixture.FindSaveFilesPath();
+        if (dir is null)
+            return;
+
+        var sav = SaveFileFixture.LoadSave(Path.Combine(dir, "gen9_violet.main")) as SAV9SV;
+        if (sav is null)
+            return;
+
+        var vm = new TrainerEditorViewModel(sav);
+
+        Assert.False(vm.HasBP);
+        Assert.False(vm.HasBlueberryPoints);
+        Assert.NotNull(typeof(TrainerEditorViewModel).GetProperty(nameof(TrainerEditorViewModel.BlueberryPoints)));
+        Assert.Null(typeof(Misc9EditorViewModel).GetProperty("BlueberryPoints"));
+    }
+
     // Issue #250: ZA Trainer editor renders an empty Currencies section. The ViewModel already
     // loaded RoyalePoints/RoyalePointsInfinite correctly, but TrainerEditor.axaml had no controls
     // for them in the Currencies WrapPanel, so the card showed as visible-but-empty.

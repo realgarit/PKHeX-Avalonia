@@ -58,6 +58,7 @@ public static class ViewLocator
         [typeof(MailBoxEditorViewModel)] = () => new MailBoxEditor(),
         [typeof(MedalEditorViewModel)] = () => new MedalEditorView(),
         [typeof(MemoryEditorViewModel)] = () => new MemoryEditor(),
+        [typeof(MoveShopEditorViewModel)] = () => new MoveShopEditor(),
         [typeof(Misc2EditorViewModel)] = () => new Misc2Editor(),
         [typeof(Misc3EditorViewModel)] = () => new Misc3Editor(),
         [typeof(Misc4EditorViewModel)] = () => new Misc4Editor(),

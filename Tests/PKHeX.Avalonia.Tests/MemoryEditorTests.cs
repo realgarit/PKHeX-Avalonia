@@ -1,6 +1,7 @@
 using PKHeX.Presentation.ViewModels;
 using PKHeX.Core;
 using Xunit.Abstractions;
+using Moq;
 
 namespace PKHeX.Avalonia.Tests;
 
@@ -93,6 +94,10 @@ public class MemoryEditorTests(ITestOutputHelper output)
         var vm = new MemoryEditorViewModel(pk);
 
         // Gen3 doesn't implement IGeoTrack / IAffection / ITrainerMemories
+        Assert.False(vm.HasGeolocation);
+        Assert.False(vm.HasFullnessEnjoyment);
+        Assert.False(vm.HasAffection);
+        Assert.False(vm.HasMemories);
         var ex = Record.Exception(() =>
         {
             vm.OtFriendship = 100;
@@ -117,7 +122,7 @@ public class MemoryEditorTests(ITestOutputHelper output)
     {
         var pk = new PK6 { Species = 1, OriginalTrainerFriendship = 50 };
         bool closed = false;
-        var vm = new MemoryEditorViewModel(pk, () => closed = true);
+        var vm = new MemoryEditorViewModel(pk) { CloseRequested = () => closed = true };
 
         vm.OtFriendship = 200;
         vm.CloseCommand.Execute(null);
@@ -137,7 +142,7 @@ public class MemoryEditorTests(ITestOutputHelper output)
     {
         var pk = new PK5 { Species = 1 };
         bool closed = false;
-        var vm = new MemoryEditorViewModel(pk, () => closed = true);
+        var vm = new MemoryEditorViewModel(pk) { CloseRequested = () => closed = true };
 
         vm.SaveCommand.Execute(null);
 
@@ -164,5 +169,38 @@ public class MemoryEditorTests(ITestOutputHelper output)
         Assert.Equal(42, vm.OtAffection);
         Assert.Equal(7,  vm.OtMemory);
         output.WriteLine("Load: existing Gen6 values read into VM ✓");
+    }
+
+    [Fact]
+    public async Task PokemonEditor_MemoryDialog_UsesCloseContractAndRefreshesAfterSave()
+    {
+        var sav = new SAV6XY();
+        GameInfo.CurrentLanguage = "en";
+        GameInfo.Strings = GameInfo.GetStrings("en");
+        GameInfo.FilteredSources = new FilteredGameDataSource(sav, GameInfo.Sources);
+
+        MemoryEditorViewModel? opened = null;
+        var window = new Mock<IWindowService>();
+        window.Setup(x => x.ShowDialogAsync(It.IsAny<object>(), It.IsAny<string>()))
+            .Callback<object, string>((viewModel, _) =>
+            {
+                opened = Assert.IsType<MemoryEditorViewModel>(viewModel);
+                Assert.IsAssignableFrom<PKHeX.Application.Abstractions.ICloseableDialog>(opened);
+                opened.OtFriendship = 200;
+                opened.SaveCommand.Execute(null);
+            })
+            .Returns(Task.CompletedTask);
+
+        var editor = new PokemonEditorViewModel(
+            new PK6 { Species = 1, OriginalTrainerFriendship = 50 },
+            sav,
+            Mock.Of<ISpriteRenderer>(),
+            Mock.Of<IDialogService>(),
+            window.Object);
+
+        await editor.OpenMemoryEditorCommand.ExecuteAsync(null);
+
+        Assert.NotNull(opened);
+        Assert.Equal(200, editor.OriginalTrainerFriendship);
     }
 }

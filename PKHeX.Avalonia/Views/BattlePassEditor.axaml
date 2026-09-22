@@ -29,6 +29,8 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
                         <Button Content="{loc:Loc BattlePassEditor_UnlockAllButton}" Command="{Binding UnlockAllCommand}" />
                         <Button Content="{loc:Loc BattlePassEditor_RefreshButton}" Command="{Binding RefreshCommand}" />
+                        <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" Classes="compact-secondary" />
+                        <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" />
                     </StackPanel>
                 </DockPanel>
 

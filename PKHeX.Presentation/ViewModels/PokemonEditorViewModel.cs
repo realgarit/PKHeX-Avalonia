@@ -219,6 +219,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
     private int _language;
 
     public bool HasForms => FormList.Count > 1;
+    public bool HasMoveShop => _pk is IMoveShop8 && _pk is IMoveShop8Mastery;
     public bool IsHaXMode => _haXMode;
     public PKM TargetPKM => _pk;
 
@@ -419,7 +420,10 @@ public partial class PokemonEditorViewModel : ViewModelBase
             Pid = _pk.PID.ToString("X8");
             EncryptionConstant = _pk.EncryptionConstant.ToString("X8");
             Exp = _pk.EXP;
-            Language = _pk.Language;
+            // Blank Gen 1/2 entities do not carry a language in their own bytes. Use the
+            // loaded save's language so default names are encoded instead of being cleared
+            // when the editor prepares the entity for saving.
+            Language = _pk.Language != 0 || _pk.Species != 0 ? _pk.Language : _sav.Language;
             PkrsStrain = _pk.PokerusStrain;
             PkrsDays = _pk.PokerusDays;
 
@@ -997,6 +1001,18 @@ public partial class PokemonEditorViewModel : ViewModelBase
         var vm = new MemoryEditorViewModel(_pk);
         var view = vm;
         await _windowService.ShowDialogAsync(view, LocalizedStrings.Instance["PokemonEditor_MemoryEditorTitle"]);
+        LoadFromPKM();
+    }
+
+    [RelayCommand]
+    private async Task OpenMoveShopEditorAsync()
+    {
+        if (!HasMoveShop)
+            return;
+
+        var vm = new MoveShopEditorViewModel(_pk);
+        await _windowService.ShowDialogAsync(vm, LocalizedStrings.Instance["MoveShopEditor_Title"]);
+        LoadFromPKM();
     }
 
     [RelayCommand]

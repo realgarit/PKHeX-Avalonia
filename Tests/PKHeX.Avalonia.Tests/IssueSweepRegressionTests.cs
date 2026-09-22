@@ -6,6 +6,9 @@ using Avalonia.Headless.XUnit;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Moq;
+using PKHeX.Application;
+using PKHeX.Application.Abstractions;
 using PKHeX.Application.Services;
 using PKHeX.Avalonia.Tests.Fixtures;
 using PKHeX.Avalonia.Tests.Harness;
@@ -378,6 +381,27 @@ public sealed class IssueSweepRegressionTests
         Capture(new HallOfFame3EditorView { DataContext = new HallOfFame3EditorViewModel(new SAV3E()) }, "issue-hall-of-fame3-empty.png", 600, 500, directory);
         Capture(new HallOfFame7Editor { DataContext = new HallOfFame7EditorViewModel(new SAV7SM()) }, "issue-hall-of-fame7.png", 900, 700, directory);
         Capture(new TrainerEditor { DataContext = new TrainerEditorViewModel(new SAV8SWSH()) }, "issue-trainer-swsh.png", 900, 700, directory);
+    }
+
+    [AvaloniaFact]
+    public void CaptureCorrectiveEditorViews_WhenEnabled_WritesPng()
+    {
+        if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") != "1")
+            return;
+
+        var directory = Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR")
+            ?? Path.Combine(Path.GetTempPath(), "pkhex-corrective-frames");
+        Directory.CreateDirectory(directory);
+
+        var svPath = Path.Combine(SaveFileFixture.FindSaveFilesPath()!, "gen9_violet.main");
+        var sv = Assert.IsType<SAV9SV>(SaveFileFixture.LoadSave(svPath));
+        Capture(new Misc9Editor { DataContext = new Misc9EditorViewModel(sv) }, "corrective-misc9.png", 900, 700, directory);
+        Capture(new DaycareEditorView { DataContext = new DaycareEditorViewModel(new SAV6AO(), new NullSpriteRenderer()) }, "corrective-daycare.png", 900, 700, directory);
+        Capture(new MoveShopEditor { DataContext = new MoveShopEditorViewModel(new PA8 { Species = 25 }) }, "corrective-move-shop.png", 900, 600, directory);
+        Capture(new Pokedex8Editor { DataContext = new Pokedex8EditorViewModel(new SAV8SWSH()) }, "corrective-pokedex8.png", 1000, 700, directory);
+        Capture(new BattlePassEditor { DataContext = new BattlePassEditorViewModel(new SAV4BR()) }, "corrective-battle-pass.png", 1000, 700, directory);
+        Capture(new MemoryEditor { DataContext = new MemoryEditorViewModel(new PK6 { Species = 1 }) }, "corrective-memory.png", 600, 500, directory);
+        Capture(new FolderList { DataContext = new FolderListViewModel(Mock.Of<ISaveFileGateway>(), new AppSettings(), Mock.Of<IDialogService>(), loadOnConstruct: false) }, "corrective-folder-list.png", 1100, 700, directory);
     }
 
     private static Window Show(Control content, double width, double height)

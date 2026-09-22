@@ -437,10 +437,14 @@
                             <StackPanel Spacing="8">
                                 <DockPanel Margin="0,0,0,4">
                                     <TextBlock Text="{loc:Loc PokemonEditor_CurrentMoves}" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" />
-                                    <Button Content="{loc:Loc PokemonEditor_Suggest}" Command="{Binding SuggestCurrentMovesCommand}"
-                                            HorizontalAlignment="Right" Padding="8,2" FontSize="12"
-                                            ToolTip.Tip="{loc:Loc PokemonEditor_SuggestCurrentMovesTooltip}"
-                                            AutomationProperties.Name="{loc:Loc PokemonEditor_Suggest}" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                        <Button IsVisible="{Binding HasMoveShop}" Content="{loc:Loc MoveShopEditor_Open}" Command="{Binding OpenMoveShopEditorCommand}"
+                                                Padding="8,2" FontSize="12" AutomationProperties.Name="{loc:Loc MoveShopEditor_Open}" />
+                                        <Button Content="{loc:Loc PokemonEditor_Suggest}" Command="{Binding SuggestCurrentMovesCommand}"
+                                                Padding="8,2" FontSize="12"
+                                                ToolTip.Tip="{loc:Loc PokemonEditor_SuggestCurrentMovesTooltip}"
+                                                AutomationProperties.Name="{loc:Loc PokemonEditor_Suggest}" />
+                                    </StackPanel>
                                 </DockPanel>
 
                                 <Grid ColumnDefinitions="*,8,40,8,38" RowDefinitions="22,Auto,Auto,Auto,Auto" RowSpacing="7">

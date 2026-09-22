@@ -1,13 +1,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PKHeX.Application.Abstractions;
 using PKHeX.Core;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class MemoryEditorViewModel : ViewModelBase
+public partial class MemoryEditorViewModel : ViewModelBase, ICloseableDialog
 {
     private readonly PKM _pkm;
-    private readonly Action? _closeRequested;
+
+    public Action? CloseRequested { get; set; }
 
     // Geolocation
     [ObservableProperty] private int _country0;
@@ -41,10 +43,14 @@ public partial class MemoryEditorViewModel : ViewModelBase
     [ObservableProperty] private int _htMemoryFeel;
     [ObservableProperty] private int _htMemoryQual;
 
-    public MemoryEditorViewModel(PKM pkm, Action? closeHelper = null)
+    public bool HasGeolocation => _pkm is IGeoTrack;
+    public bool HasFullnessEnjoyment => _pkm is IFullnessEnjoyment;
+    public bool HasAffection => _pkm is IAffection;
+    public bool HasMemories => _pkm is ITrainerMemories;
+
+    public MemoryEditorViewModel(PKM pkm)
     {
         _pkm = pkm;
-        _closeRequested = closeHelper;
         Load();
     }
 
@@ -140,8 +146,8 @@ public partial class MemoryEditorViewModel : ViewModelBase
             m.HandlingTrainerMemoryIntensity = (byte)HtMemoryQual;
         }
 
-        _closeRequested?.Invoke();
+        CloseRequested?.Invoke();
     }
     [RelayCommand]
-    private void Close() => _closeRequested?.Invoke();
+    private void Close() => CloseRequested?.Invoke();
 }

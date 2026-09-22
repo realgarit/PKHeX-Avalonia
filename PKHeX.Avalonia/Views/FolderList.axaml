@@ -14,22 +14,28 @@
         <Border Grid.Row="0" Classes="tool-header">
         <DockPanel>
             <TextBlock Text="{loc:Loc FolderList_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding FilterText}" Watermark="{loc:Loc FolderList_FilterWatermark}" Width="200" HorizontalAlignment="Right" Margin="20,0,0,0"
-                     AutomationProperties.Name="Filter files"/>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="6">
+                <TextBox Text="{Binding FilterText}" Watermark="{loc:Loc FolderList_FilterWatermark}" Width="200"
+                         AutomationProperties.Name="{loc:Loc FolderList_FilterWatermark}"/>
+                <Button Content="{loc:Loc FolderList_Refresh}" Command="{Binding RefreshCommand}" IsEnabled="{Binding !IsLoading}" />
+                <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelScanCommand}" IsVisible="{Binding IsLoading}" />
+                <Button Content="{loc:Loc Common_Close}" Command="{Binding CloseCommand}" />
+            </StackPanel>
         </DockPanel>
         </Border>
 
         <!-- Main Content -->
         <TabControl Grid.Row="1" Classes="editor-tabs">
             <TabItem Classes="editor-tab" Header="{loc:Loc FolderList_RecentFiles}">
-                <DataGrid Classes="save-grid" ItemsSource="{Binding RecentSaves}"
+                    <DataGrid Classes="save-grid" ItemsSource="{Binding FilteredRecentSaves}"
                           SelectedItem="{Binding SelectedRecentSave}"
                           IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="{loc:Loc FolderList_FileName}" Binding="{Binding FileName}" Width="200"/>
-                        <DataGridTextColumn Header="{loc:Loc FolderList_Version}" Binding="{Binding Version}" Width="80"/>
+                        <DataGridTextColumn Header="{loc:Loc FolderList_Version}" Binding="{Binding Version}" Width="90"/>
                         <DataGridTextColumn Header="{loc:Loc FolderList_Trainer}" Binding="{Binding TrainerName}" Width="100"/>
                         <DataGridTextColumn Header="{loc:Loc FolderList_PlayTime}" Binding="{Binding PlayTime}" Width="100"/>
+                        <DataGridTextColumn Header="{loc:Loc FolderList_Badges}" Binding="{Binding BadgeCount}" Width="80"/>
                         <DataGridTextColumn Header="{loc:Loc FolderList_LastModified}" Binding="{Binding LastModified}" Width="150"/>
                         <DataGridTextColumn Header="{loc:Loc FolderList_Path}" Binding="{Binding FilePath}" Width="*"/>
                     </DataGrid.Columns>
@@ -42,14 +48,15 @@
                 </DataGrid>
             </TabItem>
             <TabItem Classes="editor-tab" Header="{loc:Loc FolderList_Backups}">
-                 <DataGrid Classes="save-grid" ItemsSource="{Binding BackupSaves}"
+                  <DataGrid Classes="save-grid" ItemsSource="{Binding FilteredBackupSaves}"
                           SelectedItem="{Binding SelectedBackupSave}"
                           IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="{loc:Loc FolderList_FileName}" Binding="{Binding FileName}" Width="200"/>
-                        <DataGridTextColumn Header="{loc:Loc FolderList_Version}" Binding="{Binding Version}" Width="80"/>
+                        <DataGridTextColumn Header="{loc:Loc FolderList_Version}" Binding="{Binding Version}" Width="90"/>
                         <DataGridTextColumn Header="{loc:Loc FolderList_Trainer}" Binding="{Binding TrainerName}" Width="100"/>
                         <DataGridTextColumn Header="{loc:Loc FolderList_PlayTime}" Binding="{Binding PlayTime}" Width="100"/>
+                        <DataGridTextColumn Header="{loc:Loc FolderList_Badges}" Binding="{Binding BadgeCount}" Width="80"/>
                         <DataGridTextColumn Header="{loc:Loc FolderList_LastModified}" Binding="{Binding LastModified}" Width="150"/>
                         <DataGridTextColumn Header="{loc:Loc FolderList_Path}" Binding="{Binding FilePath}" Width="*"/>
                     </DataGrid.Columns>
