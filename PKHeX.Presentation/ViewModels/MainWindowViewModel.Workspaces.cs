@@ -108,6 +108,14 @@ public partial class MainWindowViewModel
             return;
 
         _capabilityRegistry.Add(new(
+            "Dialog_SaveFolderList",
+            string.Empty,
+            "M 3,3 H 13 V 13 H 3 Z M 6,6 H 10 M 6,9 H 10 M 6,12 H 8",
+            OpenFolderListCommand,
+            menuGroupTitleKey: "Menu_Tools_Data",
+            showInLauncher: true));
+
+        _capabilityRegistry.Add(new(
             "Menu_Data_BoxReport",
             "Launcher_BoxReport_Description",
             "M 2,3 H 14 V 14 H 2 Z M 5,6 H 11 M 5,9 H 11 M 5,12 H 8",

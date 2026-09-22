@@ -11,20 +11,23 @@
     <Border Classes="view-container">
     <Grid RowDefinitions="Auto, *">
         <Grid Grid.Row="0" Classes="save-editor-header">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+            <WrapPanel HorizontalAlignment="Right" ItemSpacing="8" LineSpacing="4">
                 <Button Content="{loc:Loc MoveShopEditor_GiveAll}" Command="{Binding SetAllCommand}"/>
+                <Button Content="{loc:Loc MoveShopEditor_PurchaseAll}" Command="{Binding SetAllPurchasedCommand}"/>
                 <Button Content="{loc:Loc MoveShopEditor_RemoveAll}" Command="{Binding SetNoneCommand}"/>
-                <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CloseRequested}"/>
+                <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}"/>
                 <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent"/>
-            </StackPanel>
+            </WrapPanel>
         </Grid>
 
         <DataGrid Grid.Row="1" Classes="save-grid" ItemsSource="{Binding Moves}" CanUserSortColumns="True" IsReadOnly="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{loc:Loc MoveShopEditor_Index}" Binding="{Binding IndexDisplay}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="{loc:Loc MoveShopEditor_Name}" Binding="{Binding Name}" IsReadOnly="True" Width="150"/>
-                <DataGridCheckBoxColumn Header="{loc:Loc MoveShopEditor_Purchased}" Binding="{Binding IsPurchased}" Width="80"/>
-                <DataGridCheckBoxColumn Header="{loc:Loc MoveShopEditor_Mastered}" Binding="{Binding IsMastered}" Width="80"/>
+                <DataGridTextColumn Header="{loc:Loc MoveShopEditor_Type}" Binding="{Binding TypeName}" IsReadOnly="True" Width="100"/>
+                <DataGridTextColumn Header="{loc:Loc MoveShopEditor_Permission}" Binding="{Binding PermissionStatus}" IsReadOnly="True" Width="140"/>
+                <DataGridCheckBoxColumn Header="{loc:Loc MoveShopEditor_Purchased}" Binding="{Binding IsPurchased}" Width="100"/>
+                <DataGridCheckBoxColumn Header="{loc:Loc MoveShopEditor_Mastered}" Binding="{Binding IsMastered}" Width="100"/>
             </DataGrid.Columns>
         </DataGrid>
 

@@ -167,10 +167,14 @@ public sealed class LivingDexService : ILivingDexService
             return null;
         }
 
-        ShowdownSet set;
+        RegenTemplate set;
         try
         {
-            set = new ShowdownSet(setText);
+            setText = AppendTrainerData(setText, tr);
+            set = new RegenTemplate(new ShowdownSet(setText), tr.Generation)
+            {
+                Nickname = string.Empty,
+            };
         }
         catch
         {
@@ -181,10 +185,7 @@ public sealed class LivingDexService : ILivingDexService
             return null;
 
         APILegality.AsyncLegalizationResult result;
-        try
-        {
-            result = tr.GetLegalFromSet(set);
-        }
+        try { result = tr.GetLegalFromSet(set); }
         catch
         {
             return null;
@@ -196,5 +197,25 @@ public sealed class LivingDexService : ILivingDexService
         var pk = result.Created;
         pk.Heal();
         return pk;
+    }
+
+    private static string AppendTrainerData(string setText, ITrainerInfo trainer)
+    {
+        var (tid, sid) = GetDisplayedTrainerIds(trainer);
+        var language = Enum.IsDefined((LanguageID)trainer.Language)
+            ? (LanguageID)trainer.Language
+            : LanguageID.English;
+        var gender = trainer.Gender == 1 ? "Female" : "Male";
+
+        return $"{setText}\nOT: {trainer.OT}\nOTGender: {gender}\nTID: {tid}\nSID: {sid}\nLanguage: {language}";
+    }
+
+    private static (int TID, int SID) GetDisplayedTrainerIds(ITrainerInfo trainer)
+    {
+        if (trainer.Generation < 7)
+            return (trainer.TID16, trainer.SID16);
+
+        var id32 = ((uint)trainer.SID16 << 16) | trainer.TID16;
+        return ((int)(id32 % 1_000_000), (int)(id32 / 1_000_000));
     }
 }

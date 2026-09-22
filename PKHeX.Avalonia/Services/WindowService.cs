@@ -54,6 +54,8 @@ public sealed class WindowService : IWindowService
         if (viewModel is ICloseableDialog closeable)
             closeable.CloseRequested = dialog.Close;
 
+        dialog.Closed += (_, _) => (viewModel as IDisposable)?.Dispose();
+
         await dialog.ShowDialog(owner);
     }
 

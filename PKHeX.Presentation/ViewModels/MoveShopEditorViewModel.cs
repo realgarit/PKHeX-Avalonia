@@ -3,25 +3,29 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PKHeX.Application.Abstractions;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class MoveShopEditorViewModel : ViewModelBase
+public partial class MoveShopEditorViewModel : ViewModelBase, ICloseableDialog
 {
+    private readonly PKM _source;
+    private readonly PKM _working;
     private readonly IMoveShop8 _shop;
     private readonly IMoveShop8Mastery _mastery;
-    private readonly PKM _pkm;
     
     public ObservableCollection<MoveShopItemViewModel> Moves { get; } = [];
 
     public Action? CloseRequested { get; set; }
 
-    public MoveShopEditorViewModel(IMoveShop8 shop, IMoveShop8Mastery mastery, PKM pkm)
+    public MoveShopEditorViewModel(PKM pkm)
     {
-        _shop = shop;
-        _mastery = mastery;
-        _pkm = pkm;
+        _source = pkm;
+        _working = pkm.Clone();
+        _shop = _working as IMoveShop8 ?? throw new ArgumentException("The Pokémon does not support Move Shop records.", nameof(pkm));
+        _mastery = _working as IMoveShop8Mastery ?? throw new ArgumentException("The Pokémon does not support Move Shop mastery.", nameof(pkm));
 
         PopulateRecords();
     }
@@ -35,7 +39,7 @@ public partial class MoveShopEditorViewModel : ViewModelBase
         {
             var move = indexes[i];
             var isValid = _shop.Permit.IsRecordPermitted(i);
-            var type = MoveInfo.GetType(move, _pkm.Context);
+            var type = MoveInfo.GetType(move, _working.Context);
             var name = names[move];
 
             var item = new MoveShopItemViewModel(i, move, name, type, isValid);
@@ -51,24 +55,27 @@ public partial class MoveShopEditorViewModel : ViewModelBase
     {
         foreach (var item in Moves)
         {
-            _shop.SetPurchasedRecordFlag(item.Index, item.IsPurchased);
-            _mastery.SetMasteredRecordFlag(item.Index, item.IsMastered);
+            var purchased = item.IsPermitted && item.IsPurchased;
+            var mastered = purchased && item.IsMastered;
+            _shop.SetPurchasedRecordFlag(item.Index, purchased);
+            _mastery.SetMasteredRecordFlag(item.Index, mastered);
         }
+        _working.Data.CopyTo(_source.Data);
+        _source.RefreshChecksum();
         CloseRequested?.Invoke();
     }
 
     [RelayCommand]
     private void SetAll()
     {
-        // "All" logic from WinForms: 
-        // Default (or just click): Set Mastered flags (SetMoveShopFlags)
-        // Shift: Set All (SetMoveShopFlagsAll) - assumes permits?
-        // Control: Clear Shop + Set Mastered
-        
-        // Simplifying for Avalonia UI: distinct buttons or logic?
-        // Let's replicate standard "Give All" behavior which usually means Give All legal.
-        
-        _mastery.SetMoveShopFlags(_pkm);
+        _mastery.SetMoveShopFlagsAll(_working);
+        ReloadFlags();
+    }
+
+    [RelayCommand]
+    private void SetAllPurchased()
+    {
+        _mastery.SetPurchasedFlagsAll(_working);
         ReloadFlags();
     }
 
@@ -78,6 +85,9 @@ public partial class MoveShopEditorViewModel : ViewModelBase
         _shop.ClearMoveShopFlags();
         ReloadFlags();
     }
+
+    [RelayCommand]
+    private void Cancel() => CloseRequested?.Invoke();
 
     private void ReloadFlags()
     {
@@ -96,12 +106,32 @@ public partial class MoveShopItemViewModel : ObservableObject
     public string Name { get; }
     public int Type { get; }
     public bool IsPermitted { get; }
+    public string TypeName => Type >= 0 && Type < GameInfo.Strings.Types.Count ? GameInfo.Strings.Types[Type] : Type.ToString();
+    public string PermissionStatus => IsPermitted
+        ? LocalizedStrings.Instance["MoveShopEditor_Permitted"]
+        : LocalizedStrings.Instance["MoveShopEditor_NotPermitted"];
 
     [ObservableProperty]
     private bool _isPurchased;
 
     [ObservableProperty]
     private bool _isMastered;
+
+    partial void OnIsPurchasedChanged(bool value)
+    {
+        if (value && !IsPermitted)
+            IsPurchased = false;
+        else if (!value)
+            IsMastered = false;
+    }
+
+    partial void OnIsMasteredChanged(bool value)
+    {
+        if (value && !IsPermitted)
+            IsMastered = false;
+        else if (value && !IsPurchased)
+            IsPurchased = true;
+    }
     
     // For sorting/display
     public string IndexDisplay => $"{Index + 1:00}";

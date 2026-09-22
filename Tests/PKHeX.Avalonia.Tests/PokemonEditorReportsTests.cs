@@ -85,6 +85,56 @@ public class PokemonEditorReportsTests
     }
 
     [Fact]
+    public void Gen1_DefaultSpeciesNameEnteredAsNickname_RoundTripsAsDefaultName()
+    {
+        var sav = new SAV1();
+        var pkm = new PK1
+        {
+            Species = (ushort)Species.Machop,
+            Language = (int)LanguageID.English,
+        };
+        pkm.ClearNickname();
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(pkm, sav);
+        var defaultName = SpeciesName.GetSpeciesNameGeneration((ushort)Species.Machop, vm.Language, 1);
+
+        vm.Nickname = defaultName;
+
+        var result = Assert.IsType<PK1>(vm.PreparePKM());
+        Assert.Equal(defaultName, vm.Nickname);
+        Assert.Equal(defaultName, result.Nickname);
+        Assert.False(vm.IsNicknamed);
+        Assert.False(result.IsNicknamed);
+
+        sav.SetBoxSlotAtIndex(result, 0);
+        var reread = Assert.IsType<PK1>(sav.GetBoxSlotAtIndex(0));
+        Assert.Equal(defaultName, reread.Nickname);
+        Assert.False(reread.IsNicknamed);
+    }
+
+    [Fact]
+    public void Gen1_CreatingSpeciesThenEnteringItsDefaultName_RoundTripsAsDefaultName()
+    {
+        var sav = new SAV1();
+        var (vm, _, _) = TestHelpers.CreateTestViewModel(sav.BlankPKM, sav);
+
+        vm.Species = (int)Species.Machop;
+        var defaultName = SpeciesName.GetSpeciesNameGeneration((ushort)Species.Machop, sav.Language, 1);
+        vm.Nickname = defaultName;
+
+        var result = Assert.IsType<PK1>(vm.PreparePKM());
+        Assert.Equal(sav.Language, vm.Language);
+        Assert.Equal(defaultName, result.Nickname);
+        Assert.False(result.IsNicknamed);
+        sav.SetBoxSlotAtIndex(result, 0);
+        var reread = Assert.IsType<PK1>(sav.GetBoxSlotAtIndex(0));
+
+        Assert.Equal(defaultName, vm.Nickname);
+        Assert.Equal(defaultName, reread.Nickname);
+        Assert.False(vm.IsNicknamed);
+        Assert.False(reread.IsNicknamed);
+    }
+
+    [Fact]
     public void HandlingTrainerFields_RoundTripAndMarkThePokemonAsTraded()
     {
         var sav = new SAV6XY();

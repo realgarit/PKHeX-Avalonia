@@ -53,6 +53,71 @@ public class PokedexTests
     }
 
     [Fact]
+    public void Pokedex8_SpeciesSwitchAndBulkActions_DoNotMutateSourceBeforeSave()
+    {
+        var sav = new SAV8SWSH();
+        var entries = Zukan8.GetRawIndexes(PersonalTable.SWSH, sav.Blocks.Zukan.GetRevision(), Zukan8Index.TotalCount);
+        var bulbasaur = entries.First(x => x.Species == 1).Entry;
+        var ivysaur = entries.First(x => x.Species == 2).Entry;
+        var before = (sav.Blocks.Zukan.GetCaught(bulbasaur), sav.Blocks.Zukan.GetCaught(ivysaur), sav.Blocks.Zukan.GetSeenRegion(bulbasaur, 0, 0));
+        var vm = new Pokedex8EditorViewModel(sav);
+        var first = vm.FilteredSpecies.First(x => x.Text.Contains("Bulbasaur"));
+        var second = vm.FilteredSpecies.First(x => x.Text.Contains("Ivysaur"));
+
+        vm.SelectedSpecies = first;
+        vm.Caught = true;
+        vm.SelectedSpecies = second;
+        vm.SeenAllCommand.Execute(null);
+
+        Assert.Equal(before.Item1, sav.Blocks.Zukan.GetCaught(bulbasaur));
+        Assert.Equal(before.Item2, sav.Blocks.Zukan.GetCaught(ivysaur));
+        Assert.Equal(before.Item3, sav.Blocks.Zukan.GetSeenRegion(bulbasaur, 0, 0));
+    }
+
+    [Fact]
+    public void Pokedex8_SaveCommitsWorkingChangesAndCloses()
+    {
+        var sav = new SAV8SWSH();
+        var closed = false;
+        var vm = new Pokedex8EditorViewModel(sav)
+        {
+            CloseRequested = () => closed = true,
+        };
+        vm.SelectedSpecies = vm.FilteredSpecies.First(x => x.Text.Contains("Bulbasaur"));
+        vm.Caught = true;
+
+        vm.SaveCommand.Execute(null);
+
+        var committedEntry = Zukan8.GetRawIndexes(PersonalTable.SWSH, sav.Blocks.Zukan.GetRevision(), Zukan8Index.TotalCount)
+            .First(x => x.Species == 1).Entry;
+        Assert.True(sav.Blocks.Zukan.GetCaught(committedEntry));
+        Assert.True(closed);
+    }
+
+    [Fact]
+    public void Pokedex8_CancelDiscardsWorkingChangesAndCloses()
+    {
+        var sav = new SAV8SWSH();
+        var entry = Zukan8.GetRawIndexes(PersonalTable.SWSH, sav.Blocks.Zukan.GetRevision(), Zukan8Index.TotalCount)
+            .First(x => x.Species == 1).Entry;
+        var before = (sav.Blocks.Zukan.GetCaught(entry), sav.Blocks.Zukan.GetSeenRegion(entry, 0, 0));
+        var closed = false;
+        var vm = new Pokedex8EditorViewModel(sav)
+        {
+            CloseRequested = () => closed = true,
+        };
+        vm.SelectedSpecies = vm.FilteredSpecies.First(x => x.Text.Contains("Bulbasaur"));
+        vm.Caught = true;
+        vm.CompleteDexCommand.Execute(null);
+
+        vm.CancelCommand.Execute(null);
+
+        Assert.Equal(before.Item1, sav.Blocks.Zukan.GetCaught(entry));
+        Assert.Equal(before.Item2, sav.Blocks.Zukan.GetSeenRegion(entry, 0, 0));
+        Assert.True(closed);
+    }
+
+    [Fact]
     public void Pokedex4_LoadAndSave_VerifyListOrdering()
     {
         // Arrange

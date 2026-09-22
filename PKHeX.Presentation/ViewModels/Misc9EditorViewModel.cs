@@ -1,6 +1,7 @@
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PKHeX.Application.Abstractions;
 using PKHeX.Core;
 using static PKHeX.Core.SaveBlockAccessor9SV;
 
@@ -9,14 +10,18 @@ namespace PKHeX.Presentation.ViewModels;
 /// <summary>
 /// Misc editor for Gen 9 Scarlet/Violet saves covering LP, BP, Fly locations, TM Recipes, and more.
 /// </summary>
-public partial class Misc9EditorViewModel : ViewModelBase
+public partial class Misc9EditorViewModel : ViewModelBase, ICloseableDialog
 {
-    private readonly SAV9SV _sav;
+    private readonly SAV9SV _source;
+    private readonly SAV9SV _working;
+
+    public Action? CloseRequested { get; set; }
 
     public Misc9EditorViewModel(SAV9SV sav)
     {
-        _sav = sav;
-        HasBlueberry = sav.SaveRevision >= 2;
+        _source = sav;
+        _working = sav.Clone() as SAV9SV ?? throw new InvalidOperationException("The SV save clone was not SAV9SV.");
+        HasBlueberry = _working.SaveRevision >= 2;
         LoadCurrency();
         if (HasBlueberry)
             LoadBlueberry();
@@ -31,63 +36,64 @@ public partial class Misc9EditorViewModel : ViewModelBase
 
     private void LoadCurrency()
     {
-        Money = _sav.Money;
-        LeaguePoints = _sav.LeaguePoints;
+        Money = _working.Money;
+        LeaguePoints = _working.LeaguePoints;
     }
 
     private void SaveCurrency()
     {
-        _sav.Money = Money;
-        _sav.LeaguePoints = LeaguePoints;
+        _working.Money = Money;
+        _working.LeaguePoints = LeaguePoints;
     }
 
     [RelayCommand]
     private void MaxMoney()
     {
-        Money = (uint)_sav.MaxMoney;
+        Money = (uint)_working.MaxMoney;
     }
 
     [RelayCommand]
     private void MaxLP()
     {
-        LeaguePoints = (uint)_sav.MaxMoney;
+        LeaguePoints = 9_999_999;
     }
 
     #endregion
 
     #region Blueberry (DLC2)
 
-    [ObservableProperty] private uint _blueberryPoints;
     [ObservableProperty] private uint _questsDoneSolo;
     [ObservableProperty] private uint _questsDoneGroup;
     [ObservableProperty] private int _throwStyleIndex;
+    [ObservableProperty] private bool _hasUnknownThrowStyle;
 
-    public string[] ThrowStyles { get; } = Util.GetStringList("throw_styles", "en");
+    public string[] ThrowStyles { get; } = Util.GetStringList("throw_styles", GameInfo.CurrentLanguage);
 
     private void LoadBlueberry()
     {
-        BlueberryPoints = _sav.BlueberryPoints;
-        var bbq = _sav.BlueberryQuestRecord;
+        var bbq = _working.BlueberryQuestRecord;
         QuestsDoneSolo = bbq.QuestsDoneSolo;
         QuestsDoneGroup = bbq.QuestsDoneGroup;
-        ThrowStyleIndex = Math.Max(0, (int)_sav.ThrowStyle - 1);
+        var raw = (int)_working.ThrowStyle;
+        HasUnknownThrowStyle = raw < 1 || raw > ThrowStyles.Length;
+        ThrowStyleIndex = HasUnknownThrowStyle ? -1 : raw - 1;
+    }
+
+    partial void OnThrowStyleIndexChanged(int value)
+    {
+        if (value >= 0)
+            HasUnknownThrowStyle = false;
     }
 
     private void SaveBlueberry()
     {
         if (!HasBlueberry) return;
 
-        _sav.BlueberryPoints = BlueberryPoints;
-        var bbq = _sav.BlueberryQuestRecord;
+        var bbq = _working.BlueberryQuestRecord;
         bbq.QuestsDoneSolo = QuestsDoneSolo;
         bbq.QuestsDoneGroup = QuestsDoneGroup;
-        _sav.ThrowStyle = (ThrowStyle9)(ThrowStyleIndex + 1);
-    }
-
-    [RelayCommand]
-    private void MaxBP()
-    {
-        BlueberryPoints = (uint)_sav.MaxMoney;
+        if (!HasUnknownThrowStyle && ThrowStyleIndex >= 0)
+            _working.ThrowStyle = (ThrowStyle9)(ThrowStyleIndex + 1);
     }
 
     #endregion
@@ -129,7 +135,7 @@ public partial class Misc9EditorViewModel : ViewModelBase
             FSYS_YMAP_FLY_SU2_SPOT10, FSYS_YMAP_FLY_SU2_SPOT11, FSYS_YMAP_POKECEN_SU02,
         ];
 
-        var accessor = _sav.Accessor;
+        var accessor = _working.Accessor;
         foreach (var hash in flyHashes)
         {
             if (accessor.TryGetBlock(hash, out var block))
@@ -140,25 +146,25 @@ public partial class Misc9EditorViewModel : ViewModelBase
     [RelayCommand]
     private void CollectAllStakes()
     {
-        _sav.CollectAllStakes();
+        _working.CollectAllStakes();
     }
 
     [RelayCommand]
     private void UnlockAllTMRecipes()
     {
-        _sav.UnlockAllTMRecipes();
+        _working.UnlockAllTMRecipes();
     }
 
     [RelayCommand]
     private void ActivateSnacksworthLegendaries()
     {
-        _sav.ActivateSnacksworthLegendaries();
+        _working.ActivateSnacksworthLegendaries();
     }
 
     [RelayCommand]
     private void UnlockAllCoaches()
     {
-        _sav.UnlockAllCoaches();
+        _working.UnlockAllCoaches();
     }
 
     [RelayCommand]
@@ -173,9 +179,12 @@ public partial class Misc9EditorViewModel : ViewModelBase
             "FSYS_RIDE_CLIMB_ENABLE",
         ];
 
-        var accessor = _sav.Accessor;
+        var accessor = _working.Accessor;
         foreach (var block in blocks)
-            accessor.GetBlock(block).ChangeBooleanType(SCTypeCode.Bool2);
+        {
+            if (accessor.TryGetBlock(block, out var value))
+                value.ChangeBooleanType(SCTypeCode.Bool2);
+        }
 
         if (accessor.TryGetBlock("FSYS_RIDE_FLIGHT_ENABLE", out var fly))
             fly.ChangeBooleanType(SCTypeCode.Bool2);
@@ -184,13 +193,13 @@ public partial class Misc9EditorViewModel : ViewModelBase
     [RelayCommand]
     private void UnlockBaseClothing()
     {
-        PlayerFashionUnlock9.UnlockBase(_sav.Accessor, _sav.Gender);
+        PlayerFashionUnlock9.UnlockBase(_working.Accessor, _working.Gender);
     }
 
     [RelayCommand]
     private void UnlockAllThrowStyles()
     {
-        _sav.UnlockAllThrowStyles();
+        _working.UnlockAllThrowStyles();
     }
 
     #endregion
@@ -202,7 +211,13 @@ public partial class Misc9EditorViewModel : ViewModelBase
     {
         SaveCurrency();
         SaveBlueberry();
+        _source.CopyChangesFrom(_working);
+        _source.State.Edited = true;
+        CloseRequested?.Invoke();
     }
+
+    [RelayCommand]
+    private void Cancel() => CloseRequested?.Invoke();
 
     #endregion
 }

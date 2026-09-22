@@ -1,5 +1,6 @@
 using Moq;
 using PKHeX.Avalonia.Services;
+using PKHeX.Avalonia.Tests.Fixtures;
 using PKHeX.Presentation.ViewModels;
 using PKHeX.Core;
 using Xunit.Abstractions;
@@ -34,7 +35,10 @@ public class DaycareEditorTests(ITestOutputHelper output)
     {
         foreach (var (v, slots, label) in DaycareVersions)
         {
-            yield return [BlankSaveFile.Get(v), slots, label];
+            var save = v == GameVersion.E
+                ? SaveFileFixture.LoadSave(Path.Combine(SaveFileFixture.FindSaveFilesPath()!, "gen3_emerald.sav"))!
+                : BlankSaveFile.Get(v);
+            yield return [save, slots, label];
         }
     }
 
@@ -139,11 +143,14 @@ public class DaycareEditorTests(ITestOutputHelper output)
         // Slot 0 starts unoccupied in a blank save
         var slot0 = vm.Slots[0];
         var initialOccupied = slot0.IsOccupied;
+        Assert.True(slot0.CanEditOccupancy);
         output.WriteLine($"Gen6 slot0 initial IsOccupied={initialOccupied}");
 
-        // Toggle and verify it writes back via the property change handler
+        // Toggle, verify the source is unchanged, then commit.
         slot0.IsOccupied = !initialOccupied;
         var storage = (IDaycareStorage)sav;
+        Assert.Equal(initialOccupied, storage.IsDaycareOccupied(0));
+        vm.SaveCommand.Execute(null);
         Assert.Equal(!initialOccupied, storage.IsDaycareOccupied(0));
         output.WriteLine($"Gen6 slot0 IsOccupied={!initialOccupied} persisted to save ✓");
     }
@@ -155,7 +162,7 @@ public class DaycareEditorTests(ITestOutputHelper output)
     [Fact]
     public void Daycare_Gen3_HasExperience_True()
     {
-        var sav = BlankSaveFile.Get(GameVersion.E);
+        var sav = SaveFileFixture.LoadSave(Path.Combine(SaveFileFixture.FindSaveFilesPath()!, "gen3_emerald.sav"))!;
         var vm = new DaycareEditorViewModel(sav, SpriteMock().Object);
 
         Assert.True(vm.HasExperience, "Gen3 Emerald should expose IDaycareExperience");
@@ -200,8 +207,40 @@ public class DaycareEditorTests(ITestOutputHelper output)
         vm.IsEggAvailable = !initial;
 
         var eggState = (IDaycareEggState)sav;
+        Assert.Equal(initial, eggState.IsEggAvailable);
+        vm.SaveCommand.Execute(null);
         Assert.Equal(!initial, eggState.IsEggAvailable);
         output.WriteLine($"Gen6 IsEggAvailable={!initial} persisted to save ✓");
+    }
+
+    [Fact]
+    public void Daycare_Gen3_OccupancyIsReadOnlyWhenCoreCannotWriteIt()
+    {
+        var sav = SaveFileFixture.LoadSave(Path.Combine(SaveFileFixture.FindSaveFilesPath()!, "gen3_emerald.sav"))!;
+        var vm = new DaycareEditorViewModel(sav, SpriteMock().Object);
+
+        Assert.False(vm.Slots[0].CanEditOccupancy);
+    }
+
+    [Fact]
+    public void Daycare_BDSP_OccupancyIsReadOnlyWhenCoreCannotWriteIt()
+    {
+        var sav = BlankSaveFile.Get(GameVersion.BD);
+        var vm = new DaycareEditorViewModel(sav, SpriteMock().Object);
+
+        Assert.False(vm.Slots[0].CanEditOccupancy);
+    }
+
+    [Fact]
+    public void Daycare_ORAS_RendersEveryNurseryLocation()
+    {
+        var sav = BlankSaveFile.Get(GameVersion.AS);
+        var multi = Assert.IsAssignableFrom<IDaycareMulti>(sav);
+        var vm = new DaycareEditorViewModel(sav, SpriteMock().Object);
+
+        Assert.Equal(multi.DaycareCount, vm.SlotCount / 2);
+        Assert.Equal(vm.SlotCount, vm.Slots.Count);
+        Assert.Contains(vm.Slots, x => x.Location.Contains("Nursery 2", StringComparison.Ordinal));
     }
 
     // -----------------------------------------------------------------------

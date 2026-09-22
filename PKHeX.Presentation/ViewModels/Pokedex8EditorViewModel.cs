@@ -4,20 +4,25 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PKHeX.Application.Abstractions;
 using PKHeX.Core;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class Pokedex8EditorViewModel : ViewModelBase
+public partial class Pokedex8EditorViewModel : ViewModelBase, ICloseableDialog
 {
-    private readonly SAV8SWSH _sav;
+    private readonly SAV8SWSH _source;
+    private readonly SAV8SWSH _working;
     private readonly Zukan8 _zukan;
     private readonly List<Zukan8EntryInfo> _allEntries;
 
+    public Action? CloseRequested { get; set; }
+
     public Pokedex8EditorViewModel(SAV8SWSH sav)
     {
-        _sav = sav;
-        _zukan = sav.Blocks.Zukan;
+        _source = sav;
+        _working = sav.Clone() as SAV8SWSH ?? throw new InvalidOperationException("The SWSH Pokédex clone was not a SAV8SWSH.");
+        _zukan = _working.Blocks.Zukan;
 
         // Load Indexes
         // Zukan8.GetRawIndexes might be static or instance? WinForms calls it static.
@@ -239,6 +244,9 @@ public partial class Pokedex8EditorViewModel : ViewModelBase
     {
         if (SelectedSpecies != null)
             SaveEntry(SelectedSpecies.Value);
+
+        _source.CopyChangesFrom(_working);
+        _source.State.Edited = true;
     }
 
     [RelayCommand]
@@ -267,6 +275,16 @@ public partial class Pokedex8EditorViewModel : ViewModelBase
         _zukan.CompleteDex(false);
         LoadEntry(SelectedSpecies.Value);
     }
+
+    [RelayCommand]
+    private void Save()
+    {
+        SaveCurrent();
+        CloseRequested?.Invoke();
+    }
+
+    [RelayCommand]
+    private void Cancel() => CloseRequested?.Invoke();
 }
 
 public partial class Pokedex8FormViewModel : ViewModelBase

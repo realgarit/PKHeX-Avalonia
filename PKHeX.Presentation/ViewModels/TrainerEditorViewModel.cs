@@ -249,31 +249,35 @@ public partial class TrainerEditorViewModel : ViewModelBase
     {
         var type = _sav.GetType();
 
-        // BP (Multiple Gen-specific locations)
-        var bpProp = type.GetProperty("BP");
-        if (bpProp != null)
-        {
-            HasBP = true;
-            BP = Convert.ToUInt32(bpProp.GetValue(_sav));
-        }
-        else if (_sav is SAV8BS bs)
-        {
-            HasBP = true;
-            BP = bs.BattleTower.BP;
-        }
-        else if (_sav is SAV5 sav5)
-        {
-            HasBP = true;
-            BP = (uint)sav5.BattleSubway.BP;
-        }
-        else if (_sav is SAV9SV sv)
+        // SV owns this value as Blueberry Points; do not expose it through the generic BP field.
+        if (_sav is SAV9SV sv)
         {
             // SCBlocks in blank/uninitialized SV saves can have Type=None and throw.
             // Wrap each block read individually so a missing block doesn't hide the rest.
             // Set visibility flags AFTER the read succeeds to avoid showing (and saving) default 0.
-            try { BP = (uint)sv.Blocks.GetBlockValue(SaveBlockAccessor9SV.KBlueberryPoints); HasBP = true; BlueberryPoints = BP; HasBlueberryPoints = true; } catch { }
+            try { BlueberryPoints = (uint)sv.Blocks.GetBlockValue(SaveBlockAccessor9SV.KBlueberryPoints); HasBlueberryPoints = true; } catch { }
             try { LP = (uint)sv.Blocks.GetBlockValue(SaveBlockAccessor9SV.KLeaguePoints); HasLP = true; } catch { }
             try { GimmighoulCoins = sv.Items.GetItemQuantity(1985); HasGimmighoulCoins = true; } catch { }
+        }
+        else
+        {
+            // BP (Multiple Gen-specific locations)
+            var bpProp = type.GetProperty("BP");
+            if (bpProp != null)
+            {
+                HasBP = true;
+                BP = Convert.ToUInt32(bpProp.GetValue(_sav));
+            }
+            else if (_sav is SAV8BS bs)
+            {
+                HasBP = true;
+                BP = bs.BattleTower.BP;
+            }
+            else if (_sav is SAV5 sav5)
+            {
+                HasBP = true;
+                BP = (uint)sav5.BattleSubway.BP;
+            }
         }
 
         // Coins (Gen 1-4)
@@ -468,13 +472,10 @@ public partial class TrainerEditorViewModel : ViewModelBase
         {
             sav5.BattleSubway.BP = (ushort)BP;
         }
-        else if (_sav is SAV9SV sv && HasBP)
-        {
-            sv.Blocks.SetBlockValue(SaveBlockAccessor9SV.KBlueberryPoints, BP);
-        }
 
         if (_sav is SAV9SV sv9)
         {
+            if (HasBlueberryPoints) sv9.Blocks.SetBlockValue(SaveBlockAccessor9SV.KBlueberryPoints, BlueberryPoints);
             if (HasLP) sv9.Blocks.SetBlockValue(SaveBlockAccessor9SV.KLeaguePoints, LP);
             if (HasGimmighoulCoins) sv9.Items.SetItemQuantity(1985, (int)GimmighoulCoins);
         }

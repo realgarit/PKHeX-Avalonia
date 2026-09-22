@@ -313,4 +313,52 @@ public class LivingDexTests
         Assert.Equal(50, result.Pokemon.Count + result.SkippedSpeciesNames.Count
             + Enumerable.Range(1, 50).Count(s => !sav.Personal.IsSpeciesInGame((ushort)s)));
     }
+
+    [Fact]
+    public void Generate_UsesLoadedSaveTrainerData()
+    {
+        var service = new LivingDexService();
+        var sav = BlankSaveFile.Get(GameVersion.SW);
+        sav.OT = "Saved Trainer";
+        sav.TID16 = 1234;
+        sav.SID16 = 5678;
+        sav.Gender = 1;
+        sav.Language = (int)LanguageID.English;
+
+        var result = service.Generate(sav, new LivingDexOptions(IncludeForms: false, SetShiny: false), maxSpeciesId: 1);
+
+        Assert.NotEmpty(result.Pokemon);
+        Assert.All(result.Pokemon, pk =>
+        {
+            Assert.Equal(sav.OT, pk.OriginalTrainerName);
+            Assert.Equal(sav.TID16, pk.TID16);
+            Assert.Equal(sav.SID16, pk.SID16);
+            Assert.Equal(sav.Gender, pk.OriginalTrainerGender);
+            Assert.Equal(sav.Language, pk.Language);
+        });
+    }
+
+    [Fact]
+    public void Generate_Gen1UsesLoadedSaveTrainerData()
+    {
+        var service = new LivingDexService();
+        var sav = BlankSaveFile.Get(GameVersion.Y);
+        sav.OT = "Yellow Trainer";
+        sav.TID16 = 4321;
+        sav.SID16 = 8765;
+        sav.Gender = 1;
+        sav.Language = (int)LanguageID.English;
+
+        var result = service.Generate(sav, new LivingDexOptions(IncludeForms: false, SetShiny: false), maxSpeciesId: 1);
+
+        Assert.NotEmpty(result.Pokemon);
+        Assert.All(result.Pokemon, pk =>
+        {
+            Assert.Equal(sav.OT, pk.OriginalTrainerName);
+            Assert.Equal(sav.TID16, pk.TID16);
+            Assert.Equal(sav.SID16, pk.SID16);
+            Assert.Equal(sav.Gender, pk.OriginalTrainerGender);
+            Assert.Equal(sav.Language, pk.Language);
+        });
+    }
 }

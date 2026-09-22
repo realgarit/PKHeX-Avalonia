@@ -11,11 +11,13 @@
     <Border Classes="view-container">
         <Grid ColumnDefinitions="250, 8, *" RowDefinitions="Auto,*">
             <Grid Grid.Row="0" Grid.Column="2" Classes="save-editor-header">
-                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                <WrapPanel HorizontalAlignment="Right" ItemSpacing="8" LineSpacing="4">
                     <Button Command="{Binding SeenAllCommand}" Content="{loc:Loc Pokedex8Editor_SeenAll}" />
                     <Button Command="{Binding CaughtAllCommand}" Content="{loc:Loc Pokedex8Editor_CaughtAll}" />
                     <Button Command="{Binding CompleteDexCommand}" Content="{loc:Loc Pokedex8Editor_CompleteDex}" Classes="accent" />
-                </StackPanel>
+                    <Button Command="{Binding CancelCommand}" Content="{loc:Loc Common_Cancel}" Classes="compact-secondary" />
+                    <Button Command="{Binding SaveCommand}" Content="{loc:Loc Common_Save}" Classes="accent" />
+                </WrapPanel>
             </Grid>
             <!-- Species List -->
             <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto, 8, *">
@@ -121,6 +123,7 @@
                             </ItemsControl>
                         </StackPanel>
                     </Border>
+
                 </StackPanel>
             </ScrollViewer>
 

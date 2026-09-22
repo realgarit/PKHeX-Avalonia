@@ -7,6 +7,10 @@
              MinWidth="400" MinHeight="280">
     <DockPanel Margin="16">
         <TextBlock DockPanel.Dock="Top" Text="{loc:Loc DaycareEditorView_Title}" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,0,0,12">
+            <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" Classes="compact-secondary" />
+            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" IsEnabled="{Binding CanSave}" />
+        </StackPanel>
 
         <!-- No Daycare Message -->
         <TextBlock IsVisible="{Binding !HasDaycare}" Text="{loc:Loc DaycareEditorView_NotSupported}"
@@ -22,7 +26,7 @@
 
             <!-- Egg Available Toggle -->
             <Border IsVisible="{Binding HasEggState}" Classes="editor-section-padded">
-                <CheckBox Content="{loc:Loc DaycareEditorView_EggAvailable}" IsChecked="{Binding IsEggAvailable}" />
+                <CheckBox Content="{loc:Loc DaycareEditorView_EggAvailable}" IsChecked="{Binding IsEggAvailable}" IsEnabled="{Binding CanSave}" />
             </Border>
 
             <!-- Daycare Slots -->
@@ -30,14 +34,15 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="vm:DaycareSlotViewModel">
                         <Border Classes="editor-section-padded" Margin="0,0,0,8">
-                            <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                                 <Image Grid.Column="0" Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}" Width="56" Height="48" Margin="0,0,12,0" />
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
                                     <TextBlock Text="{Binding Location}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
                                     <TextBlock Text="{Binding Species}" FontWeight="SemiBold" />
                                     <TextBlock Text="{Binding Level}" FontSize="12" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="4" IsVisible="{Binding $parent[UserControl].((vm:DaycareEditorViewModel)DataContext).HasExperience}">
+                                <CheckBox Grid.Column="2" Content="{loc:Loc DaycareEditorView_Occupied}" IsChecked="{Binding IsOccupied}" IsEnabled="{Binding CanEditOccupancy}" VerticalAlignment="Center" Margin="8,0" />
+                                <StackPanel Grid.Column="3" VerticalAlignment="Center" Spacing="4" IsVisible="{Binding $parent[UserControl].((vm:DaycareEditorViewModel)DataContext).HasExperience}">
                                     <TextBlock Text="{loc:Loc DaycareEditorView_Exp}" FontSize="10" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
                                     <NumericUpDown Value="{Binding Experience}" Minimum="0" Maximum="4294967295" Width="100" />
                                 </StackPanel>
