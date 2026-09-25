@@ -56,7 +56,7 @@ public partial class InventoryEditorViewModel : ViewModelBase
         // Create pouch view models
         foreach (var pouch in _originalPouches)
         {
-            Pouches.Add(new InventoryPouchViewModel(pouch, _itemNames, _spriteRenderer, availableItemIds, maxItemCount));
+            Pouches.Add(new InventoryPouchViewModel(pouch, _itemNames, _spriteRenderer, availableItemIds, maxItemCount, sav.Context, sav.Version));
         }
 
         if (Pouches.Count > 0)
@@ -138,13 +138,17 @@ public partial class InventoryEditorViewModel : ViewModelBase
 
 public partial class InventoryPouchViewModel : ViewModelBase
 {
+    private readonly EntityContext _context;
+    private readonly GameVersion _version;
     private readonly InventoryPouch _pouch;
     private readonly string[] _itemNames;
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly IReadOnlyList<int> _availableItemIds;
 
-    public InventoryPouchViewModel(InventoryPouch pouch, string[] itemNames, ISpriteRenderer spriteRenderer, IReadOnlyList<int>? availableItemIds = null, int? maxCount = null)
+    public InventoryPouchViewModel(InventoryPouch pouch, string[] itemNames, ISpriteRenderer spriteRenderer, IReadOnlyList<int>? availableItemIds = null, int? maxCount = null, EntityContext context = EntityContext.Gen4, GameVersion version = GameVersion.Any)
     {
+        _context = context;
+        _version = version;
         _pouch = pouch;
         _itemNames = itemNames;
         _spriteRenderer = spriteRenderer;
@@ -193,7 +197,7 @@ public partial class InventoryPouchViewModel : ViewModelBase
         foreach (var item in _pouch.Items)
         {
             var name = item.Index < _itemNames.Length ? _itemNames[item.Index] : $"Item #{item.Index}";
-            Items.Add(new InventoryItemViewModel(item, name, ItemList, MaxCount, _spriteRenderer));
+            Items.Add(new InventoryItemViewModel(item, name, ItemList, MaxCount, _spriteRenderer, _context, _version));
         }
     }
 
@@ -251,11 +255,15 @@ public partial class InventoryPouchViewModel : ViewModelBase
 
 public partial class InventoryItemViewModel : ViewModelBase
 {
+    private readonly EntityContext _context;
+    private readonly GameVersion _version;
     private readonly InventoryItem _item;
     private readonly ISpriteRenderer _spriteRenderer;
 
-    public InventoryItemViewModel(InventoryItem item, string name, IReadOnlyList<ComboItem> itemList, int maxCount, ISpriteRenderer spriteRenderer)
+    public InventoryItemViewModel(InventoryItem item, string name, IReadOnlyList<ComboItem> itemList, int maxCount, ISpriteRenderer spriteRenderer, EntityContext context = EntityContext.Gen4, GameVersion version = GameVersion.Any)
     {
+        _context = context;
+        _version = version;
         _item = item;
         _itemId = item.Index;
         _count = item.Count;
@@ -268,7 +276,7 @@ public partial class InventoryItemViewModel : ViewModelBase
     [ObservableProperty] private IReadOnlyList<ComboItem> _itemList;
     public int MaxCount { get; }
 
-    public byte[]? Sprite => _spriteRenderer.GetItemSprite(ItemId);
+    public byte[]? Sprite => _spriteRenderer.GetItemSprite(ItemId, _context, _version);
 
     public void RefreshLanguage()
     {

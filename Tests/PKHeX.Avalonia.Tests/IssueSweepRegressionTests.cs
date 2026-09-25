@@ -447,6 +447,7 @@ public sealed class IssueSweepRegressionTests
         public byte[]? GetSprite(PKM pk, bool isEgg = false) => null;
         public byte[]? GetSprite(ushort species, byte form, byte gender, uint formarg, bool shiny, EntityContext context) => null;
         public byte[]? GetItemSprite(int itemId) => null;
+        public byte[]? GetItemSprite(int itemId, EntityContext context, GameVersion version) => null;
         public byte[]? GetEmptySlot() => null;
         public void Initialize(SaveFile sav) { }
     }

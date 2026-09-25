@@ -55,8 +55,11 @@ public sealed class AvaloniaSpriteRenderer : ISpriteRenderer
     }
 
     public byte[]? GetItemSprite(int itemId)
+        => GetItemSprite(itemId, EntityContext.Gen4, GameVersion.Any);
+
+    public byte[]? GetItemSprite(int itemId, EntityContext context, GameVersion version)
     {
-        var skBitmap = _loader.GetItemSprite(itemId);
+        var skBitmap = _loader.GetItemSprite(itemId, context, version);
         if (skBitmap is null) return null;
         return EncodePng(skBitmap);
     }
@@ -90,13 +93,14 @@ public sealed class AvaloniaSpriteRenderer : ISpriteRenderer
 
         if (pk.HeldItem > 0)
         {
-            var itemSprite = _loader.GetItemSprite(pk.HeldItem);
+            var itemSprite = _loader.GetItemSprite(pk.SpriteItem);
             if (itemSprite is not null)
             {
                 // Bottom-right corner
-                int x = SpriteWidth - itemSprite.Width - 2;
-                int y = SpriteHeight - itemSprite.Height - 2;
-                canvas.DrawBitmap(itemSprite, x, y);
+                float scale = Math.Min(1f, 24f / Math.Max(itemSprite.Width, itemSprite.Height));
+                float width = itemSprite.Width * scale;
+                float height = itemSprite.Height * scale;
+                canvas.DrawBitmap(itemSprite, SKRect.Create(SpriteWidth - width - 2, SpriteHeight - height - 2, width, height));
             }
         }
 

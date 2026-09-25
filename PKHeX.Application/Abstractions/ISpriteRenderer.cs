@@ -11,7 +11,10 @@ public interface ISpriteRenderer
 {
     byte[]? GetSprite(PKM pk, bool isEgg = false);
     byte[]? GetSprite(ushort species, byte form, byte gender, uint formarg, bool shiny, EntityContext context);
+    /// <summary>Renders an item whose ID is already in the modern (Gen 4+) numbering scheme.</summary>
     byte[]? GetItemSprite(int itemId);
+    /// <summary>Renders a raw bag item ID using its owning save's context and game.</summary>
+    byte[]? GetItemSprite(int itemId, EntityContext context, GameVersion version);
     byte[]? GetEmptySlot();
     void Initialize(SaveFile sav);
 }
