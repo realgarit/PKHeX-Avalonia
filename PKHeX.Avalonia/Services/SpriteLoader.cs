@@ -136,12 +136,30 @@ public sealed class SpriteLoader
     }
 
     public SKBitmap? GetItemSprite(int itemId)
-    {
-        if (itemId <= 0)
-            return null;
+        => GetItemSprite(itemId, EntityContext.Gen4, GameVersion.Any);
 
-        var resourceName = $"{ItemPrefix}bitem_{itemId}.png";
-        return LoadSprite(resourceName);
+    public SKBitmap? GetItemSprite(int itemId, EntityContext context, GameVersion version)
+    {
+        var reference = ItemSpriteResolver.Resolve(itemId, context, version);
+        if (reference.Kind == ItemSpriteKind.None)
+            return null;
+        if (reference.Kind == ItemSpriteKind.Machine)
+            return LoadFromPrefix(ItemPrefix, "bitem_tm.png");
+        if (reference.Kind == ItemSpriteKind.Record)
+            return LoadFromPrefix(ItemPrefix, "bitem_tr.png");
+        foreach (var id in reference.ItemIds)
+        {
+            var bitmap = LoadFromPrefix(ItemPrefix, $"bitem_{id}.png");
+            if (bitmap is not null)
+                return bitmap;
+        }
+        foreach (var id in reference.ItemIds)
+        {
+            var bitmap = LoadFromPrefix(ImagePrefix + "Artwork_Items.", $"aitem_{id}.png");
+            if (bitmap is not null)
+                return bitmap;
+        }
+        return LoadFromPrefix(ItemPrefix, "bitem_unk.png");
     }
 
     private string GetResourceName(ushort species, byte form, byte gender, uint formarg, bool shiny, EntityContext context)
