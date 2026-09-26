@@ -26,6 +26,10 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase, ICloseableDialo
     public bool IsSupported { get; }
     public bool IsTotemSticker => _sav7 is SAV7USUM;
     public bool IsZygardeCell => !IsTotemSticker;
+    public string StoredCounterLabel => LocalizedStrings.Instance[IsTotemSticker ? "ZygardeCellEditor_StickersTotal" : "ZygardeCellEditor_CellsTotal"];
+    public string CollectedCounterLabel => LocalizedStrings.Instance[IsTotemSticker ? "ZygardeCellEditor_StickersCollected" : "ZygardeCellEditor_CellsCollected"];
+    public string StoredCounterAutomationName => StoredCounterLabel;
+    public string CollectedCounterAutomationName => CollectedCounterLabel;
 
     [ObservableProperty]
     private int _cellsTotal;

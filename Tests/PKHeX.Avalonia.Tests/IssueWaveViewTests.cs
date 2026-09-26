@@ -1,6 +1,7 @@
 using Avalonia;
 using PKHeX.Application.Services;
 using Avalonia.Controls;
+using Avalonia.Automation;
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
 using Avalonia.Threading;
@@ -16,6 +17,29 @@ namespace PKHeX.Avalonia.Tests;
 
 public class IssueWaveViewTests
 {
+    [AvaloniaTheory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ZygardeCounters_HaveGameSpecificAccessibleNames(bool ultra)
+    {
+        using var app = new HeadlessAppFixture();
+        var vm = new ZygardeCellEditorViewModel(ultra ? new SAV7USUM() : new SAV7SM());
+        var view = ViewLocator.Build(vm);
+        var window = new Window { Content = view, Width = 660, Height = 520 };
+        try
+        {
+            window.Show();
+            Pump(window);
+            var counters = view.GetVisualDescendants().OfType<NumericUpDown>().Take(2).ToArray();
+            Assert.Equal(2, counters.Length);
+            Assert.Equal(vm.StoredCounterLabel, AutomationProperties.GetName(counters[0]));
+            Assert.Equal(vm.CollectedCounterLabel, AutomationProperties.GetName(counters[1]));
+            Assert.Contains(ultra ? "Stickers" : "cells", AutomationProperties.GetName(counters[0]), StringComparison.Ordinal);
+            Assert.Contains(ultra ? "Stickers" : "cells", AutomationProperties.GetName(counters[1]), StringComparison.Ordinal);
+        }
+        finally { window.Close(); }
+    }
+
     [AvaloniaTheory]
     [InlineData("beans-sm", "gen7_sun.main", 440, 520)]
     [InlineData("beans-usum", "gen7_ultrasun.main", 440, 520)]

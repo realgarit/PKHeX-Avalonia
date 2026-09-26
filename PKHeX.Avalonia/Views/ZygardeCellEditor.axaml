@@ -36,12 +36,12 @@
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <TextBlock Text="{loc:Loc ZygardeCellEditor_CellsTotal}" IsVisible="{Binding !IsTotemSticker}" VerticalAlignment="Center" />
                         <TextBlock Text="{loc:Loc ZygardeCellEditor_StickersTotal}" IsVisible="{Binding IsTotemSticker}" VerticalAlignment="Center" />
-                        <NumericUpDown Value="{Binding CellsTotal}" AutomationProperties.Name="{loc:Loc ZygardeCellEditor_CellsTotal}" Minimum="0" Maximum="65535" Width="100" ShowButtonSpinner="False" />
+                        <NumericUpDown Value="{Binding CellsTotal}" AutomationProperties.Name="{Binding StoredCounterAutomationName}" Minimum="0" Maximum="65535" Width="100" ShowButtonSpinner="False" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <TextBlock Text="{loc:Loc ZygardeCellEditor_CellsCollected}" IsVisible="{Binding !IsTotemSticker}" VerticalAlignment="Center" />
                         <TextBlock Text="{loc:Loc ZygardeCellEditor_StickersCollected}" IsVisible="{Binding IsTotemSticker}" VerticalAlignment="Center" />
-                        <NumericUpDown Value="{Binding CellsCollected}" AutomationProperties.Name="{loc:Loc ZygardeCellEditor_CellsCollected}" Minimum="0" Maximum="65535" Width="100" ShowButtonSpinner="False" />
+                        <NumericUpDown Value="{Binding CellsCollected}" AutomationProperties.Name="{Binding CollectedCounterAutomationName}" Minimum="0" Maximum="65535" Width="100" ShowButtonSpinner="False" />
                     </StackPanel>
                 </StackPanel>
 
