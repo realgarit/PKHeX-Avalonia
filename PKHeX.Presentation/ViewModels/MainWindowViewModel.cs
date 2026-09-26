@@ -61,6 +61,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(OpenSaveDiffCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenBoxWorkspaceCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPartyWorkspaceCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenEncounterDatabaseCommand))]
+    [NotifyCanExecuteChangedFor(nameof(UnlockFriendSafariCommand))]
     [NotifyCanExecuteChangedFor(nameof(DumpBoxesCommand))]
     [NotifyCanExecuteChangedFor(nameof(LoadBoxesCommand))]
     [NotifyCanExecuteChangedFor(nameof(UndoCommand))]
@@ -243,6 +245,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         // Dismiss any modeless tool windows (e.g. the box seek tool) bound to the previous save.
         _windowService.CloseAllTools();
+        _encounterDatabase = null;
         _slotService.ResetSession();
         DisposeBatchEditor();
         _boxReport = null;

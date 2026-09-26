@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
+             x:Class="PKHeX.Avalonia.Views.PlusRecordEditor"
+             x:DataType="vm:PlusRecordEditorViewModel"
+             Width="460" Height="500">
+    <UserControl.KeyBindings><KeyBinding Gesture="Escape" Command="{Binding CancelCommand}" /></UserControl.KeyBindings>
+    <Grid Margin="12" RowDefinitions="Auto,*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            <Button Content="{loc:Loc PokemonEditor_SetAllLegal}" Command="{Binding SetLegalCommand}" />
+            <Button Content="{loc:Loc PokemonEditor_ClearAll}" Command="{Binding ClearCommand}" />
+        </StackPanel>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Records}" AutoGenerateColumns="False" IsReadOnly="False">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="{loc:Loc TechRecordEditor_Active}" Binding="{Binding IsActive}" Width="80" />
+                <DataGridTextColumn Header="{loc:Loc TechRecordEditor_Move}" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,8,0,0">
+            <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" />
+            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -360,6 +360,22 @@
                                 <CheckBox Grid.Row="8" Grid.Column="5" IsChecked="{Binding HyperTrainedSPE, Mode=TwoWay}" IsEnabled="{Binding CanHyperTrain}" IsVisible="{Binding HasHyperTraining}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.Name="{Binding HyperTrainedSpeAutomationName}" />
                             </Grid>
                         </Border>
+                            <CheckBox Content="{loc:Loc Metadata_IsAlpha}" IsVisible="{Binding HasAlpha}" IsChecked="{Binding IsAlpha}" AutomationProperties.Name="{loc:Loc Metadata_IsAlpha}" />
+                            <StackPanel IsVisible="{Binding HasSizeScalars}" Spacing="4">
+                                <TextBlock Text="{loc:Loc Metadata_HeightScalar}" />
+                                <NumericUpDown Value="{Binding HeightScalar}" Minimum="0" Maximum="255" FormatString="0"
+                                               AutomationProperties.Name="{loc:Loc Metadata_HeightScalar}" />
+                            </StackPanel>
+                            <StackPanel IsVisible="{Binding HasSizeScalars}" Spacing="4">
+                                <TextBlock Text="{loc:Loc Metadata_WeightScalar}" />
+                                <NumericUpDown Value="{Binding WeightScalar}" Minimum="0" Maximum="255" FormatString="0"
+                                               AutomationProperties.Name="{loc:Loc Metadata_WeightScalar}" />
+                            </StackPanel>
+                            <StackPanel IsVisible="{Binding HasScale}" Spacing="4">
+                                <TextBlock Text="{loc:Loc Metadata_Scale}" />
+                                <NumericUpDown Value="{Binding Scale}" Minimum="0" Maximum="255" FormatString="0"
+                                               AutomationProperties.Name="{loc:Loc Metadata_Scale}" />
+                            </StackPanel>
                       </StackPanel>
                     </ScrollViewer>
                 </TabItem>
@@ -424,6 +440,17 @@
                                                     AutomationProperties.Name="{loc:Loc PokemonEditor_EggDate}" />
                             </StackPanel>
 
+                            <StackPanel IsVisible="{Binding HasBattleVersion}" Spacing="4">
+                                <TextBlock Text="{loc:Loc Metadata_BattleVersion}" />
+                                <ComboBox ItemsSource="{Binding BattleVersionList}" SelectedValue="{Binding BattleVersion}"
+                                          SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}"
+                                          HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc Metadata_BattleVersion}" />
+                            </StackPanel>
+                            <StackPanel IsVisible="{Binding HasObedienceLevel}" Spacing="4">
+                                <TextBlock Text="{loc:Loc Metadata_ObedienceLevel}" />
+                                <NumericUpDown Value="{Binding ObedienceLevel}" Minimum="0" Maximum="255" FormatString="0"
+                                               AutomationProperties.Name="{loc:Loc Metadata_ObedienceLevel}" />
+                            </StackPanel>
                             <CheckBox Content="{loc:Loc PokemonEditor_FatefulEncounter}" IsChecked="{Binding IsFatefulEncounter}" AutomationProperties.Name="{loc:Loc PokemonEditor_FatefulEncounter}" />
                         </StackPanel>
                     </ScrollViewer>
@@ -503,6 +530,7 @@
                             </StackPanel>
 
                             <!-- Tech Records (Gen 8+) -->
+                            <Button Content="{loc:Loc PlusRecords_Title}" Command="{Binding OpenPlusRecordsCommand}" IsVisible="{Binding HasPlusRecords}" />
                             <Border IsVisible="{Binding HasTechRecords}" Padding="8,0" Margin="0,6,0,0"
                                     BorderBrush="{DynamicResource ThemeBorderDefaultBrush}" BorderThickness="0,1,0,0">
                                 <StackPanel Spacing="8" Margin="0,6,0,0">
@@ -598,6 +626,17 @@
                                 </Grid>
                             </Border>
 
+                            <StackPanel IsVisible="{Binding HasHandlerLanguage}" Spacing="4">
+                                <TextBlock Text="{loc:Loc Metadata_HandlingTrainerLanguage}" />
+                                <ComboBox ItemsSource="{Binding HandlerLanguageList}" SelectedValue="{Binding HandlingTrainerLanguage}"
+                                          SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}"
+                                          HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc Metadata_HandlingTrainerLanguage}" />
+                            </StackPanel>
+                            <StackPanel IsVisible="{Binding HasHomeTracker}" Spacing="4">
+                                <TextBlock Text="{loc:Loc Metadata_HomeTracker}" />
+                                <TextBox Text="{Binding HomeTracker}" FontFamily="Consolas" AutomationProperties.Name="{loc:Loc Metadata_HomeTracker}" ToolTip.Tip="{loc:Loc Metadata_HomeTrackerHelp}" />
+                                <TextBlock Text="{loc:Loc Metadata_HomeTrackerError}" IsVisible="{Binding !IsHomeTrackerValid}" Foreground="{DynamicResource ThemeErrorBrush}" TextWrapping="Wrap" />
+                            </StackPanel>
                             <!-- Extra Info Card -->
                             <Border Classes="editor-section">
                                 <StackPanel Spacing="8">

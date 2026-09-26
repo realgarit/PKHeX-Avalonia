@@ -3,7 +3,8 @@
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.ZygardeCellEditor"
-             x:DataType="vm:ZygardeCellEditorViewModel">
+             x:DataType="vm:ZygardeCellEditorViewModel" Width="660" Height="520">
+    <UserControl.KeyBindings><KeyBinding Gesture="Escape" Command="{Binding CancelCommand}" /></UserControl.KeyBindings>
 
     <Border Classes="view-container">
         <Panel>
@@ -13,6 +14,10 @@
             </StackPanel>
 
             <DockPanel IsVisible="{Binding IsSupported}">
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,8,0,0">
+                    <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" />
+                    <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" />
+                </StackPanel>
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
                     <TextBlock Text="{loc:Loc ZygardeCellEditor_Title}" IsVisible="{Binding !IsTotemSticker}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
                     <TextBlock Text="{loc:Loc ZygardeCellEditor_TotemStickerTitle}" IsVisible="{Binding IsTotemSticker}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -23,7 +28,7 @@
                     </StackPanel>
                 </DockPanel>
 
-                <TextBlock DockPanel.Dock="Top" Text="{loc:Loc ZygardeCellEditor_ChangesApplyImmediately}"
+                <TextBlock DockPanel.Dock="Top" Text="{loc:Loc ZygardeCellEditor_CounterWarning}" IsVisible="{Binding HasCounterWarning}"
                            Classes="form-hint" Margin="0,0,0,8" />
 
                 <!-- Totals -->
@@ -31,12 +36,12 @@
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <TextBlock Text="{loc:Loc ZygardeCellEditor_CellsTotal}" IsVisible="{Binding !IsTotemSticker}" VerticalAlignment="Center" />
                         <TextBlock Text="{loc:Loc ZygardeCellEditor_StickersTotal}" IsVisible="{Binding IsTotemSticker}" VerticalAlignment="Center" />
-                        <NumericUpDown Value="{Binding CellsTotal}" Minimum="0" Maximum="999" Width="100" />
+                        <NumericUpDown Value="{Binding CellsTotal}" AutomationProperties.Name="{loc:Loc ZygardeCellEditor_CellsTotal}" Minimum="0" Maximum="65535" Width="100" ShowButtonSpinner="False" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <TextBlock Text="{loc:Loc ZygardeCellEditor_CellsCollected}" IsVisible="{Binding !IsTotemSticker}" VerticalAlignment="Center" />
                         <TextBlock Text="{loc:Loc ZygardeCellEditor_StickersCollected}" IsVisible="{Binding IsTotemSticker}" VerticalAlignment="Center" />
-                        <NumericUpDown Value="{Binding CellsCollected}" Minimum="0" Maximum="999" Width="100" />
+                        <NumericUpDown Value="{Binding CellsCollected}" AutomationProperties.Name="{loc:Loc ZygardeCellEditor_CellsCollected}" Minimum="0" Maximum="65535" Width="100" ShowButtonSpinner="False" />
                     </StackPanel>
                 </StackPanel>
 

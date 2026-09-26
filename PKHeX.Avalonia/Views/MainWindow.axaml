@@ -22,6 +22,19 @@
     </Window.Resources>
 
     <Window.Styles>
+        <Style Selector="Button.workspace-top-tab">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="9,7" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+        <Style Selector="Button.workspace-top-tab.active">
+            <Setter Property="BorderBrush" Value="{DynamicResource CompactAccentBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Background" Value="{DynamicResource ThemeBackgroundElevatedBrush}" />
+        </Style>
         <Style Selector="TabControl.workspace-tabs.pokemon /template/ ItemsPresenter#PART_ItemsPresenter">
             <Setter Property="IsVisible" Value="False" />
         </Style>
@@ -123,12 +136,21 @@
 
         <Border DockPanel.Dock="Top" MinHeight="49" Padding="17,6" Background="{DynamicResource ThemeBackgroundBaseBrush}"
                 BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,1,0,1">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding CurrentGameName}" ToolTip.Tip="{Binding CurrentSaveFileName}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxWidth="250" />
-                    <TextBlock Text="{Binding CurrentTrainerName}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="200" />
+            <Grid ColumnDefinitions="190,*,Auto" ColumnSpacing="12">
+                <StackPanel Spacing="1" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding CurrentGameName}" ToolTip.Tip="{Binding CurrentSaveFileName}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding CurrentTrainerName}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextTrimming="CharacterEllipsis" />
                 </StackPanel>
-                <Button Grid.Column="1" Classes="compact-primary" Content="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" Padding="12,5" FontSize="11" />
+                <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" IsVisible="{Binding HasSave}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="3" x:Name="WorkspaceNavigation">
+                        <Button Classes="workspace-top-tab" Classes.active="{Binding IsPokemonWorkspace}" Content="{loc:Loc Workspace_Pokemon}" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Pokemon}" />
+                        <Button Classes="workspace-top-tab" Classes.active="{Binding IsTrainerNavigationSelected}" Content="{loc:Loc Tab_Trainer}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.TrainerWorkspaceTabIndex}" />
+                        <Button Classes="workspace-top-tab" Classes.active="{Binding IsInventoryNavigationSelected}" Content="{loc:Loc Tab_Inventory}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.InventoryWorkspaceTabIndex}" />
+                        <Button Classes="workspace-top-tab" Classes.active="{Binding IsSaveNavigationSelected}" Content="{loc:Loc Workspace_Save}" Command="{Binding SelectSaveNavigationCommand}" />
+                        <Button Classes="workspace-top-tab" Classes.active="{Binding IsReportsWorkspace}" Content="{loc:Loc Workspace_Reports}" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Reports}" />
+                    </StackPanel>
+                </ScrollViewer>
+                <Button Grid.Column="2" Classes="compact-primary" Content="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" Padding="12,5" FontSize="11" />
             </Grid>
         </Border>
 

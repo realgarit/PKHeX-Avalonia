@@ -7,7 +7,7 @@ using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class ZygardeCellEditorViewModel : ViewModelBase
+public partial class ZygardeCellEditorViewModel : ViewModelBase, ICloseableDialog
 {
     private readonly SaveFile _sav;
     private readonly SAV7? _sav7;
@@ -30,27 +30,43 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase
     [ObservableProperty]
     private int _cellsTotal;
 
-    partial void OnCellsTotalChanged(int value)
-    {
-        if (!_loading && _sav7?.EventWork is { } ew)
-        {
-            ew.ZygardeCellTotal = (ushort)value;
-            _sav.State.Edited = true;
-        }
-    }
+    partial void OnCellsTotalChanged(int value) => NotifyCounterValidity();
 
     [ObservableProperty]
     private int _cellsCollected;
 
-    partial void OnCellsCollectedChanged(int value)
+    partial void OnCellsCollectedChanged(int value) => NotifyCounterValidity();
+
+    public System.Action? CloseRequested { get; set; }
+    public bool CanSave => IsSupported && CellsTotal is >= 0 and <= ushort.MaxValue &&
+        CellsCollected is >= 0 and <= ushort.MaxValue && Cells.All(c => c.State is >= 0 and <= 2);
+    public bool HasCounterWarning => CellsCollected < Cells.Count(c => c.State == 2);
+
+    private void NotifyCounterValidity()
     {
-        if (!_loading && _sav7?.EventWork is { } ew)
-        {
-            ew.ZygardeCellCount = (ushort)value;
-            if (_sav7 is SAV7USUM)
-                _sav7.SetRecord(72, value);
-            _sav.State.Edited = true;
-        }
+        OnPropertyChanged(nameof(CanSave));
+        OnPropertyChanged(nameof(HasCounterWarning));
+        SaveCommand.NotifyCanExecuteChanged();
+    }
+
+    [RelayCommand(CanExecute = nameof(CanSave))]
+    private void Save()
+    {
+        if (!CanSave || _sav7 is null) return;
+        foreach (var cell in Cells)
+            _sav7.EventWork.SetZygardeCell(cell.Index, (ushort)cell.State);
+        _sav7.EventWork.ZygardeCellTotal = (ushort)CellsTotal;
+        _sav7.EventWork.ZygardeCellCount = (ushort)CellsCollected;
+        if (_sav7 is SAV7USUM) _sav7.SetRecord(72, CellsCollected);
+        _sav.State.Edited = true;
+        CloseRequested?.Invoke();
+    }
+
+    [RelayCommand]
+    private void Cancel()
+    {
+        LoadData();
+        CloseRequested?.Invoke();
     }
 
     [ObservableProperty]
@@ -80,45 +96,26 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase
         finally
         {
             _loading = false;
+            NotifyCounterValidity();
         }
     }
 
-    private void SetCellState(int index, int state)
+    private void SetCellState(int index, int oldState, int state)
     {
-        if (_loading || _sav7 is null)
-            return;
-
-        _sav7.EventWork.SetZygardeCell(index, (ushort)state);
-        _sav.State.Edited = true;
-        RecalculateCounters();
-    }
-
-    private void RecalculateCounters()
-    {
-        var received = Cells.Count(c => c.State == 2);
-        if (CellsCollected != received)
-            CellsCollected = received;
-
+        if (_loading || _sav7 is null) return;
+        // Preserve cells already spent on assembly and the five core-related counts.
+        // Only entering/leaving Received changes the counters; Available is not Stored.
+        var delta = (state == 2 ? 1 : 0) - (oldState == 2 ? 1 : 0);
+        CellsCollected = System.Math.Clamp(CellsCollected + delta, 0, ushort.MaxValue);
         if (!IsTotemSticker)
-        {
-            var present = Cells.Count(c => c.State != 0);
-            if (CellsTotal != present)
-                CellsTotal = present;
-        }
+            CellsTotal = System.Math.Clamp(CellsTotal + delta, 0, ushort.MaxValue);
+        NotifyCounterValidity();
     }
 
     [RelayCommand]
     private void CollectAll()
     {
-        if (_sav7?.EventWork is not { } ew) return;
-
-        for (int i = 0; i < Cells.Count; i++)
-        {
-            if (Cells[i].State != 2)
-                Cells[i].State = 2;
-        }
-
-        RecalculateCounters();
+        foreach (var cell in Cells) cell.State = 2;
     }
 
     [RelayCommand]
@@ -200,9 +197,9 @@ public partial class ZygardeCellEditorViewModel : ViewModelBase
 
 public partial class ZygardeCellViewModel : ViewModelBase
 {
-    private readonly System.Action<int, int> _onStateChanged;
+    private readonly System.Action<int, int, int> _onStateChanged;
 
-    public ZygardeCellViewModel(int index, string location, int state, bool isTotemSticker, System.Action<int, int> onStateChanged)
+    public ZygardeCellViewModel(int index, string location, int state, bool isTotemSticker, System.Action<int, int, int> onStateChanged)
     {
         Index = index;
         Location = location;
@@ -220,9 +217,9 @@ public partial class ZygardeCellViewModel : ViewModelBase
     [ObservableProperty]
     private int _state;
 
-    partial void OnStateChanged(int value)
+    partial void OnStateChanged(int oldValue, int newValue)
     {
-        _onStateChanged(Index, value);
+        _onStateChanged(Index, oldValue, newValue);
         OnPropertyChanged(nameof(StateName));
     }
 

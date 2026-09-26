@@ -4,8 +4,14 @@
              xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.RecordsEditorView"
              x:DataType="vm:RecordsEditorViewModel"
-             MinWidth="500" MinHeight="500">
+             MinWidth="460" MinHeight="300">
+    <UserControl.KeyBindings><KeyBinding Gesture="Escape" Command="{Binding CancelCommand}" /></UserControl.KeyBindings>
     <DockPanel Margin="16">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,8,0,0">
+            <Button Content="{loc:Loc RecordsEditor_Reset}" Command="{Binding RefreshRecordsCommand}" />
+            <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" />
+            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" />
+        </StackPanel>
         <TextBlock DockPanel.Dock="Top" Text="{loc:Loc RecordsEditorView_Title}" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
 
         <!-- No Records Message -->
@@ -17,7 +23,7 @@
         <DockPanel IsVisible="{Binding HasRecords}">
             <!-- Search Bar -->
             <Border DockPanel.Dock="Top" Classes="editor-section-padded" Padding="8" Margin="0,0,0,12">
-                <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc RecordsEditorView_SearchWatermark}" AutomationProperties.Name="Search records" />
+                <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc RecordsEditorView_SearchWatermark}" AutomationProperties.Name="{loc:Loc RecordsEditorView_SearchWatermark}" />
             </Border>
 
             <!-- Records List -->
@@ -30,10 +36,13 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{loc:Loc RecordsEditorView_ColumnId}" Binding="{Binding Id}" Width="60" IsReadOnly="True" />
                     <DataGridTextColumn Header="{loc:Loc RecordsEditorView_ColumnRecord}" Binding="{Binding Name}" Width="*" IsReadOnly="True" />
-                    <DataGridTemplateColumn Header="{loc:Loc RecordsEditorView_ColumnValue}" Width="120">
+                    <DataGridTemplateColumn Header="{loc:Loc RecordsEditorView_ColumnValue}" Width="155">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="vm:RecordItemViewModel">
-                                <NumericUpDown Value="{Binding Value}" Minimum="0" Maximum="999999999" AutomationProperties.Name="Value" />
+                                <StackPanel Spacing="2">
+                                    <TextBox Text="{Binding ValueText}" AutomationProperties.Name="{Binding Name}" ToolTip.Tip="{Binding LimitHint}" />
+                                    <TextBlock Text="{Binding LimitHint}" IsVisible="{Binding !IsValid}" Foreground="{DynamicResource ThemeErrorBrush}" />
+                                </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

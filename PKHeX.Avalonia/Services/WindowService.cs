@@ -51,6 +51,15 @@ public sealed class WindowService : IWindowService
             StabilizeInitialBounds(dialog);
         }
 
+        if (viewModel is RecordsEditorViewModel)
+        {
+            var key = typeof(RecordsEditorViewModel).FullName!;
+            dialog.SizeToContent = SizeToContent.Manual;
+            dialog.Width = ToolBounds.TryGetValue(key, out var remembered) ? Math.Min(remembered.Width, dialog.MaxWidth) : 620;
+            dialog.Height = remembered.Height > 0 ? Math.Min(remembered.Height, dialog.MaxHeight) : 520;
+            dialog.Closed += (_, _) => ToolBounds[key] = (dialog.Position, dialog.Width, dialog.Height);
+        }
+
         if (viewModel is ICloseableDialog closeable)
             closeable.CloseRequested = dialog.Close;
 

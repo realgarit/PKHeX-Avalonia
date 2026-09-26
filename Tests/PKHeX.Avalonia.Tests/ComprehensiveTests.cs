@@ -502,7 +502,10 @@ public class ComprehensiveTests
             "HtMemory", "HtMemoryIntensity", "HtMemoryFeeling", "HtMemoryVariable",
             "Sid",
             // Conditional on IFormArgument + species/form; not present on the PK3 test fixture.
-            "FormArgumentValue", "FormArgumentMax"
+            "FormArgumentValue", "FormArgumentMax",
+            // Modern interface metadata is absent on this PK3 fixture; PokemonMetadataTests
+            // covers supported PA9/PA8 round trips and unsupported-format visibility.
+            "BattleVersion", "HandlingTrainerLanguage"
         };
 
         foreach (var prop in properties)
