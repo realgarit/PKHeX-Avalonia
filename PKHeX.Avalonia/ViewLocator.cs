@@ -114,6 +114,7 @@ public static class ViewLocator
         [typeof(SimpleTrainerEditorViewModel)] = () => new SimpleTrainerEditor(),
         [typeof(SuperTrainingEditorViewModel)] = () => new SuperTrainingEditor(),
         [typeof(TechRecordEditorViewModel)] = () => new TechRecordEditor(),
+        [typeof(PlusRecordEditorViewModel)] = () => new PlusRecordEditor(),
         [typeof(TrainerCard8EditorViewModel)] = () => new TrainerCard8EditorView(),
         [typeof(Underground8bEditorViewModel)] = () => new Underground8bEditor(),
         [typeof(UndergroundEditorViewModel)] = () => new UndergroundEditor(),

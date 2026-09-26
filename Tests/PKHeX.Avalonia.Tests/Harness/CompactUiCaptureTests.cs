@@ -15,6 +15,41 @@ namespace PKHeX.Avalonia.Tests.Harness;
 
 public sealed class CompactUiCaptureTests
 {
+    [AvaloniaFact]
+    public async Task ReadmeHero_UsesLegalSaveFixture()
+    {
+        var directory = Fixtures.SaveFileFixture.FindSaveFilesPath()!;
+        var save = Assert.IsType<SAV9ZA>(Fixtures.SaveFileFixture.LoadSave(Path.Combine(directory, "gen9a_legendsza.main")));
+        save.CurrentBox = 0;
+        using var app = new HeadlessAppFixture();
+        app.Window.Width = 900;
+        app.Window.Height = 600;
+        app.Services.GetRequiredService<AppSettings>().Sprite.SpritePreference = SpritePreference.ForceArtwork;
+        for (int slot = 0; slot < save.BoxSlotCount; slot++)
+            Assert.True(new LegalityAnalysis(save.GetBoxSlotAtIndex(0, slot)).Valid, $"Source box slot {slot + 1} is not legal.");
+        for (int slot = 0; slot < save.PartyCount; slot++)
+            Assert.True(new LegalityAnalysis(save.GetPartySlotAtIndex(slot)).Valid, $"Source party slot {slot + 1} is not legal.");
+        app.LoadSaveInstance(save, "gen9a_legendsza.main");
+        Assert.All(app.BoxViewer!.Slots, slot => Assert.True(slot.IsLegal, $"Box 1 slot {slot.Slot + 1} is not legal."));
+        Assert.All(app.ViewModel.PartyViewer!.Slots, slot => Assert.True(slot.IsLegal, $"Party slot {slot.Slot + 1} is not legal."));
+        app.ViewModel.CurrentPokemonEditor!.LoadPKM(save.GetBoxSlotAtIndex(0, 5));
+        Assert.True(app.ViewModel.CurrentPokemonEditor.IsLegal, app.ViewModel.CurrentPokemonEditor.LegalityReport);
+        app.BoxViewer.SelectedIndex = 5;
+        var theme = app.Services.GetRequiredService<IThemeService>();
+        foreach (var variant in new[] { AppTheme.Light, AppTheme.Dark })
+        {
+            theme.ApplyTheme(variant);
+            app.ViewModel.RefreshThemeSelection();
+            app.Pump();
+            await Task.Delay(250);
+            app.Pump();
+            if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") != "1") continue;
+            var captureDirectory = Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR")!;
+            Directory.CreateDirectory(captureDirectory);
+            Assert.NotNull(app.CaptureFrame(Path.Combine(captureDirectory, $"readme-legal-{variant.ToString().ToLowerInvariant()}.png")));
+        }
+    }
+
     [AvaloniaTheory]
     [InlineData("de")]
     [InlineData("ja")]

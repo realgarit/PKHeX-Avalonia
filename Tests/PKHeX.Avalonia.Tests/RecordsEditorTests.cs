@@ -7,16 +7,87 @@ namespace PKHeX.Avalonia.Tests;
 /// <summary>
 /// Behavioral tests for RecordsEditorViewModel.
 /// Records exist for Gen5-8; other generations have HasRecords=false.
-/// Editing a RecordItemViewModel immediately writes through to the save
+/// Editing a RecordItemViewModel stages values until Save
 /// via OnValueChanged partial method.
 /// </summary>
 public class RecordsEditorTests(ITestOutputHelper output)
 {
+    [Fact]
+    public void RetypingOriginalOutOfRangeValue_DiscardsIntermediateValidEdit()
+    {
+        var storage = new Moq.Mock<ITrainerStatRecord>();
+        storage.Setup(s => s.GetRecordMax(0)).Returns(100);
+        var record = new RecordItemViewModel(0, "record", 101, storage.Object);
+        record.ValueText = "1";
+        Assert.True(record.IsChanged);
+        record.ValueText = "101";
+        Assert.True(record.CanCommit);
+        Assert.False(record.IsChanged);
+        Assert.Equal(101, record.Value);
+    }
+
+    [Theory]
+    [InlineData(GameVersion.W2)]
+    [InlineData(GameVersion.X)]
+    [InlineData(GameVersion.SN)]
+    [InlineData(GameVersion.SW)]
+    [InlineData(GameVersion.BD)]
+    public void StagingLimitsCancelResetAndCommit(GameVersion version)
+    {
+        var save = BlankSaveFile.Get(version);
+        var before = save.Data.ToArray();
+        var vm = new RecordsEditorViewModel(save);
+        Assert.Equal(before, save.Data);
+        var record = vm.Records.First(r => r.Maximum > 1);
+        var id = record.Id;
+        var original = record.Value;
+        record.ValueText = "1";
+        Assert.Equal(before, save.Data);
+        record.ValueText = "99999999999999999999999";
+        Assert.False(record.IsValid);
+        Assert.False(vm.SaveCommand.CanExecute(null));
+        record.ValueText = ((long)record.Maximum + 1).ToString();
+        Assert.False(record.IsValid);
+        record.ValueText = "-1";
+        Assert.False(record.IsValid);
+        record.ValueText = "1.5";
+        Assert.False(record.IsValid);
+        vm.RefreshRecordsCommand.Execute(null);
+        Assert.Equal(original, vm.Records.Single(r => r.Id == id).Value);
+        Assert.Equal(before, save.Data);
+        vm.Records.Single(r => r.Id == id).Value = 1;
+        vm.CancelCommand.Execute(null);
+        Assert.Equal(before, save.Data);
+        vm.Records.Single(r => r.Id == id).Value = 1;
+        vm.SaveCommand.Execute(null);
+        Assert.Equal(1, new RecordsEditorViewModel(save).Records.Single(r => r.Id == id).Value);
+        Assert.True(save.State.Edited);
+    }
+
+    [Fact]
+    public void Gen5_Uses16BitLimitsAndReencryptsAfterCommit()
+    {
+        var save = new SAV5B2W2();
+        save.Records.SetRecord16(0, 123);
+        save.Records.EndAccess();
+        var before = save.Data.ToArray();
+        var vm = new RecordsEditorViewModel(save);
+        var record = vm.Records.Single(r => r.Id == Record5.Record32);
+        Assert.Equal(ushort.MaxValue, record.Maximum);
+        Assert.Equal(123, record.Value);
+        Assert.Equal(before, save.Data);
+        record.Value = 54321;
+        vm.SaveCommand.Execute(null);
+        var reread = new RecordsEditorViewModel(save);
+        Assert.Equal(54321, reread.Records.Single(r => r.Id == record.Id).Value);
+    }
+
     // -----------------------------------------------------------------------
     // 1. HasRecords is true for Gen5-8 saves
     // -----------------------------------------------------------------------
 
     [Theory]
+    [InlineData(GameVersion.W2, "Gen5-White2")]
     [InlineData(GameVersion.X,  "Gen6-X")]
     [InlineData(GameVersion.SN, "Gen7-Sun")]
     [InlineData(GameVersion.SW, "Gen8-Sword")]
@@ -41,7 +112,6 @@ public class RecordsEditorTests(ITestOutputHelper output)
     [InlineData(GameVersion.GD, "Gen2-Gold")]
     [InlineData(GameVersion.E,  "Gen3-Emerald")]
     [InlineData(GameVersion.Pt, "Gen4-Platinum")]
-    [InlineData(GameVersion.W2, "Gen5-White2")]
     [InlineData(GameVersion.SL, "Gen9-Scarlet")]
     public void Records_OtherGens_HasRecords_False(GameVersion version, string label)
     {
@@ -58,7 +128,7 @@ public class RecordsEditorTests(ITestOutputHelper output)
     // -----------------------------------------------------------------------
 
     [Fact]
-    public void Records_Gen6_EditValue_ImmediatelyUpdatesSave()
+    public void Records_Gen6_EditValue_UpdatesSaveOnlyOnSave()
     {
         var sav = new SAV6XY();
         var vm = new RecordsEditorViewModel(sav);
@@ -74,7 +144,9 @@ public class RecordsEditorTests(ITestOutputHelper output)
         var newValue = original + 100;
         record.Value = newValue;
 
-        // Live-write: OnValueChanged calls _storage.SetRecord immediately
+        Assert.Equal(original, storage.GetRecord(recordId));
+        vm.SaveCommand.Execute(null);
+        // Explicit Save commits the staged value.
         Assert.Equal(newValue, storage.GetRecord(recordId));
         output.WriteLine($"Gen6 record[{recordId}]: {original} → {newValue} immediately in save ✓");
     }

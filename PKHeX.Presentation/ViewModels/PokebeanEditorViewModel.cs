@@ -5,7 +5,7 @@ using PKHeX.Core;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class PokebeanEditorViewModel : ViewModelBase
+public partial class PokebeanEditorViewModel : ViewModelBase, ICloseableDialog
 {
     private readonly SaveFile _sav;
     private readonly ResortSave7? _resortSave;
@@ -23,6 +23,7 @@ public partial class PokebeanEditorViewModel : ViewModelBase
     }
 
     public bool IsSupported { get; }
+    public System.Action? CloseRequested { get; set; }
 
     [ObservableProperty]
     private ObservableCollection<BeanSlotViewModel> _beans = [];
@@ -37,29 +38,40 @@ public partial class PokebeanEditorViewModel : ViewModelBase
 
         for (int i = 0; i < beanValues.Length; i++)
         {
-            Beans.Add(new BeanSlotViewModel(i, names[i], beanValues[i], SaveBeanValue));
+            Beans.Add(new BeanSlotViewModel(i, names[i], beanValues[i]));
         }
     }
 
-    private void SaveBeanValue(int index, byte value)
+    [RelayCommand]
+    private void Save()
     {
         if (_resortSave is null) return;
         var beans = _resortSave.GetBeans();
-        beans[index] = value;
+        foreach (var bean in Beans)
+            beans[bean.Index] = bean.Count;
+        _sav.State.Edited = true;
+        CloseRequested?.Invoke();
+    }
+
+    [RelayCommand]
+    private void Cancel()
+    {
+        LoadBeans();
+        CloseRequested?.Invoke();
     }
 
     [RelayCommand]
     private void FillAll()
     {
-        _resortSave?.FillBeans();
-        LoadBeans();
+        foreach (var bean in Beans)
+            bean.Count = byte.MaxValue;
     }
 
     [RelayCommand]
     private void ClearAll()
     {
-        _resortSave?.ClearBeans();
-        LoadBeans();
+        foreach (var bean in Beans)
+            bean.Count = 0;
     }
 
     [RelayCommand]
@@ -71,14 +83,11 @@ public partial class PokebeanEditorViewModel : ViewModelBase
 
 public partial class BeanSlotViewModel : ViewModelBase
 {
-    private readonly System.Action<int, byte> _onValueChanged;
-
-    public BeanSlotViewModel(int index, string name, byte count, System.Action<int, byte> onValueChanged)
+    public BeanSlotViewModel(int index, string name, byte count)
     {
         Index = index;
         Name = name;
         _count = count;
-        _onValueChanged = onValueChanged;
     }
 
     public int Index { get; }
@@ -87,8 +96,4 @@ public partial class BeanSlotViewModel : ViewModelBase
     [ObservableProperty]
     private byte _count;
 
-    partial void OnCountChanged(byte value)
-    {
-        _onValueChanged(Index, value);
-    }
 }

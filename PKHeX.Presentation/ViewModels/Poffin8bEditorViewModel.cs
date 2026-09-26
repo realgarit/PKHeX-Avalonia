@@ -7,7 +7,7 @@ using PKHeX.Core;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class Poffin8bEditorViewModel : ViewModelBase
+public partial class Poffin8bEditorViewModel : ViewModelBase, ICloseableDialog
 {
     private readonly SAV8BS? _sav;
     private readonly Poffin8b[]? _allItems;
@@ -17,7 +17,7 @@ public partial class Poffin8bEditorViewModel : ViewModelBase
     {
         _sav = sav as SAV8BS;
         IsSupported = _sav is not null;
-        _poffinNames = Util.GetStringList("poffin", GameInfo.CurrentLanguage);
+        _poffinNames = Util.GetStringList("poffin8b", GameInfo.CurrentLanguage);
 
         if (_sav is not null)
         {
@@ -27,6 +27,7 @@ public partial class Poffin8bEditorViewModel : ViewModelBase
     }
 
     public bool IsSupported { get; }
+    public System.Action? CloseRequested { get; set; }
 
     [ObservableProperty]
     private ObservableCollection<Poffin8bItemViewModel> _poffins = [];
@@ -53,8 +54,32 @@ public partial class Poffin8bEditorViewModel : ViewModelBase
     private void Save()
     {
         if (_sav is null || _allItems is null) return;
-        _sav.Poffins.SetPoffins(_allItems);
+        // Preserve slot order and unknown raw values; bulk sorting is not an implicit Save action.
+        for (int i = 0; i < _allItems.Length; i++) _sav.Poffins.SetPoffin(i, _allItems[i]);
+        _sav.State.Edited = true;
+        CloseRequested?.Invoke();
     }
+
+    [RelayCommand]
+    private void FillAll()
+    {
+        foreach (var item in Poffins)
+        {
+            item.MstID = 0x1C;
+            item.Level = 60;
+            item.Taste = 255;
+            item.Spicy = item.Dry = item.Sweet = item.Bitter = item.Sour = 255;
+        }
+    }
+
+    [RelayCommand]
+    private void ClearAll()
+    {
+        foreach (var item in Poffins) item.MstID = byte.MaxValue;
+    }
+
+    [RelayCommand]
+    private void Cancel() => CloseRequested?.Invoke();
 }
 
 public partial class Poffin8bItemViewModel : ViewModelBase
@@ -89,9 +114,28 @@ public partial class Poffin8bItemViewModel : ViewModelBase
     {
         _poffin.MstID = value;
         OnPropertyChanged(nameof(PoffinName));
+        OnPropertyChanged(nameof(SelectedType));
     }
 
-    public string PoffinName => MstID < _poffinNames.Length ? _poffinNames[MstID] : $"(ID: {MstID})";
+    public int SelectedType
+    {
+        get => MstID;
+        set { if (value is >= 0 and <= byte.MaxValue) MstID = (byte)value; }
+    }
+
+    public string PoffinName => MstID == byte.MaxValue ? GameInfo.Strings.Item[0] :
+        MstID + 1 < _poffinNames.Length ? _poffinNames[MstID + 1] : $"#{MstID}";
+
+    public IReadOnlyList<ComboItem> TypeChoices
+    {
+        get
+        {
+            var choices = new List<ComboItem> { new(GameInfo.Strings.Item[0], byte.MaxValue) };
+            for (int i = 1; i < _poffinNames.Length; i++) choices.Add(new(_poffinNames[i], i - 1));
+            if (choices.All(z => z.Value != MstID)) choices.Add(new($"#{MstID}", MstID));
+            return choices;
+        }
+    }
 
     [ObservableProperty]
     private byte _level;

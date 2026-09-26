@@ -9,6 +9,17 @@ public partial class MainWindowViewModel
     /// <summary>Short alias for localized dialog-title lookup (issue #132 UI localization).</summary>
     private static string T(string key) => LocalizedStrings.Instance[key];
 
+    [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task UnlockFriendSafariAsync()
+    {
+        if (CurrentSave is not SAV6XY save) return;
+        if (!await _dialogService.ShowConfirmationAsync(T("FriendSafari_Title"), T("FriendSafari_Confirm"),
+                T("FriendSafari_Apply"), T("Common_Cancel"))) return;
+        if (!ReferenceEquals(CurrentSave, save)) return;
+        save.UnlockAllFriendSafariSlots();
+        save.State.Edited = true;
+    }
+
     [RelayCommand(CanExecute = nameof(CanUndo))]
     private void Undo() => _undoRedo.Undo();
 
@@ -91,13 +102,25 @@ public partial class MainWindowViewModel
         await _windowService.ShowDialogAsync(vm, T("Dialog_BoxManipulation"));
     }
 
+    private EncounterDatabaseViewModel? _encounterDatabase;
+
     [RelayCommand(CanExecute = nameof(HasSave))]
-    private async Task OpenEncounterDatabaseAsync()
+    private void OpenEncounterDatabase()
     {
         if (CurrentSave is null) return;
-        var vm = new EncounterDatabaseViewModel(CurrentSave, _spriteRenderer, _dialogService,
-            pk => CurrentPokemonEditor?.LoadPKM(pk));
-        await _windowService.ShowDialogAsync(vm, T("Dialog_EncounterDatabase"));
+        if (_encounterDatabase is null)
+        {
+            var save = CurrentSave;
+            EncounterDatabaseViewModel? database = null;
+            database = new EncounterDatabaseViewModel(save, _spriteRenderer, _dialogService, pk =>
+            {
+                // A pending result from an old save session must not replace the new editor.
+                if (ReferenceEquals(CurrentSave, save) && ReferenceEquals(_encounterDatabase, database))
+                    CurrentPokemonEditor?.LoadPKM(pk);
+            });
+            _encounterDatabase = database;
+        }
+        _windowService.ShowTool(_encounterDatabase, T("Dialog_EncounterDatabase"));
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]

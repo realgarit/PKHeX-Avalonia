@@ -461,6 +461,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
             CurrentHandler = _pk.CurrentHandler;
             HandlingTrainerName = _pk.HandlingTrainerName;
             HandlingTrainerGender = _pk.HandlingTrainerGender;
+            LoadMetadata();
             
             _isLoading = false;
 
@@ -840,6 +841,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
     public PKM PreparePKM()
     {
+        ApplyMetadata();
         _pk.Species = (ushort)Species;
         _pk.Form = (byte)Form;
         _pk.Language = Language;
