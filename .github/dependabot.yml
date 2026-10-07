@@ -1,0 +1,59 @@
+# Weekly version updates; security fixes remain event-driven. Major updates stay separate.
+# Vendored mirrors and the approved Avalonia/Skia major-version boundary are preserved.
+version: 2
+updates:
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: weekly
+    day: monday
+    time: 06:00
+    timezone: Europe/Zurich
+  open-pull-requests-limit: 3
+  groups:
+    minor-and-patch:
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
+    security-minor-and-patch:
+      applies-to: security-updates
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
+- package-ecosystem: nuget
+  directory: /
+  schedule:
+    interval: weekly
+    day: monday
+    time: 06:00
+    timezone: Europe/Zurich
+  open-pull-requests-limit: 3
+  groups:
+    minor-and-patch:
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
+    security-minor-and-patch:
+      applies-to: security-updates
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
+  exclude-paths:
+  - PKHeX.Core/**
+  - PKHeX.AutoMod/**
+  - docs/ui/compact-redesign/reference-prototype/**
+  ignore:
+  - dependency-name: Avalonia*
+    update-types:
+    - version-update:semver-major
+  - dependency-name: SkiaSharp*
+    update-types:
+    - version-update:semver-major
