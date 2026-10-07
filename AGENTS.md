@@ -227,6 +227,7 @@ WinForms UI changes, version bump, PR, and auto-merge once CI is green — is en
 - 2026-10-08: Dependabot alerts/security updates are enabled. Version updates run
   weekly on Monday at 06:00 Europe/Zurich for the manifests in .github/dependabot.yml.
   Minor/patch updates are grouped, majors stay separate, and merging remains review-driven.
+  Routine versions have a seven-day cooldown; security updates are not delayed.
   Vendored Core/AutoMod and the reference prototype are excluded; Avalonia/Skia
   major migrations remain deferred under the existing dependency policy.
 

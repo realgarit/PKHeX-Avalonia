@@ -1,5 +1,4 @@
-# Weekly version updates; security fixes remain event-driven. Major updates stay separate.
-# Vendored mirrors and the approved Avalonia/Skia major-version boundary are preserved.
+# Routine version updates wait seven days; security fixes are not delayed.
 version: 2
 updates:
 - package-ecosystem: github-actions
@@ -24,6 +23,8 @@ updates:
       update-types:
       - minor
       - patch
+  cooldown:
+    default-days: 7
 - package-ecosystem: nuget
   directory: /
   schedule:
@@ -57,3 +58,5 @@ updates:
   - dependency-name: SkiaSharp*
     update-types:
     - version-update:semver-major
+  cooldown:
+    default-days: 7
