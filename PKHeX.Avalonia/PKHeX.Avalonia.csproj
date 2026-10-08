@@ -34,18 +34,18 @@
 
   <ItemGroup>
     <!-- Avalonia UI -->
-    <PackageReference Include="Avalonia" Version="11.3.18" />
+    <PackageReference Include="Avalonia" Version="11.3.22" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.13" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.18" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.18" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.18" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.22" />
 
     <!-- MVVM -->
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 
     <!-- DI -->
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
-    <PackageReference Include="QRCoder" Version="1.6.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
+    <PackageReference Include="QRCoder" Version="1.8.0" />
 
     <!-- Rendering (for sprites) -->
     <PackageReference Include="SkiaSharp" Version="3.119.4" />
@@ -55,8 +55,8 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.4" />
 
     <!-- Diagnostics (dev only) -->
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.18" Condition="'$(Configuration)' == 'Debug'" />
-    <PackageReference Include="ZXing.Net" Version="0.16.10" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.22" Condition="'$(Configuration)' == 'Debug'" />
+    <PackageReference Include="ZXing.Net" Version="0.16.11" />
   </ItemGroup>
 
   <ItemGroup>
