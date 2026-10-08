@@ -7,7 +7,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources/Gen5/DexBackground.bin" />
     <EmbeddedResource Include="Resources/Gen7Fashion/*.bin" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.12" />
     <ProjectReference Include="..\PKHeX.Core\PKHeX.Core.csproj" />
   </ItemGroup>
 </Project>
