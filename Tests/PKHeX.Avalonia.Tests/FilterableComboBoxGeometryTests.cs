@@ -40,7 +40,7 @@ public sealed class FilterableComboBoxGeometryTests
         var editorFields = FindEditorFields(pokemonEditor, editorWindow);
         var encounterFields = encounterView.GetVisualDescendants().OfType<FilterableComboBox>().ToArray();
 
-        Assert.Equal(10, editorFields.Count);
+        Assert.Equal(11, editorFields.Count);
         Assert.Single(encounterFields);
 
         foreach (var field in editorFields.Concat(encounterFields))
