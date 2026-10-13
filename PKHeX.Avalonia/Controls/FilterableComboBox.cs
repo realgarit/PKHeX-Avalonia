@@ -25,6 +25,10 @@ public class FilterableComboBox : AutoCompleteBox
 
     private bool _syncing;
 
+    // Entry currently backing SelectedValue. AutoCompleteBox drops SelectedItem while the user
+    // types, so this is what keeps the picked label when several entries share one value.
+    private ComboItem? _committed;
+
     // The class adds the value-backed selection bridge only. Its visuals come from Avalonia's
     // native Fluent AutoCompleteBox template, just like the plain search field in Batch Editor.
     protected override Type StyleKeyOverride => typeof(AutoCompleteBox);
@@ -64,13 +68,14 @@ public class FilterableComboBox : AutoCompleteBox
 
     private void OnDropDownClosed(object? sender, EventArgs e)
     {
-        var expected = FindComboItem(SelectedValue);
+        var expected = FindComboItem(SelectedValue, _committed);
         if (expected is null || Text == expected.Text)
             return;
 
         _syncing = true;
         try
         {
+            _committed = expected;
             SelectedItem = expected;
             Text = expected.Text;
         }
@@ -97,6 +102,7 @@ public class FilterableComboBox : AutoCompleteBox
 
         if (SelectedItem is ComboItem ci)
         {
+            _committed = ci;
             _syncing = true;
             try
             {
@@ -113,7 +119,7 @@ public class FilterableComboBox : AutoCompleteBox
     {
         base.OnLostFocus(e);
 
-        var expected = FindComboItem(SelectedValue);
+        var expected = FindComboItem(SelectedValue, _committed);
         if (expected is null)
         {
             if (!string.IsNullOrEmpty(Text))
@@ -126,6 +132,7 @@ public class FilterableComboBox : AutoCompleteBox
             _syncing = true;
             try
             {
+                _committed = expected;
                 SelectedItem = expected;
                 Text = expected.Text;
             }
@@ -145,6 +152,7 @@ public class FilterableComboBox : AutoCompleteBox
         try
         {
             var match = FindComboItem(SelectedValue);
+            _committed = match;
             if (match is null)
             {
                 SelectedItem = null;
@@ -161,17 +169,26 @@ public class FilterableComboBox : AutoCompleteBox
         }
     }
 
-    private ComboItem? FindComboItem(int value)
+    // Entries can share a value with different labels (ability slots "X (1)" / "X (2)"). When the
+    // preferred entry is still in the list, return it so the picked label does not snap back to
+    // the first duplicate the way a value-only lookup would.
+    private ComboItem? FindComboItem(int value, ComboItem? preferred = null)
     {
         if (ItemsSource is null)
             return null;
 
+        ComboItem? first = null;
         foreach (var item in ItemsSource)
         {
-            if (item is ComboItem ci && ci.Value == value)
+            if (item is not ComboItem ci || ci.Value != value)
+                continue;
+
+            if (ReferenceEquals(ci, preferred))
                 return ci;
+
+            first ??= ci;
         }
 
-        return null;
+        return first;
     }
 }

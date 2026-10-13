@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:loc="using:PKHeX.Avalonia.Localization"
+             xmlns:controls="clr-namespace:PKHeX.Avalonia.Controls"
              x:Class="PKHeX.Avalonia.Views.InventoryEditor"
              x:DataType="vm:InventoryEditorViewModel">
 
@@ -72,12 +73,17 @@
                                         <DataGridTemplateColumn Header="{loc:Loc InventoryEditor_Item}" Width="*">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate DataType="vm:InventoryItemViewModel">
-                                                    <ComboBox ItemsSource="{Binding ItemList}"
-                                                              SelectedValue="{Binding ItemId}"
-                                                              SelectedValueBinding="{Binding Value}"
-                                                              DisplayMemberBinding="{Binding Text}"
-                                                              HorizontalAlignment="Stretch"
-                                                              AutomationProperties.Name="{loc:Loc InventoryEditor_Item}" />
+                                                    <Grid>
+                                                        <controls:FilterableComboBox Classes="compact-select"
+                                                                                     ItemsSource="{Binding ItemList}"
+                                                                                     SelectedValue="{Binding ItemId}"
+                                                                                     HorizontalAlignment="Stretch"
+                                                                                     Padding="9,5,24,5"
+                                                                                     AutomationProperties.Name="{loc:Loc InventoryEditor_Item}" />
+                                                        <Path HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Width="10" Height="6"
+                                                              Data="M1 1 L5 5 L9 1" Stroke="{DynamicResource ThemeTextMutedBrush}" StrokeThickness="1"
+                                                              IsHitTestVisible="False" />
+                                                    </Grid>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
