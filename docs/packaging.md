@@ -356,6 +356,13 @@ x86_64 and aarch64, plus a copy of `nuget-sources.json` from the same tag. The
 manifest runs `packaging/flatpak/install-assets.sh` from that source, so the desktop
 file, MetaInfo, icons and licenses that Flathub shows come from this repository.
 
+The Flatpak installs `packaging/linux/io.pkhex.avalonia.svg` as its only icon. It is a
+vector redraw of the original app icon without the baked-in shadow, sized to Flathub's
+icon grid, so Flathub can generate sharp 1x and 2x icons. Windows, macOS, the AppImage
+and the app window keep the original raster icon. The MetaInfo template also sets the
+Flathub brand colors (light `#f6a3a3`, dark `#7d1717`) and the input and screen-size
+hints that Flathub shows as hardware support.
+
 Flathub does not follow every GitHub release. The manifest has no
 `x-checker-data`, so no bot opens update PRs. The maintainer chooses a release and
 updates the Flathub repository in one reviewed commit: the archive URL and SHA-256,

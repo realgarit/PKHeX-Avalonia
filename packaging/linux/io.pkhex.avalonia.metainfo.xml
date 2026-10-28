@@ -4,10 +4,11 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-only</project_license>
   <name>PKHeX-Avalonia</name>
-  <summary>Edit Pokémon save files on Linux, Windows and macOS</summary>
+  <summary>Edit Pokémon save files</summary>
   <description>
-    <p>PKHeX-Avalonia is a cross-platform Pokémon save file editor built with Avalonia and the upstream PKHeX core.</p>
-    <p>Inspect and edit Pokémon, manage boxes and party slots, check legality, and use game-specific trainer, inventory and save editors. Back up your original save before editing.</p>
+    <p>Open a save from the main series games, from Red and Blue through Legends: Z-A, and change Pokémon, boxes, the party, items and trainer details. Each Pokémon gets a legality check, so you can spot problems before you save.</p>
+    <p>Game-specific editors cover Pokédex progress, events, raids, fashion, mystery gifts and more. Changes stay in the app until you save, and the previous file is backed up automatically.</p>
+    <p>PKHeX-Avalonia is a fan project built on the PKHeX engine. It is not affiliated with Nintendo, Game Freak or The Pokémon Company.</p>
   </description>
   <launchable type="desktop-id">io.pkhex.avalonia.desktop</launchable>
   <developer id="ch.realgar">
@@ -19,6 +20,25 @@
   <categories>
     <category>Utility</category>
   </categories>
+  <keywords>
+    <keyword>PKHeX</keyword>
+    <keyword>Pokémon</keyword>
+    <keyword>Pokemon</keyword>
+    <keyword>save editor</keyword>
+    <keyword>PKM</keyword>
+    <keyword>legality</keyword>
+  </keywords>
+  <branding>
+    <color type="primary" scheme_preference="light">#f6a3a3</color>
+    <color type="primary" scheme_preference="dark">#7d1717</color>
+  </branding>
+  <requires>
+    <display_length compare="ge">600</display_length>
+  </requires>
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </recommends>
   <screenshots>
     <screenshot type="default">
       <caption>Pokémon editor with a legal Pokémon Legends: Z-A save in the dark theme</caption>
@@ -30,7 +50,9 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="@VERSION@" date="@RELEASE_DATE@" />
+    <release version="@VERSION@" date="@RELEASE_DATE@">
+      <url type="details">https://github.com/realgarit/PKHeX-Avalonia/releases/tag/v@VERSION@</url>
+    </release>
   </releases>
   <content_rating type="oars-1.1" />
 </component>
