@@ -30,7 +30,8 @@
 Get a self-contained package from the [official latest release](https://github.com/realgarit/PKHeX-Avalonia/releases/latest). **No .NET installation is required to run it.** On Linux, you can also install from Flathub and get updates through your software center.
 
 <p>
-  <a href="https://flathub.org/apps/io.github.realgarit.PKHeX-Avalonia"><img width="180" alt="Get it on Flathub" src="https://flathub.org/api/badge?svg&amp;locale=en"></a>
+  <a href='https://flathub.org/apps/io.github.realgarit.PKHeX-Avalonia'><img width='240' alt='Get it on Flathub' src='https://flathub.org/api/badge?locale=en'/></a>
+  <a href="https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia/"><img src="https://flatpark.org/badges/get-it-on-flatpark.svg" alt="Get it on FlatPark"></a>
 </p>
 
 | Platform | Portable package | Installer or app image |
@@ -121,9 +122,12 @@ Uninstall preserves save files, settings, and backups. AppImage updates use the 
 <details>
 <summary><strong>Linux — FlatPark or the standalone Flatpak bundle</strong></summary>
 
-<a href="https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia"><img src="https://img.shields.io/badge/FlatPark-community%20repository-4a86cf" alt="FlatPark community repository"></a>
+**FlatPark:** the community repository [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia/) also lists PKHeX-Avalonia. It installs the unchanged Linux release ZIP with the same permissions as our Flatpak package, and `flatpak update` keeps it current. FlatPark is maintained independently from this project and uses its own signing key. Report app problems in this repository; see the [Flatpak guide](docs/packaging.md#community-flatpark-repository).
 
-**FlatPark:** the community repository [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia) also lists PKHeX-Avalonia. It installs the unchanged Linux release ZIP with the same permissions as our Flatpak package, and `flatpak update` keeps it current. FlatPark is maintained independently from this project and uses its own signing key. Report app problems in this repository; see the [Flatpak guide](docs/packaging.md#community-flatpark-repository).
+```bash
+flatpak remote-add --if-not-exists --user flatpark https://dl.flatpark.org/flatpark.flatpakrepo
+flatpak install --user flatpark io.github.realgarit.PKHeX-Avalonia
+```
 
 **Standalone bundle:** each GitHub release also includes an x86_64 `.flatpak` bundle. Install Flatpak and your desktop's XDG portal backend, then install the downloaded bundle:
 
