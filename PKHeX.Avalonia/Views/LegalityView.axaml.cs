@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 
 namespace PKHeX.Avalonia.Views;
 
@@ -14,7 +14,7 @@ public partial class LegalityView : UserControl
 
     private void OnCloseClick(object sender, RoutedEventArgs e)
     {
-        var window = this.GetVisualRoot() as Window;
+        var window = TopLevel.GetTopLevel(this) as Window;
         window?.Close();
     }
 
@@ -25,7 +25,7 @@ public partial class LegalityView : UserControl
             var topLevel = TopLevel.GetTopLevel(this);
             if (topLevel?.Clipboard is not null)
             {
-                await topLevel.Clipboard.SetTextAsync(ReportText.Text);
+                await topLevel.Clipboard.SetTextAsync(ReportText.Text ?? string.Empty);
             }
         }
         catch (Exception ex)

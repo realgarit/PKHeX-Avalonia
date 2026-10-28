@@ -26,15 +26,20 @@ public partial class BoxViewer : UserControl
     }
 
     private Point _dragStartPoint;
+    // Avalonia 12 starts every platform drag from the press that began the gesture (Wayland needs
+    // its input serial, macOS its position), so the press is kept until the move threshold is met.
+    private PointerPressedEventArgs? _dragTrigger;
     private bool _isDragging;
 
     private void OnSlotPointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        _dragTrigger = null;
         var button = FindSlotButton(e.Source as Visual);
         if (button?.Tag is not SlotData slot || DataContext is not BoxViewerViewModel vm)
             return;
         
         _dragStartPoint = e.GetPosition(this);
+        _dragTrigger = e;
 
         // Only handle left-click for modifier actions
         if (!e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
@@ -80,7 +85,7 @@ public partial class BoxViewer : UserControl
         if (Math.Abs(delta.X) < 5 && Math.Abs(delta.Y) < 5)
             return;
 
-        if (_isDragging || button.Tag is not SlotData slot || slot.IsEmpty || DataContext is not BoxViewerViewModel vm)
+        if (_isDragging || _dragTrigger is not { } trigger || button.Tag is not SlotData slot || slot.IsEmpty || DataContext is not BoxViewerViewModel vm)
             return;
 
         _isDragging = true;
@@ -94,7 +99,7 @@ public partial class BoxViewer : UserControl
             var storageProvider = TopLevel.GetTopLevel(this)?.StorageProvider;
             var data = SlotDragTransfer.Create(vm.CreateDragData(slot.Slot), pk, storageProvider);
 
-            await DragDrop.DoDragDropAsync(e, data, DragDropEffects.Move | DragDropEffects.Copy);
+            await DragDrop.DoDragDropAsync(trigger, data, DragDropEffects.Move | DragDropEffects.Copy);
         }
         catch (Exception ex)
         {
@@ -103,6 +108,7 @@ public partial class BoxViewer : UserControl
         finally
         {
             _isDragging = false;
+            _dragTrigger = null;
             button.Classes.Remove("drag-source");
         }
     }

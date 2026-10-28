@@ -58,7 +58,7 @@ public sealed class RsBoxWallpaperRenderTests
             if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
             {
                 Directory.CreateDirectory(path);
-                frame.Save(Path.Combine(path, $"rsbox-synthetic-{language}-{(dark ? "dark" : "light")}.png"));
+                frame.Save(Path.Combine(path, $"rsbox-synthetic-{language}-{(dark ? "dark" : "light")}.png"), PngBitmapEncoderOptions.Default);
             }
         }
         finally
@@ -84,7 +84,7 @@ public sealed class RsBoxWallpaperRenderTests
             Assert.Equal(LocalizedStrings.Instance["RsBoxWallpaper_Unavailable"], vm.Status);
             using var frame = new RenderTargetBitmap(PixelSize.FromSize(window.ClientSize, 1)); frame.Render(window);
             if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
-            { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"rsbox-unavailable-{dark}.png")); }
+            { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"rsbox-unavailable-{dark}.png"), PngBitmapEncoderOptions.Default); }
         }
         finally { window.Close(); app.RequestedThemeVariant = previous; }
     }

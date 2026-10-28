@@ -63,7 +63,7 @@
                         </Border>
 
                         <TextBox DockPanel.Dock="Top" Text="{Binding MedalSearchText}"
-                                 Watermark="{loc:Loc MedalEditorView_SearchWatermark}"
+                                 PlaceholderText="{loc:Loc MedalEditorView_SearchWatermark}"
                                  AutomationProperties.Name="{loc:Loc MedalEditorView_SearchWatermark}"
                                  Margin="0,0,0,8" />
 
@@ -103,7 +103,7 @@
                                             <DataTemplate DataType="vm:MedalItemViewModel">
                                                 <TextBox Text="{Binding Date}"
                                                          IsEnabled="{Binding CanHaveDate}"
-                                                         Watermark="—"
+                                                         PlaceholderText="—"
                                                          HorizontalAlignment="Stretch"
                                                          AutomationProperties.Name="Date" />
                                             </DataTemplate>

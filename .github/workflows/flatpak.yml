@@ -34,7 +34,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y flatpak flatpak-builder appstream desktop-file-utils xvfb xdotool imagemagick xdg-desktop-portal xdg-desktop-portal-gtk
           flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          flatpak install --user -y --noninteractive flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 org.freedesktop.Sdk.Extension.dotnet10//25.08
+          flatpak install --user -y --noninteractive flathub org.freedesktop.Platform//26.08 org.freedesktop.Sdk//26.08 org.freedesktop.Sdk.Extension.dotnet10//26.08
       - name: Prepare source-pinned build
         run: python3 .github/scripts/prepare-flatpak.py tmp/flatpak
       - name: Build offline and export

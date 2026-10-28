@@ -49,11 +49,11 @@ public class Pokedex9aRenderTests
                 if (state == 2) scroll.ScrollToEnd();
                 await PKHeX.Testing.HeadlessRenderSettling.Settle(window);
                 using var frame = new RenderTargetBitmap(new PixelSize(width, height)); frame.Render(window);
-                using var bytes = new MemoryStream(); frame.Save(bytes);
+                using var bytes = new MemoryStream(); frame.Save(bytes, PngBitmapEncoderOptions.Default);
                 using var pixels = SkiaSharp.SKBitmap.Decode(bytes.ToArray()); Assert.NotNull(pixels);
                 Assert.Contains(pixels.Pixels, pixel => pixel != pixels.GetPixel(0, 0));
                 if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
-                { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"dexza-{language}-state{state}.png")); }
+                { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"dexza-{language}-state{state}.png"), PngBitmapEncoderOptions.Default); }
             }
             Assert.Equal(before, save.Zukan.Data.ToArray());
         }

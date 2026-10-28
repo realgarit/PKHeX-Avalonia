@@ -43,7 +43,7 @@ public class DonutFixtureWorkflowTests
             row.Flavor0Text = "invalid"; Assert.False(vm.CanSave);
             Assert.Equal(ulong.MaxValue, row.Flavor0);
             row.Flavor0Text = "FEDCBA9876543210"; Assert.True(vm.CanSave);
-            await File.WriteAllBytesAsync(path, new byte[Donut9a.Size + 1]);
+            await File.WriteAllBytesAsync(path, new byte[Donut9a.Size + 1], TestContext.Current.CancellationToken);
             await vm.ImportPathAsync(path); Assert.NotEmpty(vm.Error);
             foreach (var block in save.AllBlocks) Assert.Equal(before[block.Key], block.Data.ToArray());
             vm.SaveCommand.Execute(null);

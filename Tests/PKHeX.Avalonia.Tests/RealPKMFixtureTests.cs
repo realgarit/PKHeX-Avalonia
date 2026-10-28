@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using PKHeX.Core;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 

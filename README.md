@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  A native Pokémon save editor for <strong>Windows, macOS, and Linux</strong>, built with .NET 10 and Avalonia 11 on the upstream <a href="https://github.com/kwsch/PKHeX">PKHeX</a> engine.
+  A native Pokémon save editor for <strong>Windows, macOS, and Linux</strong>, built with .NET 10 and Avalonia 12 on the upstream <a href="https://github.com/kwsch/PKHeX">PKHeX</a> engine.
 </p>
 
 <p align="center">
@@ -104,7 +104,7 @@ Flathub supplies the runtime dependencies; **the app itself is not listed on Fla
 
 Use **File → Open** and **Save As** to grant access to files through the desktop portal. See the [Flatpak guide](docs/packaging.md#linux-flatpak) for file access, persistent data, and troubleshooting.
 
-**Community repository with updates:** [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia) also lists PKHeX-Avalonia. It installs the unchanged Linux release ZIP with the same permissions as the bundle above, and `flatpak update` keeps it current. FlatPark is maintained independently from this project: it uses its own signing key and the Freedesktop 26.08 runtime. Both packages use the same app ID, so install only one of them. Report app problems in this repository; see the [Flatpak guide](docs/packaging.md#community-flatpark-repository).
+**Community repository with updates:** [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia) also lists PKHeX-Avalonia. It installs the unchanged Linux release ZIP with X11 instead of Wayland access, but otherwise the same permissions as the bundle above, and `flatpak update` keeps it current. FlatPark is maintained independently from this project and uses its own signing key. Both packages use the same app ID, so install only one of them. Report app problems in this repository; see the [Flatpak guide](docs/packaging.md#community-flatpark-repository).
 
 </details>
 

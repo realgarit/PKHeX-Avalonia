@@ -43,7 +43,7 @@
 
                         <StackPanel Spacing="3">
                             <TextBlock Text="{loc:Loc PKMDatabaseView_Nickname}" Opacity="0.7" FontSize="12"/>
-                            <TextBox Text="{Binding Filter.Nickname}" Watermark="{loc:Loc PKMDatabaseView_Nickname}" HorizontalAlignment="Stretch"/>
+                            <TextBox Text="{Binding Filter.Nickname}" PlaceholderText="{loc:Loc PKMDatabaseView_Nickname}" HorizontalAlignment="Stretch"/>
                         </StackPanel>
 
                         <StackPanel Spacing="3">

@@ -82,8 +82,8 @@ public class SlotStateRenderTests
     private static void SaveFrame(Window window, string name)
     {
         using var frame = new RenderTargetBitmap(new PixelSize((int)window.ClientSize.Width, (int)window.ClientSize.Height)); frame.Render(window);
-        using var bytes = new MemoryStream(); frame.Save(bytes); using var pixels = SKBitmap.Decode(bytes.ToArray());
+        using var bytes = new MemoryStream(); frame.Save(bytes, PngBitmapEncoderOptions.Default); using var pixels = SKBitmap.Decode(bytes.ToArray());
         Assert.NotNull(pixels); Assert.Contains(pixels.Pixels, p => p != pixels.GetPixel(0, 0));
-        if (CapturePath is { } path) { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, name + ".png")); }
+        if (CapturePath is { } path) { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, name + ".png"), PngBitmapEncoderOptions.Default); }
     }
 }

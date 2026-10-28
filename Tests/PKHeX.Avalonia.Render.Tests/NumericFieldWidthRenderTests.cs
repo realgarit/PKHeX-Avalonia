@@ -77,7 +77,7 @@ public sealed class NumericFieldWidthRenderTests
             using (var frame = new RenderTargetBitmap(new PixelSize((int)width, (int)height)))
             {
                 frame.Render(window);
-                frame.Save(capture + ".png");
+                frame.Save(capture + ".png", PngBitmapEncoderOptions.Default);
             }
 
             Assert.Equal(fields, inputs.Count);

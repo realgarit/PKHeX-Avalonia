@@ -34,11 +34,13 @@
 
   <ItemGroup>
     <!-- Avalonia UI -->
-    <PackageReference Include="Avalonia" Version="11.3.22" />
-    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.13" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.22" />
+    <PackageReference Include="Avalonia" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.2" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4" />
+    <!-- Native Wayland backend (opt-in in Avalonia 12.1); Program.cs falls back to X11. -->
+    <PackageReference Include="Avalonia.Wayland" Version="12.1.4" />
 
     <!-- MVVM -->
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
@@ -54,8 +56,6 @@
     <!-- Explicitly upgrade transitive native assets to avoid version conflicts -->
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.4" />
 
-    <!-- Diagnostics (dev only) -->
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.22" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="ZXing.Net" Version="0.16.11" />
   </ItemGroup>
 

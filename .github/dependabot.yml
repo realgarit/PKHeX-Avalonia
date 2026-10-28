@@ -59,11 +59,14 @@ updates:
   - PKHeX.Core/**
   - PKHeX.AutoMod/**
   - docs/ui/compact-redesign/reference-prototype/**
+  # Avalonia majors arrive as their own PRs (majors are never grouped). SkiaSharp moves with the
+  # version Avalonia.Skia depends on, and the UI test projects stay on the xunit.v3 major that
+  # Avalonia.Headless.XUnit is built against (see AGENTS.md, Dependency policy).
   ignore:
-  - dependency-name: Avalonia*
+  - dependency-name: SkiaSharp*
     update-types:
     - version-update:semver-major
-  - dependency-name: SkiaSharp*
+  - dependency-name: xunit.v3*
     update-types:
     - version-update:semver-major
   cooldown:

@@ -18,7 +18,7 @@
                         <DataTemplate DataType="vm:CosmeticInventory4Category"><TextBlock Text="{Binding Name}" /></DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc Cosmetic4_Search}" AutomationProperties.Name="{loc:Loc Cosmetic4_Search}" />
+                <TextBox Text="{Binding SearchText}" PlaceholderText="{loc:Loc Cosmetic4_Search}" AutomationProperties.Name="{loc:Loc Cosmetic4_Search}" />
                 <TextBlock Text="{Binding ScopeText}" TextWrapping="Wrap" />
                 <WrapPanel>
                     <Button Content="{loc:Loc Cosmetic4_GiveLegal}" Command="{Binding GiveLegalCommand}" Margin="0,0,8,6" />

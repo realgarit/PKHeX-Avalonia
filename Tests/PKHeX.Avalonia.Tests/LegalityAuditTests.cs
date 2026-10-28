@@ -5,7 +5,6 @@ using PKHeX.Avalonia.Tests.Fixtures;
 using PKHeX.Core;
 using PKHeX.Presentation.Localization;
 using PKHeX.Presentation.ViewModels;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 

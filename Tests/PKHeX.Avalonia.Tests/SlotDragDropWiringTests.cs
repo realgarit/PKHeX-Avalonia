@@ -1,4 +1,3 @@
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 

@@ -26,7 +26,7 @@
             </StackPanel>
             <Grid ColumnDefinitions="180,8,*">
                 <DockPanel Grid.Column="0">
-                    <TextBox DockPanel.Dock="Top" Text="{Binding SearchText}" Watermark="{loc:Loc PokedexLAEditor_Search}" Margin="0,0,0,8" AutomationProperties.Name="{loc:Loc PokedexLAEditor_Search}" />
+                    <TextBox DockPanel.Dock="Top" Text="{Binding SearchText}" PlaceholderText="{loc:Loc PokedexLAEditor_Search}" Margin="0,0,0,8" AutomationProperties.Name="{loc:Loc PokedexLAEditor_Search}" />
                     <Border Classes="pokedex-species-list">
                         <ListBox ItemsSource="{Binding SpeciesList}" SelectedItem="{Binding SelectedSpecies}" Background="Transparent">
                             <ListBox.ItemTemplate>

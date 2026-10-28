@@ -36,18 +36,25 @@ namespace PKHeX.Avalonia.Input;
 /// </list>
 /// <para>
 /// The access-key handler does not open the menu bar on Alt's release when, during that Alt press, it
-/// saw the Alt key and then another key while keyboard focus was inside the window. It ignores every
-/// key while no element inside the window has focus, but it still opens the menu bar on the release.
-/// The binder applies the same rule to the same key events, with its own tunnelling handlers on the
-/// window, which run just before the access-key handler's. When a shortcut with Alt ran during an Alt
-/// press whose release the access-key handler would not ignore, the binder consumes that release.
-/// In all other cases the release is not consumed, so the access-key handler resets its own state.
+/// saw the Alt key and then another key raised inside the window. Since Avalonia 12 a key raised on
+/// the window itself (no focused element) counts as inside; keys from outside the window, such as an
+/// element of a separate top level, are ignored. The binder applies the same rule to the same key
+/// events, with its own tunnelling handlers on the window, which run just before the access-key
+/// handler's. When a shortcut with Alt ran during an Alt press whose release the access-key handler
+/// would not ignore, the binder consumes that release. In all other cases the release is not
+/// consumed, so the access-key handler resets its own state.
 /// </para>
 /// <para>
 /// Each Alt press that this window sees starts the state again. A release that this window never gets
 /// (because the shortcut moved focus to another window) therefore cannot make the binder consume a
 /// later release. Deactivation does not reset the state: Alt can still be held when the window becomes
 /// active again, and its release then belongs to the press that ran the shortcut.
+/// </para>
+/// <para>
+/// The access-key handler only forgets an ignored release when it sees one, so a release that came up
+/// in another top level would make it ignore the window's next Alt tap too. When the binder sees that
+/// happen, it gives the handler the missed release (an Alt key-up raised on the window) just before the
+/// window's next Alt press.
 /// </para>
 /// <para>
 /// Only keys that come from this window are handled. A native popup (a menu or a context menu) is a
@@ -64,6 +71,7 @@ internal sealed class KeyboardShortcutBinder : IDisposable
     private readonly InputElement _content;
     private readonly MainWindowViewModel _viewModel;
     private readonly IDisposable _windowHandler;
+    private readonly IDisposable _otherTopLevelsHandler;
     private readonly List<KeyBinding> _owned = [];
     private KeyEventArgs? _seenByContent;
     private bool _disposed;
@@ -72,6 +80,8 @@ internal sealed class KeyboardShortcutBinder : IDisposable
     private bool _accessKeysSawAltPress;
     private bool _accessKeysIgnoreAltRelease;
     private bool _altShortcutRan;
+    // That ignored release came up in another top level, so the access-key handler still waits for it.
+    private bool _accessKeysMissedAltRelease;
 
     /// <exception cref="InvalidOperationException">The window has no content yet.</exception>
     public KeyboardShortcutBinder(Window window, MainWindowViewModel viewModel)
@@ -88,6 +98,9 @@ internal sealed class KeyboardShortcutBinder : IDisposable
         _window.AddHandler(InputElement.KeyUpEvent, OnWindowPreviewKeyUp, RoutingStrategies.Tunnel);
         _content.AddHandler(InputElement.KeyDownEvent, OnContentKeyDown, RoutingStrategies.Tunnel, handledEventsToo: true);
         _windowHandler = InputElement.KeyDownEvent.AddClassHandler<Window>(OnWindowKeyDown, RoutingStrategies.Bubble);
+        // A key routed through this window tunnels through it first, so its own handlers have already
+        // seen the release when another top level on the same route (a popup root) gets it.
+        _otherTopLevelsHandler = InputElement.KeyUpEvent.AddClassHandler<TopLevel>(OnTopLevelPreviewKeyUp, RoutingStrategies.Tunnel, handledEventsToo: true);
         Rebind();
     }
 
@@ -105,23 +118,39 @@ internal sealed class KeyboardShortcutBinder : IDisposable
         _window.RemoveHandler(InputElement.KeyUpEvent, OnWindowPreviewKeyUp);
         _content.RemoveHandler(InputElement.KeyDownEvent, OnContentKeyDown);
         _windowHandler.Dispose();
+        _otherTopLevelsHandler.Dispose();
         _owned.Clear();
         _seenByContent = null;
         ResetAltPress();
+        _accessKeysMissedAltRelease = false;
     }
 
     private void OnWindowPreviewKeyDown(object? sender, KeyEventArgs e)
     {
-        var focusInside = IsFocusInsideWindow();
+        var inside = IsRaisedInsideWindow(e);
         if (IsAltKey(e.Key))
         {
+            if (_accessKeysMissedAltRelease)
+            {
+                _accessKeysMissedAltRelease = false;
+                _window.RaiseEvent(new KeyEventArgs { RoutedEvent = InputElement.KeyUpEvent, Key = e.Key, PhysicalKey = e.PhysicalKey });
+            }
             ResetAltPress();
-            _accessKeysSawAltPress = focusInside;
+            _accessKeysSawAltPress = inside;
         }
-        else if (_accessKeysSawAltPress && focusInside)
+        else if (_accessKeysSawAltPress && inside)
         {
             _accessKeysIgnoreAltRelease = true;
         }
+    }
+
+    private void OnTopLevelPreviewKeyUp(TopLevel topLevel, KeyEventArgs e)
+    {
+        if (ReferenceEquals(topLevel, _window) || !IsAltKey(e.Key) || !_accessKeysSawAltPress)
+            return;
+
+        _accessKeysMissedAltRelease = _accessKeysIgnoreAltRelease;
+        ResetAltPress();
     }
 
     private void OnWindowPreviewKeyUp(object? sender, KeyEventArgs e)
@@ -175,9 +204,9 @@ internal sealed class KeyboardShortcutBinder : IDisposable
         _altShortcutRan = false;
     }
 
-    // The access-key handler's own test: the focused element is inside the window, not the window itself.
-    private bool IsFocusInsideWindow() =>
-        _window.FocusManager?.GetFocusedElement() is Visual focused && _window.IsVisualAncestorOf(focused);
+    // The access-key handler's own test: the key's source is the window or an element inside it.
+    private bool IsRaisedInsideWindow(KeyEventArgs e) =>
+        e.Source is Visual source && (ReferenceEquals(source, _window) || _window.IsVisualAncestorOf(source));
 
     private static bool IsAltKey(Key key) => key is Key.LeftAlt or Key.RightAlt;
 

@@ -389,7 +389,7 @@
                                 <TextBox Grid.Column="1"
                                          Classes="launcher-search-input"
                                          Text="{Binding ToolSearchText, Mode=TwoWay}"
-                                         Watermark="{loc:Loc Launcher_Hint}" />
+                                         PlaceholderText="{loc:Loc Launcher_Hint}" />
                             </Grid>
                         </Border>
                         <ItemsControl Grid.Row="2" Margin="0,10,0,0" ItemsSource="{Binding FilteredToolLauncherItems}">

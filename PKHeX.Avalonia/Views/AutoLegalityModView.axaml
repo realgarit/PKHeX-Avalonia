@@ -38,7 +38,7 @@
                      AcceptsReturn="True" AcceptsTab="False"
                      TextWrapping="NoWrap"
                      FontFamily="Consolas, Menlo, monospace"
-                     Watermark="{loc:Loc AutoLegalityModView_ShowdownWatermark}"
+                     PlaceholderText="{loc:Loc AutoLegalityModView_ShowdownWatermark}"
                      VerticalContentAlignment="Top"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto" />

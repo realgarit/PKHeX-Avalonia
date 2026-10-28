@@ -177,7 +177,7 @@ public class ZaTrainerWorkflowTests
             Assert.NotNull(decoded.Image);
             Assert.Equal(new byte[] { 0, 0, 255, 255 }, decoded.Image.Bgra[..4]);
             await vm.ExportZaImageCommand.ExecuteAsync(preview);
-            Assert.Equal(preview.Png, await File.ReadAllBytesAsync(path));
+            Assert.Equal(preview.Png, await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken));
             vm.SaveCommand.Execute(null);
             foreach (var block in save.AllBlocks) Assert.Equal(before[block.Key], block.Data.ToArray());
         }

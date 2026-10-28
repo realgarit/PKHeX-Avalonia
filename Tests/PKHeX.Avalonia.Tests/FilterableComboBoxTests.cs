@@ -217,7 +217,9 @@ public class FilterableComboBoxTests
         window.Show();
 
         Dispatcher.UIThread.RunJobs();
-        Assert.True(control.Focus());
+        // AutoCompleteBox forwards focus to its TextBox; Avalonia 12 Focus() then returns false.
+        control.Focus();
+        Assert.True(control.IsKeyboardFocusWithin);
         Dispatcher.UIThread.RunJobs();
 
         Assert.True(control.IsDropDownOpen);

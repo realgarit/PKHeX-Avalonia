@@ -142,7 +142,7 @@ public class SaveHandlerTroubleshooterTests
 
         var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(),
             $"sht_b2w2_{Guid.NewGuid():N}.sav");
-        await System.IO.File.WriteAllBytesAsync(path, KnownGoodBlank());
+        await System.IO.File.WriteAllBytesAsync(path, KnownGoodBlank(), TestContext.Current.CancellationToken);
         try
         {
             var closed = false;
@@ -172,7 +172,7 @@ public class SaveHandlerTroubleshooterTests
 
         var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(),
             $"sht_junk_{Guid.NewGuid():N}.sav");
-        await System.IO.File.WriteAllBytesAsync(path, new byte[64]);
+        await System.IO.File.WriteAllBytesAsync(path, new byte[64], TestContext.Current.CancellationToken);
         try
         {
             vm.FilePath = path;

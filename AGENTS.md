@@ -2,8 +2,8 @@
 
 > Canonical instructions for all coding agents (Claude Code, Codex, GitHub Copilot). Codex reads this directly; Claude and GitHub Copilot use pointer files when present.
 
-A native Avalonia (11.x) port of [PKHeX](https://github.com/kwsch/PKHeX), the Pokémon save editor —
-cross-platform (Windows/macOS/Linux) instead of WinForms-only. Built on .NET 10 + Avalonia 11.x with
+A native Avalonia (12.x) port of [PKHeX](https://github.com/kwsch/PKHeX), the Pokémon save editor —
+cross-platform (Windows/macOS/Linux) instead of WinForms-only. Built on .NET 10 + Avalonia 12.x with
 CommunityToolkit.MVVM.
 
 The `.claude/` and `.codex/` directories contain project automation (hooks, skills,
@@ -137,9 +137,14 @@ preference for the `System` option. Covered by `Tests/PKHeX.Avalonia.Tests/Theme
 
 ## Dependency policy
 
-- Stay on latest **11.x Avalonia** and **SkiaSharp 3.x**.
-- Avalonia 12 / SkiaSharp 4 deferred — they are major versions with breaking API changes and need
-  dedicated, UI-tested PRs. Don't bundle them into routine sweeps.
+- Take new major versions, Avalonia and SkiaSharp included, as focused PRs: one major per PR, with
+  the breaking changes fixed in the consumer layers, a 0-warning build and the full test gate (UI and
+  real-Skia render tests included). Don't bundle a major into a routine minor/patch sweep. (Changed
+  2026-10-28: the old "stay on 11.x, defer Avalonia 12 / SkiaSharp 4" policy is dropped.)
+- SkiaSharp follows the version `Avalonia.Skia` depends on; move it with Avalonia, not ahead of it.
+- `PKHeX.Avalonia.Tests` and `PKHeX.Avalonia.Render.Tests` stay on the xunit.v3 major that
+  `Avalonia.Headless.XUnit` is built against (3.x for Avalonia 12.1): xunit.v3 4.x fails test
+  discovery there with `MissingMethodException`. Dependabot ignores xunit.v3 majors for that reason.
 
 ## Upstream Sync Automation
 
@@ -206,7 +211,7 @@ WinForms UI changes, version bump, PR, and auto-merge once CI is green — is en
 - **UIVersion policy**: CI owns the bump — never hand-edit `<UIVersion>` in a PR (changed 2026-08-28; see Working notes). `.github/workflows/release.yml` computes the next version from the highest existing `v*` **git tag**, not from `Directory.Build.props`, because file-derived bumps collide silently across concurrent PRs. The bump size still follows SemVer by change type, now read from the **PR title prefix**: feat→minor, fix/chore/refactor/deps/docs/test/ci/sync→patch, `breaking` label or `!` prefix→major, unclassified→patch (logged loudly in the run). Classification and the arithmetic live in `.github/scripts/resolve-release-version.sh`; `workflow_dispatch` with `dry_run=true` prints the resolution without writing anything. One-time catch-up 1.1.44→1.20.0 happened 2026-06-25; the convention is documented in `docs/development.md`.
 - **Auto-merge**: Claude-created PRs merge automatically once checks pass (`gh pr merge --squash --delete-branch` or `--merge --delete-branch` depending on repo history), no manual check-in required, including edge cases like suspected duplicate work in another session — still always via branch+PR, never direct pushes to main.
 - **Worktree shipping gotcha**: the `block-main-writes.sh` hook checks the shell's *cwd branch*; sandboxed Bash/subagents spawned from a main checkout get cwd pinned to repo root and `cd` doesn't persist across their tool calls, so they cannot ship from a worktree. Ship (commit/push/PR) from the agent that owns the worktree, or from the main session's Bash issuing `cd <worktree>` as its own separate call before subsequent git commands. Never stage bulk generated data on a tmpfs scratchpad — use a temp dir inside the worktree on real disk.
-- **Dependency policy**: stay on latest 11.x Avalonia (11.3.18) + SkiaSharp 3.x; Avalonia 12 / SkiaSharp 4 are deferred, breaking-API majors needing a dedicated, UI-tested PR — don't bundle into routine dependency sweeps (`Avalonia.Diagnostics` itself caps at 11.3.18, so bumping core Avalonia to 12 would drop the Debug inspector).
+- **Dependency policy** (changed 2026-10-28): take new majors, Avalonia and SkiaSharp included, as focused, UI-tested PRs — one major per PR, never bundled into routine minor/patch sweeps. SkiaSharp moves with `Avalonia.Skia`'s own dependency. The app is on Avalonia 12.1 with native Wayland (X11 fallback); `Avalonia.Diagnostics` has no 12.x release and was removed (it was never attached).
 - **Clean Architecture migration** (PR #80, `refactor/clean-architecture`): full 5-project split done as one big-bang PR; sprites cross layer boundaries as PNG `byte[]` (`ISpriteRenderer` → `PngBytesToBitmapConverter` in Views); navigation via `IDialogService` (framework-free) + `IWindowService`; `ViewLocator` is a compile-checked VM→View map living in the host; Application/Infrastructure stay free of Avalonia/Skia/CommunityToolkit.Mvvm; workflow use cases are stateless and `new`'d at call sites, not DI-injected.
 - **Modeless tool-window pattern** (PR #111): `IWindowService.ShowTool(vm, title)` + `CloseAllTools()` for auxiliary panels that shouldn't crowd a view (not Flyout/Popup, not context menus); singleton-per-VM, remembers size/position per VM type for the session; `MainWindowViewModel.OnSaveFileChanged` closes all tools on save change. Batch-instruction search is NOT Core-blocked — `SearchSettings.BatchInstructions` already exists in Core.
 - **Style preference**: for new features/integrations, lead with the cleanest architecture-correct solution even if it needs a rewrite, rather than an expedient shim (stated explicitly re: Auto Legality Mod support, issue #89).

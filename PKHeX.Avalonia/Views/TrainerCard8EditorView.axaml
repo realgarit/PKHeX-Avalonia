@@ -95,7 +95,7 @@
                     </StackPanel></Border>
                     <Border Classes="editor-section-padded"><StackPanel Spacing="8">
                         <TextBlock Text="{loc:Loc Card8Flow_StartedDate}" FontWeight="SemiBold" />
-                        <Grid ColumnDefinitions="*,8,Auto"><TextBox Text="{Binding StartedDateText}" Watermark="{loc:Loc Card8Flow_DateFormat}" AutomationProperties.Name="{loc:Loc Card8Flow_StartedDate}" />
+                        <Grid ColumnDefinitions="*,8,Auto"><TextBox Text="{Binding StartedDateText}" PlaceholderText="{loc:Loc Card8Flow_DateFormat}" AutomationProperties.Name="{loc:Loc Card8Flow_StartedDate}" />
                             <Button Grid.Column="2" Content="{loc:Loc Card8Flow_ClearDate}" Command="{Binding ClearDateCommand}" /></Grid>
                         <TextBlock Text="{Binding DateError}" IsVisible="{Binding HasDateError}" TextWrapping="Wrap" />
                         <TextBlock Text="{loc:Loc Card8Flow_InvalidStoredDate}" IsVisible="{Binding HasInvalidStoredDate}" TextWrapping="Wrap" />

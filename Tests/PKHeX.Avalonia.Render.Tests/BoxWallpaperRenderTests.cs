@@ -62,13 +62,13 @@ public class BoxWallpaperRenderTests
             }
             using var bitmap = new RenderTargetBitmap(PixelSize.FromSize(window.ClientSize, 1));
             bitmap.Render(window);
-            using var buffer = new MemoryStream(); bitmap.Save(buffer);
+            using var buffer = new MemoryStream(); bitmap.Save(buffer, PngBitmapEncoderOptions.Default);
             using var pixels = SkiaSharp.SKBitmap.Decode(buffer.ToArray());
             Assert.Contains(pixels.Pixels, pixel => pixel != pixels.GetPixel(0, 0));
             if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
             {
                 Directory.CreateDirectory(path);
-                bitmap.Save(Path.Combine(path, $"wallpaper-{game}-{language}-{(dark ? "dark" : "light")}.png"));
+                bitmap.Save(Path.Combine(path, $"wallpaper-{game}-{language}-{(dark ? "dark" : "light")}.png"), PngBitmapEncoderOptions.Default);
             }
             vm.SaveCommand.Execute(null);
             Assert.Equal(before, save.Data.ToArray());

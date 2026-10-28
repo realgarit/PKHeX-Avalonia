@@ -41,7 +41,7 @@ public class LiveHexServiceTests
         mem.TitleId = "0100ABF008968000"; // Sword
         mem.GameVersion = "1.3.2";
 
-        await service.ConnectAsync("127.0.0.1", 6000, new SAV8SWSH());
+        await service.ConnectAsync("127.0.0.1", 6000, new SAV8SWSH(), TestContext.Current.CancellationToken);
 
         Assert.True(service.IsConnected);
         Assert.True(mem.ConnectCalled);
@@ -58,7 +58,7 @@ public class LiveHexServiceTests
         mem.GameVersion = "4.0.0";
 
         var ex = await Assert.ThrowsAsync<LiveHexConnectionException>(
-            () => service.ConnectAsync("127.0.0.1", 6000, new SAV8SWSH()));
+            () => service.ConnectAsync("127.0.0.1", 6000, new SAV8SWSH(), TestContext.Current.CancellationToken));
         Assert.Contains("different game", ex.Message);
         Assert.False(service.IsConnected);
     }
@@ -71,7 +71,7 @@ public class LiveHexServiceTests
         mem.GameVersion = "9.9.9";
 
         var ex = await Assert.ThrowsAsync<LiveHexConnectionException>(
-            () => service.ConnectAsync("127.0.0.1", 6000, new SAV8SWSH()));
+            () => service.ConnectAsync("127.0.0.1", 6000, new SAV8SWSH(), TestContext.Current.CancellationToken));
         Assert.Contains("Unsupported game version", ex.Message);
         Assert.False(service.IsConnected);
     }
@@ -83,7 +83,7 @@ public class LiveHexServiceTests
         using var handshakeGate = new ManualResetEventSlim(false);
         mem.BotbaseVersionGate = handshakeGate;
 
-        var connectTask = service.ConnectAsync("127.0.0.1", 6000, new SAV8SWSH());
+        var connectTask = service.ConnectAsync("127.0.0.1", 6000, new SAV8SWSH(), TestContext.Current.CancellationToken);
         await mem.HandshakeStarted.Task;
 
         var disconnectTask = service.DisconnectAsync();
@@ -114,15 +114,15 @@ public class LiveHexServiceTests
         var sourceBox = source.GetBoxBinary(0);
         Assert.NotEqual(new SAV8SWSH().GetBoxBinary(0), sourceBox); // sanity: box is non-blank
 
-        await service.ConnectAsync("127.0.0.1", 6000, source);
-        await service.WriteBoxAsync(source, 0);
+        await service.ConnectAsync("127.0.0.1", 6000, source, TestContext.Current.CancellationToken);
+        await service.WriteBoxAsync(source, 0, TestContext.Current.CancellationToken);
 
         // The console heap now holds the exact box bytes we wrote.
         Assert.Equal(sourceBox, mem.GetHeapBytes(0x45075880, sourceBox.Length));
 
         // Read the console box into a fresh (blank) save; its box binary must now match the source.
         var target = new SAV8SWSH();
-        await service.ReadBoxAsync(target, 0);
+        await service.ReadBoxAsync(target, 0, TestContext.Current.CancellationToken);
         Assert.Equal(sourceBox, target.GetBoxBinary(0));
     }
 
@@ -131,7 +131,7 @@ public class LiveHexServiceTests
     {
         var (service, _) = NewService();
         var ex = await Assert.ThrowsAsync<LiveHexConnectionException>(
-            () => service.ReadBoxAsync(new SAV8SWSH(), 0));
+            () => service.ReadBoxAsync(new SAV8SWSH(), 0, TestContext.Current.CancellationToken));
         Assert.Contains("Not connected", ex.Message);
     }
 
@@ -142,10 +142,10 @@ public class LiveHexServiceTests
         mem.TitleId = "0100ABF008968000";
         mem.GameVersion = "1.3.2";
         var sav = new SAV8SWSH();
-        await service.ConnectAsync("127.0.0.1", 6000, sav);
+        await service.ConnectAsync("127.0.0.1", 6000, sav, TestContext.Current.CancellationToken);
 
         var ex = await Assert.ThrowsAsync<LiveHexConnectionException>(
-            () => service.ReadBoxAsync(sav, sav.BoxCount + 5));
+            () => service.ReadBoxAsync(sav, sav.BoxCount + 5, TestContext.Current.CancellationToken));
         Assert.Contains("out of range", ex.Message);
     }
 }

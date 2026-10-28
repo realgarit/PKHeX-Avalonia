@@ -12,7 +12,7 @@
         <Grid ColumnDefinitions="250, 8, *">
             <!-- Species List -->
             <Grid Grid.Column="0" RowDefinitions="Auto, 8, *">
-                <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc Pokedex6Editor_SearchSpecies}" AutomationProperties.Name="Search Species" />
+                <TextBox Text="{Binding SearchText}" PlaceholderText="{loc:Loc Pokedex6Editor_SearchSpecies}" AutomationProperties.Name="Search Species" />
                 <Border Grid.Row="2" Classes="pokedex-species-list">
                     <ListBox ItemsSource="{Binding FilteredSpecies}" SelectedItem="{Binding SelectedSpecies}" Background="Transparent">
                         <ListBox.ItemTemplate>

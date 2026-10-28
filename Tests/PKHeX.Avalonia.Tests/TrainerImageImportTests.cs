@@ -85,7 +85,7 @@ public class TrainerImageImportTests
         using var vm = new TrainerEditorViewModel(save, dialogs.Object, codec);
         try
         {
-            await File.WriteAllBytesAsync(path, codec.EncodePng(Pixels()));
+            await File.WriteAllBytesAsync(path, codec.EncodePng(Pixels()), TestContext.Current.CancellationToken);
             await vm.ImportZaImageCommand.ExecuteAsync(vm.ZaImages[index]);
             Assert.False(vm.HasZaError); Assert.True(vm.CanUndoZaCollection);
             foreach (var b in save.AllBlocks) Assert.Equal(before[b.Key], b.Data.ToArray());
@@ -124,7 +124,7 @@ public class TrainerImageImportTests
         using var vm = new TrainerEditorViewModel(save, dialogs.Object, codec); vm.TrainerName = "Draft";
         try
         {
-            await File.WriteAllBytesAsync(path, codec.EncodePng(Pixels()));
+            await File.WriteAllBytesAsync(path, codec.EncodePng(Pixels()), TestContext.Current.CancellationToken);
             await vm.ImportZaImageCommand.ExecuteAsync(vm.ZaImages[0]);
             Assert.Equal("Draft", vm.TrainerName); Assert.NotEqual("Draft", save.OT);
             vm.UndoZaCollectionCommand.Execute(null); Assert.Equal("Draft", vm.TrainerName);
@@ -169,7 +169,7 @@ public class TrainerImageImportTests
         using var vm = new TrainerEditorViewModel(save, dialogs.Object, codec); vm.TrainerName = "Draft";
         try
         {
-            await File.WriteAllBytesAsync(path, wrongSize ? codec.EncodePng(Pixels(4, 4)) : [1, 2, 3]);
+            await File.WriteAllBytesAsync(path, wrongSize ? codec.EncodePng(Pixels(4, 4)) : [1, 2, 3], TestContext.Current.CancellationToken);
             await vm.ImportZaImageCommand.ExecuteAsync(vm.ZaImages[0]);
             Assert.True(vm.HasZaError); Assert.False(vm.CanUndoZaCollection); Assert.Equal("Draft", vm.TrainerName);
             foreach (var b in save.AllBlocks) Assert.Equal(before[b.Key], b.Data.ToArray());

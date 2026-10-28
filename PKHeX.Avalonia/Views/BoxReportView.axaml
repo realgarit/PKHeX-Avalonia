@@ -30,7 +30,7 @@
                 </Button.Flyout>
             </Button>
         </WrapPanel>
-        <TextBox Grid.Row="1" Margin="10,0,10,8" Text="{Binding SearchText}" Watermark="{loc:Loc BoxReport_Search}"
+        <TextBox Grid.Row="1" Margin="10,0,10,8" Text="{Binding SearchText}" PlaceholderText="{loc:Loc BoxReport_Search}"
                  AutomationProperties.Name="{loc:Loc BoxReport_Search}" />
         <DataGrid Grid.Row="2" Name="ReportGrid" Classes="save-grid database-grid"
                   ItemsSource="{Binding Rows}" SelectedItem="{Binding SelectedRow}"

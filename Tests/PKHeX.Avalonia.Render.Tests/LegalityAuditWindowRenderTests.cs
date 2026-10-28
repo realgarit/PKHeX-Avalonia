@@ -89,13 +89,13 @@ public class LegalityAuditWindowRenderTests
         using var bitmap = new RenderTargetBitmap(PixelSize.FromSize(window.ClientSize, 1));
         bitmap.Render(window);
         using var stream = new MemoryStream();
-        bitmap.Save(stream);
+        bitmap.Save(stream, PngBitmapEncoderOptions.Default);
         using var pixels = SkiaSharp.SKBitmap.Decode(stream.ToArray());
         Assert.Contains(pixels.Pixels, pixel => pixel != pixels.GetPixel(0, 0));
         if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
         {
             Directory.CreateDirectory(path);
-            bitmap.Save(Path.Combine(path, $"{name}.png"));
+            bitmap.Save(Path.Combine(path, $"{name}.png"), PngBitmapEncoderOptions.Default);
         }
     }
 }

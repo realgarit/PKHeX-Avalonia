@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using PKHeX.Infrastructure.Updating;
 
 namespace PKHeX.Avalonia.Tests;
@@ -91,7 +92,10 @@ public class LinuxUpdateStrategyTests
 
 public sealed class LinuxTheoryAttribute : TheoryAttribute
 {
-    public LinuxTheoryAttribute()
+    public LinuxTheoryAttribute(
+        [CallerFilePath] string? sourceFilePath = null,
+        [CallerLineNumber] int sourceLineNumber = -1)
+        : base(sourceFilePath, sourceLineNumber)
     {
         if (!OperatingSystem.IsLinux()) Skip = "Executes Linux shell commands; covered by Linux CI.";
     }

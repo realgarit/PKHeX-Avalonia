@@ -55,7 +55,7 @@ public class StatExperienceRenderTests
             using (var frame = new RenderTargetBitmap(new PixelSize(width, 700)))
             {
                 frame.Render(window);
-                frame.Save(capture + ".png");
+                frame.Save(capture + ".png", PngBitmapEncoderOptions.Default);
             }
             var names = new[] { vm.HpEvAutomationName, vm.AtkEvAutomationName, vm.DefEvAutomationName,
                 vm.SpaEvAutomationName, vm.SpdEvAutomationName, vm.SpeEvAutomationName };

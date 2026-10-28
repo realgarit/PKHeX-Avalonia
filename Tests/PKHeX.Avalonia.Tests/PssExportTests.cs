@@ -94,7 +94,7 @@ public sealed class PssExportTests
         {
             dialogs.SaveFileResult = path;
             await vm.SaveTextCommand.ExecuteAsync(null);
-            Assert.Equal(vm.PreviewText, await File.ReadAllTextAsync(path));
+            Assert.Equal(vm.PreviewText, await File.ReadAllTextAsync(path, TestContext.Current.CancellationToken));
             Assert.Equal(2, dialogs.Infos.Count);
             Assert.Equal(before, save.Data.ToArray());
         }

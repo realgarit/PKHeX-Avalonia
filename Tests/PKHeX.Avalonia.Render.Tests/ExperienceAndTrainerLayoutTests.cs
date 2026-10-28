@@ -124,7 +124,7 @@ public class ExperienceAndTrainerLayoutTests
     private static SKBitmap Frame(Window window)
     {
         using var frame = new RenderTargetBitmap(new PixelSize((int)window.ClientSize.Width, (int)window.ClientSize.Height)); frame.Render(window);
-        using var stream = new MemoryStream(); frame.Save(stream); return SKBitmap.Decode(stream.ToArray());
+        using var stream = new MemoryStream(); frame.Save(stream, PngBitmapEncoderOptions.Default); return SKBitmap.Decode(stream.ToArray());
     }
     private static void SaveFrame(Window window, string name)
     {

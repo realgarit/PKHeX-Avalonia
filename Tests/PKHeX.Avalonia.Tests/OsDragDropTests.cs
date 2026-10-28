@@ -4,7 +4,6 @@ using PKHeX.Application.Abstractions;
 using PKHeX.Application.UseCases;
 using PKHeX.Core;
 using PKHeX.Presentation.ViewModels;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 

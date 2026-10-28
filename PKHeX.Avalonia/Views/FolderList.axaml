@@ -15,7 +15,7 @@
         <DockPanel>
             <TextBlock Text="{loc:Loc FolderList_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="6">
-                <TextBox Text="{Binding FilterText}" Watermark="{loc:Loc FolderList_FilterWatermark}" Width="200"
+                <TextBox Text="{Binding FilterText}" PlaceholderText="{loc:Loc FolderList_FilterWatermark}" Width="200"
                          AutomationProperties.Name="{loc:Loc FolderList_FilterWatermark}"/>
                 <Button Content="{loc:Loc FolderList_Refresh}" Command="{Binding RefreshCommand}" IsEnabled="{Binding !IsLoading}" />
                 <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelScanCommand}" IsVisible="{Binding IsLoading}" />

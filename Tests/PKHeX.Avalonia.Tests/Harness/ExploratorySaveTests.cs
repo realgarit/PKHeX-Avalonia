@@ -10,7 +10,6 @@ using PKHeX.Core;
 using PKHeX.Presentation.Models;
 using PKHeX.Presentation.ViewModels;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests.Harness;
 

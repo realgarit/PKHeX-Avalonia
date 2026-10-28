@@ -131,8 +131,8 @@ public class CategorizedEventEditorTests
         var newerPath = Path.Combine(directory, "newer.main");
         try
         {
-            await File.WriteAllBytesAsync(olderPath, older.Data.ToArray());
-            await File.WriteAllBytesAsync(newerPath, newer.Data.ToArray());
+            await File.WriteAllBytesAsync(olderPath, older.Data.ToArray(), TestContext.Current.CancellationToken);
+            await File.WriteAllBytesAsync(newerPath, newer.Data.ToArray(), TestContext.Current.CancellationToken);
             var dialogs = new Mock<IDialogService>();
             dialogs.SetupSequence(d => d.OpenFileAsync(It.IsAny<string>(), It.IsAny<string[]?>()))
                 .ReturnsAsync(olderPath).ReturnsAsync(newerPath);

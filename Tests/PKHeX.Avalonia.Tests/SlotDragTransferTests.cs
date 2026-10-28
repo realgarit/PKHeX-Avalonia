@@ -8,7 +8,6 @@ using PKHeX.Application.Abstractions;
 using PKHeX.Avalonia.Services;
 using PKHeX.Core;
 using PKHeX.Presentation.Models;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 

@@ -20,7 +20,6 @@ using PKHeX.Infrastructure.GiftRecords;
 using PKHeX.Presentation.Localization;
 using PKHeX.Presentation.ViewModels;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests.Harness;
 
@@ -1507,7 +1506,7 @@ public sealed class HeadlessFeatureCaptureTests(ITestOutputHelper output)
             return null;
         Directory.CreateDirectory(Path.GetDirectoryName(pngPath)!);
         using var fs = File.Create(pngPath);
-        frame.Save(fs);
+        frame.Save(fs, PngBitmapEncoderOptions.Default);
         return pngPath;
     }
 }

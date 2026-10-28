@@ -59,11 +59,11 @@ public class DonutTransactionWorkflowTests
             var save = new SAV9ZA(); var before = save.Donuts.Data.ToArray();
             var dialog = Dialog(); dialog.Setup(d => d.SaveFileAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string[]>())).ReturnsAsync(path);
             using var vm = new DonutEditorViewModel(save, dialog.Object);
-            await File.WriteAllBytesAsync(path, new byte[71]); await vm.ImportPathAsync(path); Assert.NotEmpty(vm.Error);
+            await File.WriteAllBytesAsync(path, new byte[71], TestContext.Current.CancellationToken); await vm.ImportPathAsync(path); Assert.NotEmpty(vm.Error);
             var data = new byte[72]; data[0] = 1; data[8] = 5; data[^1] = 0xA5;
-            await File.WriteAllBytesAsync(path, data); await vm.ImportPathAsync(path); Assert.True(vm.SelectedDonut!.IsOccupied);
+            await File.WriteAllBytesAsync(path, data, TestContext.Current.CancellationToken); await vm.ImportPathAsync(path); Assert.True(vm.SelectedDonut!.IsOccupied);
             Assert.Equal(before, save.Donuts.Data.ToArray());
-            await vm.ExportCommand.ExecuteAsync(null); Assert.Equal(data, await File.ReadAllBytesAsync(path));
+            await vm.ExportCommand.ExecuteAsync(null); Assert.Equal(data, await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken));
             vm.SaveCommand.Execute(null); Assert.Equal(data, save.Donuts.GetDonut(0).Data.ToArray()); Assert.True(save.State.Edited);
         }
         finally { File.Delete(path); }

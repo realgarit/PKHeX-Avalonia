@@ -13,7 +13,7 @@
             <!-- Controls -->
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Classes="save-editor-header">
                 <StackPanel Grid.Column="0" Spacing="8" Margin="0,0,8,0">
-                <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc PokedexSimpleEditor_SearchSpecies}" AutomationProperties.Name="Search Species" />
+                <TextBox Text="{Binding SearchText}" PlaceholderText="{loc:Loc PokedexSimpleEditor_SearchSpecies}" AutomationProperties.Name="Search Species" />
                 <WrapPanel Orientation="Horizontal">
                     <Button Content="{loc:Loc PokedexSimpleEditor_SeenAll}" Command="{Binding SeenAllCommand}" Margin="0,0,8,8" />
                     <Button Content="{loc:Loc PokedexSimpleEditor_SeenNone}" Command="{Binding SeenNoneCommand}" Margin="0,0,8,8" />

@@ -23,6 +23,9 @@ internal static class PartySlotInteraction
     private sealed class InteractionState
     {
         public Point DragStartPoint;
+        // Avalonia 12 starts every platform drag from the press that began the gesture (Wayland needs
+        // its input serial, macOS its position), so the press is kept until the move threshold is met.
+        public PointerPressedEventArgs? DragTrigger;
         public bool IsDragging;
         public Button? DragSourceButton;
     }
@@ -43,11 +46,14 @@ internal static class PartySlotInteraction
 
     public static void OnSlotPointerPressed(UserControl owner, PointerPressedEventArgs e)
     {
+        var state = States.GetValue(owner, static _ => new InteractionState());
+        state.DragTrigger = null;
         var button = FindSlotButton(e.Source as Visual);
         if (button?.Tag is not PartySlotData slot || owner.DataContext is not PartyViewerViewModel vm)
             return;
 
-        States.GetValue(owner, static _ => new InteractionState()).DragStartPoint = e.GetPosition(owner);
+        state.DragStartPoint = e.GetPosition(owner);
+        state.DragTrigger = e;
 
         // Only modifier actions consume the pointer press. A normal click is left to Button.Click so
         // the existing selection command remains the single source of ordinary click semantics.
@@ -83,7 +89,7 @@ internal static class PartySlotInteraction
         if (Math.Abs(delta.X) < 5 && Math.Abs(delta.Y) < 5)
             return;
 
-        if (state.IsDragging || button.Tag is not PartySlotData slot || slot.IsEmpty || owner.DataContext is not PartyViewerViewModel vm)
+        if (state.IsDragging || state.DragTrigger is not { } trigger || button.Tag is not PartySlotData slot || slot.IsEmpty || owner.DataContext is not PartyViewerViewModel vm)
             return;
 
         state.IsDragging = true;
@@ -97,7 +103,7 @@ internal static class PartySlotInteraction
             var storageProvider = TopLevel.GetTopLevel(owner)?.StorageProvider;
             var data = SlotDragTransfer.Create(vm.CreateDragData(slot.Slot), pk, storageProvider);
 
-            await DragDrop.DoDragDropAsync(e, data, DragDropEffects.Move | DragDropEffects.Copy);
+            await DragDrop.DoDragDropAsync(trigger, data, DragDropEffects.Move | DragDropEffects.Copy);
         }
         catch (Exception ex)
         {
@@ -106,6 +112,7 @@ internal static class PartySlotInteraction
         finally
         {
             state.IsDragging = false;
+            state.DragTrigger = null;
             button.Classes.Remove("drag-source");
             state.DragSourceButton = null;
         }

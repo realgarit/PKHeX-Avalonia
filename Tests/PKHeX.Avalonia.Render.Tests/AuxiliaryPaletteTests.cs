@@ -59,7 +59,7 @@ public class AuxiliaryPaletteTests
                     if (view is SettingsView settingsView) Assert.InRange(settingsView.FindControl<Border>("SettingsHeader")!.Bounds.Height, 30, 52);
                     using var frame = new RenderTargetBitmap(new PixelSize((int)window.ClientSize.Width, (int)window.ClientSize.Height)); frame.Render(window);
                     if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
-                    { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"palette-{name}-{dark}.png")); }
+                    { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"palette-{name}-{dark}.png"), PngBitmapEncoderOptions.Default); }
                 }
                 finally { window.Close(); }
             }

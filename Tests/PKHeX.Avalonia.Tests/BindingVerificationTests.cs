@@ -3,7 +3,6 @@ using Avalonia.Data;
 using Avalonia.Headless.XUnit;
 using PKHeX.Avalonia.Views;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 

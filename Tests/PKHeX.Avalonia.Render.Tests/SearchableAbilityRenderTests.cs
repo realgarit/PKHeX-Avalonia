@@ -57,11 +57,13 @@ public sealed class SearchableAbilityRenderTests
                 if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } directory)
                 {
                     Directory.CreateDirectory(directory);
-                    frame.Save(Path.Combine(directory, $"ability-{language}-{dark}-{slot}.png"));
+                    frame.Save(Path.Combine(directory, $"ability-{language}-{dark}-{slot}.png"), PngBitmapEncoderOptions.Default);
                 }
             }
             picker.MinimumPopulateDelay = TimeSpan.Zero;
-            Assert.True(picker.Focus());
+            // AutoCompleteBox forwards focus to its TextBox; Avalonia 12 Focus() then returns false.
+            picker.Focus();
+            Assert.True(picker.IsKeyboardFocusWithin);
             await PKHeX.Testing.HeadlessRenderSettling.Settle(window);
             window.KeyTextInput(vm.AbilityList[0].Text.Split(' ')[0]);
             await PKHeX.Testing.HeadlessRenderSettling.Settle(window);

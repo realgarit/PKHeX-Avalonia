@@ -53,7 +53,7 @@ public sealed class RsBoxWallpaperTests
             using var vm = new RsBoxWallpaperViewModel(save, codec, dialogs.Object);
             Assert.True(vm.CanExport); Assert.True(vm.IsEnabledInSave);
             await vm.ExportCommand.ExecuteAsync(null);
-            var png = await File.ReadAllBytesAsync(path);
+            var png = await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken);
             Assert.Equal(vm.PreviewPng, png);
             var reopened = codec.DecodePng(png, 568, 216);
             Assert.Equal(ImageDecodeError.None, reopened.Error);
@@ -74,13 +74,13 @@ public sealed class RsBoxWallpaperTests
         try
         {
             var path = Path.Combine(directory, "unchanged.png");
-            byte[] sentinel = [1, 2, 3, 4]; await File.WriteAllBytesAsync(path, sentinel);
+            byte[] sentinel = [1, 2, 3, 4]; await File.WriteAllBytesAsync(path, sentinel, TestContext.Current.CancellationToken);
             using (var cancelled = new RsBoxWallpaperViewModel(save, new PngImageCodec(), Dialogs(null).Object))
             {
                 Assert.True(cancelled.HasImage); Assert.False(cancelled.IsEnabledInSave);
                 Assert.Equal(LocalizedStrings.Instance["RsBoxWallpaper_Disabled"], cancelled.Status);
                 await cancelled.ExportCommand.ExecuteAsync(null);
-                Assert.Equal(sentinel, await File.ReadAllBytesAsync(path));
+                Assert.Equal(sentinel, await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken));
             }
             foreach (var dispose in new[] { true, false })
             {
@@ -91,7 +91,7 @@ public sealed class RsBoxWallpaperTests
                 var operation = vm.ExportCommand.ExecuteAsync(null);
                 if (dispose) vm.Dispose(); else vm.ExportCancelCommand.Execute(null);
                 pending.SetResult(path); await operation;
-                Assert.Equal(sentinel, await File.ReadAllBytesAsync(path));
+                Assert.Equal(sentinel, await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken));
                 dialogs.Verify(d => d.ShowErrorAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             }
             Assert.Single(Directory.GetFiles(directory));
@@ -113,10 +113,10 @@ public sealed class RsBoxWallpaperTests
             await vm.ExportCommand.ExecuteAsync(null);
             dialogs.Verify(d => d.ShowErrorAsync(LocalizedStrings.Instance["RsBoxWallpaper_ExportFailed"], It.IsAny<string>()), Times.Once);
             Assert.Empty(Directory.GetFiles(directory));
-            var path = Path.Combine(directory, "existing.png"); await File.WriteAllBytesAsync(path, [1, 2, 3]);
+            var path = Path.Combine(directory, "existing.png"); await File.WriteAllBytesAsync(path, [1, 2, 3], TestContext.Current.CancellationToken);
             using var cancelled = new CancellationTokenSource(); cancelled.Cancel();
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => new ExportWallpaperPngUseCase().ExecuteAsync(path, vm.PreviewPng!, cancelled.Token));
-            Assert.Equal(new byte[] { 1, 2, 3 }, await File.ReadAllBytesAsync(path));
+            Assert.Equal(new byte[] { 1, 2, 3 }, await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken));
             AssertUnchanged(save, before);
         }
         finally { Directory.Delete(directory, true); }

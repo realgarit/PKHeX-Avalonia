@@ -124,8 +124,8 @@
                         <!-- Messages - Gen 2 (Text) -->
                         <StackPanel Spacing="5" IsVisible="{Binding ShowMessageText}">
                             <TextBlock Text="{loc:Loc MailBoxEditor_Message}" FontWeight="Bold" FontSize="14"/>
-                            <TextBox Text="{Binding MessageText1}" Watermark="{loc:Loc MailBoxEditor_Line1}" AutomationProperties.Name="Message Line 1"/>
-                            <TextBox Text="{Binding MessageText2}" Watermark="{loc:Loc MailBoxEditor_Line2}" AutomationProperties.Name="Message Line 2"/>
+                            <TextBox Text="{Binding MessageText1}" PlaceholderText="{loc:Loc MailBoxEditor_Line1}" AutomationProperties.Name="Message Line 1"/>
+                            <TextBox Text="{Binding MessageText2}" PlaceholderText="{loc:Loc MailBoxEditor_Line2}" AutomationProperties.Name="Message Line 2"/>
                             <CheckBox Content="{loc:Loc MailBoxEditor_UserEntered}" IsChecked="{Binding UserEntered}"/>
                         </StackPanel>
 

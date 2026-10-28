@@ -40,7 +40,7 @@ public class GitHubUpdateCheckServiceTests
         });
         var service = new GitHubUpdateCheckService(new HttpClient(handler));
 
-        var releases = await service.GetReleasesAsync();
+        var releases = await service.GetReleasesAsync(TestContext.Current.CancellationToken);
 
         Assert.NotNull(releases);
         var asset = Assert.Single(releases!)!.Assets[0];
@@ -57,7 +57,7 @@ public class GitHubUpdateCheckServiceTests
         });
         var service = new GitHubUpdateCheckService(new HttpClient(handler));
 
-        var releases = await service.GetReleasesAsync();
+        var releases = await service.GetReleasesAsync(TestContext.Current.CancellationToken);
 
         var legacyAsset = releases![0].Assets[1];
         Assert.Null(legacyAsset.Sha256);

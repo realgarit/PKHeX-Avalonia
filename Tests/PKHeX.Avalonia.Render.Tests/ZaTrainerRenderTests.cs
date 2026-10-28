@@ -56,18 +56,18 @@ public class ZaTrainerRenderTests
                 var point = apply.TranslatePoint(default, view)!.Value;
                 Assert.True(point.Y >= 0 && point.Y + apply.Bounds.Height <= view.Bounds.Height);
                 using var frame = new RenderTargetBitmap(new PixelSize(width, height)); frame.Render(window);
-                using var bytes = new MemoryStream(); frame.Save(bytes);
+                using var bytes = new MemoryStream(); frame.Save(bytes, PngBitmapEncoderOptions.Default);
                 using var pixels = SkiaSharp.SKBitmap.Decode(bytes.ToArray()); Assert.NotNull(pixels);
                 Assert.Contains(pixels.Pixels, pixel => pixel != pixels.GetPixel(0, 0));
                 if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
-                { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"trainerza-{language}-section{index}.png")); }
+                { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"trainerza-{language}-section{index}.png"), PngBitmapEncoderOptions.Default); }
                 if (index == 0)
                 {
                     var scroll = Assert.Single(view.GetVisualDescendants().OfType<ScrollViewer>(), scroll => scroll.Content is StackPanel);
                     scroll.ScrollToEnd(); await PKHeX.Testing.HeadlessRenderSettling.Settle(window);
                     using var saved = new RenderTargetBitmap(new PixelSize(width, height)); saved.Render(window);
                     if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } savedPath)
-                        saved.Save(Path.Combine(savedPath, $"trainerza-{language}-lastsaved.png"));
+                        saved.Save(Path.Combine(savedPath, $"trainerza-{language}-lastsaved.png"), PngBitmapEncoderOptions.Default);
                 }
             }
             vm.SaveCommand.Execute(null);

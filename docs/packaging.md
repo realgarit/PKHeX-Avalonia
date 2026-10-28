@@ -21,7 +21,7 @@ workflow signs when it can and clearly labels artifacts as unsigned when it can'
 | Platform | Artifact(s) | Notes |
 |---|---|---|
 | Windows x64 | `PKHeX-Avalonia-win-x64.zip` (unchanged) + `PKHeX-Avalonia-Setup.exe` (or `PKHeX-Avalonia-Setup-unsigned.exe`) | Installer built with Inno Setup via chocolatey |
-| Linux x64 | `PKHeX-Avalonia-linux-x64.zip` + `PKHeX-Avalonia-<version>-x86_64.AppImage` + `.AppImage.zsync` + `PKHeX-Avalonia-linux-x86_64.flatpak` | Flatpak uses the Freedesktop 25.08 runtime; AppImageUpdate and AppStream metadata are included |
+| Linux x64 | `PKHeX-Avalonia-linux-x64.zip` + `PKHeX-Avalonia-<version>-x86_64.AppImage` + `.AppImage.zsync` + `PKHeX-Avalonia-linux-x86_64.flatpak` | Flatpak uses the Freedesktop 26.08 runtime; AppImageUpdate and AppStream metadata are included |
 | macOS arm64 / x64 | `PKHeX-Avalonia-osx-{arm64,x64}.zip` (unchanged, ad-hoc signed as before) + `PKHeX-Avalonia-osx-{arm64,x64}.dmg` or `-unsigned.dmg` | `.dmg` contains the `.app` bundle plus an `Applications` symlink |
 
 The ZIP naming stays stable. AppImages use the catalog's application/version/architecture
@@ -267,7 +267,7 @@ review is far more likely to reject them.
 ## Linux Flatpak
 
 GitHub releases include an x86_64 Flatpak bundle built from the exact tagged source,
-using the Freedesktop 25.08 runtime and .NET 10 SDK extension. The bundle does not
+using the Freedesktop 26.08 runtime and .NET 10 SDK extension. The bundle does not
 require a system-wide .NET installation. Install it on a Linux desktop with Flatpak
 and an XDG desktop portal backend:
 
@@ -284,27 +284,35 @@ to update it. The app keeps release notes available, explains that Flatpak owns
 updates, and hides the portable download/install actions. It never replaces `/app`
 or starts an update helper inside the sandbox.
 
-File and folder pickers use Avalonia's XDG portal backend. No home, host, or
+File and folder pickers use Avalonia's XDG portal backend. Under Wayland, Avalonia uses
+the portal only when the compositor supports the xdg-foreign protocol and otherwise shows
+its built-in picker, which inside the sandbox sees only the app's own data. No home, host, or
 removable-drive filesystem permission is granted: select individual saves or a
 folder through the picker. Persistent portal grants allow reopening selected files;
 dragging a host file into the app may require opening it through the picker first.
 Use File > Save As to choose a new destination. Settings, backups and other private
-data live under `~/.var/app/io.github.realgarit.PKHeX-Avalonia/`. The current Avalonia
-11 backend uses X11, including XWayland on Wayland desktops. Network access supports
-legality resources, mystery gifts, and release notes; DRI access supports rendering.
+data live under `~/.var/app/io.github.realgarit.PKHeX-Avalonia/`. The Flatpak grants the
+Wayland socket and, only on desktops without Wayland, the X11 socket (`fallback-x11`). The
+app uses Avalonia's native Wayland backend when the compositor accepts it and otherwise
+its X11 backend. Avalonia's Wayland backend is new and has no screen-reader (AT-SPI)
+support yet; screen-reader users can keep the X11 backend with
+`flatpak override --user --nosocket=wayland --socket=x11 io.github.realgarit.PKHeX-Avalonia`
+(undo with `flatpak override --user --reset io.github.realgarit.PKHeX-Avalonia`). Network
+access supports legality resources, mystery gifts, and release notes; DRI access supports
+rendering.
 
 ### Community FlatPark repository
 
 [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia) is a
 community Flatpak repository for apps that are not on Flathub. Its PKHeX-Avalonia
 package downloads the unchanged `PKHeX-Avalonia-linux-x64.zip` from each GitHub
-release and grants the same four permissions as this repository's manifest
-(X11, network, IPC and DRI). Because `FLATPAK_ID` is set, the app hands updates to
-`flatpak update` exactly as it does for the release bundle.
+release and grants X11, network, IPC and DRI. Without a Wayland socket, the app uses
+its X11 backend (XWayland on Wayland desktops) there. Because `FLATPAK_ID` is set, the
+app hands updates to `flatpak update` exactly as it does for the release bundle.
 
 FlatPark is maintained independently. It signs with its own key, builds on the
-Freedesktop 26.08 runtime rather than the 25.08 runtime used and tested here, and
-picks up new releases by its own schedule. It uses the same app ID as the release
+Freedesktop 26.08 runtime like the bundle built and tested here, and picks up new
+releases by its own schedule. It uses the same app ID as the release
 bundle, so a system should have only one of the two installed. This project accepts
 the listing as a community install option; it is not part of the release pipeline,
 and a self-hosted repository signed by this project is still tracked separately.
@@ -320,7 +328,7 @@ On Linux, install `flatpak-builder`, `appstream`, `desktop-file-utils`, Python 3
 and the three runtimes, then build a committed revision:
 
 ```bash
-flatpak install --user flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 org.freedesktop.Sdk.Extension.dotnet10//25.08
+flatpak install --user flathub org.freedesktop.Platform//26.08 org.freedesktop.Sdk//26.08 org.freedesktop.Sdk.Extension.dotnet10//26.08
 python3 .github/scripts/prepare-flatpak.py tmp/flatpak
 flatpak-builder --user --force-clean --repo=tmp/flatpak/repo tmp/flatpak/build tmp/flatpak/io.github.realgarit.PKHeX-Avalonia.json
 flatpak build-bundle --runtime-repo=https://dl.flathub.org/repo/flathub.flatpakrepo tmp/flatpak/repo tmp/flatpak/PKHeX-Avalonia-linux-x86_64.flatpak io.github.realgarit.PKHeX-Avalonia

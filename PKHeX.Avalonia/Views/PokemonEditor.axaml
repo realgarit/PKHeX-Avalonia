@@ -420,7 +420,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="2" IsVisible="{Binding HasMetDate}" Classes="form-label" Text="{loc:Loc PokemonEditor_MetDate}" FontWeight="SemiBold" Margin="0" VerticalAlignment="Center" />
                                 <NumericUpDown Grid.Row="1" Value="{Binding MetLevel}" ShowButtonSpinner="False" Minimum="0" Maximum="100" FormatString="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" AutomationProperties.Name="{loc:Loc PokemonEditor_MetLevel}" />
                                 <CalendarDatePicker Grid.Row="1" Grid.Column="2" IsVisible="{Binding HasMetDate}" SelectedDate="{Binding MetDate}" SelectedDateFormat="Short"
-                                                    Watermark="{loc:Loc PokemonEditor_SelectDate}"
+                                                    PlaceholderText="{loc:Loc PokemonEditor_SelectDate}"
                                                     ToolTip.Tip="{Binding MetDateTooltip}"
                                                     HorizontalAlignment="Stretch" VerticalAlignment="Center"
                                                     AutomationProperties.Name="{loc:Loc PokemonEditor_MetDate}" />
@@ -441,7 +441,7 @@
                             <StackPanel>
                                 <TextBlock Classes="form-label" Text="{loc:Loc PokemonEditor_EggDate}" FontWeight="SemiBold" Margin="0,0,0,4" />
                                 <CalendarDatePicker SelectedDate="{Binding EggDate}" SelectedDateFormat="Short"
-                                                    Watermark="{loc:Loc PokemonEditor_SelectDate}"
+                                                    PlaceholderText="{loc:Loc PokemonEditor_SelectDate}"
                                                     ToolTip.Tip="{Binding EggDateTooltip}"
                                                     HorizontalAlignment="Stretch"
                                                     AutomationProperties.Name="{loc:Loc PokemonEditor_EggDate}" />

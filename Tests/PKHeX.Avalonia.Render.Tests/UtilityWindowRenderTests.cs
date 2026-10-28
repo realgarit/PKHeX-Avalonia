@@ -43,10 +43,10 @@ public class UtilityWindowRenderTests
             Assert.True(window.Width <= (kind is "audit" or "database" ? 1200 : 620) && window.Height <= (kind is "audit" or "database" ? 700 : 440));
             window.Show(); await PKHeX.Testing.HeadlessRenderSettling.Settle(window);
             using var frame = new RenderTargetBitmap(new PixelSize((int)window.ClientSize.Width, (int)window.ClientSize.Height)); frame.Render(window);
-            using var bytes = new MemoryStream(); frame.Save(bytes); using var pixels = SkiaSharp.SKBitmap.Decode(bytes.ToArray());
+            using var bytes = new MemoryStream(); frame.Save(bytes, PngBitmapEncoderOptions.Default); using var pixels = SkiaSharp.SKBitmap.Decode(bytes.ToArray());
             Assert.NotNull(pixels); Assert.Contains(pixels.Pixels, pixel => pixel != pixels.GetPixel(0, 0));
             if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
-            { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"utility-{kind}-{(dark ? "dark" : "light")}.png")); }
+            { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"utility-{kind}-{(dark ? "dark" : "light")}.png"), PngBitmapEncoderOptions.Default); }
         }
         finally { window?.Close(); global::Avalonia.Application.Current.RequestedThemeVariant = previous; }
     }

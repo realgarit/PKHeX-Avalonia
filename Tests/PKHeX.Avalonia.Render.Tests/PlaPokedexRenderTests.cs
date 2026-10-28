@@ -48,7 +48,7 @@ public class PlaPokedexRenderTests
                     }
                     using var frame = new RenderTargetBitmap(new PixelSize(width, height)); frame.Render(window);
                     if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
-                    { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"pokedex-pla-{language}-tab{i}-{end}.png")); }
+                    { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"pokedex-pla-{language}-tab{i}-{end}.png"), PngBitmapEncoderOptions.Default); }
                 }
             }
             vm.SaveCommand.Execute(null); Assert.False(vm.HasError, vm.Error);
