@@ -5,6 +5,7 @@
   <a href="https://github.com/realgarit/PKHeX-Avalonia/actions/workflows/ci.yml"><img src="https://github.com/realgarit/PKHeX-Avalonia/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPLv3"></a>
   <a href="https://github.com/realgarit/PKHeX-Avalonia/releases"><img src="https://img.shields.io/github/downloads/realgarit/PKHeX-Avalonia/total" alt="Downloads"></a>
+  <a href="https://flathub.org/apps/io.github.realgarit.PKHeX-Avalonia"><img src="https://img.shields.io/flathub/v/io.github.realgarit.PKHeX-Avalonia?logo=flathub&amp;logoColor=white&amp;label=Flathub" alt="Flathub version"></a>
   <a href="https://discord.gg/DY2SWKsV75"><img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&amp;logoColor=white" alt="Join the Discord community"></a>
 </p>
 
@@ -26,11 +27,17 @@
 
 ## Download
 
-Get a self-contained package from the [official latest release](https://github.com/realgarit/PKHeX-Avalonia/releases/latest). **No .NET installation is required to run it.**
+Get a self-contained package from the [official latest release](https://github.com/realgarit/PKHeX-Avalonia/releases/latest). **No .NET installation is required to run it.** On Linux, you can also install from Flathub and get updates through your software center.
+
+<p>
+  <a href='https://flathub.org/apps/io.github.realgarit.PKHeX-Avalonia'><img width='240' alt='Get it on Flathub' src='https://flathub.org/api/badge?locale=en'/></a>
+  <a href="https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia/"><img src="https://flatpark.org/badges/get-it-on-flatpark.svg" alt="Get it on FlatPark"></a>
+</p>
 
 | Platform | Portable package | Installer or app image |
 |---|---|---|
 | Windows x64 | `PKHeX-Avalonia-win-x64.zip` | `PKHeX-Avalonia-Setup-unsigned.exe` |
+| Linux x64 and ARM64 | — | [Flathub](https://flathub.org/apps/io.github.realgarit.PKHeX-Avalonia) |
 | Linux x64 | `PKHeX-Avalonia-linux-x64.zip` | `PKHeX-Avalonia-<version>-x86_64.AppImage` or `PKHeX-Avalonia-linux-x86_64.flatpak` |
 | macOS Apple Silicon | `PKHeX-Avalonia-osx-arm64.zip` | `PKHeX-Avalonia-osx-arm64-selfsigned.dmg` |
 | macOS Intel | `PKHeX-Avalonia-osx-x64.zip` | `PKHeX-Avalonia-osx-x64-selfsigned.dmg` |
@@ -52,6 +59,29 @@ See the [packaging guide](docs/packaging.md#windows-installer--code-signing) for
 Choose `osx-arm64` for Apple Silicon or `osx-x64` for Intel. Open the DMG and copy the app to Applications, or extract the ZIP. A self-signed build is not Apple-notarized and may require first-launch approval.
 
 See [macOS signing and first launch](docs/packaging.md#macos-stable-self-signed-identity-the-tertius-pattern) for details.
+
+</details>
+
+<details>
+<summary><strong>Linux — Flathub (recommended)</strong></summary>
+
+PKHeX-Avalonia is available on [Flathub](https://flathub.org/apps/io.github.realgarit.PKHeX-Avalonia) for x86_64 and ARM64. Install it from your software center, or run:
+
+```bash
+flatpak install flathub io.github.realgarit.PKHeX-Avalonia
+flatpak run io.github.realgarit.PKHeX-Avalonia
+```
+
+`flatpak update` and your software center deliver new versions. Flathub receives releases in batches, so its version can be older than the latest GitHub release. The in-app updater shows release notes but leaves Flatpak updates to Flatpak.
+
+Use **File → Open** and **Save As** to grant access to files through the desktop portal. Settings and backups are stored in `~/.var/app/io.github.realgarit.PKHeX-Avalonia/`. See the [Flatpak guide](docs/packaging.md#linux-flatpak) for file access, permissions, and troubleshooting.
+
+**Moving from the GitHub `.flatpak` bundle:** both packages use the same app ID, so remove the bundle first. `flatpak uninstall` keeps your settings and backups unless you add `--delete-data`.
+
+```bash
+flatpak uninstall io.github.realgarit.PKHeX-Avalonia
+flatpak install flathub io.github.realgarit.PKHeX-Avalonia
+```
 
 </details>
 
@@ -90,9 +120,16 @@ Uninstall preserves save files, settings, and backups. AppImage updates use the 
 </details>
 
 <details>
-<summary><strong>Linux — sandboxed Flatpak bundle</strong></summary>
+<summary><strong>Linux — FlatPark or the standalone Flatpak bundle</strong></summary>
 
-Install Flatpak and your desktop's XDG portal backend, then download the x86_64 bundle from the release page:
+**FlatPark:** the community repository [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia/) also lists PKHeX-Avalonia. It installs the unchanged Linux release ZIP with the same permissions as our Flatpak package, and `flatpak update` keeps it current. FlatPark is maintained independently from this project and uses its own signing key. Report app problems in this repository; see the [Flatpak guide](docs/packaging.md#community-flatpark-repository).
+
+```bash
+flatpak remote-add --if-not-exists --user flatpark https://dl.flatpark.org/flatpark.flatpakrepo
+flatpak install --user flatpark io.github.realgarit.PKHeX-Avalonia
+```
+
+**Standalone bundle:** each GitHub release also includes an x86_64 `.flatpak` bundle. Install Flatpak and your desktop's XDG portal backend, then install the downloaded bundle:
 
 ```bash
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
@@ -100,11 +137,9 @@ flatpak install --user ./PKHeX-Avalonia-linux-x86_64.flatpak
 flatpak run io.github.realgarit.PKHeX-Avalonia
 ```
 
-Flathub supplies the runtime dependencies; **the app itself is not listed on Flathub**. To update this standalone bundle, download a newer release and repeat the install command. The in-app updater does not replace Flatpak files.
+The bundle has no update remote: to update it, download a newer release and repeat the install command.
 
-Use **File → Open** and **Save As** to grant access to files through the desktop portal. See the [Flatpak guide](docs/packaging.md#linux-flatpak) for file access, persistent data, and troubleshooting.
-
-**Community repository with updates:** [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia) also lists PKHeX-Avalonia. It installs the unchanged Linux release ZIP with the same permissions as the bundle above, and `flatpak update` keeps it current. FlatPark is maintained independently from this project: it uses its own signing key and the Freedesktop 26.08 runtime. Both packages use the same app ID, so install only one of them. Report app problems in this repository; see the [Flatpak guide](docs/packaging.md#community-flatpark-repository).
+Flathub, FlatPark, and the bundle all use the same app ID, so install only one of them.
 
 </details>
 
