@@ -62,11 +62,11 @@ public class LgpeTrainerRenderTests
                     Assert.Contains(GameInfo.Strings.Species[25], vm.SelectedSlot!.Name);
                 }
                 using var frame = new RenderTargetBitmap(new PixelSize(width, height)); frame.Render(window);
-                using var bytes = new MemoryStream(); frame.Save(bytes);
+                using var bytes = new MemoryStream(); frame.Save(bytes, PngBitmapEncoderOptions.Default);
                 using var pixels = SkiaSharp.SKBitmap.Decode(bytes.ToArray()); Assert.NotNull(pixels);
                 Assert.Contains(pixels.Pixels, pixel => pixel != pixels.GetPixel(0, 0));
                 if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
-                { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"trainerlgpe-{language}-section{section}.png")); }
+                { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"trainerlgpe-{language}-section{section}.png"), PngBitmapEncoderOptions.Default); }
             }
             vm.SaveCommand.Execute(null); Assert.Equal(before, save.Data.ToArray());
         }

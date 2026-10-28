@@ -90,7 +90,7 @@ public class LgpeTrainerWorkflowTests
         using var vm = new Misc7bEditorViewModel(save, dialogs.Object);
         try
         {
-            await File.WriteAllBytesAsync(path, Record()); vm.SelectedSlot = vm.ParkSlots.Single(row => row.Index == 1);
+            await File.WriteAllBytesAsync(path, Record(), TestContext.Current.CancellationToken); vm.SelectedSlot = vm.ParkSlots.Single(row => row.Index == 1);
             var pending = vm.ImportSlotCommand.ExecuteAsync(null);
             vm.SelectedSlot = vm.ParkSlots.Single(row => row.Index == 2);
             picked.SetResult(path); await pending;
@@ -111,7 +111,7 @@ public class LgpeTrainerWorkflowTests
         using var vm = new Misc7bEditorViewModel(save, dialogs.Object);
         try
         {
-            await File.WriteAllBytesAsync(path, Record()); var pending = vm.ImportSlotCommand.ExecuteAsync(null);
+            await File.WriteAllBytesAsync(path, Record(), TestContext.Current.CancellationToken); var pending = vm.ImportSlotCommand.ExecuteAsync(null);
             vm.ResetCommand.Execute(null); picked.SetResult(path); await pending;
             Assert.False(vm.CanUndo); Assert.False(vm.ParkSlots[0].Occupied); Assert.Equal(before, save.Data.ToArray());
         }
@@ -130,7 +130,7 @@ public class LgpeTrainerWorkflowTests
         using var vm = new Misc7bEditorViewModel(save, dialogs.Object);
         try
         {
-            await File.WriteAllBytesAsync(first, Record()); await File.WriteAllBytesAsync(second, Record());
+            await File.WriteAllBytesAsync(first, Record(), TestContext.Current.CancellationToken); await File.WriteAllBytesAsync(second, Record(), TestContext.Current.CancellationToken);
             await vm.ImportFolderCommand.ExecuteAsync(null);
             Assert.True(vm.HasError); Assert.False(vm.CanUndo); Assert.False(vm.ParkSlots[49].Occupied);
             Assert.Equal(before, save.Data.ToArray());
@@ -149,11 +149,11 @@ public class LgpeTrainerWorkflowTests
         using var vm = new Misc7bEditorViewModel(save, dialogs.Object);
         try
         {
-            await File.WriteAllBytesAsync(first, record); await File.WriteAllBytesAsync(second, [1, 2, 3]);
+            await File.WriteAllBytesAsync(first, record, TestContext.Current.CancellationToken); await File.WriteAllBytesAsync(second, [1, 2, 3], TestContext.Current.CancellationToken);
             await vm.ImportFolderCommand.ExecuteAsync(null);
             Assert.True(vm.HasError); Assert.False(vm.ParkSlots[0].Occupied); Assert.False(vm.CanUndo);
             Assert.Equal(before, save.Data.ToArray());
-            await File.WriteAllBytesAsync(second, Record(1));
+            await File.WriteAllBytesAsync(second, Record(1), TestContext.Current.CancellationToken);
             await vm.ImportFolderCommand.ExecuteAsync(null);
             Assert.True(vm.CanUndo); Assert.True(vm.ParkSlots[0].Occupied); Assert.True(vm.ParkSlots[1].Occupied);
             Assert.Equal(before, save.Data.ToArray());
@@ -179,7 +179,7 @@ public class LgpeTrainerWorkflowTests
         try
         {
             await vm.ExportFolderCommand.ExecuteAsync(null);
-            Assert.Equal(path, Assert.Single(Directory.GetFiles(folder))); Assert.Equal(first, await File.ReadAllBytesAsync(path));
+            Assert.Equal(path, Assert.Single(Directory.GetFiles(folder))); Assert.Equal(first, await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken));
             await vm.CopySummaryCommand.ExecuteAsync(null);
             Assert.NotNull(summary); Assert.Contains(GameInfo.Strings.Species[25], summary); Assert.DoesNotContain(GameInfo.Strings.Species[1], summary);
             Assert.Equal(before, save.Data.ToArray());
@@ -197,7 +197,7 @@ public class LgpeTrainerWorkflowTests
         vm.SelectedSlot = vm.ParkSlots.Single(row => row.Index == 51);
         try
         {
-            await vm.ExportSlotCommand.ExecuteAsync(null); Assert.Equal(record, await File.ReadAllBytesAsync(path));
+            await vm.ExportSlotCommand.ExecuteAsync(null); Assert.Equal(record, await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken));
             await vm.DeleteSlotCommand.ExecuteAsync(null); Assert.Equal(before, save.Data.ToArray());
             Assert.False(vm.SelectedSlot!.Occupied); vm.UndoCommand.Execute(null); Assert.True(vm.SelectedSlot!.Occupied);
             await vm.DeleteSlotCommand.ExecuteAsync(null); vm.SaveCommand.Execute(null);

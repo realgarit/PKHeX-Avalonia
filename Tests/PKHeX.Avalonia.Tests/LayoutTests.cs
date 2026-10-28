@@ -109,8 +109,11 @@ public class LayoutTests
         statsGrid.Arrange(new Rect(0, 0, 220, 620));
         Dispatcher.UIThread.RunJobs();
 
-        Assert.True(headers[0]!.Bounds.Width >= 40, $"Stat header was only {headers[0]!.Bounds.Width}px wide.");
-        Assert.True(headers[1]!.Bounds.Width >= 40, $"Base header was only {headers[1]!.Bounds.Width}px wide.");
+        // Stat and Base keep the full width of their text (1px rounding tolerance, as in LayoutValidator).
+        Assert.True(headers[0]!.Bounds.Width + 1.0 >= headers[0]!.TextLayout.Width,
+            $"Stat header was only {headers[0]!.Bounds.Width}px wide for {headers[0]!.TextLayout.Width}px of text.");
+        Assert.True(headers[1]!.Bounds.Width + 1.0 >= headers[1]!.TextLayout.Width,
+            $"Base header was only {headers[1]!.Bounds.Width}px wide for {headers[1]!.TextLayout.Width}px of text.");
 
         for (var i = 1; i < headers.Length; i++)
         {
@@ -131,8 +134,7 @@ public class LayoutTests
         var sav = new SAV3E(new byte[0x20000]); // Initialize with full buffer
         var vm = new RTC3EditorViewModel(sav);
         var view = new RTC3Editor { DataContext = vm };
-        ForceLayout(view);
-        LayoutValidator.Validate(view);
+        ValidateLayout(view);
     }
 
     [AvaloniaFact]
@@ -149,8 +151,7 @@ public class LayoutTests
         vm.PlayedSeconds = 59;
         
         var view = new TrainerEditor { DataContext = vm };
-        ForceLayout(view);
-        LayoutValidator.Validate(view);
+        ValidateLayout(view);
     }
 
     [AvaloniaFact]
@@ -159,8 +160,7 @@ public class LayoutTests
         var vm = new InventoryEditorViewModel(_saveFile, new Moq.Mock<ISpriteRenderer>().Object);
         // TODO: Populate inventory with max items if possible, but requires complex mocking
         var view = new InventoryEditor { DataContext = vm };
-        ForceLayout(view);
-        LayoutValidator.Validate(view);
+        ValidateLayout(view);
     }
 
     [AvaloniaFact]
@@ -168,8 +168,7 @@ public class LayoutTests
     {
         var vm = new EventFlagsEditorViewModel(_saveFile);
         var view = new EventFlagsEditor { DataContext = vm };
-        ForceLayout(view);
-        LayoutValidator.Validate(view);
+        ValidateLayout(view);
     }
 
     [AvaloniaFact]
@@ -178,8 +177,7 @@ public class LayoutTests
         var dialogMock = new Mock<IDialogService>();
         var vm = new MysteryGiftEditorViewModel(_saveFile, dialogMock.Object);
         var view = new MysteryGiftEditor { DataContext = vm };
-        ForceLayout(view);
-        LayoutValidator.Validate(view);
+        ValidateLayout(view);
     }
 
     [AvaloniaFact]
@@ -189,8 +187,7 @@ public class LayoutTests
         var save = BlankSaveFile.Get(GameVersion.SL);
         var vm = new MysteryGiftEditorViewModel(save, dialogMock.Object, new GiftRecordProvider());
         var view = new MysteryGiftEditor { DataContext = vm };
-        ForceLayout(view);
-        LayoutValidator.Validate(view);
+        ValidateLayout(view);
     }
 
     [AvaloniaFact]
@@ -199,11 +196,12 @@ public class LayoutTests
         var dialogMock = new Mock<IDialogService>();
         var vm = new BatchEditorViewModel(_saveFile, dialogMock.Object);
         var view = new PKHeX.Avalonia.Views.BatchEditor { DataContext = vm };
-        ForceLayout(view);
-        LayoutValidator.Validate(view);
+        ValidateLayout(view);
     }
 
-    private void ForceLayout(Control view)
+    // Validates while the window is still open. Closing it detaches the view, and a detached TextBlock
+    // rebuilds its text layout with default font settings instead of the styled ones it was laid out with.
+    private void ValidateLayout(Control view)
     {
          var window = new Window
         {
@@ -217,6 +215,7 @@ public class LayoutTests
         view.Measure(new Size(800, 600)); 
         view.Arrange(new Rect(0, 0, 800, 600));
         Dispatcher.UIThread.RunJobs();
+        LayoutValidator.Validate(view);
     }
 
     [AvaloniaFact]

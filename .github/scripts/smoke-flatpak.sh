@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Run inside an X11 desktop/session bus (CI uses xvfb-run + dbus-run-session).
+# Run inside an X11 desktop/session bus (CI uses xvfb-run + dbus-run-session). The app defaults to
+# X11; the Wayland socket is granted for the opt-in native Wayland setting.
 set -euo pipefail
 output=${1:?Missing evidence directory}
 app_id=io.github.realgarit.PKHeX-Avalonia
@@ -15,7 +16,7 @@ def grants(name):
     return set(filter(None, context.get(name, "").split(";")))
 assert not grants("filesystems"), "Unexpected host filesystem access"
 assert grants("shared") == {"network", "ipc"}, "Unexpected shared resources"
-assert grants("sockets") == {"x11"}, "Unexpected sockets or unfiltered bus access"
+assert grants("sockets") == {"x11", "wayland"}, "Unexpected sockets or unfiltered bus access"
 assert grants("devices") == {"dri"}, "Unexpected device access"
 for section in ("Session Bus Policy", "System Bus Policy"):
     if permissions.has_section(section):

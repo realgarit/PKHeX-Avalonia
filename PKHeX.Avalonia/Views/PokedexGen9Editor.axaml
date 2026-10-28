@@ -31,7 +31,7 @@
             </StackPanel>
             <!-- Left: Species List -->
             <Grid Grid.Row="2" Grid.Column="0" RowDefinitions="Auto, 8, *">
-                <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc PokedexGen9Editor_SearchSpecies}" AutomationProperties.Name="{loc:Loc PokedexGen9Editor_SearchSpecies}" />
+                <TextBox Text="{Binding SearchText}" PlaceholderText="{loc:Loc PokedexGen9Editor_SearchSpecies}" AutomationProperties.Name="{loc:Loc PokedexGen9Editor_SearchSpecies}" />
                 <Border Grid.Row="2" Classes="pokedex-species-list">
                     <ListBox ItemsSource="{Binding FilteredSpeciesList}" SelectedItem="{Binding SelectedSpecies}" Background="Transparent">
                         <ListBox.ItemTemplate>

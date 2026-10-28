@@ -12,7 +12,6 @@ using PKHeX.Infrastructure.GiftRecords;
 using PKHeX.Presentation.Localization;
 using PKHeX.Presentation.ViewModels;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests.Harness;
 

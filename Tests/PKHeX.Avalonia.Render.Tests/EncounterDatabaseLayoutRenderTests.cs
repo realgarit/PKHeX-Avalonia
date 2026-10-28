@@ -60,7 +60,7 @@ public sealed class EncounterDatabaseLayoutRenderTests
             using (var frame = new RenderTargetBitmap(new PixelSize(width, height)))
             {
                 frame.Render(window);
-                frame.Save(capture + ".png");
+                frame.Save(capture + ".png", PngBitmapEncoderOptions.Default);
             }
 
             Rect InView(Visual visual) => new(visual.TranslatePoint(default, view)!.Value, visual.Bounds.Size);

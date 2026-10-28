@@ -241,10 +241,10 @@ public sealed class Gen4EventWorkspaceRenderTests
         using var frame = new RenderTargetBitmap(PixelSize.FromSize(window.ClientSize, 1));
         frame.Render(window);
         using var stream = new MemoryStream();
-        frame.Save(stream);
+        frame.Save(stream, PngBitmapEncoderOptions.Default);
         using var pixels = SkiaSharp.SKBitmap.Decode(stream.ToArray());
         Assert.Contains(pixels.Pixels, pixel => pixel != pixels.GetPixel(0, 0));
         Directory.CreateDirectory(CaptureDirectory);
-        frame.Save(Path.Combine(CaptureDirectory, name + ".png"));
+        frame.Save(Path.Combine(CaptureDirectory, name + ".png"), PngBitmapEncoderOptions.Default);
     }
 }

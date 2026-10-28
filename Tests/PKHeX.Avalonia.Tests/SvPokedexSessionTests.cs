@@ -1,6 +1,5 @@
 using PKHeX.Application.Services;
 using PKHeX.Core;
-using Xunit.Abstractions;
 using PKHeX.Presentation.ViewModels;
 using Moq;
 using PKHeX.Application.Abstractions;

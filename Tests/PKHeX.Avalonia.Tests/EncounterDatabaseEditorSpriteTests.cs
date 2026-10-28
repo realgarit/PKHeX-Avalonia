@@ -3,7 +3,6 @@ using PKHeX.Avalonia.Services;
 using PKHeX.Core;
 using PKHeX.Presentation.ViewModels;
 using SkiaSharp;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 

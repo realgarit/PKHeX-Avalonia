@@ -29,6 +29,14 @@ public class FilterableComboBox : AutoCompleteBox
 
     protected override Type StyleKeyOverride => typeof(AutoCompleteBox);
 
+    static FilterableComboBox()
+    {
+        // AutoCompleteBox handles a new ItemsSource in its own class handler, which clears its view and
+        // with it SelectedItem and Text. Registered after that one, this handler restores the committed
+        // entry last and subscribes to collection changes after AutoCompleteBox does.
+        ItemsSourceProperty.Changed.AddClassHandler<FilterableComboBox>((x, e) => x.OnItemsSourceChanged(e));
+    }
+
     public FilterableComboBox()
     {
         FilterMode = AutoCompleteFilterMode.Contains;
@@ -38,7 +46,13 @@ public class FilterableComboBox : AutoCompleteBox
         MaxDropDownHeight = 300;
         SelectionChanged += OnSelectionChanged;
         GotFocus += OnGotFocus;
-        DropDownClosed += (_, _) => RestoreDisplay();
+        // Clearing the search text repopulates the list and makes AutoCompleteBox raise DropDownClosed
+        // again. Restoring the committed text there would filter the list it is about to open.
+        DropDownClosed += (_, _) =>
+        {
+            if (!_syncing)
+                RestoreDisplay();
+        };
     }
 
     protected override ISelectionAdapter? GetSelectionAdapterPart(INameScope nameScope)
@@ -55,7 +69,7 @@ public class FilterableComboBox : AutoCompleteBox
 
     private void OnAccepted(object? sender, RoutedEventArgs e) => AcceptSelection();
 
-    private void OnGotFocus(object? sender, GotFocusEventArgs e)
+    private void OnGotFocus(object? sender, FocusChangedEventArgs e)
     {
         if (_editing || ItemsSource is null)
             return;
@@ -88,16 +102,17 @@ public class FilterableComboBox : AutoCompleteBox
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ItemsSourceProperty)
-        {
-            if (change.OldValue is INotifyCollectionChanged oldItems)
-                oldItems.CollectionChanged -= OnItemsChanged;
-            if (ItemsSource is INotifyCollectionChanged newItems)
-                newItems.CollectionChanged += OnItemsChanged;
+        if (change.Property == SelectedValueProperty)
             SynchronizeSelection();
-        }
-        else if (change.Property == SelectedValueProperty)
-            SynchronizeSelection();
+    }
+
+    private void OnItemsSourceChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        if (change.OldValue is INotifyCollectionChanged oldItems)
+            oldItems.CollectionChanged -= OnItemsChanged;
+        if (ItemsSource is INotifyCollectionChanged newItems)
+            newItems.CollectionChanged += OnItemsChanged;
+        SynchronizeSelection();
     }
 
     private void OnItemsChanged(object? sender, NotifyCollectionChangedEventArgs e) => SynchronizeSelection();
@@ -150,7 +165,7 @@ public class FilterableComboBox : AutoCompleteBox
         SynchronizeSelection();
     }
 
-    protected override void OnLostFocus(RoutedEventArgs e)
+    protected override void OnLostFocus(FocusChangedEventArgs e)
     {
         base.OnLostFocus(e);
         if (IsKeyboardFocusWithin)

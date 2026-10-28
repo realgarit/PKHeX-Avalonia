@@ -2,7 +2,6 @@ using Moq;
 using PKHeX.Avalonia.Services;
 using PKHeX.Presentation.ViewModels;
 using PKHeX.Core;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 

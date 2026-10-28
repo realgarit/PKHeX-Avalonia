@@ -298,7 +298,9 @@ public sealed class SearchablePickerCommitTests
     private static void Open(FilterableComboBox picker, Window window)
     {
         picker.MinimumPopulateDelay = TimeSpan.Zero;
-        Assert.True(picker.Focus()); Pump(window);
+        // AutoCompleteBox forwards focus to its TextBox; Avalonia 12 Focus() then returns false.
+        picker.Focus(); Pump(window);
+        Assert.True(picker.IsKeyboardFocusWithin);
         Assert.True(picker.IsDropDownOpen);
     }
     private static void Press(Window window, PhysicalKey key)

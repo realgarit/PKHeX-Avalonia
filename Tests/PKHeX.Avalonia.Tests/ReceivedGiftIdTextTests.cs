@@ -46,13 +46,13 @@ public class ReceivedGiftIdTextTests
             dialog.Setup(d => d.OpenFileAsync(It.IsAny<string>(), It.IsAny<string[]>())).ReturnsAsync(path);
             dialog.Setup(d => d.SaveFileAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string[]>())).ReturnsAsync(path);
             var vm = new MysteryGiftEditorViewModel(sav, dialog.Object);
-            await File.WriteAllTextAsync(path, "0042\n0007\n0042");
+            await File.WriteAllTextAsync(path, "0042\n0007\n0042", TestContext.Current.CancellationToken);
             await vm.ImportReceivedIdsCommand.ExecuteAsync(null);
             Assert.Equal(["0007", "0042"], vm.ReceivedFlags);
             Assert.False(flags.GetMysteryGiftReceivedFlag(42));
             await vm.ExportReceivedIdsCommand.ExecuteAsync(null);
-            Assert.Equal(ReceivedGiftIdText.Export([7, 42]), await File.ReadAllTextAsync(path));
-            await File.WriteAllTextAsync(path, "0001\n2048");
+            Assert.Equal(ReceivedGiftIdText.Export([7, 42]), await File.ReadAllTextAsync(path, TestContext.Current.CancellationToken));
+            await File.WriteAllTextAsync(path, "0001\n2048", TestContext.Current.CancellationToken);
             await vm.ImportReceivedIdsCommand.ExecuteAsync(null);
             Assert.Equal(["0007", "0042"], vm.ReceivedFlags);
             dialog.Verify(d => d.ShowErrorAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Once);

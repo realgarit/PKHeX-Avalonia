@@ -59,7 +59,7 @@
                                 </StackPanel>
                             </WrapPanel>
                             <Grid ColumnDefinitions="*,Auto">
-                                <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc Events_Search}" AutomationProperties.Name="{loc:Loc Events_Search}" />
+                                <TextBox Text="{Binding SearchText}" PlaceholderText="{loc:Loc Events_Search}" AutomationProperties.Name="{loc:Loc Events_Search}" />
                                 <TextBlock Grid.Column="1" Text="{Binding ScopeText}" Classes="muted" MaxWidth="280"
                                            TextWrapping="Wrap" VerticalAlignment="Center" Margin="8,0,0,0" />
                             </Grid>

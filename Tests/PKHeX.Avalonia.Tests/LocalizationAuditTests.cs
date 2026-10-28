@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 
@@ -9,7 +8,7 @@ namespace PKHeX.Avalonia.Tests;
 /// (<c>LocalizedStrings</c> / the <c>{loc:Loc Key}</c> markup extension) and can be translated.
 ///
 /// Two static, regex-based scans (fast, no rendering, mirroring <see cref="AccessibilityAuditTests"/>):
-///   1. <b>.axaml views</b> — literal <c>Text/Content/Header/Watermark/Title/ToolTip.Tip</c> values
+///   1. <b>.axaml views</b> — literal <c>Text/Content/Header/PlaceholderText/Watermark/Title/ToolTip.Tip</c> values
 ///      that are not bindings (<c>{...}</c>) / <c>{loc:...}</c> and contain real words.
 ///   2. <b>ViewModels</b> — user-facing message literals passed to dialog-service calls
 ///      (<c>ShowErrorAsync</c>, <c>ShowDialogAsync</c>, …). Localization keys routed through
@@ -28,7 +27,7 @@ public class LocalizationAuditTests
 
     // User-facing text-bearing attributes in Avalonia XAML.
     private static readonly Regex XamlLiteralAttr = new(
-        @"(?:Text|Content|Header|Watermark|Title|ToolTip\.Tip)\s*=\s*""([^""]*)""",
+        @"(?:PlaceholderText|Text|Content|Header|Watermark|Title|ToolTip\.Tip)\s*=\s*""([^""]*)""",
         RegexOptions.Compiled);
 
     // Dialog-service sinks that render a user-facing string in a ViewModel.

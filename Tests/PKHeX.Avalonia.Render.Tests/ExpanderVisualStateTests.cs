@@ -35,7 +35,7 @@ public class ExpanderVisualStateTests
                 using var frame = new RenderTargetBitmap(new PixelSize((int)view.Bounds.Width, (int)view.Bounds.Height));
                 frame.Render(view);
                 using var png = new MemoryStream();
-                frame.Save(png);
+                frame.Save(png, PngBitmapEncoderOptions.Default);
                 using var rendered = SkiaSharp.SKBitmap.Decode(png.ToArray());
                 Assert.NotNull(rendered);
                 Assert.True(rendered.Pixels.Any(pixel => pixel != rendered.GetPixel(0, 0)), "The editor frame must contain drawn content, not a uniform surface.");

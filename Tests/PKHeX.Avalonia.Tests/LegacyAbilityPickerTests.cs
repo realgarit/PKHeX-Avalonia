@@ -402,7 +402,9 @@ public sealed class LegacyAbilityPickerTests
     private static void Open(FilterableComboBox picker, Window window)
     {
         picker.MinimumPopulateDelay = TimeSpan.Zero;
-        Assert.True(picker.Focus()); Pump(window);
+        // AutoCompleteBox forwards focus to its TextBox; Avalonia 12 Focus() then returns false.
+        picker.Focus(); Pump(window);
+        Assert.True(picker.IsKeyboardFocusWithin);
         Assert.True(picker.IsDropDownOpen);
     }
 

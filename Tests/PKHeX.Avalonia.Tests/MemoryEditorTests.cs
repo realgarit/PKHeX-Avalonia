@@ -1,6 +1,5 @@
 using PKHeX.Presentation.ViewModels;
 using PKHeX.Core;
-using Xunit.Abstractions;
 using Moq;
 
 namespace PKHeX.Avalonia.Tests;

@@ -143,7 +143,7 @@ public class ZaEventEditorTests
         var path = Path.Combine(Path.GetTempPath(), "pkhex-za-names-" + Guid.NewGuid().ToString("N") + ".txt");
         try
         {
-            await File.WriteAllTextAsync(path, "1234567890ABCDEF\tKnown test event\ninvalid line\n");
+            await File.WriteAllTextAsync(path, "1234567890ABCDEF\tKnown test event\ninvalid line\n", TestContext.Current.CancellationToken);
             var dialogs = new RecordingDialogService { OpenFileResult = path };
             using var vm = new ZaEventEditorViewModel(save, dialogs);
             await vm.LoadNamesCommand.ExecuteAsync(null);
@@ -249,7 +249,7 @@ public class ZaEventEditorTests
         var path = Path.Combine(Path.GetTempPath(), "pkhex-za-malformed-" + Guid.NewGuid().ToString("N") + ".txt");
         try
         {
-            await File.WriteAllTextAsync(path, "not a hash\tInjected name\n");
+            await File.WriteAllTextAsync(path, "not a hash\tInjected name\n", TestContext.Current.CancellationToken);
             using var vm = new ZaEventEditorViewModel(save, new RecordingDialogService { OpenFileResult = path });
             await vm.LoadNamesCommand.ExecuteAsync(null);
             Assert.False(vm.Categories[0].Records[0].CanEdit);

@@ -19,7 +19,7 @@
                             <DataTemplate x:DataType="vm:Raid9RegionViewModel"><TextBlock Text="{Binding Name}" /></DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <TextBox Grid.Row="1" Text="{Binding SearchText}" Watermark="{loc:Loc TeraSession_Search}"
+                    <TextBox Grid.Row="1" Text="{Binding SearchText}" PlaceholderText="{loc:Loc TeraSession_Search}"
                              AutomationProperties.Name="{loc:Loc TeraSession_Search}" Margin="0,4,0,8" />
                     <Grid Grid.Row="2" ColumnDefinitions="140,10,*">
                         <Border Classes="editor-section-padded">

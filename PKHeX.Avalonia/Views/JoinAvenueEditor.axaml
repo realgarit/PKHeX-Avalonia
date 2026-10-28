@@ -35,7 +35,7 @@
                                 <Grid ColumnDefinitions="*,12,180"><TextBlock Text="{loc:Loc JoinAvenueAdvanced_RawDate}" VerticalAlignment="Center" TextWrapping="Wrap" />
                                     <NumericUpDown Grid.Column="2" Value="{Binding RawValue}" Minimum="0" Maximum="65535" FormatString="0" AutomationProperties.Name="{Binding RawName}" AutomationProperties.AutomationId="{Binding Id}" />
                                 </Grid>
-                                <Grid ColumnDefinitions="*,8,Auto"><TextBox Text="{Binding DateText}" Watermark="{loc:Loc JoinAvenueAdvanced_DateFormat}" AutomationProperties.Name="{Binding Name}" /><Button Grid.Column="2" Content="{loc:Loc JoinAvenueAdvanced_ClearDate}" Command="{Binding ClearCommand}" AutomationProperties.Name="{Binding ClearName}" /></Grid>
+                                <Grid ColumnDefinitions="*,8,Auto"><TextBox Text="{Binding DateText}" PlaceholderText="{loc:Loc JoinAvenueAdvanced_DateFormat}" AutomationProperties.Name="{Binding Name}" /><Button Grid.Column="2" Content="{loc:Loc JoinAvenueAdvanced_ClearDate}" Command="{Binding ClearCommand}" AutomationProperties.Name="{Binding ClearName}" /></Grid>
                                 <TextBlock Text="{Binding Error}" TextWrapping="Wrap" />
                                 <TextBlock Text="{loc:Loc JoinAvenueAdvanced_InvalidStoredDate}" IsVisible="{Binding HasInvalidStoredDate}" TextWrapping="Wrap" />
                             </StackPanel>

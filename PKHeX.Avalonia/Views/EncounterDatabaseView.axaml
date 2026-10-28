@@ -38,7 +38,7 @@
                                    AutomationProperties.Name="{loc:Loc EncounterDatabase_LevelMin}" Margin="0,0,4,4" />
                     <NumericUpDown Value="{Binding LevelMax}" Minimum="1" Maximum="100" FormatString="0" Width="128"
                                    AutomationProperties.Name="{loc:Loc EncounterDatabase_LevelMax}" Margin="0,0,12,4" />
-                    <TextBox Text="{Binding LocationText}" Watermark="{loc:Loc EncounterDatabase_LocationWatermark}" Width="180"
+                    <TextBox Text="{Binding LocationText}" PlaceholderText="{loc:Loc EncounterDatabase_LocationWatermark}" Width="180"
                              AutomationProperties.Name="{loc:Loc EncounterDatabase_Location}" Margin="0,0,12,4" />
                     <CheckBox Content="{loc:Loc EncounterDatabase_FlagShiny}" IsThreeState="True" IsChecked="{Binding ShinyFilter}"
                               ToolTip.Tip="{loc:Loc EncounterDatabase_TriStateHint}" Margin="0,0,12,4" />

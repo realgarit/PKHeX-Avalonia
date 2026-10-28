@@ -298,7 +298,7 @@ public class LivingDexTests
         var service = new LivingDexService();
         var sav = BlankSaveFile.Get(GameVersion.SW);
 
-        var result = service.Generate(sav, new LivingDexOptions(IncludeForms: false, SetShiny: false), maxSpeciesId: 50);
+        var result = service.Generate(sav, new LivingDexOptions(IncludeForms: false, SetShiny: false), maxSpeciesId: 50, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.False(result.Cancelled);
         Assert.NotEmpty(result.Pokemon);
@@ -325,7 +325,7 @@ public class LivingDexTests
         sav.Gender = 1;
         sav.Language = (int)LanguageID.English;
 
-        var result = service.Generate(sav, new LivingDexOptions(IncludeForms: false, SetShiny: false), maxSpeciesId: 1);
+        var result = service.Generate(sav, new LivingDexOptions(IncludeForms: false, SetShiny: false), maxSpeciesId: 1, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotEmpty(result.Pokemon);
         Assert.All(result.Pokemon, pk =>
@@ -349,7 +349,7 @@ public class LivingDexTests
         sav.Gender = 1;
         sav.Language = (int)LanguageID.English;
 
-        var result = service.Generate(sav, new LivingDexOptions(IncludeForms: false, SetShiny: false), maxSpeciesId: 1);
+        var result = service.Generate(sav, new LivingDexOptions(IncludeForms: false, SetShiny: false), maxSpeciesId: 1, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotEmpty(result.Pokemon);
         Assert.All(result.Pokemon, pk =>

@@ -46,12 +46,12 @@ public class LinuxDesktopIntegrationServiceTests : IDisposable
     public async Task Register_InstallsStableCopyIconAndDesktopEntry()
     {
         Directory.CreateDirectory(Path.GetDirectoryName(IconSource)!);
-        await File.WriteAllBytesAsync(IconSource, [1, 2, 3, 4]);
+        await File.WriteAllBytesAsync(IconSource, [1, 2, 3, 4], TestContext.Current.CancellationToken);
 
         var service = CreateService();
         Assert.True(service.IsSupported);
 
-        var result = await service.RegisterAsync();
+        var result = await service.RegisterAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(DesktopIntegrationOutcome.Success, result.Outcome);
         Assert.Equal(InstalledApp, result.InstalledPath);
@@ -62,9 +62,9 @@ public class LinuxDesktopIntegrationServiceTests : IDisposable
         Assert.Equal(InstalledApp, service.InstalledAppImagePath);
 
         // The installed copy is byte-identical to the running AppImage.
-        Assert.Equal(await File.ReadAllBytesAsync(SourceAppImage), await File.ReadAllBytesAsync(InstalledApp));
+        Assert.Equal(await File.ReadAllBytesAsync(SourceAppImage, TestContext.Current.CancellationToken), await File.ReadAllBytesAsync(InstalledApp, TestContext.Current.CancellationToken));
 
-        var entry = await File.ReadAllTextAsync(DesktopEntry);
+        var entry = await File.ReadAllTextAsync(DesktopEntry, TestContext.Current.CancellationToken);
         Assert.Contains("Type=Application", entry);
         Assert.Contains("Name=PKHeX-Avalonia", entry);
         Assert.Contains($"Exec=/usr/bin/env -- {LinuxDesktopEntry.QuoteExec(InstalledApp)}", entry);
@@ -81,11 +81,11 @@ public class LinuxDesktopIntegrationServiceTests : IDisposable
     {
         var service = CreateService();
 
-        var result = await service.RegisterAsync();
+        var result = await service.RegisterAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(DesktopIntegrationOutcome.Success, result.Outcome);
         Assert.False(File.Exists(InstalledIcon));
-        var entry = await File.ReadAllTextAsync(DesktopEntry);
+        var entry = await File.ReadAllTextAsync(DesktopEntry, TestContext.Current.CancellationToken);
         Assert.DoesNotContain("Icon=", entry);
     }
 
@@ -93,20 +93,20 @@ public class LinuxDesktopIntegrationServiceTests : IDisposable
     public async Task Register_OverwritesStaleInstalledCopy()
     {
         Directory.CreateDirectory(OptDir);
-        await File.WriteAllTextAsync(InstalledApp, "an older installed version");
+        await File.WriteAllTextAsync(InstalledApp, "an older installed version", TestContext.Current.CancellationToken);
 
         var service = CreateService();
-        var result = await service.RegisterAsync();
+        var result = await service.RegisterAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(DesktopIntegrationOutcome.Success, result.Outcome);
-        Assert.Equal(await File.ReadAllBytesAsync(SourceAppImage), await File.ReadAllBytesAsync(InstalledApp));
+        Assert.Equal(await File.ReadAllBytesAsync(SourceAppImage, TestContext.Current.CancellationToken), await File.ReadAllBytesAsync(InstalledApp, TestContext.Current.CancellationToken));
     }
 
     [Fact]
     public async Task Register_LeavesNoStagingFileBehind()
     {
         var service = CreateService();
-        await service.RegisterAsync();
+        await service.RegisterAsync(TestContext.Current.CancellationToken);
 
         Assert.Empty(Directory.GetFiles(OptDir, "*.tmp"));
         Assert.Empty(Directory.GetFiles(Path.GetDirectoryName(DesktopEntry)!, "*.tmp"));
@@ -117,7 +117,7 @@ public class LinuxDesktopIntegrationServiceTests : IDisposable
     {
         var service = CreateService(isLinux: false);
 
-        var result = await service.RegisterAsync();
+        var result = await service.RegisterAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(DesktopIntegrationOutcome.NotSupported, result.Outcome);
         Assert.False(service.IsSupported);
@@ -130,7 +130,7 @@ public class LinuxDesktopIntegrationServiceTests : IDisposable
         var service = CreateService(source: Path.Combine(_root, "does-not-exist.AppImage"));
 
         Assert.False(service.IsSupported);
-        var result = await service.RegisterAsync();
+        var result = await service.RegisterAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(DesktopIntegrationOutcome.NotSupported, result.Outcome);
     }
@@ -139,11 +139,11 @@ public class LinuxDesktopIntegrationServiceTests : IDisposable
     public async Task Unregister_RemovesOnlyEntryAndIcon()
     {
         Directory.CreateDirectory(Path.GetDirectoryName(IconSource)!);
-        await File.WriteAllBytesAsync(IconSource, [1, 2, 3, 4]);
+        await File.WriteAllBytesAsync(IconSource, [1, 2, 3, 4], TestContext.Current.CancellationToken);
         var service = CreateService();
-        await service.RegisterAsync();
+        await service.RegisterAsync(TestContext.Current.CancellationToken);
 
-        var result = await service.UnregisterAsync();
+        var result = await service.UnregisterAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(DesktopIntegrationOutcome.Success, result.Outcome);
         Assert.False(File.Exists(DesktopEntry));
@@ -162,7 +162,7 @@ public class LinuxDesktopIntegrationServiceTests : IDisposable
     {
         var service = CreateService();
 
-        var result = await service.UnregisterAsync();
+        var result = await service.UnregisterAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(DesktopIntegrationOutcome.Success, result.Outcome);
     }
@@ -170,25 +170,25 @@ public class LinuxDesktopIntegrationServiceTests : IDisposable
     [Fact]
     public async Task InstalledSource_CanRemoveAndReAddWithoutLosingTheImage()
     {
-        await CreateService().RegisterAsync();
+        await CreateService().RegisterAsync(TestContext.Current.CancellationToken);
         File.Delete(SourceAppImage);
         var service = CreateService(source: InstalledApp);
-        var before = await File.ReadAllBytesAsync(InstalledApp);
-        Assert.Equal(DesktopIntegrationOutcome.Success, (await service.UnregisterAsync()).Outcome);
+        var before = await File.ReadAllBytesAsync(InstalledApp, TestContext.Current.CancellationToken);
+        Assert.Equal(DesktopIntegrationOutcome.Success, (await service.UnregisterAsync(TestContext.Current.CancellationToken)).Outcome);
         Assert.True(service.IsSupported);
-        Assert.Equal(before, await File.ReadAllBytesAsync(InstalledApp));
-        Assert.Equal(DesktopIntegrationOutcome.Success, (await service.RegisterAsync()).Outcome);
+        Assert.Equal(before, await File.ReadAllBytesAsync(InstalledApp, TestContext.Current.CancellationToken));
+        Assert.Equal(DesktopIntegrationOutcome.Success, (await service.RegisterAsync(TestContext.Current.CancellationToken)).Outcome);
         Assert.True(service.IsRegistered);
-        Assert.Equal(before, await File.ReadAllBytesAsync(InstalledApp));
+        Assert.Equal(before, await File.ReadAllBytesAsync(InstalledApp, TestContext.Current.CancellationToken));
     }
 
     [Fact]
     public async Task Unregister_ReportsRequiredDeletionFailure()
     {
-        await CreateService().RegisterAsync();
+        await CreateService().RegisterAsync(TestContext.Current.CancellationToken);
         File.Delete(DesktopEntry);
         Directory.CreateDirectory(DesktopEntry);
-        Assert.Equal(DesktopIntegrationOutcome.Failed, (await CreateService().UnregisterAsync()).Outcome);
+        Assert.Equal(DesktopIntegrationOutcome.Failed, (await CreateService().UnregisterAsync(TestContext.Current.CancellationToken)).Outcome);
         Assert.True(File.Exists(InstalledApp));
     }
 
@@ -197,8 +197,8 @@ public class LinuxDesktopIntegrationServiceTests : IDisposable
     {
         var service = new LinuxDesktopIntegrationService(SourceAppImage, AppDir, DataHome, OptDir, true, null, isFlatpak: true);
         Assert.False(service.IsSupported);
-        Assert.Equal(DesktopIntegrationOutcome.NotSupported, (await service.RegisterAsync()).Outcome);
-        Assert.Equal(DesktopIntegrationOutcome.NotSupported, (await service.UnregisterAsync()).Outcome);
+        Assert.Equal(DesktopIntegrationOutcome.NotSupported, (await service.RegisterAsync(TestContext.Current.CancellationToken)).Outcome);
+        Assert.Equal(DesktopIntegrationOutcome.NotSupported, (await service.UnregisterAsync(TestContext.Current.CancellationToken)).Outcome);
         Assert.False(Directory.Exists(OptDir));
     }
 

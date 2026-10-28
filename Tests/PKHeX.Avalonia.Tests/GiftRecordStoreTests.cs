@@ -6,7 +6,6 @@ using PKHeX.Core;
 using PKHeX.Infrastructure.GiftRecords;
 using PKHeX.Presentation.Localization;
 using PKHeX.Presentation.ViewModels;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 

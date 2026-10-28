@@ -20,7 +20,7 @@
 
                 <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,10">
                     <TextBlock Text="{loc:Loc Geonet4Editor_GlobeDescription}" TextWrapping="Wrap" Opacity="0.7" />
-                    <TextBox Text="{Binding FilterText}" Watermark="{loc:Loc Geonet4Editor_Search}" AutomationProperties.Name="{loc:Loc Geonet4Editor_Search}" />
+                    <TextBox Text="{Binding FilterText}" PlaceholderText="{loc:Loc Geonet4Editor_Search}" AutomationProperties.Name="{loc:Loc Geonet4Editor_Search}" />
                     <WrapPanel Orientation="Horizontal">
                         <Button Content="{loc:Loc Geonet4Editor_SetAllLocations}" Command="{Binding SetAllLocationsCommand}" Margin="0,0,8,8" />
                         <Button Content="{loc:Loc Geonet4Editor_SetLegalLocations}" Command="{Binding SetAllLegalLocationsCommand}" Margin="0,0,8,8" />

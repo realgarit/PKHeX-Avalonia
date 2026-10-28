@@ -28,7 +28,7 @@
             </StackPanel>
             <Grid ColumnDefinitions="180,8,*">
                 <DockPanel>
-                    <TextBox DockPanel.Dock="Top" Text="{Binding CategorySearch}" Watermark="{loc:Loc Fashion9Flow_CategorySearch}"
+                    <TextBox DockPanel.Dock="Top" Text="{Binding CategorySearch}" PlaceholderText="{loc:Loc Fashion9Flow_CategorySearch}"
                              AutomationProperties.Name="{loc:Loc Fashion9Flow_CategorySearch}" Margin="0,0,0,6" />
                     <ListBox ItemsSource="{Binding VisibleCategories}" SelectedItem="{Binding SelectedCategory}" AutomationProperties.Name="{loc:Loc Fashion9Flow_Categories}">
                         <ListBox.ItemTemplate>
@@ -49,7 +49,7 @@
                         </StackPanel>
                         <TextBlock Text="{loc:Loc Fashion9Flow_IdentityHelp}" TextWrapping="Wrap" Classes="muted" FontSize="11" />
                         <WrapPanel>
-                            <TextBox Text="{Binding SearchText}" Width="230" Watermark="{loc:Loc Fashion9Flow_ItemSearch}" AutomationProperties.Name="{loc:Loc Fashion9Flow_ItemSearch}" Margin="0,0,8,6" />
+                            <TextBox Text="{Binding SearchText}" Width="230" PlaceholderText="{loc:Loc Fashion9Flow_ItemSearch}" AutomationProperties.Name="{loc:Loc Fashion9Flow_ItemSearch}" Margin="0,0,8,6" />
                             <ComboBox ItemsSource="{Binding Filters}" SelectedValue="{Binding FilterIndex}" SelectedValueBinding="{Binding Value}"
                                       DisplayMemberBinding="{Binding Text}" Width="190" AutomationProperties.Name="{loc:Loc Fashion9Flow_Filter}" Margin="0,0,0,6" />
                         </WrapPanel>

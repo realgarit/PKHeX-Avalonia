@@ -42,7 +42,7 @@
                   ColumnSpacing="8" RowSpacing="8">
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc LiveHeXView_ConsoleIp}" VerticalAlignment="Center" />
                 <TextBox Grid.Row="0" Grid.Column="1"
-                         Text="{Binding IpAddress}" Watermark="192.168.0.1"
+                         Text="{Binding IpAddress}" PlaceholderText="192.168.0.1"
                          IsEnabled="{Binding !IsConnected}" />
                 <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Loc LiveHeXView_Port}" VerticalAlignment="Center" />
                 <TextBox Grid.Row="0" Grid.Column="3" Width="70"

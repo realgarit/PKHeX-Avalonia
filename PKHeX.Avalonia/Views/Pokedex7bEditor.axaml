@@ -13,7 +13,7 @@
     <Grid ColumnDefinitions="280,8,*">
         <!-- Entry List -->
         <Grid Grid.Column="0" RowDefinitions="Auto, *">
-            <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc Pokedex7bEditor_SearchSpeciesForm}" Margin="0,0,0,10" AutomationProperties.Name="Search Species/Form"/>
+            <TextBox Text="{Binding SearchText}" PlaceholderText="{loc:Loc Pokedex7bEditor_SearchSpeciesForm}" Margin="0,0,0,10" AutomationProperties.Name="Search Species/Form"/>
             <Border Grid.Row="1" Classes="pokedex-species-list">
                 <ListBox ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry}" Background="Transparent">
                     <ListBox.ItemTemplate>

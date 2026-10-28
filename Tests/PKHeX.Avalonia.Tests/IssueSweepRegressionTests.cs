@@ -435,7 +435,7 @@ public sealed class IssueSweepRegressionTests
 
             var path = Path.Combine(directory, fileName);
             using var stream = File.Create(path);
-            frame.Save(stream);
+            frame.Save(stream, PngBitmapEncoderOptions.Default);
         }
         finally
         {

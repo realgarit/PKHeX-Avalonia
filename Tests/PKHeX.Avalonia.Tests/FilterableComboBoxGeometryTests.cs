@@ -65,7 +65,9 @@ public sealed class FilterableComboBoxGeometryTests
 
         Assert.Equal("Species", AutomationProperties.GetName(field));
         Assert.True(field.Focusable);
-        Assert.True(field.Focus());
+        // AutoCompleteBox forwards focus to its TextBox; Avalonia 12 Focus() then returns false.
+        field.Focus();
+        Assert.True(field.IsKeyboardFocusWithin);
         Pump(window);
         Assert.True(field.IsDropDownOpen);
 

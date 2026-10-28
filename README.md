@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  A native Pokémon save editor for <strong>Windows, macOS, and Linux</strong>, built with .NET 10 and Avalonia 11 on the upstream <a href="https://github.com/kwsch/PKHeX">PKHeX</a> engine.
+  A native Pokémon save editor for <strong>Windows, macOS, and Linux</strong>, built with .NET 10 and Avalonia 12 on the upstream <a href="https://github.com/kwsch/PKHeX">PKHeX</a> engine.
 </p>
 
 <p align="center">
@@ -122,7 +122,7 @@ Uninstall preserves save files, settings, and backups. AppImage updates use the 
 <details>
 <summary><strong>Linux — FlatPark or the standalone Flatpak bundle</strong></summary>
 
-**FlatPark:** the community repository [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia/) also lists PKHeX-Avalonia. It installs the unchanged Linux release ZIP with the same permissions as our Flatpak package, and `flatpak update` keeps it current. FlatPark is maintained independently from this project and uses its own signing key. Report app problems in this repository; see the [Flatpak guide](docs/packaging.md#community-flatpark-repository).
+**FlatPark:** the community repository [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia/) also lists PKHeX-Avalonia. It installs the unchanged Linux release ZIP with the same permissions as our Flatpak package except the Wayland socket (native Wayland is an opt-in setting), and `flatpak update` keeps it current. FlatPark is maintained independently from this project and uses its own signing key. Report app problems in this repository; see the [Flatpak guide](docs/packaging.md#community-flatpark-repository).
 
 ```bash
 flatpak remote-add --if-not-exists --user flatpark https://dl.flatpark.org/flatpark.flatpakrepo

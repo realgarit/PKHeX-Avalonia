@@ -38,14 +38,14 @@ public class Gen7TrainerRenderTests
                 tabs.SelectedIndex = i; await PKHeX.Testing.HeadlessRenderSettling.Settle(window);
                 using var frame = new RenderTargetBitmap(new PixelSize(width, height)); frame.Render(window);
                 if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
-                { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"trainer7-{Path.GetFileNameWithoutExtension(file)}-{language}-tab{i}.png")); }
+                { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"trainer7-{Path.GetFileNameWithoutExtension(file)}-{language}-tab{i}.png"), PngBitmapEncoderOptions.Default); }
                 if (i is 0 or 1 or 2)
                 {
                     var scroll = view.GetVisualDescendants().OfType<ScrollViewer>().First(control => control.IsEffectivelyVisible && control.Content is StackPanel);
                     scroll.ScrollToEnd(); await PKHeX.Testing.HeadlessRenderSettling.Settle(window);
                     using var end = new RenderTargetBitmap(new PixelSize(width, height)); end.Render(window);
                     if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } endPath)
-                        end.Save(Path.Combine(endPath, $"trainer7-{Path.GetFileNameWithoutExtension(file)}-{language}-tab{i}-end.png"));
+                        end.Save(Path.Combine(endPath, $"trainer7-{Path.GetFileNameWithoutExtension(file)}-{language}-tab{i}-end.png"), PngBitmapEncoderOptions.Default);
                 }
             }
             vm.SaveCommand.Execute(null); Assert.False(vm.HasError); Assert.Equal(before, save.Data.ToArray());

@@ -24,7 +24,7 @@
                         <TextBlock Text="{loc:Loc SaveHandlerTroubleshooter_SaveFile}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Grid ColumnDefinitions="*,Auto">
-                        <TextBox Grid.Column="0" Text="{Binding FilePath}" Watermark="{loc:Loc SaveHandlerTroubleshooter_PathWatermark}" VerticalAlignment="Center" Margin="0,0,12,0" AutomationProperties.Name="File Path"/>
+                        <TextBox Grid.Column="0" Text="{Binding FilePath}" PlaceholderText="{loc:Loc SaveHandlerTroubleshooter_PathWatermark}" VerticalAlignment="Center" Margin="0,0,12,0" AutomationProperties.Name="File Path"/>
                         <Button Grid.Column="1" Content="{loc:Loc SaveHandlerTroubleshooter_Browse}" Command="{Binding BrowseCommand}" Padding="16,8"/>
                     </Grid>
                     <TextBlock Text="{Binding FileName}" FontSize="12" Opacity="0.6"/>

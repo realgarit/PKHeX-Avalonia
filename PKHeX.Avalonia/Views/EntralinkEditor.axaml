@@ -75,7 +75,7 @@
         <TabItem Header="{loc:Loc EntralinkEditor_MissionsTab}" IsVisible="{Binding IsB2W2}">
             <Grid ColumnDefinitions="220,*" ColumnSpacing="12" Margin="10">
                 <DockPanel Grid.Column="0">
-                    <TextBox DockPanel.Dock="Top" Text="{Binding MissionFilter}" Watermark="{loc:Loc EntralinkEditor_SearchMissions}"
+                    <TextBox DockPanel.Dock="Top" Text="{Binding MissionFilter}" PlaceholderText="{loc:Loc EntralinkEditor_SearchMissions}"
                              AutomationProperties.Name="{loc:Loc EntralinkEditor_SearchMissions}" Margin="0,0,0,8" />
                     <Button DockPanel.Dock="Bottom" Content="{loc:Loc EntralinkEditor_UnlockAllMissions}"
                             Command="{Binding UnlockAllMissionsCommand}" Margin="0,8,0,0" />

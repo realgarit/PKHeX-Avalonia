@@ -123,7 +123,7 @@ public class SlotWarningRenderTests
     {
         using var frame = new RenderTargetBitmap(new PixelSize((int)window.ClientSize.Width, (int)window.ClientSize.Height));
         frame.Render(window);
-        using var bytes = new MemoryStream(); frame.Save(bytes);
+        using var bytes = new MemoryStream(); frame.Save(bytes, PngBitmapEncoderOptions.Default);
         return SKBitmap.Decode(bytes.ToArray());
     }
 

@@ -34,7 +34,8 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         LanguageService languageService,
         UpdateCheckCoordinator updateCoordinator,
         ILinuxDesktopIntegrationService? linuxDesktopIntegration = null,
-        Func<Task>? openKeyboardShortcuts = null)
+        Func<Task>? openKeyboardShortcuts = null,
+        bool? isLinux = null)
     {
         _settings = settings;
         _settingsStore = settingsStore;
@@ -44,6 +45,7 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         _updateCoordinator = updateCoordinator;
         _linuxDesktopIntegration = linuxDesktopIntegration;
         _openKeyboardShortcuts = openKeyboardShortcuts;
+        ShowLinuxDisplay = isLinux ?? OperatingSystem.IsLinux();
         Load();
         RefreshLinuxIntegrationState();
     }
@@ -87,6 +89,16 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
     /// </summary>
     [RelayCommand(CanExecute = nameof(CanOpenKeyboardShortcuts))]
     private Task OpenKeyboardShortcutsAsync() => _openKeyboardShortcuts?.Invoke() ?? Task.CompletedTask;
+
+    // ---------------------------------------------------------------------------------------------
+    // Linux display (Linux only)
+    // ---------------------------------------------------------------------------------------------
+
+    /// <summary>Whether the Linux display section is shown: only Linux has a choice of backend.</summary>
+    public bool ShowLinuxDisplay { get; }
+
+    /// <summary>Opt-in native Wayland; the host reads the saved value on the next start.</summary>
+    [ObservableProperty] private bool _useNativeWayland;
 
     // ---------------------------------------------------------------------------------------------
     // Linux desktop integration (AppImage only — the section is hidden everywhere else)
@@ -254,6 +266,7 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         ModifyUnset = _settings.SlotWrite.ModifyUnset;
         WarnClosingModified = _settings.EditorBehavior.WarnClosingModified;
         AllowBattleTowerTeamSwap = _settings.Legality.Game.Gen3.AllowBattleTowerTeamSwap;
+        UseNativeWayland = _settings.Linux.UseNativeWayland;
 
         SpritePreference = _settings.Sprite.SpritePreference;
         SelectedTheme = Themes.Contains(_themeService.CurrentTheme)
@@ -282,6 +295,7 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         _settings.SlotWrite.ModifyUnset = ModifyUnset;
         _settings.EditorBehavior.WarnClosingModified = WarnClosingModified;
         _settings.Legality.Game.Gen3.AllowBattleTowerTeamSwap = AllowBattleTowerTeamSwap;
+        _settings.Linux.UseNativeWayland = UseNativeWayland;
 
         _settings.Sprite.SpritePreference = SpritePreference;
 

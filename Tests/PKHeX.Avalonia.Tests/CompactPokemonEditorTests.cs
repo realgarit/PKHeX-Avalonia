@@ -191,7 +191,7 @@ public sealed class CompactPokemonEditorTests
                 Assert.NotNull(frame);
                 var path = Path.Combine(directory, name);
                 using (var stream = File.Create(path))
-                    frame!.Save(stream);
+                    frame!.Save(stream, PngBitmapEncoderOptions.Default);
                 Assert.True(new FileInfo(path).Length > 0, $"Capture was empty: {path}");
                 window.Close();
             }

@@ -19,7 +19,7 @@ public sealed class Dlc5ImageWorkflowTests : IDisposable
         SAV5 save = sequel ? new SAV5B2W2() : new SAV5BW();
         var codec = new PngImageCodec(); var dialogs = new Mock<IDialogService>();
         var input = Path.Combine(_directory, "input.png"); var output = Path.Combine(_directory, "output.png");
-        await File.WriteAllBytesAsync(input, codec.EncodePng(SkinImage5Tests.Solid(Color15Bit.GetColorExpand(31))));
+        await File.WriteAllBytesAsync(input, codec.EncodePng(SkinImage5Tests.Solid(Color15Bit.GetColorExpand(31))), TestContext.Current.CancellationToken);
         dialogs.Setup(d => d.OpenFileAsync(It.IsAny<string>(), It.IsAny<string[]?>())).ReturnsAsync(input);
         dialogs.Setup(d => d.SaveFileAsync(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string[]?>())).ReturnsAsync(output);
         var vm = new DLC5EditorViewModel(save, dialogs.Object, codec);
@@ -27,15 +27,15 @@ public sealed class Dlc5ImageWorkflowTests : IDisposable
         Assert.NotNull(vm.CGearPng); Assert.True(save.State.Edited);
         var snapshot = save.Data.ToArray(); save.State.Edited = false;
         await vm.ExportCGearImageCommand.ExecuteAsync(null);
-        Assert.Equal(vm.CGearPng, await File.ReadAllBytesAsync(output));
+        Assert.Equal(vm.CGearPng, await File.ReadAllBytesAsync(output, TestContext.Current.CancellationToken));
         Assert.Equal(snapshot, save.Data.ToArray()); Assert.False(save.State.Edited);
         await vm.ImportCGearImageCommand.ExecuteAsync(null);
         Assert.Equal(snapshot, save.Data.ToArray()); Assert.False(save.State.Edited);
-        await File.WriteAllBytesAsync(input, codec.EncodePng(new(1, 1, [0, 0, 0, 255])));
+        await File.WriteAllBytesAsync(input, codec.EncodePng(new(1, 1, [0, 0, 0, 255])), TestContext.Current.CancellationToken);
         await vm.ImportCGearImageCommand.ExecuteAsync(null);
         Assert.Equal(snapshot, save.Data.ToArray()); Assert.NotEmpty(vm.ImageStatus);
         var binary = Path.Combine(_directory, sequel ? "skin.cgb" : "skin.psk");
-        await File.WriteAllBytesAsync(binary, save.CGearSkinData.ToArray());
+        await File.WriteAllBytesAsync(binary, save.CGearSkinData.ToArray(), TestContext.Current.CancellationToken);
         dialogs.Setup(d => d.OpenFileAsync(It.IsAny<string>(), It.IsAny<string[]?>())).ReturnsAsync(binary);
         await vm.ImportCGearCommand.ExecuteAsync(null);
         SAV5 reload = sequel ? new SAV5B2W2(save.Write()) : new SAV5BW(save.Write());
@@ -71,7 +71,7 @@ public sealed class Dlc5ImageWorkflowTests : IDisposable
         dialogs.Setup(d => d.SaveFileAsync(It.IsAny<string>(), "BattleVideo_02_decrypted.bv5", It.Is<string[]?>(types => types != null && types.SequenceEqual(new[] { "bv5" })))).ReturnsAsync(path);
         var vm = new DLC5EditorViewModel(save, dialogs.Object) { BattleVideoIndex = 2 };
         Assert.True(vm.CanExportDecrypted); await vm.ExportBattleVideoDecryptedCommand.ExecuteAsync(null);
-        Assert.Equal(expected, await File.ReadAllBytesAsync(path)); Assert.Equal(before, save.Data.ToArray()); Assert.False(save.State.Edited);
+        Assert.Equal(expected, await File.ReadAllBytesAsync(path, TestContext.Current.CancellationToken)); Assert.Equal(before, save.Data.ToArray()); Assert.False(save.State.Edited);
         vm.BattleVideoIndex = 1; Assert.False(vm.CanExportDecrypted);
     }
 }

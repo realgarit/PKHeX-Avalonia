@@ -46,7 +46,7 @@ public class AdditionalInventoryArtTests
                 Assert.True(grid.GetVisualDescendants().OfType<DataGridRow>().Count() >= batch.Length);
                 using var frame = new RenderTargetBitmap(new PixelSize(900, 650)); frame.Render(window);
                 if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } path)
-                { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"inventory-new-art-{dark}-{page}.png")); }
+                { Directory.CreateDirectory(path); frame.Save(Path.Combine(path, $"inventory-new-art-{dark}-{page}.png"), PngBitmapEncoderOptions.Default); }
                 page++;
             }
         }

@@ -17,7 +17,7 @@ public class MysteryGiftPreviewLifecycleTests
             storage.SetMysteryGift(0, new WC7 { IsItem = true, ItemID = 100, Quantity = 2, CardID = 123 });
             var original = save.Data.ToArray();
             var imported = new WC7 { IsEntity = true, Species = 25, Level = 50, CardID = 456 };
-            await File.WriteAllBytesAsync(path, imported.Data.ToArray());
+            await File.WriteAllBytesAsync(path, imported.Data.ToArray(), TestContext.Current.CancellationToken);
             var dialog = new Mock<IDialogService>();
             dialog.Setup(d => d.OpenFileAsync(It.IsAny<string>(), It.IsAny<string[]>())).ReturnsAsync(path);
             var sprites = new Mock<ISpriteRenderer>();

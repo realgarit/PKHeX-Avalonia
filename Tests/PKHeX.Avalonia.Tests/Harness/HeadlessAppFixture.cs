@@ -404,7 +404,7 @@ public sealed class HeadlessAppFixture : IDisposable
             return null;
         Directory.CreateDirectory(Path.GetDirectoryName(pngPath)!);
         using var fs = File.Create(pngPath);
-        frame.Save(fs);
+        frame.Save(fs, PngBitmapEncoderOptions.Default);
         return pngPath;
     }
 

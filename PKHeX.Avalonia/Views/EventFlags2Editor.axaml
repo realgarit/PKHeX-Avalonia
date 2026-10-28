@@ -29,7 +29,7 @@
                     <TextBox Grid.Row="0"
                              Text="{Binding SearchText}"
                              AutomationProperties.Name="Search"
-                             Watermark="{loc:Loc EventFlags2Editor_SearchWatermark}"
+                             PlaceholderText="{loc:Loc EventFlags2Editor_SearchWatermark}"
                              Margin="0,0,0,10"/>
 
                     <!-- Flags Grid -->

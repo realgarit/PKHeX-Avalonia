@@ -61,7 +61,7 @@
                     <Button Content="{loc:Loc EventFlagsEditor_ClearAll}" Command="{Binding ClearAllCommand}" Padding="8,4" />
                     <TextBox Text="{Binding SearchText}"
                              AutomationProperties.Name="Search"
-                             Watermark="{loc:Loc EventFlagsEditor_SearchWatermark}"
+                             PlaceholderText="{loc:Loc EventFlagsEditor_SearchWatermark}"
                              Width="200" />
                 </StackPanel>
 

@@ -184,7 +184,7 @@ public sealed class ShortcutRecorder : Button
         base.OnKeyUp(e);
     }
 
-    protected override void OnLostFocus(RoutedEventArgs e)
+    protected override void OnLostFocus(FocusChangedEventArgs e)
     {
         base.OnLostFocus(e);
         IsRecording = false;

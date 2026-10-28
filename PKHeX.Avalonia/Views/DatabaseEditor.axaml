@@ -12,7 +12,7 @@
                 <TextBlock Text="{loc:Loc DatabaseEditor_Title}" FontWeight="Bold" FontSize="14" />
                 <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto">
                     <TextBlock Grid.Column="0" Text="{loc:Loc DatabaseEditor_SearchLabel}" VerticalAlignment="Center" Margin="0,0,10,0" />
-                    <TextBox Grid.Column="1" Text="{Binding SearchText}" Watermark="{loc:Loc DatabaseEditor_SearchWatermark}" Margin="0,0,10,0" />
+                    <TextBox Grid.Column="1" Text="{Binding SearchText}" PlaceholderText="{loc:Loc DatabaseEditor_SearchWatermark}" Margin="0,0,10,0" />
                     <Button Grid.Column="2" Content="{loc:Loc DatabaseEditor_Search}" Command="{Binding SearchCommand}" Margin="0,0,5,0" />
                     <Button Grid.Column="3" Content="{loc:Loc DatabaseEditor_Clear}" Command="{Binding ClearCommand}" />
                 </Grid>

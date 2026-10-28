@@ -203,6 +203,9 @@ public sealed class WindowService : IWindowService
         }
         vm.PropertyChanged += StatusChanged;
         dialog.Closed += (_, _) => { closed = true; vm.PropertyChanged -= StatusChanged; };
+        // The initial bounds were measured before the content was styled and against the wider working
+        // area. Once open, size it like every later status change so clearing a status restores it.
+        dialog.Opened += (_, _) => Resize();
     }
 
     public void ShowTool(object viewModel, string title)

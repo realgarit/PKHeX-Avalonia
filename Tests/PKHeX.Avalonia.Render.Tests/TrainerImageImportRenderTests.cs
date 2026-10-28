@@ -63,7 +63,7 @@ public class TrainerImageImportRenderTests
             Assert.True(applyPoint.Y >= 0 && applyPoint.Y + apply.Bounds.Height <= view.Bounds.Height);
             using var frame = new RenderTargetBitmap(new PixelSize(width, height)); frame.Render(window);
             if (Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE") == "1" && Environment.GetEnvironmentVariable("PKHEX_HEADLESS_CAPTURE_DIR") is { } capture)
-            { Directory.CreateDirectory(capture); frame.Save(Path.Combine(capture, $"trainer-image-import-{language}.png")); }
+            { Directory.CreateDirectory(capture); frame.Save(Path.Combine(capture, $"trainer-image-import-{language}.png"), PngBitmapEncoderOptions.Default); }
             foreach (var b in save.AllBlocks) Assert.Equal(before[b.Key], b.Data.ToArray());
         }
         finally { window?.Close(); File.Delete(path); LocalizedStrings.Instance.SetLanguage(previous); }

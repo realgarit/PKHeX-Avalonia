@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia;
 using Avalonia.Headless.XUnit;
 using Avalonia.Headless;
+using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 using Microsoft.Extensions.DependencyInjection;
 using PKHeX.Application.Abstractions;
@@ -226,7 +227,7 @@ public sealed class CompactUiCaptureTests
             app.Pump();
             using var frame = preferences.GetLastRenderedFrame();
             Assert.NotNull(frame);
-            using (var stream = File.Create(Path.Combine(directory, $"compact-settings-{variant.ToString().ToLowerInvariant()}.png"))) frame.Save(stream);
+            using (var stream = File.Create(Path.Combine(directory, $"compact-settings-{variant.ToString().ToLowerInvariant()}.png"))) frame.Save(stream, PngBitmapEncoderOptions.Default);
             preferences.Close();
         }
     }

@@ -74,7 +74,7 @@
 
                     <StackPanel Spacing="4">
                         <TextBlock Text="{loc:Loc EntitySeekView_NicknameLabel}" Opacity="0.7" FontSize="12"/>
-                        <TextBox Text="{Binding Filter.Nickname}" Watermark="{loc:Loc EntitySeekView_NicknameWatermark}" HorizontalAlignment="Stretch"/>
+                        <TextBox Text="{Binding Filter.Nickname}" PlaceholderText="{loc:Loc EntitySeekView_NicknameWatermark}" HorizontalAlignment="Stretch"/>
                     </StackPanel>
 
                     <StackPanel Spacing="4">
@@ -154,7 +154,7 @@
                     <StackPanel Spacing="4">
                         <TextBlock Text="{loc:Loc EntitySeekView_BatchInstructionsLabel}" Opacity="0.7" FontSize="12"/>
                         <TextBox Text="{Binding Filter.BatchInstructions}"
-                                 Watermark="{loc:Loc EntitySeekView_BatchWatermark}"
+                                 PlaceholderText="{loc:Loc EntitySeekView_BatchWatermark}"
                                  AcceptsReturn="True" TextWrapping="Wrap" MinHeight="64"
                                  HorizontalAlignment="Stretch"/>
                         <TextBlock Text="{loc:Loc EntitySeekView_BatchDescription}"

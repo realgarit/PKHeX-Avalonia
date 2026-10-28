@@ -92,7 +92,7 @@ public class UiDensityTests
 
         Assert.Equal(2, Regex.Matches(pokemonEditor, "SelectedDateFormat=\"Short\"").Count);
         Assert.Contains("ColumnDefinitions=\"64,12,*\"", pokemonEditor);
-        Assert.Equal(2, Regex.Matches(pokemonEditor, "Watermark=\"{loc:Loc PokemonEditor_SelectDate}\"").Count);
+        Assert.Equal(2, Regex.Matches(pokemonEditor, "PlaceholderText=\"{loc:Loc PokemonEditor_SelectDate}\"").Count);
     }
 
     [Fact]

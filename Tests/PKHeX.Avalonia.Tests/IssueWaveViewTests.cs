@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Automation;
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Microsoft.Extensions.DependencyInjection;
@@ -185,6 +186,6 @@ public class IssueWaveViewTests
         Directory.CreateDirectory(directory);
         using var frame = window.GetLastRenderedFrame();
         Assert.NotNull(frame);
-        frame.Save(Path.Combine(directory, name + ".png"));
+        frame.Save(Path.Combine(directory, name + ".png"), PngBitmapEncoderOptions.Default);
     }
 }

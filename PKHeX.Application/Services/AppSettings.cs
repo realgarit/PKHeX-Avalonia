@@ -29,6 +29,7 @@ public sealed class AppSettings : IProgramSettings
     public ThemeSettings Theme { get; set; } = new();
     public DensitySettings Density { get; set; } = new();
     public EditorBehaviorSettings EditorBehavior { get; set; } = new();
+    public LinuxSettings Linux { get; set; } = new();
     public List<ReportColumnLayout> BoxReportColumns { get; set; } = [];
 
     /// <summary>
@@ -137,6 +138,20 @@ public sealed class AppSettings : IProgramSettings
     public class EditorBehaviorSettings
     {
         public bool WarnClosingModified { get; set; } = true;
+    }
+
+    /// <summary>
+    /// Linux-only display preferences, read by the host before the UI starts. X11 (XWayland on
+    /// Wayland desktops) stays the default because Avalonia's Wayland backend has no screen-reader
+    /// support yet.
+    /// </summary>
+    public class LinuxSettings
+    {
+        /// <summary>
+        /// Opt into Avalonia's native Wayland backend. It still falls back to X11 when no compositor
+        /// accepts the connection. Takes effect on the next start.
+        /// </summary>
+        public bool UseNativeWayland { get; set; }
     }
 
     public class ReportColumnLayout

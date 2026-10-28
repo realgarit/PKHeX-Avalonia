@@ -25,7 +25,7 @@
             </StackPanel>
             <Grid ColumnDefinitions="160,8,*">
                 <DockPanel>
-                    <TextBox DockPanel.Dock="Top" Text="{Binding CategorySearch}" Watermark="{loc:Loc ZaEvents_CategorySearch}" AutomationProperties.Name="{loc:Loc ZaEvents_CategorySearch}" Margin="0,0,0,6" />
+                    <TextBox DockPanel.Dock="Top" Text="{Binding CategorySearch}" PlaceholderText="{loc:Loc ZaEvents_CategorySearch}" AutomationProperties.Name="{loc:Loc ZaEvents_CategorySearch}" Margin="0,0,0,6" />
                     <ListBox Background="Transparent" ItemsSource="{Binding VisibleCategories}" SelectedItem="{Binding SelectedCategory}" AutomationProperties.Name="{loc:Loc ZaEvents_Categories}">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="vm:ZaEventCategoryViewModel"><TextBlock Text="{Binding Name}" TextWrapping="Wrap" ToolTip.Tip="{Binding Name}" Margin="0,4" /></DataTemplate>
@@ -35,7 +35,7 @@
                 <Grid Grid.Column="2" RowDefinitions="Auto,*,Auto">
                     <StackPanel Grid.Row="0" Spacing="5" Margin="0,0,0,6">
                         <TextBlock Text="{Binding SelectedCategory.Name}" FontWeight="SemiBold" />
-                        <TextBox Text="{Binding SearchText}" Watermark="{loc:Loc ZaEvents_Search}" AutomationProperties.Name="{loc:Loc ZaEvents_Search}" />
+                        <TextBox Text="{Binding SearchText}" PlaceholderText="{loc:Loc ZaEvents_Search}" AutomationProperties.Name="{loc:Loc ZaEvents_Search}" />
                         <TextBlock Text="{Binding ScopeText}" Classes="muted" />
                     </StackPanel>
                     <Border Grid.Row="1" Classes="editor-section-padded" Padding="0" ClipToBounds="True">

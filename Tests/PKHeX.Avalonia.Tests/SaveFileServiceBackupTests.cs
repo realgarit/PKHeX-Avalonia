@@ -32,7 +32,7 @@ public sealed class SaveFileServiceBackupTests : IDisposable
     {
         var sav = SaveFileFactory.CreateBlankSave(GameVersion.W2);
         var path = Path.Combine(_tempDir, "game.sav");
-        await File.WriteAllBytesAsync(path, sav.Write().ToArray());
+        await File.WriteAllBytesAsync(path, sav.Write().ToArray(), TestContext.Current.CancellationToken);
 
         var backupService = new SaveBackupService(new FakeAppPaths());
         var settings = new AppSettings(); // Backup.BAKEnabled defaults to true (Core default)
@@ -56,7 +56,7 @@ public sealed class SaveFileServiceBackupTests : IDisposable
     {
         var sav = SaveFileFactory.CreateBlankSave(GameVersion.W2);
         var path = Path.Combine(_tempDir, "game.sav");
-        await File.WriteAllBytesAsync(path, sav.Write().ToArray());
+        await File.WriteAllBytesAsync(path, sav.Write().ToArray(), TestContext.Current.CancellationToken);
 
         var backupService = new SaveBackupService(new FakeAppPaths());
         var settings = new AppSettings();
@@ -75,7 +75,7 @@ public sealed class SaveFileServiceBackupTests : IDisposable
     {
         var sav = SaveFileFactory.CreateBlankSave(GameVersion.W2);
         var existingPath = Path.Combine(_tempDir, "game.sav");
-        await File.WriteAllBytesAsync(existingPath, sav.Write().ToArray());
+        await File.WriteAllBytesAsync(existingPath, sav.Write().ToArray(), TestContext.Current.CancellationToken);
 
         var backupService = new SaveBackupService(new FakeAppPaths());
         var settings = new AppSettings();
@@ -94,7 +94,7 @@ public sealed class SaveFileServiceBackupTests : IDisposable
     {
         var sav = SaveFileFactory.CreateBlankSave(GameVersion.W2);
         var path = Path.Combine(_tempDir, "game.sav");
-        await File.WriteAllBytesAsync(path, sav.Write().ToArray());
+        await File.WriteAllBytesAsync(path, sav.Write().ToArray(), TestContext.Current.CancellationToken);
 
         var backupService = new SaveBackupService(new FakeAppPaths());
         var settings = new AppSettings();
@@ -121,8 +121,8 @@ public sealed class SaveFileServiceBackupTests : IDisposable
         replacement.Money = 222;
         var originalPath = Path.Combine(_tempDir, "original.sav");
         var replacementPath = Path.Combine(_tempDir, "replacement.sav");
-        await File.WriteAllBytesAsync(originalPath, original.Write().ToArray());
-        await File.WriteAllBytesAsync(replacementPath, replacement.Write().ToArray());
+        await File.WriteAllBytesAsync(originalPath, original.Write().ToArray(), TestContext.Current.CancellationToken);
+        await File.WriteAllBytesAsync(replacementPath, replacement.Write().ToArray(), TestContext.Current.CancellationToken);
 
         var backupStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var releaseBackup = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);

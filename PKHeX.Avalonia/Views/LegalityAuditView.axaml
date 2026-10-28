@@ -18,7 +18,7 @@
                     <ComboBox ItemsSource="{Binding VerdictFilterOptions}" SelectedItem="{Binding VerdictFilter}" Width="110"
                               AutomationProperties.Name="{loc:Loc LegalityAuditView_Verdict}" Margin="0,0,16,6" />
                     <TextBlock Text="{loc:Loc LegalityAuditView_Filter}" VerticalAlignment="Center" Margin="0,0,8,0" />
-                    <TextBox Text="{Binding TextFilter}" Watermark="{loc:Loc LegalityAuditView_FilterWatermark}" Width="240"
+                    <TextBox Text="{Binding TextFilter}" PlaceholderText="{loc:Loc LegalityAuditView_FilterWatermark}" Width="240"
                              AutomationProperties.Name="{loc:Loc LegalityAuditView_Filter}" Margin="0,0,0,6" />
                 </WrapPanel>
                 <WrapPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">

@@ -18,7 +18,7 @@
   <TextBlock Text="{loc:Loc Dex9a_Unsupported}" IsVisible="{Binding !IsSupported}" TextWrapping="Wrap" />
   <Grid ColumnDefinitions="190,10,*" IsVisible="{Binding IsSupported}">
    <DockPanel>
-    <TextBox Name="Dex9aSearch" DockPanel.Dock="Top" Text="{Binding SearchText}" Watermark="{loc:Loc Pokedex4Editor_SearchSpecies}"
+    <TextBox Name="Dex9aSearch" DockPanel.Dock="Top" Text="{Binding SearchText}" PlaceholderText="{loc:Loc Pokedex4Editor_SearchSpecies}"
      AutomationProperties.Name="{loc:Loc Pokedex4Editor_SearchSpecies}" Margin="0,0,0,8" />
     <ListBox Name="Dex9aSpecies" ItemsSource="{Binding FilteredSpecies}" SelectedItem="{Binding SelectedSpecies}">
      <ListBox.ItemTemplate><DataTemplate DataType="core:ComboItem"><TextBlock Text="{Binding Text}" TextWrapping="Wrap" /></DataTemplate></ListBox.ItemTemplate>

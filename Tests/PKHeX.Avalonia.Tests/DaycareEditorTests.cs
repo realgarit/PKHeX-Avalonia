@@ -3,7 +3,6 @@ using PKHeX.Avalonia.Services;
 using PKHeX.Avalonia.Tests.Fixtures;
 using PKHeX.Presentation.ViewModels;
 using PKHeX.Core;
-using Xunit.Abstractions;
 
 namespace PKHeX.Avalonia.Tests;
 

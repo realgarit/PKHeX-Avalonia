@@ -61,7 +61,7 @@ public sealed class ChatterAudioWorkflowTests
         var wavPath = Path.Combine(Path.GetTempPath(), $"pkhex-chatter-export-{Guid.NewGuid():N}.wav");
         try
         {
-            await File.WriteAllBytesAsync(importPath, pcm);
+            await File.WriteAllBytesAsync(importPath, pcm, TestContext.Current.CancellationToken);
             var dialogs = new RecordingDialogService { OpenFileResult = importPath };
             byte[]? played = null;
             var audio = new Mock<IAudioPlaybackService>();
@@ -78,10 +78,10 @@ public sealed class ChatterAudioWorkflowTests
 
             dialogs.SaveFileResult = exportPath;
             await vm.ExportPcmCommand.ExecuteAsync(null);
-            Assert.Equal(pcm, await File.ReadAllBytesAsync(exportPath));
+            Assert.Equal(pcm, await File.ReadAllBytesAsync(exportPath, TestContext.Current.CancellationToken));
             dialogs.SaveFileResult = wavPath;
             await vm.ExportWavCommand.ExecuteAsync(null);
-            var wavBytes = await File.ReadAllBytesAsync(wavPath);
+            var wavBytes = await File.ReadAllBytesAsync(wavPath, TestContext.Current.CancellationToken);
             Assert.Equal(ChatterAudioCodec.ToWav(pcm), wavBytes);
 
             await vm.PlayRecordingCommand.ExecuteAsync(null);
@@ -113,13 +113,13 @@ public sealed class ChatterAudioWorkflowTests
             {
                 var dialogs = new RecordingDialogService { OpenFileResult = file };
                 var vm = new ChatterEditorViewModel(save, dialogs);
-                await File.WriteAllBytesAsync(file, new byte[999]);
+                await File.WriteAllBytesAsync(file, new byte[999], TestContext.Current.CancellationToken);
                 await vm.ImportPcmCommand.ExecuteAsync(null);
                 Assert.Single(dialogs.Errors);
                 Assert.Equal(sourceBytes, save.Data.ToArray());
 
                 var pcm = Enumerable.Repeat((byte)0x7A, IChatter.SIZE_PCM).ToArray();
-                await File.WriteAllBytesAsync(file, pcm);
+                await File.WriteAllBytesAsync(file, pcm, TestContext.Current.CancellationToken);
                 await vm.ImportPcmCommand.ExecuteAsync(null);
                 vm.SaveCommand.Execute(null);
                 Assert.True(save.State.Edited);
