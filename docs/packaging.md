@@ -169,8 +169,9 @@ steps above; only the secret contents change.
 GitHub releases provide portable ZIPs, AppImages built with `appimagetool`, and
 Flatpak bundles built from source inside the SDK sandbox. Choose the package
 that fits your desktop; [Flatpak installation and maintenance](#linux-flatpak)
-are documented below. A Flathub listing requires a separate submission and
-reviewer acceptance under its current requirements.
+are documented below. The app is also
+[listed on Flathub](https://flathub.org/apps/io.github.realgarit.PKHeX-Avalonia)
+for x86_64 and aarch64; see [Flathub](#flathub).
 
 ### AppImage catalog metadata and updates
 
@@ -266,9 +267,16 @@ review is far more likely to reject them.
 
 ## Linux Flatpak
 
-GitHub releases include an x86_64 Flatpak bundle built from the exact tagged source,
-using the Freedesktop 25.08 runtime and .NET 10 SDK extension. The bundle does not
-require a system-wide .NET installation. Install it on a Linux desktop with Flatpak
+PKHeX-Avalonia is on [Flathub](https://flathub.org/apps/io.github.realgarit.PKHeX-Avalonia),
+which is the recommended Flatpak install because it delivers updates:
+
+```bash
+flatpak install flathub io.github.realgarit.PKHeX-Avalonia
+```
+
+GitHub releases also include an x86_64 Flatpak bundle built from the exact tagged
+source, using the Freedesktop 25.08 runtime and .NET 10 SDK extension. The bundle does
+not require a system-wide .NET installation. Install it on a Linux desktop with Flatpak
 and an XDG desktop portal backend:
 
 ```bash
@@ -277,11 +285,13 @@ flatpak install --user ./PKHeX-Avalonia-linux-x86_64.flatpak
 flatpak run io.github.realgarit.PKHeX-Avalonia
 ```
 
-The Flathub remote supplies the runtime dependencies; PKHeX-Avalonia itself is not
-listed on Flathub. A standalone GitHub bundle has no application update remote:
-install the newer release bundle with the same `flatpak install --user` command
-to update it. The app keeps release notes available, explains that Flatpak owns
-updates, and hides the portable download/install actions. It never replaces `/app`
+For the bundle, the Flathub remote supplies only the runtime dependencies. A standalone
+GitHub bundle has no application update remote: install the newer release bundle with
+the same `flatpak install --user` command to update it, or move to Flathub. Flathub,
+FlatPark and the bundle share one app ID, so uninstall the bundle before installing
+from Flathub; `flatpak uninstall` keeps `~/.var/app/io.github.realgarit.PKHeX-Avalonia/`
+unless `--delete-data` is given. In every Flatpak package the app keeps release notes
+available, explains that Flatpak owns updates, and hides the portable download/install actions. It never replaces `/app`
 or starts an update helper inside the sandbox.
 
 File and folder pickers use Avalonia's XDG portal backend. No home, host, or
@@ -296,18 +306,18 @@ legality resources, mystery gifts, and release notes; DRI access supports render
 ### Community FlatPark repository
 
 [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia) is a
-community Flatpak repository for apps that are not on Flathub. Its PKHeX-Avalonia
+community Flatpak repository that also packages GitHub releases. Its PKHeX-Avalonia
 package downloads the unchanged `PKHeX-Avalonia-linux-x64.zip` from each GitHub
 release and grants the same four permissions as this repository's manifest
 (X11, network, IPC and DRI). Because `FLATPAK_ID` is set, the app hands updates to
 `flatpak update` exactly as it does for the release bundle.
 
 FlatPark is maintained independently. It signs with its own key, builds on the
-Freedesktop 26.08 runtime rather than the 25.08 runtime used and tested here, and
-picks up new releases by its own schedule. It uses the same app ID as the release
-bundle, so a system should have only one of the two installed. This project accepts
-the listing as a community install option; it is not part of the release pipeline,
-and a self-hosted repository signed by this project is still tracked separately.
+Freedesktop 26.08 runtime, and picks up new releases by its own schedule. It uses the
+same app ID as Flathub and the release bundle, so a system should have only one of
+them installed. This project accepts the listing as a community install option; it
+is not part of the release pipeline. Flathub replaced the earlier plan for a
+self-hosted repository signed by this project.
 
 ### Rebuild and maintain
 
@@ -336,23 +346,31 @@ review the package changes, and commit the refreshed list. Dependency generation
 uses the network; the actual Flatpak build does not. NuGet vulnerability auditing
 is disabled only for the offline publish; normal application CI retains it.
 
-### Official Flathub route
+### Flathub
 
-Publishing on Flathub is a separate step. Check its current
-[requirements](https://docs.flathub.org/docs/for-app-authors/requirements), use a
-stable source release, perform the required offline build, runtime and linter
-checks, and follow the
-[submission process](https://docs.flathub.org/docs/for-app-authors/submission)
-against `flathub/flathub`'s `new-pr` branch. Reviewers decide acceptance; neither a
-local bundle nor a submitted PR establishes a listing. The GitHub-based ID
-`io.github.realgarit.PKHeX-Avalonia` matches this repository and permits later
-[owner verification](https://docs.flathub.org/docs/for-app-authors/verification)
-after acceptance and collaborator access.
+Flathub accepted the app in
+[flathub/flathub#10519](https://github.com/flathub/flathub/pull/10519). The packaging
+lives in [flathub/io.github.realgarit.PKHeX-Avalonia](https://github.com/flathub/io.github.realgarit.PKHeX-Avalonia):
+a YAML manifest that builds a tagged source archive from this repository offline for
+x86_64 and aarch64, plus a copy of `nuget-sources.json` from the same tag. The
+manifest runs `packaging/flatpak/install-assets.sh` from that source, so the desktop
+file, MetaInfo, icons and licenses that Flathub shows come from this repository.
+
+Flathub does not follow every GitHub release. The manifest has no
+`x-checker-data`, so no bot opens update PRs. The maintainer chooses a release and
+updates the Flathub repository in one reviewed commit: the archive URL and SHA-256,
+the version/commit/date arguments, and `nuget-sources.json` from the same tag. Every
+push to that repository starts Flathub's build and publishing flow, so do not push
+partial or follow-up fixes there; collect them into the next update.
+
+Flathub reviews listings against its
+[quality guidelines](https://docs.flathub.org/docs/for-app-authors/metainfo-guidelines/quality-guidelines).
+Owner [verification](https://docs.flathub.org/docs/for-app-authors/verification)
+for the `io.github.realgarit` ID uses a Flathub login with the GitHub account that
+owns this repository. Until it is verified, Flathub marks the listing as unverified
+and says the package is community-provided.
 
 The application is GPL-3.0-only with GPL-compatible vendored AutoMod code and
-separately attributed assets. Existing third-party sprite/artwork provenance and
-the original 64px app icon are retained in the package; this work does not certify
-third-party artwork redistribution or trademark approval. Flathub requires a
-distinct compliant name/icon and prefers a scalable icon or at least a 256px PNG.
-Those publication requirements need the maintainer's independent review before
-submission; the installed repository bundle is not described as Flathub-ready.
+separately attributed assets. Third-party sprite and artwork provenance is retained
+in the package; this documentation does not certify third-party artwork
+redistribution or trademark approval.
