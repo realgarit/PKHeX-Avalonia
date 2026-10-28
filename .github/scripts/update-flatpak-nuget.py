@@ -8,6 +8,14 @@ from pathlib import Path
 import subprocess
 import tempfile
 
+# .NET runtime identifier -> Flatpak architecture. Flathub builds both; the GitHub bundle is x86_64.
+RUNTIMES = {"linux-x64": "x86_64", "linux-arm64": "aarch64"}
+
+
+def only_arches(name):
+    """RID-specific packs (runtime, apphost) are fetched only by the matching Flatpak architecture."""
+    return [arch for rid, arch in RUNTIMES.items() if name.endswith(f".{rid}")]
+
 
 def main():
     root = Path(__file__).resolve().parents[2]
@@ -16,10 +24,11 @@ def main():
     scratch.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="flatpak-nuget-", dir=scratch) as folder:
         packages = Path(folder)
-        subprocess.run([
-            "dotnet", "restore", "PKHeX.Avalonia/PKHeX.Avalonia.csproj", "-r", "linux-x64",
-            "-p:Configuration=Release", "-p:SelfContained=false", "--packages", str(packages),
-        ], cwd=root, check=True)
+        for rid in RUNTIMES:
+            subprocess.run([
+                "dotnet", "restore", "PKHeX.Avalonia/PKHeX.Avalonia.csproj", "-r", rid,
+                "-p:Configuration=Release", "-p:SelfContained=false", "--packages", str(packages),
+            ], cwd=root, check=True)
         sources = []
         for package in sorted(packages.glob("**/*.nupkg"), key=lambda p: p.name):
             name, version = package.parent.parent.name, package.parent.name
@@ -29,11 +38,14 @@ def main():
             sidecar = package.with_suffix(".nupkg.sha512")
             if sidecar.exists() and base64.b64decode(sidecar.read_text().strip()).hex() != sha512:
                 raise ValueError(f"Package integrity mismatch: {filename}")
-            sources.append({
+            source = {
                 "type": "file",
                 "url": f"https://api.nuget.org/v3-flatcontainer/{name}/{version}/{filename}",
                 "sha512": sha512, "dest": "nuget-sources", "dest-filename": filename,
-            })
+            }
+            if arches := only_arches(name):
+                source["only-arches"] = arches
+            sources.append(source)
         if not sources:
             raise ValueError("Restore produced no packages")
         output = root / "packaging/flatpak/nuget-sources.json"

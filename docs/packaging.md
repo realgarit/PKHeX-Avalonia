@@ -364,8 +364,10 @@ an existing destination. Uncommitted edits do not enter the build. Dependencies
 come from the checked-in `packaging/flatpak/nuget-sources.json`; each package has a
 public NuGet URL and a SHA-512 digest. After changing package versions, run
 `python3 .github/scripts/update-flatpak-nuget.py` with the .NET 10 SDK installed,
-review the package changes, and commit the refreshed list. Dependency generation
-uses the network; the actual Flatpak build does not. NuGet vulnerability auditing
+review the package changes, and commit the refreshed list. The script restores for
+both `linux-x64` and `linux-arm64`, because Flathub also builds aarch64; runtime and
+apphost packs carry `only-arches`, so each architecture downloads only its own.
+Dependency generation uses the network; the actual Flatpak build does not. NuGet vulnerability auditing
 is disabled only for the offline publish; normal application CI retains it.
 
 ### Flathub
