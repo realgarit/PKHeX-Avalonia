@@ -1,0 +1,1 @@
+{"uuid": "shot-helper@pkhex", "name": "Screenshot helper", "description": "Enables unsafe mode in a throwaway headless session so a script can drive input and take window screenshots.", "shell-version": ["50"]}

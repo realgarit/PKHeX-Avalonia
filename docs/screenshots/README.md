@@ -51,3 +51,23 @@ The root README retains its centered lead image and five collapsible gallery sec
 The BDSP Pokedex, Seal Stickers, and Technical Records frames use blank/synthetic save and Pokemon objects. Their displayed state and controls are the actual production views, including staged actions where supported.
 
 Other PNGs in this directory are earlier assets retained for existing consumers.
+
+## Flathub screenshots
+
+Flathub requires real Linux window captures with the native title bar, rounded corners and shadow, at most 1000x700. The three `flathub-*.png` files, referenced by the AppStream MetaInfo (`packaging/linux/io.pkhex.avalonia.metainfo.xml`), are GNOME Shell 50 window screenshots of the v1.98.0 Linux build, captured on 2026-10-28 in a headless GNOME session in WSL (Ubuntu 26.04). They are unedited 928x668 RGBA images: the 900x600 window plus GNOME's shadow. The app runs with default settings on its default X11 backend, and the third frame switches to the Light theme. The public `Tests/savefiles/gen9a_legendsza.main` fixture is opened through the real File > Open dialog.
+
+| File | Content |
+|---|---|
+| `flathub-01-pokemon-editor.png` | Charizard on the Main tab with Box 1 and the party (dark theme, default) |
+| `flathub-02-inventory.png` | Inventory, Medicine pouch (dark theme) |
+| `flathub-03-stats-light.png` | Venusaur on the Stats tab (light theme) |
+
+To regenerate, run as root in a disposable Ubuntu/WSL environment with `gnome-shell`, `xwayland`, `gjs` and `xdg-desktop-portal-gtk` installed. Publish a self-contained `linux-x64` build first, then keep `run-session.sh` running while `capture.sh` works:
+
+```bash
+dotnet publish PKHeX.Avalonia/PKHeX.Avalonia.csproj -c Release -r linux-x64 --self-contained -o tmp/flathub-publish
+bash Scripts/flathub-screenshots/run-session.sh &
+bash Scripts/flathub-screenshots/capture.sh tmp/flathub-publish tmp/flathub-screenshots
+```
+
+The session enables a local helper extension that turns on GNOME Shell's unsafe mode, which `capture.sh` needs for input and window screenshots; use it only in a throwaway session. Inspect every frame before copying it here. A dropped click shows up as the wrong tab or an empty editor; rerun the capture instead of editing images.
