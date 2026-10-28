@@ -21,7 +21,7 @@ workflow signs when it can and clearly labels artifacts as unsigned when it can'
 | Platform | Artifact(s) | Notes |
 |---|---|---|
 | Windows x64 | `PKHeX-Avalonia-win-x64.zip` (unchanged) + `PKHeX-Avalonia-Setup.exe` (or `PKHeX-Avalonia-Setup-unsigned.exe`) | Installer built with Inno Setup via chocolatey |
-| Linux x64 | `PKHeX-Avalonia-linux-x64.zip` + `PKHeX-Avalonia-<version>-x86_64.AppImage` + `.AppImage.zsync` + `PKHeX-Avalonia-linux-x86_64.flatpak` | Flatpak uses the Freedesktop 26.08 runtime; AppImageUpdate and AppStream metadata are included |
+| Linux x64 | `PKHeX-Avalonia-linux-x64.zip` + `PKHeX-Avalonia-<version>-x86_64.AppImage` + `.AppImage.zsync` + `PKHeX-Avalonia-linux-x86_64.flatpak` | Flatpak uses the Freedesktop 25.08 runtime; AppImageUpdate and AppStream metadata are included |
 | macOS arm64 / x64 | `PKHeX-Avalonia-osx-{arm64,x64}.zip` (unchanged, ad-hoc signed as before) + `PKHeX-Avalonia-osx-{arm64,x64}.dmg` or `-unsigned.dmg` | `.dmg` contains the `.app` bundle plus an `Applications` symlink |
 
 The ZIP naming stays stable. AppImages use the catalog's application/version/architecture
@@ -275,7 +275,7 @@ flatpak install flathub io.github.realgarit.PKHeX-Avalonia
 ```
 
 GitHub releases also include an x86_64 Flatpak bundle built from the exact tagged
-source, using the Freedesktop 26.08 runtime and .NET 10 SDK extension. The bundle does
+source, using the Freedesktop 25.08 runtime and .NET 10 SDK extension. The bundle does
 not require a system-wide .NET installation. Install it on a Linux desktop with Flatpak
 and an XDG desktop portal backend:
 
@@ -340,7 +340,7 @@ On Linux, install `flatpak-builder`, `appstream`, `desktop-file-utils`, Python 3
 and the three runtimes, then build a committed revision:
 
 ```bash
-flatpak install --user flathub org.freedesktop.Platform//26.08 org.freedesktop.Sdk//26.08 org.freedesktop.Sdk.Extension.dotnet10//26.08
+flatpak install --user flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 org.freedesktop.Sdk.Extension.dotnet10//25.08
 python3 .github/scripts/prepare-flatpak.py tmp/flatpak
 flatpak-builder --user --force-clean --repo=tmp/flatpak/repo tmp/flatpak/build tmp/flatpak/io.github.realgarit.PKHeX-Avalonia.json
 flatpak build-bundle --runtime-repo=https://dl.flathub.org/repo/flathub.flatpakrepo tmp/flatpak/repo tmp/flatpak/PKHeX-Avalonia-linux-x86_64.flatpak io.github.realgarit.PKHeX-Avalonia
