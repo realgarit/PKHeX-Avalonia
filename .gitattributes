@@ -2,6 +2,7 @@
 * text=auto
 Scripts/install.sh text eol=lf
 .github/scripts/test-linux-installer.py text eol=lf
+Scripts/flathub-screenshots/** text eol=lf
 
 # Custom for Visual Studio
 *.cs     diff=csharp
