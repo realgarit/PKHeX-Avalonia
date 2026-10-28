@@ -50,6 +50,17 @@ public sealed class SettingsStoreTests : IDisposable
     }
 
     [Fact]
+    public void LinuxNativeWayland_DefaultsOffAndRoundTrips()
+    {
+        var store = NewStore();
+        Assert.False(store.Load().Linux.UseNativeWayland);
+
+        store.Save(new AppSettings { Linux = { UseNativeWayland = true } });
+
+        Assert.True(NewStore().Load().Linux.UseNativeWayland);
+    }
+
+    [Fact]
     public void Save_CreatesDirectoryAndFile()
     {
         var store = NewStore();

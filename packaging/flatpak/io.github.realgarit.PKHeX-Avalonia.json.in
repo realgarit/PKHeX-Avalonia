@@ -7,8 +7,8 @@
   "command": "PKHeX.Avalonia",
   "finish-args": [
     "--share=ipc",
+    "--socket=x11",
     "--socket=wayland",
-    "--socket=fallback-x11",
     "--device=dri",
     "--share=network",
     "--env=DOTNET_ROOT=/app/lib/dotnet"

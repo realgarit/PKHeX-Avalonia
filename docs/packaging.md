@@ -294,32 +294,44 @@ unless `--delete-data` is given. In every Flatpak package the app keeps release 
 available, explains that Flatpak owns updates, and hides the portable download/install actions. It never replaces `/app`
 or starts an update helper inside the sandbox.
 
-File and folder pickers use Avalonia's XDG portal backend. Under Wayland, Avalonia uses
-the portal only when the compositor supports the xdg-foreign protocol and otherwise shows
-its built-in picker, which inside the sandbox sees only the app's own data. No home, host, or
+File and folder pickers use Avalonia's XDG portal backend. With native Wayland turned on,
+Avalonia uses the portal only when the compositor supports the xdg-foreign protocol and
+otherwise shows its built-in picker, which inside the sandbox sees only the app's own data.
+No home, host, or
 removable-drive filesystem permission is granted: select individual saves or a
 folder through the picker. Persistent portal grants allow reopening selected files;
 dragging a host file into the app may require opening it through the picker first.
 Use File > Save As to choose a new destination. Settings, backups and other private
-data live under `~/.var/app/io.github.realgarit.PKHeX-Avalonia/`. This repository's manifest
-(the release bundle) grants the Wayland socket and, only on desktops without Wayland, the X11
-socket (`fallback-x11`); the Flathub manifest keeps its own permission list. The
-app uses Avalonia's native Wayland backend when the compositor accepts it (xdg-shell
-version 3 or newer) and otherwise its X11 backend. Avalonia's Wayland backend is new and
-has no screen-reader (AT-SPI)
-support yet; screen-reader users can keep the X11 backend with
-`flatpak override --user --nosocket=wayland --socket=x11 io.github.realgarit.PKHeX-Avalonia`
-(undo with `flatpak override --user --reset io.github.realgarit.PKHeX-Avalonia`). Network
-access supports legality resources, mystery gifts, and release notes; DRI access supports
-rendering.
+data live under `~/.var/app/io.github.realgarit.PKHeX-Avalonia/`. Network access supports
+legality resources, mystery gifts, and release notes; DRI access supports rendering.
+
+### X11 and native Wayland
+
+On Linux the app uses X11 by default (XWayland on Wayland desktops). **Settings → Linux
+display → Use native Wayland (experimental)** switches to Avalonia's native Wayland backend
+on the next start; it applies to the AppImage, the ZIP and the Flatpak alike. Native Wayland
+needs a compositor with xdg-shell version 3 or newer and otherwise falls back to X11. It is
+opt-in because Avalonia's Wayland backend has no screen-reader (AT-SPI) support yet, and on
+compositors without server-side decorations (GNOME) Avalonia draws its own title bar.
+
+The environment variable `PKHEX_AVALONIA_WAYLAND` overrides the setting: `1` forces native
+Wayland and `0` forces X11, so a misbehaving backend can be undone without opening the app.
+For the Flatpak, use for example
+`flatpak override --user --env=PKHEX_AVALONIA_WAYLAND=0 io.github.realgarit.PKHeX-Avalonia`.
+
+This repository's manifest (the release bundle) grants both the X11 and the Wayland socket;
+the Flathub manifest keeps its own permission list. flatpak-builder-lint reports this pair as
+the warning `finish-args-contains-both-x11-and-wayland`. That is expected: X11 is the default
+and Wayland is opt-in, and `fallback-x11` cannot replace the X11 socket because it grants no X11
+socket on Wayland desktops (lint also rejects `x11` together with `fallback-x11` as an error).
 
 ### Community FlatPark repository
 
 [FlatPark](https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia) is a
 community Flatpak repository that also packages GitHub releases. Its PKHeX-Avalonia
 package downloads the unchanged `PKHeX-Avalonia-linux-x64.zip` from each GitHub
-release and grants X11, network, IPC and DRI. Without a Wayland socket, the app uses
-its X11 backend (XWayland on Wayland desktops) there. Because `FLATPAK_ID` is set, the
+release and grants X11, network, IPC and DRI but no Wayland socket, so the native Wayland
+setting falls back to X11 there. Because `FLATPAK_ID` is set, the
 app hands updates to `flatpak update` exactly as it does for the release bundle.
 
 FlatPark is maintained independently. It signs with its own key, builds on the

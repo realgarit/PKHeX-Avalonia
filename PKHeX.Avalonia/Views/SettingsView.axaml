@@ -100,6 +100,18 @@
                         </Grid>
                     </StackPanel>
                 </Border>
+<Border x:Name="LinuxDisplaySection" BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,16" IsVisible="{Binding ShowLinuxDisplay}">
+                    <StackPanel Spacing="{DynamicResource UiDensityViewStackSpacing}">
+                        <TextBlock Text="{loc:Loc Settings_LinuxDisplay}" FontSize="13" FontWeight="SemiBold" />
+                        <Grid ColumnDefinitions="*,150" ColumnSpacing="12">
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="{loc:Loc Settings_UseNativeWayland}" FontSize="11" FontWeight="Normal" TextWrapping="Wrap" VerticalAlignment="Center" />
+                                <TextBlock Text="{loc:Loc Settings_UseNativeWayland_Desc}" FontSize="11" FontWeight="Normal" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <ToggleSwitch x:Name="UseNativeWaylandSwitch" FontSize="11" VerticalAlignment="Center" Grid.Column="1" IsChecked="{Binding UseNativeWayland}" OnContent="{loc:Loc Common_On}" OffContent="{loc:Loc Common_Off}" AutomationProperties.Name="{loc:Loc Settings_UseNativeWayland}" ToolTip.Tip="{loc:Loc Settings_UseNativeWayland_Desc}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
 <Border BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,16" IsVisible="{Binding ShowLinuxIntegration}">
                     <StackPanel Spacing="{DynamicResource UiDensityViewStackSpacing}">
                         <TextBlock Text="{loc:Loc Settings_LinuxIntegration}" FontSize="13" FontWeight="SemiBold" />
