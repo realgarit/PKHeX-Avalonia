@@ -108,11 +108,27 @@ public partial class PKMDatabaseViewModel : ViewModelBase
         try
         {
             var settings = Filter.GetSearchSettings();
-            var progress = new Progress<int>(count => SearchProgress = count);
+            // Progress<T> delivers reports later through the captured context, so a report can still be
+            // pending when the scan returns. The final count is set below; later reports are dropped.
+            var progressGate = new object();
+            var scanFinished = false;
+            var progress = new Progress<int>(count =>
+            {
+                lock (progressGate)
+                {
+                    if (!scanFinished)
+                        SearchProgress = count;
+                }
+            });
             var scan = await Task.Run(
                 () => ScanFolder(path, _sav, settings, progress, search.Token),
                 search.Token);
             search.Token.ThrowIfCancellationRequested();
+            lock (progressGate)
+            {
+                scanFinished = true;
+                SearchProgress = scan.FilesScanned;
+            }
 
             foreach (var pk in scan.Matches)
                 Results.Add(new PKMDatabaseEntry(pk, _spriteRenderer));
