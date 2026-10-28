@@ -12,7 +12,7 @@ test "${FLATPAK_ID:?}" = "$app_id"
 test -x /app/lib/pkhex-avalonia/PKHeX.Avalonia
 
 install -d /app/bin /app/share/applications /app/share/metainfo \
-  /app/share/icons/hicolor/64x64/apps /app/share/licenses/"$app_id"
+  /app/share/icons/hicolor/scalable/apps /app/share/licenses/"$app_id"
 cat > /app/bin/PKHeX.Avalonia << 'EOF'
 #!/bin/sh
 exec /app/lib/pkhex-avalonia/PKHeX.Avalonia "$@"
@@ -25,8 +25,8 @@ sed -e "s/io.pkhex.avalonia/$app_id/g" \
     -e "s/@VERSION@/$version/g" -e "s/@RELEASE_DATE@/$release_date/g" \
   packaging/linux/io.pkhex.avalonia.metainfo.xml \
   > /app/share/metainfo/"$app_id".metainfo.xml
-install -m644 PKHeX.Avalonia/Assets/Icons/icon.png \
-  /app/share/icons/hicolor/64x64/apps/"$app_id".png
+install -m644 packaging/linux/io.pkhex.avalonia.svg \
+  /app/share/icons/hicolor/scalable/apps/"$app_id".svg
 install -m644 LICENSE /app/share/licenses/"$app_id"/LICENSE
 install -m644 PKHeX.Avalonia/Assets/ThirdParty/pokesprite-LICENSE.txt \
   /app/share/licenses/"$app_id"/pokesprite-LICENSE.txt
