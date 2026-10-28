@@ -6,7 +6,7 @@
 # not show the expected tab or Pokemon. Coordinates assume the 900x600 window GNOME centers on the
 # 1600x1100 virtual monitor.
 set -uo pipefail
-source "$(dirname "$(readlink -f "$0")")/common.sh"
+source "$(dirname "$(readlink -f "$0")")/common.sh" || exit 1
 PUBLISH="${1:-$ROOT/tmp/flathub-publish}"
 OUT="${2:-$ROOT/tmp/flathub-screenshots}"
 

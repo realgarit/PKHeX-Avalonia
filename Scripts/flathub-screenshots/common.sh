@@ -3,6 +3,19 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$DIR/../.." && pwd)"
 # Session state (GNOME home, runtime dir, D-Bus address, app copy) lives on the distro's own disk.
 STATE="${PKHEX_SHOT_STATE:-/var/tmp/pkhex-flathub-shots}"
+# The scripts delete and recreate folders below $STATE, so it must be a dedicated, absolute folder.
+case "$STATE" in
+    /?*/pkhex-flathub-shots) ;;
+    *) echo "Refusing to use '$STATE' as the screenshot state folder" >&2; exit 1 ;;
+esac
+
+# reset_dir <path>: deletes and recreates a folder, but only one inside $STATE.
+reset_dir() {
+    case "$1" in
+        "${STATE:?}"/?*) rm -rf -- "$1" && mkdir -p -- "$1" ;;
+        *) echo "Refusing to delete '$1'" >&2; exit 1 ;;
+    esac
+}
 
 session_env() {
     source "$STATE/session.env"
@@ -29,8 +42,10 @@ wait_ready() {
 # launch_app <linux-x64 publish dir>: starts the app inside the session's mount namespace with fresh settings.
 launch_app() {
     # Default app settings every run (an earlier run leaves the Light theme selected).
-    rm -rf "$STATE/home/.config/PKHeX-Avalonia" "$STATE/home/.local/share/PKHeX-Avalonia"
-    rm -rf "$STATE/app" && mkdir -p "$STATE/app" && cp -r "$1/." "$STATE/app/" && chmod +x "$STATE/app/PKHeX.Avalonia"
+    reset_dir "$STATE/home/.config/PKHeX-Avalonia"
+    reset_dir "$STATE/home/.local/share/PKHeX-Avalonia"
+    reset_dir "$STATE/app"
+    cp -r "$1/." "$STATE/app/" && chmod +x "$STATE/app/PKHeX.Avalonia"
     session_env
     local pid auth
     pid=$(pgrep -f 'gnome-shell --headless --wayland' | head -1)
