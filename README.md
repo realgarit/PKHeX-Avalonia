@@ -29,9 +29,9 @@
 
 Get a self-contained package from the [official latest release](https://github.com/realgarit/PKHeX-Avalonia/releases/latest). **No .NET installation is required to run it.** On Linux, you can also install from Flathub and get updates through your software center.
 
-<p>
-  <a href='https://flathub.org/apps/io.github.realgarit.PKHeX-Avalonia'><img width='240' alt='Get it on Flathub' src='https://flathub.org/api/badge?locale=en'/></a>
-  <a href="https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia/"><img src="https://flatpark.org/badges/get-it-on-flatpark.svg" alt="Get it on FlatPark"></a>
+<p align="center">
+  <a href='https://flathub.org/apps/io.github.realgarit.PKHeX-Avalonia'><img height='56' alt='Get it on Flathub' src='https://flathub.org/api/badge?locale=en'/></a>
+  <a href="https://flatpark.org/apps/io.github.realgarit.PKHeX-Avalonia/"><img height="56" src="https://flatpark.org/badges/get-it-on-flatpark.svg" alt="Get it on FlatPark"></a>
 </p>
 
 | Platform | Portable package | Installer or app image |
