@@ -160,7 +160,7 @@ public sealed class ShortcutCatalogTests
         });
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void Titles_HaveNoAccessKeyMarker_InAnyLanguage()
     {
         var vm = CreateViewModel();
@@ -202,7 +202,7 @@ public sealed class ShortcutCatalogTests
         Assert.Equal(expected, AccessKeyText.Strip(text));
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void RegistryAction_CategoryTitleListsEveryMenu()
     {
         var vm = CreateViewModel();
@@ -461,7 +461,7 @@ public sealed class ShortcutCatalogTests
         Assert.Equal(MainWorkspace.Pokemon, vm.ActiveWorkspace);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void LanguageChange_RefreshesActionTitles()
     {
         using var state = new LocalizationState();

@@ -1,3 +1,4 @@
+using Avalonia.Headless.XUnit;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
@@ -521,7 +522,7 @@ public sealed class KeyboardShortcutsViewModelTests
 
     public static IEnumerable<object[]> Languages => LocalizedStrings.SupportedLanguages.Select(language => new object[] { language });
 
-    [Theory]
+    [AvaloniaTheory]
     [MemberData(nameof(Languages))]
     public void SharedTitles_AreQualifiedByTheirMenus_InMessagesAndAccessibleNames(string language)
     {

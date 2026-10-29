@@ -243,7 +243,7 @@ public sealed class IssueSweepRegressionTests
         }
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void HallOfFameAndMailStatesAreExplicit()
     {
         var oldLanguage = LocalizedStrings.Instance.CurrentLanguage;
