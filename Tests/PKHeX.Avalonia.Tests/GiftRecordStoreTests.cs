@@ -1,3 +1,4 @@
+using Avalonia.Headless.XUnit;
 using System.Buffers.Binary;
 using Moq;
 using PKHeX.Application.Abstractions.GiftRecords;
@@ -601,7 +602,7 @@ public class GiftRecordStoreTests(ITestOutputHelper output)
         Assert.False(vm.CanImportRecord);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void ViewModel_RefreshLocalization_RebuildsTextAndPreservesSelection()
     {
         var loc = LocalizedStrings.Instance;

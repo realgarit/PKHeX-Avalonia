@@ -1,3 +1,4 @@
+using Avalonia.Headless.XUnit;
 using System.Buffers.Binary;
 using CommunityToolkit.Mvvm.Messaging;
 using PKHeX.Presentation.Localization;
@@ -23,7 +24,7 @@ public class FestivalPlazaWorkflowTests
         Assert.Equal(0xAABBCCDDu, BinaryPrimitives.ReadUInt32LittleEndian(save.Festa.Data[0x2FC..]));
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void LiveLanguageChange_RefreshesDomainChoices_WithoutResettingStagedFields()
     {
         var previous = LocalizedStrings.Instance.CurrentLanguage;

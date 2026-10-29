@@ -211,7 +211,7 @@ public sealed class Gen4EventWorkspaceTests
         Assert.Equal(rawValue, save.GetWork(raw.Index));
     }
 
-    [Theory, MemberData(nameof(GameLanguages))]
+    [AvaloniaTheory, MemberData(nameof(GameLanguages))]
     public void LanguageRefreshUsesTheGameResourcesAndRetainsSelectionDraftsAndValidation(string file, string language)
     {
         using var scope = new LanguageScope("en");
@@ -274,7 +274,7 @@ public sealed class Gen4EventWorkspaceTests
         Assert.False(WeakReferenceMessenger.Default.IsRegistered<LanguageChangedMessage>(vm));
     }
 
-    [Theory]
+    [AvaloniaTheory]
     [InlineData(GameVersion.D)]
     [InlineData(GameVersion.Pt)]
     [InlineData(GameVersion.HG)]

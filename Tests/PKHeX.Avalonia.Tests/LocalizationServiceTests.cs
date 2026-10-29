@@ -70,7 +70,7 @@ public class LocalizationServiceTests
         }
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void Indexer_Switches_Value_Live_And_Falls_Back_To_English()
     {
         var loc = LocalizedStrings.Instance;
@@ -125,7 +125,7 @@ public class LocalizationServiceTests
         }
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void SetLanguage_Raises_ChangeNotification_For_Bindings()
     {
         var loc = LocalizedStrings.Instance;
@@ -145,7 +145,7 @@ public class LocalizationServiceTests
         }
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void PortugueseBrazil_Translates_The_Shell()
     {
         var loc = LocalizedStrings.Instance;
@@ -162,7 +162,7 @@ public class LocalizationServiceTests
         }
     }
 
-    [Fact]
+    [AvaloniaFact]
     public void PortugueseBrazil_Is_UiOnly_And_Uses_English_Game_Data()
     {
         Assert.Equal("en", PKHeX.Application.Services.LanguageService.GetDataLanguage("pt-BR"));
