@@ -25,3 +25,4 @@ Scripts/flathub-screenshots/** text eol=lf
 *.RTF  diff=astextplain
 Tests/PKHeX.Avalonia.Tests/Fixtures/RaidEvents/** binary
 .claude/hooks/** text eol=lf
+.codex/hooks/** text eol=lf
