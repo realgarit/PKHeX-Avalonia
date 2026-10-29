@@ -12,7 +12,11 @@ and act only within the approval boundary.
 ## Shipped release announcements
 
 After verifying the merged change and published release, post a short text-only
-update in the project's `#downloads-and-updates` channel when posting is authorized.
+update in the project's `#downloads-and-updates` channel. The user gave standing
+approval for release announcements on 2026-10-29: post without asking, and do
+not leave the step out. This standing approval does not extend to support
+replies, which keep the approval boundary below. One post may cover several
+unannounced releases; leave out releases with no change a user can see.
 Include the shipped version and a brief summary of changes users can see.
 Do not include URLs, Markdown links, PR/issue numbers, download instructions,
 or link embeds. Users already receive updates through the app.

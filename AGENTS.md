@@ -87,6 +87,12 @@ Patterns to know:
   shipped version and a short summary of visible changes as text only. Do not include links,
   PR/issue numbers, download instructions, or link embeds; updates already reach users through
   the app. Do not post private save data or announce work before merge.
+- **Standing approval (user decision, 2026-10-29):** a verified release IS the approval. Post the
+  update without asking first, in every session, nested session and subagent. Do not skip it and do
+  not ask for it. One post may cover several unannounced releases; skip releases with no change a
+  user can see (docs, CI, tooling). This approval covers release announcements only, not support
+  replies or other Discord messages. `.claude/hooks/remind-release-post.sh` adds this reminder after
+  every `gh pr merge`.
 
 ### Worktree shipping
 - Git commit/push/PR must run from inside the agent's worktree (not the repo root).
