@@ -612,10 +612,10 @@ jobs:
           draft: false
           prerelease: false
 
-  # Flathub follows every GitHub release: one version-only commit pushed to the
-  # Flathub packaging repository, which builds and publishes it. Skipped without
-  # the FLATHUB_TOKEN secret; refuses anything beyond a version bump (see
-  # .github/workflows/flathub-publish.yml).
+  # Flathub follows every GitHub release: one version-only commit, opened as a
+  # pull request in the Flathub packaging repository and merged once flathubbot's
+  # test build passes. Skipped without the FLATHUB_TOKEN secret; refuses anything
+  # beyond a version bump (see .github/workflows/flathub-publish.yml).
   flathub-publish:
     needs: [version, release]
     if: needs.version.outputs.proceed == 'true'
