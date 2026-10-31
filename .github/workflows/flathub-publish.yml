@@ -1,8 +1,9 @@
 name: Publish to Flathub
 
-# Pushes a version-only update to flathub/io.github.realgarit.PKHeX-Avalonia after a
-# GitHub release. Every push to that repository's master starts Flathub's build and
-# publishing flow, so this is the whole Flathub release: one commit, no PR.
+# Publishes a version-only update to flathub/io.github.realgarit.PKHeX-Avalonia after a
+# GitHub release: one commit on an update branch, a pull request, flathubbot's test
+# build, and the merge. Master is protected, so the merge is what starts Flathub's
+# build and publishing flow; this job is the whole Flathub release.
 #
 # The automation changes only the release values of the manifest (archive URL and
 # SHA-256, source commit, version, date) and nuget-sources.json. If the published
@@ -91,20 +92,47 @@ jobs:
           git -C flathub --no-pager diff --stat
           git -C flathub --no-pager diff -- io.github.realgarit.PKHeX-Avalonia.yaml
 
-      - name: Push one commit to Flathub
+      # Flathub protects master: changes must come through a pull request and the
+      # flathub/build and flathub/permissions status checks must pass. flathubbot
+      # test-builds every PR (about 15 minutes for both architectures), so the job
+      # opens the PR, waits for the checks, and merges. The permissions check only
+      # holds for a permission change, which publish-flathub.py never stages.
+      - name: Open the Flathub pull request, wait for its checks and merge it
         if: env.HAS_TOKEN == 'true' && steps.stage.outputs.outcome == 'staged' && !(github.event_name == 'workflow_dispatch' && inputs.dry_run)
         env:
           TAG: ${{ inputs.tag }}
+          GH_TOKEN: ${{ secrets.FLATHUB_TOKEN }}
+          GH_REPO: flathub/io.github.realgarit.PKHeX-Avalonia
         run: |
           set -euo pipefail
           cd flathub
+          version="${TAG#v}"
+          branch="update-${version}"
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b "$branch"
           git add io.github.realgarit.PKHeX-Avalonia.yaml nuget-sources.json
-          git commit -m "Update to ${TAG#v}" \
+          git commit -q -m "Update to ${version}" \
                      -m "Automated from realgarit/PKHeX-Avalonia release ${TAG} by .github/workflows/flathub-publish.yml."
-          git push origin HEAD:master
-          echo "Pushed Flathub update to ${TAG#v}: Flathub builds and publishes it from this commit." >> "$GITHUB_STEP_SUMMARY"
+          git push -q origin "HEAD:refs/heads/${branch}"
+
+          existing="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            pr="$existing"
+            echo "Reusing open pull request #${pr} for ${branch}."
+          else
+            pr="$(gh pr create --base master --head "$branch" --title "Update to ${version}" \
+              --body "Automated version update from realgarit/PKHeX-Avalonia release ${TAG}: source archive, NuGet sources and version metadata only; no permission or manifest changes." \
+              | grep -oE '[0-9]+$')"
+            echo "Opened pull request #${pr}."
+          fi
+          echo "Flathub pull request: https://github.com/${GH_REPO}/pull/${pr}" >> "$GITHUB_STEP_SUMMARY"
+
+          # Wait for flathubbot's test build. --watch returns non-zero on any failed check.
+          sleep 60
+          gh pr checks "$pr" --watch --fail-fast --interval 60
+          gh pr merge "$pr" --merge --delete-branch
+          echo "Merged Flathub update to ${version}: Flathub builds and publishes it from master." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Dry run summary
         if: env.HAS_TOKEN == 'true' && steps.stage.outputs.outcome == 'staged' && github.event_name == 'workflow_dispatch' && inputs.dry_run

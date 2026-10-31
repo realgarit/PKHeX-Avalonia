@@ -392,13 +392,17 @@ Flathub follows every GitHub release. After `release.yml` publishes a release, i
 `flathub-publish` job (`.github/workflows/flathub-publish.yml`) renders
 `packaging/flatpak/flathub/io.github.realgarit.PKHeX-Avalonia.yaml.in` for the new
 tag (archive URL and SHA-256, source commit, version, date), copies
-`nuget-sources.json` from the same tag, and pushes one commit to the Flathub
-repository's `master`. Every push to that repository starts Flathub's build and
-publishing flow, so that commit is the whole Flathub release; there is no PR and no
+`nuget-sources.json` from the same tag, commits them to an `update-X.Y.Z` branch of
+the Flathub repository, opens a pull request, waits for flathubbot's test build
+(the required `flathub/build` and `flathub/permissions` checks; `master` is
+protected and accepts no direct push), and merges it. The merge starts Flathub's
+build and publishing flow, so that merge is the whole Flathub release; there is no
 `x-checker-data`. The job needs the `FLATHUB_TOKEN` repository secret (a GitHub
 token with push access to the Flathub repository) and is skipped with a warning
-without it. Run it by hand with `gh workflow run flathub-publish.yml -f tag=vX.Y.Z
--f dry_run=true` to see the staged diff without pushing.
+without it. A run that starts before the secret exists does not see it. Run the
+job by hand with `gh workflow run flathub-publish.yml -f tag=vX.Y.Z -f dry_run=true`
+to see the staged diff without opening a pull request, or with `-f dry_run=false`
+to publish a release the automatic run skipped.
 
 The automation only ever changes those release values. Before writing anything,
 `.github/scripts/publish-flathub.py` renders the template with the values of the
