@@ -1,0 +1,111 @@
+name: Publish to Flathub
+
+# Pushes a version-only update to flathub/io.github.realgarit.PKHeX-Avalonia after a
+# GitHub release. Every push to that repository's master starts Flathub's build and
+# publishing flow, so this is the whole Flathub release: one commit, no PR.
+#
+# The automation changes only the release values of the manifest (archive URL and
+# SHA-256, source commit, version, date) and nuget-sources.json. If the published
+# Flathub manifest differs from packaging/flatpak/flathub/*.yaml.in in any other way,
+# publish-flathub.py refuses: permission, runtime and build changes go through a
+# reviewed manual update, because Flathub moderators review them.
+#
+# Needs the FLATHUB_TOKEN secret: a GitHub token with push access to the Flathub
+# repository (classic token, `public_repo` scope). Without it the job is skipped.
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Released tag to publish (vX.Y.Z)'
+        type: string
+        required: true
+    secrets:
+      FLATHUB_TOKEN:
+        required: false
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Released tag to publish (vX.Y.Z)'
+        type: string
+        required: true
+      dry_run:
+        description: 'Dry run — stage the update and print the diff, but do not push.'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flathub-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Update Flathub to ${{ inputs.tag }}
+    runs-on: ubuntu-latest
+    env:
+      HAS_TOKEN: ${{ secrets.FLATHUB_TOKEN != '' }}
+    steps:
+      - name: Checkout this repository with tags
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Checkout the Flathub packaging repository
+        if: env.HAS_TOKEN == 'true'
+        uses: actions/checkout@v7
+        with:
+          repository: flathub/io.github.realgarit.PKHeX-Avalonia
+          token: ${{ secrets.FLATHUB_TOKEN }}
+          path: flathub
+          persist-credentials: true
+
+      - name: Skip without a Flathub token
+        if: env.HAS_TOKEN != 'true'
+        run: |
+          echo "::warning::FLATHUB_TOKEN is not configured; Flathub was not updated to ${TAG}."
+          echo "Flathub not updated: FLATHUB_TOKEN is missing." >> "$GITHUB_STEP_SUMMARY"
+        env:
+          TAG: ${{ inputs.tag }}
+
+      - name: Stage the version update
+        if: env.HAS_TOKEN == 'true'
+        id: stage
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -uo pipefail
+          git fetch --force --tags origin
+          python3 .github/scripts/publish-flathub.py "$TAG" flathub
+          status=$?
+          case "$status" in
+            0) echo "outcome=staged" >> "$GITHUB_OUTPUT" ;;
+            3) echo "outcome=current" >> "$GITHUB_OUTPUT" ;;
+            2) echo "outcome=manual" >> "$GITHUB_OUTPUT"
+               echo "Flathub not updated to ${TAG}: the published manifest needs a reviewed manual update." >> "$GITHUB_STEP_SUMMARY"
+               exit 1 ;;
+            *) exit "$status" ;;
+          esac
+          git -C flathub --no-pager diff --stat
+          git -C flathub --no-pager diff -- io.github.realgarit.PKHeX-Avalonia.yaml
+
+      - name: Push one commit to Flathub
+        if: env.HAS_TOKEN == 'true' && steps.stage.outputs.outcome == 'staged' && !(github.event_name == 'workflow_dispatch' && inputs.dry_run)
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          cd flathub
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add io.github.realgarit.PKHeX-Avalonia.yaml nuget-sources.json
+          git commit -m "Update to ${TAG#v}" \
+                     -m "Automated from realgarit/PKHeX-Avalonia release ${TAG} by .github/workflows/flathub-publish.yml."
+          git push origin HEAD:master
+          echo "Pushed Flathub update to ${TAG#v}: Flathub builds and publishes it from this commit." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Dry run summary
+        if: env.HAS_TOKEN == 'true' && steps.stage.outputs.outcome == 'staged' && github.event_name == 'workflow_dispatch' && inputs.dry_run
+        run: echo "DRY RUN — the update to ${{ inputs.tag }} was staged and printed above but not pushed." >> "$GITHUB_STEP_SUMMARY"

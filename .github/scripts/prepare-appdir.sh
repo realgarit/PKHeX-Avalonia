@@ -17,6 +17,9 @@ test ! -e "$APPDIR"
 mkdir -p "$APPDIR/usr/bin" "$APPDIR/usr/share/applications" \
   "$APPDIR/usr/share/metainfo" "$APPDIR/usr/share/icons/hicolor/64x64/apps"
 cp -a "$PUBLISH_DIR/." "$APPDIR/usr/bin/"
+# NuGet native libraries arrive as 0744. appimagetool (since 2026-10-29) refuses files that
+# other users cannot read or execute, because the AppImage runs under any user account.
+chmod -R a+rX "$APPDIR/usr/bin"
 cp packaging/linux/io.pkhex.avalonia.desktop "$APPDIR/"
 cp packaging/linux/io.pkhex.avalonia.desktop "$APPDIR/usr/share/applications/"
 cp PKHeX.Avalonia/Assets/Icons/icon.png "$APPDIR/io.pkhex.avalonia.png"

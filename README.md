@@ -72,7 +72,7 @@ flatpak install flathub io.github.realgarit.PKHeX-Avalonia
 flatpak run io.github.realgarit.PKHeX-Avalonia
 ```
 
-`flatpak update` and your software center deliver new versions. Flathub receives releases in batches, so its version can be older than the latest GitHub release. The in-app updater shows release notes but leaves Flatpak updates to Flatpak.
+`flatpak update` and your software center deliver new versions. Each GitHub release is pushed to Flathub automatically; Flathub then builds and publishes it, so its version can trail the latest GitHub release by a few hours. The in-app updater shows release notes but leaves Flatpak updates to Flatpak.
 
 Use **File → Open** and **Save As** to grant access to files through the desktop portal. Settings and backups are stored in `~/.var/app/io.github.realgarit.PKHeX-Avalonia/`. See the [Flatpak guide](docs/packaging.md#linux-flatpak) for file access, permissions, and troubleshooting.
 
