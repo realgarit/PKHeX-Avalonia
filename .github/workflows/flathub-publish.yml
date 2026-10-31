@@ -120,9 +120,10 @@ jobs:
 
           # Only a pull request from this repository's own branch at exactly this
           # commit may be reused: a fork can open a PR under the same branch name.
-          existing="$(gh pr list --head "$branch" --state open \
+          # gh's built-in jq has no --arg; the commit reaches the filter through $ENV.
+          existing="$(HEAD_SHA="$head" gh pr list --head "$branch" --state open \
             --json number,headRefOid,headRepositoryOwner \
-            --jq --arg head "$head" '[.[] | select(.headRefOid == $head and .headRepositoryOwner.login == "flathub")][0].number // empty')"
+            --jq '[.[] | select(.headRefOid == $ENV.HEAD_SHA and .headRepositoryOwner.login == "flathub")][0].number // empty')"
           if [ -n "$existing" ]; then
             pr="$existing"
             echo "Reusing open pull request #${pr} for ${branch} at ${head}."
