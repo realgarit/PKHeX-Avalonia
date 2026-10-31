@@ -611,3 +611,16 @@ jobs:
             artifacts/**/PKHeX-Avalonia-Setup*.exe
           draft: false
           prerelease: false
+
+  # Flathub follows every GitHub release: one version-only commit pushed to the
+  # Flathub packaging repository, which builds and publishes it. Skipped without
+  # the FLATHUB_TOKEN secret; refuses anything beyond a version bump (see
+  # .github/workflows/flathub-publish.yml).
+  flathub-publish:
+    needs: [version, release]
+    if: needs.version.outputs.proceed == 'true'
+    uses: ./.github/workflows/flathub-publish.yml
+    with:
+      tag: ${{ needs.version.outputs.tag }}
+    secrets:
+      FLATHUB_TOKEN: ${{ secrets.FLATHUB_TOKEN }}

@@ -259,11 +259,12 @@ review is far more likely to reject them.
 - **Gated on secrets (automatic once configured):** Developer ID codesigning
   + notarization/stapling for macOS (tier 1), stable self-signed identity
   for macOS (tier 2, the "tertius" pattern — no Apple Developer account
-  needed), code signing for the Windows installer and exe.
+  needed), code signing for the Windows installer and exe, and the Flathub
+  update (`FLATHUB_TOKEN`; version bumps only, see [Flathub](#flathub)).
 - **Manual, one-time-per-version, by design (cannot be automated without
   publishing into third-party repos on the maintainer's behalf):**
-  submitting the Homebrew cask and winget manifest PRs. Flathub has a separate
-  submission and review process; see below.
+  submitting the Homebrew cask and winget manifest PRs, and any Flathub change
+  beyond a version bump (permissions, runtime).
 
 ## Linux Flatpak
 
@@ -387,12 +388,27 @@ and the app window keep the original raster icon. The MetaInfo template also set
 Flathub brand colors (light `#f6a3a3`, dark `#7d1717`) and the input and screen-size
 hints that Flathub shows as hardware support.
 
-Flathub does not follow every GitHub release. The manifest has no
-`x-checker-data`, so no bot opens update PRs. The maintainer chooses a release and
-updates the Flathub repository in one reviewed commit: the archive URL and SHA-256,
-the version/commit/date arguments, and `nuget-sources.json` from the same tag. Every
-push to that repository starts Flathub's build and publishing flow, so do not push
-partial or follow-up fixes there; collect them into the next update.
+Flathub follows every GitHub release. After `release.yml` publishes a release, its
+`flathub-publish` job (`.github/workflows/flathub-publish.yml`) renders
+`packaging/flatpak/flathub/io.github.realgarit.PKHeX-Avalonia.yaml.in` for the new
+tag (archive URL and SHA-256, source commit, version, date), copies
+`nuget-sources.json` from the same tag, and pushes one commit to the Flathub
+repository's `master`. Every push to that repository starts Flathub's build and
+publishing flow, so that commit is the whole Flathub release; there is no PR and no
+`x-checker-data`. The job needs the `FLATHUB_TOKEN` repository secret (a GitHub
+token with push access to the Flathub repository) and is skipped with a warning
+without it. Run it by hand with `gh workflow run flathub-publish.yml -f tag=vX.Y.Z
+-f dry_run=true` to see the staged diff without pushing.
+
+The automation only ever changes those release values. Before writing anything,
+`.github/scripts/publish-flathub.py` renders the template with the values of the
+manifest Flathub currently builds and requires a byte-identical result; if the
+published manifest differs in any other way (permissions, runtime, build commands,
+or a changed template), the job fails without pushing and the update stays manual.
+Flathub moderators review permission changes, so such a change goes through a
+pull request in the Flathub repository with the reason explained, and the template
+here is updated in the same release so the automation matches again afterwards.
+Do not push partial or follow-up fixes to Flathub; collect them into the next release.
 
 Flathub reviews listings against its
 [quality guidelines](https://docs.flathub.org/docs/for-app-authors/metainfo-guidelines/quality-guidelines).

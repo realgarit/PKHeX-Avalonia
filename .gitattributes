@@ -1,7 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 Scripts/install.sh text eol=lf
-.github/scripts/test-linux-installer.py text eol=lf
 Scripts/flathub-screenshots/** text eol=lf
 
 # Custom for Visual Studio
@@ -26,3 +25,5 @@ Scripts/flathub-screenshots/** text eol=lf
 Tests/PKHeX.Avalonia.Tests/Fixtures/RaidEvents/** binary
 .claude/hooks/** text eol=lf
 .codex/hooks/** text eol=lf
+.github/scripts/** text eol=lf
+packaging/flatpak/** text eol=lf
