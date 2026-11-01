@@ -624,3 +624,15 @@ jobs:
       tag: ${{ needs.version.outputs.tag }}
     secrets:
       FLATHUB_TOKEN: ${{ secrets.FLATHUB_TOKEN }}
+
+  # The Discord update for every release with a user-visible change, built from the
+  # merged PRs' `## Release note` sections (see .github/workflows/discord-announce.yml).
+  # Skipped with a warning without the DISCORD_RELEASE_WEBHOOK secret.
+  discord-announce:
+    needs: [version, release]
+    if: needs.version.outputs.proceed == 'true'
+    uses: ./.github/workflows/discord-announce.yml
+    with:
+      tag: ${{ needs.version.outputs.tag }}
+    secrets:
+      DISCORD_RELEASE_WEBHOOK: ${{ secrets.DISCORD_RELEASE_WEBHOOK }}

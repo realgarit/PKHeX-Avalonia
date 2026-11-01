@@ -7,9 +7,9 @@ description: Use before opening a pull request in PKHeX-Avalonia, or when asked 
 
 ## Overview
 
-Three checks this repo needs on every PR that a clean `dotnet build` won't catch. Run all three before `gh pr create`.
+Four checks this repo needs on every PR that a clean `dotnet build` won't catch. Run all four before `gh pr create`.
 
-## The 3 Checks
+## The 4 Checks
 
 ### 1. `<UIVersion>` NOT hand-edited — and the PR title carries the bump
 
@@ -70,6 +70,15 @@ Only applies when this PR is an upstream `PKHeX.Core` sync (branch `chore/sync-p
 - Any genuine gap should already be a tracked `frontend-parity`-labeled issue, not silently dropped.
 - See the `sync-upstream-core` skill for the full review process — this check only confirms it happened, it doesn't replace it.
 
+### 4. The PR body has a `## Release note` section
+
+`release.yml` posts the Discord update from this section after the PR ships
+(`.github/scripts/announce-release.py`). Write one or two short sentences for app users: what
+they can now do or what now works. No links, PR or issue numbers, or download instructions.
+Write `none` when users see no change (CI, docs, tests, tooling, refactors). Without the
+section, a `feat:`/`fix:` title of a PR that changes a `PKHeX.*` project is posted as written,
+which usually reads like a commit message, not a user update.
+
 ## Quick Reference
 
 | Check | Command | Pass condition |
@@ -78,6 +87,7 @@ Only applies when this PR is an upstream `PKHeX.Core` sync (branch `chore/sync-p
 | PR title has a conventional prefix | read the title you are about to use | `feat:`/`fix:`/`chore:`/... — it selects the bump |
 | No Core edits | `git diff main...HEAD --stat -- PKHeX.Core/` | Empty (unless sync PR) |
 | Frontend parity | Check PR body / `frontend-parity` issues | Reviewed if this is a sync PR |
+| Release note | read the PR body | `## Release note` with user-facing text, or `none` |
 
 ## Common Mistakes
 
@@ -87,4 +97,5 @@ Only applies when this PR is an upstream `PKHeX.Core` sync (branch `chore/sync-p
 | Bumping `<Version>` | `<Version>` mirrors upstream's date stamp — never hand-edit it outside a sync |
 | Untyped PR title ("Update editor") | CI cannot classify it and defaults to PATCH — a new editor needs `feat:` to get a MINOR |
 | Editing `PKHeX.Core` to fix a compile error after an upstream change | Port the fix into the consuming layer instead — see the `sync-upstream-core` skill's "Core principle" |
+| Missing or developer-worded `## Release note` | It is posted on Discord verbatim; rewrite it for app users, or write `none` |
 | Opening a sync PR without a Frontend Parity Review note | Re-run step 5 of `sync-upstream-core` before opening |

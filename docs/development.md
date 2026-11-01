@@ -140,6 +140,26 @@ REPO=realgarit/PKHeX-Avalonia HEAD_SHA=$(git rev-parse origin/main) \
   bash .github/scripts/resolve-release-version.sh
 ```
 
+### Release announcements
+
+After the release is published, the `discord-announce` job posts a text-only update in the project
+Discord (#downloads-and-updates) through the `DISCORD_RELEASE_WEBHOOK` channel webhook. The text
+comes from the PRs merged since the previous published release: each PR's `## Release note`
+section as written (`none` leaves the PR out), or else the `feat:`/`fix:` title of a PR that
+changes a `PKHeX.*` project. A release without any such change posts nothing. The PR template has
+the section; write it for app users, without links or PR numbers. Because PR text stays editable after the merge,
+the note is trusted only when the PR author and the last editor of its description can push to
+this repository; a maintainer adopts a contributor's note by editing that PR's description.
+Posts never ping anyone and never show link previews.
+
+Preview the message for any released tag, or post a missed one:
+
+```bash
+gh workflow run discord-announce.yml -f tag=v1.98.8                    # dry run, prints the message
+gh workflow run discord-announce.yml -f tag=v1.98.8 -f dry_run=false   # posts it
+GH_REPO=realgarit/PKHeX-Avalonia python .github/scripts/announce-release.py v1.98.8 --dry-run
+```
+
 ## Localization contribution guide
 
 UI-chrome translations (menus, dialogs, settings, status text — not game data, which

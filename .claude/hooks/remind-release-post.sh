@@ -1,12 +1,12 @@
 #!/bin/bash
 # PostToolUse hook (Bash): after a `gh pr merge` in this repo, remind the agent that every
-# verified release gets a Discord announcement (standing approval, see AGENTS.md).
+# release is announced on Discord by release.yml's discord-announce job (see AGENTS.md).
 # Reads the raw hook JSON without jq, because jq is not installed on every machine (Windows).
 input=$(cat)
 
 if echo "$input" | grep -qE '"command"[[:space:]]*:[[:space:]]*"[^"]*gh[[:space:]]+pr[[:space:]]+merge' \
   && ! echo "$input" | grep -qE -- '--repo[[:space:]=]+[^[:space:]"]*flathub'; then
-  printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"Release announcement required (AGENTS.md, Shipped update communication): once this merge is confirmed and its release run has published the new version with all assets, post the text-only update in the project Discord #downloads-and-updates channel through the Chrome extension, following .agents/skills/discord-feedback-triage. The user gave standing approval: post without asking and do not skip it. Skip it only when the release has no change a user can see."}}'
+  printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"Release announcement (AGENTS.md, Shipped update communication): the discord-announce job in release.yml posts the Discord update automatically from the ## Release note section of each merged PR. Once the release run finishes, confirm that job posted (or correctly found no user-visible change). Only if it failed or was skipped, post the text-only update through the Chrome extension, after checking #downloads-and-updates so nothing is posted twice."}}'
 else
   echo '{}'
 fi
