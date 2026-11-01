@@ -82,17 +82,21 @@ Patterns to know:
   local branch and switch back to main.
 
 ### Shipped update communication
-- After a PR is merged and the release version and live merge state are verified, post a concise
-  user-facing update in the project Discord through the connected Chrome extension. Include the
-  shipped version and a short summary of visible changes as text only. Do not include links,
-  PR/issue numbers, download instructions, or link embeds; updates already reach users through
-  the app. Do not post private save data or announce work before merge.
-- **Standing approval (user decision, 2026-10-29):** a verified release IS the approval. Post the
-  update without asking first, in every session, nested session and subagent. Do not skip it and do
-  not ask for it. One post may cover several unannounced releases; skip releases with no change a
-  user can see (docs, CI, tooling). This approval covers release announcements only, not support
-  replies or other Discord messages. `.claude/hooks/remind-release-post.sh` adds this reminder after
-  every `gh pr merge`.
+- Release announcements are automatic (since 2026-11-02): the `discord-announce` job in
+  `.github/workflows/release.yml` posts the text-only update in the project Discord
+  #downloads-and-updates through the `DISCORD_RELEASE_WEBHOOK` channel webhook after every release.
+  The text comes from `.github/scripts/announce-release.py`: each merged PR's `## Release note`
+  section, else a `feat:`/`fix:` title of a PR that changes a `PKHeX.*` project. Releases with no
+  user-visible change post nothing.
+- **Every PR body therefore needs a `## Release note` section** (see `.github/pull_request_template.md`):
+  one or two short sentences for app users, written ASD-STE100 style, with no links, PR/issue numbers,
+  download instructions or private save data. Write `none` for CI, docs, tests, tooling and internal
+  refactors. Thank outside contributors by name in the note when they want credit.
+- Do not post release updates by hand anymore. Post through the Chrome extension only to recover a
+  release whose `discord-announce` job failed or was skipped (standing approval from 2026-10-29
+  still covers that), and check the channel first so nothing is posted twice. To preview or backfill:
+  `gh workflow run discord-announce.yml -f tag=vX.Y.Z` (dry run by default, `-f dry_run=false` posts).
+  `.claude/hooks/remind-release-post.sh` reminds after every `gh pr merge` to check that job.
 
 ### Worktree shipping
 - Git commit/push/PR must run from inside the agent's worktree (not the repo root).

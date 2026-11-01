@@ -1,0 +1,72 @@
+name: Announce release on Discord
+
+# Posts the text-only release update in the project Discord (#downloads-and-updates)
+# after a GitHub release, through a channel webhook. The text comes from the merged
+# pull requests: each PR's `## Release note` section, or else a feat:/fix: title of
+# a PR that changes app code. Releases without a user-visible change post nothing.
+# See .github/scripts/announce-release.py.
+#
+# Needs the DISCORD_RELEASE_WEBHOOK secret (the channel webhook URL). Without it the
+# job is skipped with a warning.
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Released tag to announce (vX.Y.Z)'
+        type: string
+        required: true
+    secrets:
+      DISCORD_RELEASE_WEBHOOK:
+        required: false
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Released tag to announce (vX.Y.Z)'
+        type: string
+        required: true
+      dry_run:
+        description: 'Dry run — print the message, but do not post it.'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: discord-announce
+  cancel-in-progress: false
+
+jobs:
+  announce:
+    name: Announce ${{ inputs.tag }}
+    runs-on: ubuntu-latest
+    env:
+      HAS_WEBHOOK: ${{ secrets.DISCORD_RELEASE_WEBHOOK != '' }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+    steps:
+      - name: Checkout with tags
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Build and post the announcement
+        env:
+          TAG: ${{ inputs.tag }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_RELEASE_WEBHOOK }}
+        run: |
+          set -euo pipefail
+          git fetch --force --tags origin
+          if [ "$DRY_RUN" = "true" ]; then
+            python3 .github/scripts/announce-release.py "$TAG" --dry-run
+          elif [ "$HAS_WEBHOOK" != "true" ]; then
+            python3 .github/scripts/announce-release.py "$TAG" --dry-run
+            echo "::warning::DISCORD_RELEASE_WEBHOOK is not configured; ${TAG} was not announced on Discord."
+            echo "Discord not updated for ${TAG}: DISCORD_RELEASE_WEBHOOK is missing." >> "$GITHUB_STEP_SUMMARY"
+          else
+            python3 .github/scripts/announce-release.py "$TAG" | tee announce.log
+            grep -E '^(Posted|No user-visible)' announce.log >> "$GITHUB_STEP_SUMMARY" || true
+          fi
