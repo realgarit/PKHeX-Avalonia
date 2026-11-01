@@ -91,7 +91,10 @@ Patterns to know:
 - **Every PR body therefore needs a `## Release note` section** (see `.github/pull_request_template.md`):
   one or two short sentences for app users, written ASD-STE100 style, with no links, PR/issue numbers,
   download instructions or private save data. Write `none` for CI, docs, tests, tooling and internal
-  refactors. Thank outside contributors by name in the note when they want credit.
+  refactors. The script trusts a note only when the PR author and the last editor of its
+  description can push to this repository, because PR text stays editable after merge: for a
+  contributor PR, edit its description (write or adjust the note, thanking them by name) before
+  merging, or it is left out with a warning.
 - Do not post release updates by hand anymore. Post through the Chrome extension only to recover a
   release whose `discord-announce` job failed or was skipped (standing approval from 2026-10-29
   still covers that), and check the channel first so nothing is posted twice. To preview or backfill:

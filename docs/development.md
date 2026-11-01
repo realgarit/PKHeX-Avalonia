@@ -147,7 +147,10 @@ Discord (#downloads-and-updates) through the `DISCORD_RELEASE_WEBHOOK` channel w
 comes from the PRs merged since the previous published release: each PR's `## Release note`
 section as written (`none` leaves the PR out), or else the `feat:`/`fix:` title of a PR that
 changes a `PKHeX.*` project. A release without any such change posts nothing. The PR template has
-the section; write it for app users, without links or PR numbers.
+the section; write it for app users, without links or PR numbers. Because PR text stays editable after the merge,
+the note is trusted only when the PR author and the last editor of its description can push to
+this repository; a maintainer adopts a contributor's note by editing that PR's description.
+Posts never ping anyone and never show link previews.
 
 Preview the message for any released tag, or post a missed one:
 

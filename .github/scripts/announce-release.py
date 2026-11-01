@@ -107,11 +107,57 @@ def touches_app(files: list[dict]) -> bool:
     return False
 
 
+PR_QUERY = """
+query($owner: String!, $name: String!, $number: Int!) {
+  repository(owner: $owner, name: $name) {
+    pullRequest(number: $number) {
+      title body state
+      author { login }
+      editor { login }
+      files(first: 100) { nodes { path } }
+    }
+  }
+}"""
+
+_permissions: dict[str, bool] = {}
+
+
+def can_write(login: str | None) -> bool:
+    """True when `login` has write, maintain or admin access to this repository."""
+    if not login:
+        return False
+    if login not in _permissions:
+        result = subprocess.run(
+            ["gh", "api", f"repos/{os.environ['GH_REPO']}/collaborators/{login}/permission",
+             "--jq", ".permission"], capture_output=True, text=True)
+        _permissions[login] = result.returncode == 0 and result.stdout.strip() in ("admin", "maintain", "write")
+    return _permissions[login]
+
+
+def fetch(number: int) -> dict:
+    owner, name = os.environ["GH_REPO"].split("/", 1)
+    data = json.loads(run("gh", "api", "graphql", "-f", f"query={PR_QUERY}",
+                          "-F", f"owner={owner}", "-F", f"name={name}", "-F", f"number={number}"))
+    pr = data["data"]["repository"]["pullRequest"]
+    pr["files"] = [{"path": n["path"]} for n in pr["files"]["nodes"]]
+    return pr
+
+
 def changes(numbers: list[int]) -> list[str]:
     lines: list[str] = []
     for number in numbers:
-        pr = json.loads(run("gh", "pr", "view", str(number), "--json", "title,body,state,files"))
+        pr = fetch(number)
         if pr.get("state") != "MERGED":
+            continue
+        # The post goes out under the project's name, after the merge, while PR text
+        # stays editable. Use it only when the people who last wrote it can push to
+        # the repository: the author, and the last editor of the description.
+        author = (pr.get("author") or {}).get("login")
+        editor = (pr.get("editor") or {}).get("login") or author
+        if not (can_write(author) and can_write(editor)):
+            print(f"::warning::#{number} left out: its text was written by {author}"
+                  f"{'' if editor == author else f' and edited by {editor}'}, who cannot push here."
+                  " Post its change by hand if users should hear about it.")
             continue
         note = release_note(pr.get("body") or "")
         if note is not None:
@@ -136,7 +182,9 @@ def message(tag: str, lines: list[str]) -> str:
 
 
 def post(url: str, content: str) -> str:
-    payload = json.dumps({"content": content, "allowed_mentions": {"parse": []}}).encode()
+    # No pings (allowed_mentions) and no link previews (flag 4, SUPPRESS_EMBEDS).
+    payload = json.dumps({"content": content, "allowed_mentions": {"parse": []},
+                          "flags": 4}).encode()
     request = urllib.request.Request(
         url + ("&" if "?" in url else "?") + "wait=true", data=payload, method="POST",
         headers={"Content-Type": "application/json", "User-Agent": "PKHeX-Avalonia-release"})
