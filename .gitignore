@@ -252,3 +252,6 @@ docs/superpowers/
 
 # Flatpak builder download/cache/staging state (never application source).
 .flatpak-builder/
+
+# Python bytecode from running .github/scripts locally
+__pycache__/
