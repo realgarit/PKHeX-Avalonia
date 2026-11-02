@@ -19,6 +19,12 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IWindowService _windowService;
     private readonly ISpriteRenderer _spriteRenderer;
     private readonly ISlotService _slotService;
+
+    /// <summary>
+    /// The current save session for slot drag payloads. The editor sprite drag carries it so a
+    /// box or party viewer only accepts the drop for the save it shows.
+    /// </summary>
+    public Guid SlotSessionId => _slotService.SessionId;
     private readonly IClipboardService _clipboardService;
     private readonly IQrCodeService _qrCodeService;
     private readonly IImageCodec? _imageCodec;

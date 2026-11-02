@@ -124,7 +124,12 @@ internal static class PartySlotInteraction
             return;
 
         var data = SlotDragTransfer.TryGet(e.DataTransfer, vm.SessionId);
-        if (data != null)
+        if (SlotDragTransfer.IsEditorPayload(e.DataTransfer, vm.SessionId))
+        {
+            // The editor sprite writes its Pokémon into the slot, the same as Set (Shift+Click).
+            e.DragEffects = DragDropEffects.Copy;
+        }
+        else if (data != null)
         {
             e.DragEffects = SlotDragTransfer.GetDropEffect(data, destSlot.Location, e.KeyModifiers);
         }
@@ -165,6 +170,13 @@ internal static class PartySlotInteraction
 
         button.Classes.Remove("drop-valid");
         button.Classes.Remove("drop-invalid");
+
+        if (SlotDragTransfer.IsEditorPayload(e.DataTransfer, vm.SessionId))
+        {
+            vm.SetSlotCommand.Execute(destSlot);
+            e.Handled = true;
+            return;
+        }
 
         var data = SlotDragTransfer.TryGet(e.DataTransfer, vm.SessionId);
         if (data != null)

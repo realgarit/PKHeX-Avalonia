@@ -20,6 +20,11 @@ internal static class SlotDragTransfer
     private static readonly DataFormat<string> Format =
         DataFormat.CreateStringApplicationFormat("PKHeX.SlotDragData");
 
+    // The Pokémon editor sprite is a drag source too. Its payload only names the save session:
+    // the drop target asks the host to Set the slot from the editor, the same as Shift+Click.
+    private static readonly DataFormat<string> EditorFormat =
+        DataFormat.CreateStringApplicationFormat("PKHeX.EditorDragData");
+
     /// <summary>Creates the drag payload for the given slot data.</summary>
     public static DataTransfer Create(SlotDragData data)
     {
@@ -44,13 +49,44 @@ internal static class SlotDragTransfer
     public static DataTransfer Create(SlotDragData data, PKM? pk, IStorageProvider? storageProvider)
     {
         var transfer = Create(data);
+        AttachEntityFile(transfer, pk, storageProvider);
+        return transfer;
+    }
 
+    /// <summary>
+    /// Creates the drag payload for the Pokémon editor sprite. Like the slot payload, it also
+    /// carries the exported entity file when one can be attached synchronously, so the editor
+    /// Pokémon can be dragged out to the desktop.
+    /// </summary>
+    public static DataTransfer CreateEditor(Guid sessionId, PKM? pk, IStorageProvider? storageProvider)
+    {
+        var transfer = new DataTransfer();
+        transfer.Add(DataTransferItem.Create(EditorFormat, sessionId.ToString("N")));
+        AttachEntityFile(transfer, pk, storageProvider);
+        return transfer;
+    }
+
+    /// <summary>
+    /// Returns whether the transfer is an editor-sprite drag from the supplied save session.
+    /// An empty session never matches, so a drag started without a loaded save does nothing.
+    /// </summary>
+    public static bool IsEditorPayload(IDataTransfer? transfer, Guid expectedSessionId)
+        => expectedSessionId != Guid.Empty
+            && transfer?.TryGetValue(EditorFormat) is { } raw
+            && Guid.TryParseExact(raw, "N", out var sessionId)
+            && sessionId == expectedSessionId;
+
+    /// <summary>Returns whether a transfer contains an editor-sprite payload, even if its session is stale.</summary>
+    public static bool HasEditorPayload(IDataTransfer? transfer) => transfer?.TryGetValue(EditorFormat) is not null;
+
+    private static void AttachEntityFile(DataTransfer transfer, PKM? pk, IStorageProvider? storageProvider)
+    {
         if (pk is null || storageProvider is null)
-            return transfer;
+            return;
 
         var exported = new ExportEntityToFileUseCase().Execute(pk);
         if (exported is not { } file)
-            return transfer;
+            return;
 
         try
         {
@@ -65,10 +101,8 @@ internal static class SlotDragTransfer
         catch
         {
             // OS file drag-out isn't supported on this platform/backend; the in-app drag payload
-            // added above still allows box <-> party moves to work.
+            // added by the caller still allows in-app drops to work.
         }
-
-        return transfer;
     }
 
     /// <summary>Reads the slot data back from a drop, or null if it isn't present/valid.</summary>
@@ -90,7 +124,8 @@ internal static class SlotDragTransfer
     }
 
     /// <summary>Returns whether a transfer contains a PKHeX slot payload, even if its session is stale.</summary>
-    public static bool HasCustomPayload(IDataTransfer? transfer) => transfer?.TryGetValue(Format) is not null;
+    public static bool HasCustomPayload(IDataTransfer? transfer)
+        => transfer?.TryGetValue(Format) is not null || HasEditorPayload(transfer);
 
     /// <summary>
     /// Allows the exported entity file from a different save session to use the ordinary import

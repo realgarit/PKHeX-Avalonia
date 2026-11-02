@@ -130,7 +130,8 @@
                 DragDrop.DragOver="OnEditorDragOver">
             <Grid RowDefinitions="94,36,*,36" VerticalAlignment="Stretch">
                 <Grid Grid.Row="0" ColumnDefinitions="81,*">
-                    <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}" Width="76" Height="76" Stretch="Uniform"
+                    <Image x:Name="EditorSprite" Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}" Width="76" Height="76" Stretch="Uniform"
+                           Cursor="Hand" PointerPressed="OnSpritePointerPressed" PointerMoved="OnSpritePointerMoved"
                            RenderOptions.BitmapInterpolationMode="HighQuality" AutomationProperties.Name="{Binding SpriteAccessibleName}" ToolTip.Tip="{Binding SpriteAccessibleName}" />
                     <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="5" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Species, StringFormat='#{0:D4}'}" FontSize="10" Foreground="{DynamicResource ThemeTextMutedBrush}" />

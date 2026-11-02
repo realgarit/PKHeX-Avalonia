@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Platform.Storage;
 using PKHeX.Avalonia.Input;
+using PKHeX.Avalonia.Services;
 using PKHeX.Presentation.ViewModels;
 
 namespace PKHeX.Avalonia.Views;
@@ -146,7 +147,8 @@ public partial class MainWindow : Window
     // entity files load into the current editor.
     private async void OnWindowDrop(object? sender, DragEventArgs e)
     {
-        if (e.Handled || DataContext is not MainWindowViewModel vm)
+        // The editor sprite drag only targets box and party slots; a miss must not reimport it.
+        if (e.Handled || DataContext is not MainWindowViewModel vm || SlotDragTransfer.HasEditorPayload(e.DataTransfer))
             return;
 
         var files = e.DataTransfer.TryGetFiles();
