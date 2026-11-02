@@ -182,17 +182,17 @@
   },
   {
     "type": "file",
-    "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/10.0.13/microsoft.extensions.dependencyinjection.10.0.13.nupkg",
-    "sha512": "39c1a8dddf2e8a6a2a1ff8d36efbbf4f7d6feb81771039e12ee1c0d9bc38ac5fdbe1dde8aee88043ea93df4040c2d18dc9858b28c0006a071ecc9cb4457d252a",
+    "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection/10.0.14/microsoft.extensions.dependencyinjection.10.0.14.nupkg",
+    "sha512": "d7efcd3dfbbd74c81884d96776328cc660b27274f6f712d4c1bd0b46a6ae5d74ad562e14d05a92065aaa47abd7b632f46a5ccb0d23120a9beba376a49eabff44",
     "dest": "nuget-sources",
-    "dest-filename": "microsoft.extensions.dependencyinjection.10.0.13.nupkg"
+    "dest-filename": "microsoft.extensions.dependencyinjection.10.0.14.nupkg"
   },
   {
     "type": "file",
-    "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/10.0.13/microsoft.extensions.dependencyinjection.abstractions.10.0.13.nupkg",
-    "sha512": "b2a9f356a7fb4c11b020d63b150756904efa2fec233899532e8e99f825bda1e8960131adedcf2c4f6c8bb749d3362002b52ef95e05fdf50edb14b94c0edf4a33",
+    "url": "https://api.nuget.org/v3-flatcontainer/microsoft.extensions.dependencyinjection.abstractions/10.0.14/microsoft.extensions.dependencyinjection.abstractions.10.0.14.nupkg",
+    "sha512": "0e2f0f1718e9d3cbcaca89e9da96ebd85d12be4589b7707dbfb1ffe4d11235479bbd026b138bac4957524ccea754842bedc17aa1ba529b98570cc537f97e743a",
     "dest": "nuget-sources",
-    "dest-filename": "microsoft.extensions.dependencyinjection.abstractions.10.0.13.nupkg"
+    "dest-filename": "microsoft.extensions.dependencyinjection.abstractions.10.0.14.nupkg"
   },
   {
     "type": "file",
