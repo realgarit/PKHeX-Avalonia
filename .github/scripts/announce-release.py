@@ -33,6 +33,10 @@ DISCORD_LIMIT = 2000
 VISIBLE_PREFIXES = ("feat", "fix")
 NOTE_HEADING = re.compile(r"^#{1,6}\s*release\s+notes?\s*:?\s*$", re.IGNORECASE)
 ANY_HEADING = re.compile(r"^#{1,6}\s")
+SECTION_END = re.compile(
+    r"^(?:[-*_]\s*){3,}$"                       # horizontal rule
+    r"|^\S{0,4}\s*generated\s+(?:with|by)\b"    # "🤖 Generated with [Claude Code](...)"
+    r"|^co-authored-by:", re.IGNORECASE)
 PREFIX = re.compile(r"^(?P<type>[a-z]+)(?:\([^)]*\))?(?P<bang>!)?:\s*(?P<rest>.+)$", re.IGNORECASE)
 MERGE_SUBJECT = re.compile(r"^Merge pull request #(\d+)\b")
 SQUASH_SUBJECT = re.compile(r"\(#(\d+)\)\s*$")
@@ -40,7 +44,8 @@ EMPTY_NOTES = {"none", "-", "n/a", "no", "nothing"}
 
 
 def run(*args: str) -> str:
-    return subprocess.run(args, check=True, capture_output=True, text=True).stdout
+    return subprocess.run(args, check=True, capture_output=True, text=True,
+                          encoding="utf-8").stdout
 
 
 def previous_release(tag: str) -> str | None:
@@ -78,7 +83,9 @@ def release_note(body: str) -> str | None:
         if NOTE_HEADING.match(line.strip()):
             section: list[str] = []
             for nxt in lines[i + 1:]:
-                if ANY_HEADING.match(nxt.strip()):
+                # The section ends at the next heading, a horizontal rule, or the
+                # tool attribution footer that often follows it at the end of a PR body.
+                if ANY_HEADING.match(nxt.strip()) or SECTION_END.match(nxt.strip()):
                     break
                 section.append(nxt.rstrip())
             text = "\n".join(section).strip()
