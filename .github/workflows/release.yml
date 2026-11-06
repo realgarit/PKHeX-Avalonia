@@ -22,25 +22,18 @@ name: Release
 # ---------------------------------------------------------------------------
 
 on:
-  push:
-    branches: [main]
-    # No `paths:` allow-list — that filter is what suppressed three releases.
-    # Only paths that cannot affect a built artifact are ignored, and
-    # `paths-ignore` skips a push only when EVERY changed file matches.
-    # `.github/workflows/**` and `.github/scripts/**` are deliberately absent:
-    # a packaging or signing change does change what ships.
-    paths-ignore:
-      - '**/*.md'
-      - '*.md'
-      - 'docs/**'
-      - '.claude/**'
-      - '.codex/**'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/upstream-sync/**'
-      - '.gitattributes'
-      - '.gitignore'
-      - '.editorconfig'
-      - 'LICENSE'
+  # ONE RELEASE PER ROUND (user decision, 2026-11-07). Merges to main no longer
+  # publish a version each. Changes collect on main and ship together:
+  #   * every evening by the schedule below, when main has releasable changes
+  #     since the last tag, and
+  #   * on demand at the end of a work round:
+  #       gh workflow run release.yml -f dry_run=false
+  # The app is used by many people now; one update per evening at most keeps
+  # the update prompt, Flathub and the Discord channel calm.
+  # resolve-release-version.sh skips the run when nothing releasable is new
+  # (only Markdown/docs/automation paths changed, or main is already tagged).
+  schedule:
+    - cron: '0 19 * * *'   # 19:00 UTC = 20:00 Zurich in winter, 21:00 in summer
   workflow_dispatch:
     inputs:
       dry_run:
@@ -73,6 +66,7 @@ jobs:
     # for the case where a human or a PAT replays the same commit.
     if: >-
       github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
       (
         github.actor != 'github-actions[bot]' &&
         github.event.head_commit.author.name != 'github-actions[bot]' &&
@@ -97,8 +91,8 @@ jobs:
       - name: Fetch main and tags
         run: git fetch --force --tags origin '+refs/heads/main:refs/remotes/origin/main'
 
-      # A push event releases the commit that was pushed. A manual dispatch
-      # always targets main's current tip, whatever branch it was launched from.
+      # A push event releases the commit that was pushed. A scheduled or manual
+      # run always targets main's current tip, whatever branch it was launched from.
       - name: Determine target commit
         id: target
         env:
@@ -106,7 +100,7 @@ jobs:
           PUSH_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] || [ "$EVENT_NAME" = "schedule" ]; then
             SHA="$(git rev-parse origin/main)"
           else
             SHA="$PUSH_SHA"

@@ -19,7 +19,8 @@ dotnet publish PKHeX.Avalonia -c Release -r osx-arm64 --self-contained -p:Publis
 ```
 
 CI (`.github/workflows/ci.yml`) builds and tests on Windows, macOS, and Linux for every push and
-pull request. `release.yml` builds installers/packages on a version bump — see
+pull request. `release.yml` builds installers/packages once per evening (or when dispatched at the
+end of a work round) — see
 [packaging.md](packaging.md).
 
 ## Clean Architecture layer map
@@ -93,9 +94,26 @@ byte-for-byte rule) is documented in
 `Directory.Build.props`'s `<UIVersion>` tracks Avalonia-layer releases independently of
 `PKHeX.Core`'s own `<Version>`.
 
-**Do not edit `<UIVersion>` in a pull request.** `.github/workflows/release.yml` owns it. On every
-push to `main` it resolves the next version, writes it into `Directory.Build.props`, commits, tags
-and publishes — all in one run.
+**Do not edit `<UIVersion>` in a pull request.** `.github/workflows/release.yml` owns it. When it
+runs, it resolves the next version, writes it into `Directory.Build.props`, commits, tags and
+publishes — all in one run.
+
+### Release cadence: one release per round
+
+Merging to `main` does not publish a release. Changes collect on `main` and ship together, so users
+see at most one update per evening:
+
+- **Evening schedule** — `release.yml` runs every day at 19:00 UTC. It releases `main` when there are
+  releasable changes since the last tag, and skips the run when `main` is already tagged or when only
+  documentation/automation files changed.
+- **End of a work round** — after all of the round's PRs are merged, cut the release once:
+
+  ```bash
+  gh workflow run release.yml -f dry_run=false
+  ```
+
+The resolver takes the strongest bump across every unreleased PR, so a round with one `feat:` and
+several `fix:` PRs ships one minor release.
 
 The bump size still follows SemVer by change type, but the change type is now read from the merged
 **PR title's conventional-commit prefix**:
