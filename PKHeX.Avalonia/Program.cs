@@ -1,4 +1,5 @@
 using Avalonia;
+using PKHeX.Application.Services;
 using PKHeX.Avalonia.Services;
 using PKHeX.Infrastructure.Configuration;
 
@@ -9,10 +10,23 @@ internal sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        // Linux reads its display settings before the UI starts; the file is loaded at most once and
+        // never on Windows or macOS.
+        var isLinux = OperatingSystem.IsLinux();
+        AppSettings.LinuxSettings? linux = null;
+        AppSettings.LinuxSettings Linux() => linux ??= new SettingsStore(new AppPaths()).Load().Linux;
+
         var useWayland = NativeWaylandPolicy.ShouldUseWayland(
-            OperatingSystem.IsLinux(),
-            static () => new SettingsStore(new AppPaths()).Load().Linux.UseNativeWayland,
+            isLinux,
+            () => Linux().UseNativeWayland,
             Environment.GetEnvironmentVariable(NativeWaylandPolicy.EnvironmentVariable));
+        var scale = LinuxInterfaceScalePolicy.Resolve(
+            isLinux,
+            () => Linux().InterfaceScalePercent,
+            Environment.GetEnvironmentVariable(LinuxInterfaceScalePolicy.EnvironmentVariable));
+        if (scale is not null)
+            Environment.SetEnvironmentVariable(LinuxInterfaceScalePolicy.EnvironmentVariable, scale);
+
         BuildAvaloniaApp(useWayland).StartWithClassicDesktopLifetime(args);
     }
 

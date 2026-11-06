@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Moq;
+using PKHeX.Core;
 using Avalonia.Headless.XUnit;
 using Avalonia.Threading;
 using PKHeX.Avalonia.Services;
@@ -27,6 +29,63 @@ public sealed class WindowServiceTests
 
         Assert.Equal(420, bounds.Width);
         Assert.Equal(300, bounds.Height);
+    }
+
+    // ---------------------------------------------------------------------
+    // macOS report (Discord #bug-reports, 2026-11-03): on a Retina MacBook Air the PKM Database
+    // opened about 690 wide, below its 800-wide view minimum, and its filter pane and result
+    // columns were cut off. Screen bounds are desktop units; dividing them by the render scale
+    // (2 on Retina, while macOS desktop units are points) halved every dialog's size limit.
+    // ---------------------------------------------------------------------
+
+    [Theory]
+    // macOS: working area reported in points, DesktopScaling 1 (render scale 2 must not apply).
+    [InlineData(1470, 870, 1, 1200, 822)]
+    // Windows at 200 %: working area in physical pixels, DesktopScaling 2.
+    [InlineData(2940, 1740, 2, 1200, 822)]
+    // Windows at 100 % on a small laptop.
+    [InlineData(1366, 728, 1, 1200, 680)]
+    // A broken scale value falls back to 1 instead of producing infinity or NaN.
+    [InlineData(1024, 700, 0, 976, 652)]
+    public void ComputeAvailableToolSize_UsesDesktopUnits(double width, double height, double desktopScaling, double expectedWidth, double expectedHeight)
+    {
+        var size = WindowService.ComputeAvailableToolSize(width, height, desktopScaling);
+
+        Assert.Equal(expectedWidth, size.Width);
+        Assert.Equal(expectedHeight, size.Height);
+    }
+
+    [AvaloniaFact]
+    public async Task ShowDialogAsync_KeepsThePkmDatabaseAtOrAboveItsViewMinimum()
+    {
+        var main = new Window { Width = 1000, Height = 700 };
+        main.Show();
+        var service = new WindowService(() => main);
+        var vm = new PKMDatabaseViewModel(new SAV7USUM(), Mock.Of<ISpriteRenderer>(), Mock.Of<IDialogService>());
+        try
+        {
+            var task = service.ShowDialogAsync(vm, "database");
+            Dispatcher.UIThread.RunJobs();
+            var dialog = Assert.Single(main.OwnedWindows);
+            var view = Assert.IsType<PKMDatabaseView>(dialog.Content);
+
+            // The dialog can never be resized below the view's own minimum, so Avalonia never
+            // centers an oversized view and clips both of its edges.
+            Assert.True(dialog.MinWidth >= view.MinWidth, $"MinWidth {dialog.MinWidth} < view {view.MinWidth}");
+            Assert.True(dialog.MinHeight >= view.MinHeight, $"MinHeight {dialog.MinHeight} < view {view.MinHeight}");
+            Assert.True(dialog.Width >= view.MinWidth);
+            Assert.True(dialog.Height >= view.MinHeight);
+            Assert.True(dialog.CanResize);
+
+            dialog.Close();
+            await task;
+        }
+        finally
+        {
+            foreach (var window in main.OwnedWindows.ToArray())
+                window.Close();
+            main.Close();
+        }
     }
 
     // ---------------------------------------------------------------------
