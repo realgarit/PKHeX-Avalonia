@@ -59,7 +59,18 @@ public partial class MainWindowViewModel
         }
 
         if (CurrentSave is null || CurrentPokemonEditor is null)
+        {
+            // No save yet: a dropped Pokémon file starts a standalone Pokémon workspace.
+            foreach (var path in paths)
+            {
+                if (IsWorkspaceEntityFile(TryGetSupportedFile(path)))
+                {
+                    await OpenPokemonFilePathAsync(path);
+                    return;
+                }
+            }
             return;
+        }
 
         // Load the first recognizable entity into the editor; extras are ignored (the editor holds one Pokémon).
         foreach (var path in paths)
@@ -75,13 +86,17 @@ public partial class MainWindowViewModel
         await _dialogService.ShowErrorAsync(T("File_ImportFailedTitle"), T("File_NoSupportedFileFound"));
     }
 
+    private static bool IsWorkspaceEntityFile(object? obj) => obj is PKM
+        or MysteryGift { IsEntity: true }
+        or IEncounterInfo { Species: > 0 };
+
     private object? TryGetSupportedFile(string path)
     {
         try { return FileUtil.GetSupportedFile(path, CurrentSave); }
         catch { return null; }
     }
 
-    [RelayCommand(CanExecute = nameof(HasSave))]
+    [RelayCommand(CanExecute = nameof(CanWriteSave))]
     private async Task SaveFileAsync()
     {
         var success = await _saveFileService.SaveFileAsync();
@@ -89,7 +104,7 @@ public partial class MainWindowViewModel
             await _dialogService.ShowErrorAsync(T("Common_Error"), T("File_FailedToSaveFile"));
     }
 
-    [RelayCommand(CanExecute = nameof(HasSave))]
+    [RelayCommand(CanExecute = nameof(CanWriteSave))]
     private async Task SaveFileAsAsync()
     {
         var path = await _dialogService.SaveFileAsync(T("File_SaveAsTitle"), CurrentSave?.Metadata.FileName);
@@ -120,7 +135,8 @@ public partial class MainWindowViewModel
         if (_isLeavePromptOpen)
             return false;
         var save = CurrentSave;
-        if (save is null || !save.State.Edited || !_settings.EditorBehavior.WarnClosingModified)
+        // A standalone Pokémon workspace has no real save to keep: never ask to save its blank context.
+        if (save is null || IsBlankWorkspace || !save.State.Edited || !_settings.EditorBehavior.WarnClosingModified)
             return true;
 
         _isLeavePromptOpen = true;

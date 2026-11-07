@@ -56,8 +56,11 @@
         <Menu Grid.Column="0" FontSize="11" VerticalAlignment="Center" Background="Transparent" BorderThickness="0">
             <MenuItem Header="{loc:Loc Menu_File}">
                 <MenuItem Header="{loc:Loc Menu_File_Open}" Command="{Binding OpenFileCommand}" InputGesture="{Binding Shortcuts.OpenFile.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
+                <MenuItem Header="{loc:Loc Menu_File_OpenPokemon}" Command="{Binding OpenPokemonFileCommand}" />
+                <MenuItem Header="{loc:Loc Menu_File_NewPokemonWorkspace}" Command="{Binding NewPokemonWorkspaceCommand}" />
                 <MenuItem Header="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" InputGesture="{Binding Shortcuts.SaveFile.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
                 <MenuItem Header="{loc:Loc Menu_File_SaveAs}" Command="{Binding SaveFileAsCommand}" InputGesture="{Binding Shortcuts.SaveFileAs.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
+                <MenuItem Header="{loc:Loc Menu_File_SavePokemonAs}" Command="{Binding SavePokemonAsCommand}" />
                 <Separator />
                 <MenuItem Header="{loc:Loc Menu_File_Close}" Command="{Binding CloseFileCommand}" InputGesture="{Binding Shortcuts.CloseFile.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
             </MenuItem>
@@ -147,7 +150,11 @@
                         <Button Classes="workspace-top-tab" Classes.active="{Binding IsReportsWorkspace}" Content="{loc:Loc Workspace_Reports}" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Reports}" />
                     </StackPanel>
                 </ScrollViewer>
-                <Button Grid.Column="2" Classes="compact-primary" Content="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" Padding="12,5" FontSize="11" />
+                <Button Grid.Column="2" Classes="compact-primary" Content="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" Padding="12,5" FontSize="11"
+                        IsVisible="{Binding !IsBlankWorkspace}" />
+                <!-- A standalone Pokémon workspace has no save to write; its primary action exports the Pokémon. -->
+                <Button Grid.Column="2" Classes="compact-primary" Content="{loc:Loc Menu_File_SavePokemonAs}" Command="{Binding SavePokemonAsCommand}" Padding="12,5" FontSize="11"
+                        IsVisible="{Binding IsBlankWorkspace}" />
             </Grid>
         </Border>
 
@@ -201,6 +208,16 @@
                             Command="{Binding OpenFileCommand}"
                             HorizontalAlignment="Center"
                             Classes="accent-gradient" />
+                    <TextBlock Text="{loc:Loc Hero_PokemonOnlyHint}"
+                               Classes="welcome-subtitle"
+                               TextWrapping="Wrap" MaxWidth="420" TextAlignment="Center"
+                               HorizontalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                        <Button Content="{loc:Loc Hero_OpenPokemonButton}"
+                                Command="{Binding OpenPokemonFileCommand}" />
+                        <Button Content="{loc:Loc Hero_NewPokemonWorkspaceButton}"
+                                Command="{Binding NewPokemonWorkspaceCommand}" />
+                    </StackPanel>
                 </StackPanel>
             </Border>
 

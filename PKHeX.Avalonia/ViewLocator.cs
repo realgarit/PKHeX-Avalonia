@@ -23,6 +23,7 @@ public static class ViewLocator
         [typeof(BattlePassEditorViewModel)] = () => new BattlePassEditor(),
         [typeof(BerryFieldEditorViewModel)] = () => new BerryFieldEditorView(),
         [typeof(BlockEditorViewModel)] = () => new BlockEditor(),
+        [typeof(BlankWorkspaceTargetViewModel)] = () => new BlankWorkspaceTargetView(),
         [typeof(BattleVideo4EditorViewModel)] = () => new BattleVideo4EditorView(),
         [typeof(BoxLayoutEditorViewModel)] = () => new BoxLayoutEditor(),
         [typeof(BoxManipViewModel)] = () => new BoxManipView(),
