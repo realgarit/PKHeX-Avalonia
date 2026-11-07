@@ -194,7 +194,14 @@ Tests/
   PKHeX.Core.Tests/        Legality, save format, PKM, simulator, and general PKHeX.Core coverage — mirrors upstream's own test suite.
   PKHeX.Avalonia.Tests/    ViewModel/use-case tests for the Avalonia layer, plus feature-specific suites (LiveHex/, BackupManagerViewModelTests.cs, LivingDexTests.cs, ...).
   PKHeX.Architecture.Tests/  Enforces the Clean Architecture dependency rules described above.
+  PKHeX.Avalonia.Render.Tests/  Real-Skia rendered checks, including the visual baselines below.
 ```
+
+Visual regression baselines live in `Tests/PKHeX.Avalonia.Render.Tests/VisualRegression/`. After
+an intended UI change, regenerate them on Windows with
+`PKHEX_VISUAL_UPDATE=1 dotnet test Tests/PKHeX.Avalonia.Render.Tests -c Release --filter "FullyQualifiedName~VisualRegression"`
+and review the changed PNGs. See [visual-regression.md](visual-regression.md) for the matrix, the
+diff thresholds and what still needs a native review.
 
 Guardrail/audit tests worth knowing about, all under `Tests/PKHeX.Avalonia.Tests/`:
 

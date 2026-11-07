@@ -27,3 +27,4 @@ Tests/PKHeX.Avalonia.Tests/Fixtures/RaidEvents/** binary
 .codex/hooks/** text eol=lf
 .github/scripts/** text eol=lf
 packaging/flatpak/** text eol=lf
+Tests/PKHeX.Avalonia.Render.Tests/VisualRegression/Baselines/** binary
