@@ -33,6 +33,7 @@ public sealed class EntityConverterSettingsTests : IDisposable
     private readonly GameVersion _originalVirtualConsoleSourceGen1 = EntityConverter.VirtualConsoleSourceGen1;
     private readonly GameVersion _originalVirtualConsoleSourceGen2 = EntityConverter.VirtualConsoleSourceGen2;
     private readonly bool _originalRetainMetDateTransfer45 = EntityConverter.RetainMetDateTransfer45;
+    private readonly bool _originalIsPreferredTransferVirtualHOME = EntityConverter.IsPreferredTransferVirtualHOME;
 
     public void Dispose()
     {
@@ -41,6 +42,7 @@ public sealed class EntityConverterSettingsTests : IDisposable
         EntityConverter.VirtualConsoleSourceGen1 = _originalVirtualConsoleSourceGen1;
         EntityConverter.VirtualConsoleSourceGen2 = _originalVirtualConsoleSourceGen2;
         EntityConverter.RetainMetDateTransfer45 = _originalRetainMetDateTransfer45;
+        EntityConverter.IsPreferredTransferVirtualHOME = _originalIsPreferredTransferVirtualHOME;
     }
 
     /// <summary>A full set of non-default values, one per <see cref="EntityConverterSettings"/> property.</summary>
@@ -51,6 +53,7 @@ public sealed class EntityConverterSettingsTests : IDisposable
         VirtualConsoleSourceGen1 = GameVersion.YW,
         VirtualConsoleSourceGen2 = GameVersion.GD,
         RetainMetDateTransfer45 = true,
+        IsPreferredTransferVirtualHOME = true,
     };
 
     private static void AssertCoreStaticsMatchNonDefault()
@@ -60,6 +63,7 @@ public sealed class EntityConverterSettingsTests : IDisposable
         Assert.Equal(GameVersion.YW, EntityConverter.VirtualConsoleSourceGen1);
         Assert.Equal(GameVersion.GD, EntityConverter.VirtualConsoleSourceGen2);
         Assert.True(EntityConverter.RetainMetDateTransfer45);
+        Assert.True(EntityConverter.IsPreferredTransferVirtualHOME);
     }
 
     [Fact]
@@ -87,6 +91,7 @@ public sealed class EntityConverterSettingsTests : IDisposable
         Assert.Equal(GameVersion.RD, EntityConverter.VirtualConsoleSourceGen1);
         Assert.Equal(GameVersion.SI, EntityConverter.VirtualConsoleSourceGen2);
         Assert.False(EntityConverter.RetainMetDateTransfer45);
+        Assert.False(EntityConverter.IsPreferredTransferVirtualHOME);
     }
 
     [Fact]
@@ -166,6 +171,7 @@ public sealed class EntityConverterSettingsTests : IDisposable
         Assert.Equal(GameVersion.YW, restored.Converter.VirtualConsoleSourceGen1);
         Assert.Equal(GameVersion.GD, restored.Converter.VirtualConsoleSourceGen2);
         Assert.True(restored.Converter.RetainMetDateTransfer45);
+        Assert.True(restored.Converter.IsPreferredTransferVirtualHOME);
     }
 
     [Fact]

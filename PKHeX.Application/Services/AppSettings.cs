@@ -84,6 +84,7 @@ public sealed class AppSettings : IProgramSettings
         EntityConverter.VirtualConsoleSourceGen1    = Converter.VirtualConsoleSourceGen1;
         EntityConverter.VirtualConsoleSourceGen2    = Converter.VirtualConsoleSourceGen2;
         EntityConverter.RetainMetDateTransfer45     = Converter.RetainMetDateTransfer45;
+        EntityConverter.IsPreferredTransferVirtualHOME = Converter.IsPreferredTransferVirtualHOME;
     }
 
     /// <summary>
