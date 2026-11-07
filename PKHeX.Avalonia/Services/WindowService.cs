@@ -212,7 +212,17 @@ public sealed class WindowService : IWindowService
         dialog.Opened += (_, _) => Resize();
     }
 
-    public void ShowTool(object viewModel, string title)
+    public void ShowTool(object viewModel, string title) => ShowToolCore(viewModel, title, null);
+
+    public void ShowTool(object viewModel, string title, Action onClosed) => ShowToolCore(viewModel, title, onClosed);
+
+    public void CloseTool(object viewModel)
+    {
+        if (_tools.TryGetValue(viewModel, out var window))
+            window.Close();
+    }
+
+    private void ShowToolCore(object viewModel, string title, Action? onClosed)
     {
         // Already open for this ViewModel? Bring it forward instead of duplicating.
         if (_tools.TryGetValue(viewModel, out var existing))
@@ -275,6 +285,7 @@ public sealed class WindowService : IWindowService
             if (window.Width > 0 && window.Height > 0)
                 ToolBounds[key] = (window.Position, window.Width, window.Height);
             _tools.Remove(viewModel);
+            onClosed?.Invoke();
         };
 
         _tools[viewModel] = window;

@@ -133,6 +133,26 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
         _windowService?.ShowTool(_detachedViewer, LocalizedStrings.Instance["Tab_Box"]);
     }
 
+    /// <summary>True for the modeless Box window; false for the Box view embedded in the main window.</summary>
+    public bool IsDetached => _isDetached;
+
+    /// <summary>Raised on the embedded viewer when its detached window asks to return to the main window.</summary>
+    public event Action? ReturnToMainWindowRequested;
+
+    /// <summary>
+    /// Dock-back for the detached Box window: closes it and asks the main window to show the
+    /// embedded Box view. The embedded and detached viewers share the save, so nothing is lost.
+    /// </summary>
+    [RelayCommand]
+    private void ReturnToMainWindow()
+    {
+        if (!_isDetached)
+            return;
+        _windowService?.CloseTool(this);
+        if (IsSessionCurrent())
+            _embeddedViewer?.ReturnToMainWindowRequested?.Invoke();
+    }
+
     partial void OnSelectedIndexChanged(int value)
     {
         for (int i = 0; i < Slots.Count; i++)

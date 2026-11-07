@@ -35,6 +35,7 @@ public static class ViewLocator
         [typeof(CosmeticInventory4EditorViewModel)] = () => new CosmeticInventory4Editor(),
         [typeof(DLC5EditorViewModel)] = () => new DLC5Editor(),
         [typeof(DaycareEditorViewModel)] = () => new DaycareEditorView(),
+        [typeof(DetachedPokemonEditorViewModel)] = () => new DetachedPokemonEditorView(),
         [typeof(DonutEditorViewModel)] = () => new DonutEditor(),
         [typeof(EncounterDatabaseViewModel)] = () => new EncounterDatabaseView(),
         [typeof(EntralinkEditorViewModel)] = () => new EntralinkEditor(),

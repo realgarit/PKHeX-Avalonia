@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:views="using:PKHeX.Avalonia.Views"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
+             x:Class="PKHeX.Avalonia.Views.DetachedPokemonEditorView"
+             x:DataType="vm:DetachedPokemonEditorViewModel"
+             MinWidth="320" MinHeight="420">
+    <!-- The window hosts the one shared editor ViewModel; the main window shows a placeholder
+         meanwhile, so there is never a second, competing copy of the Pokémon being edited. -->
+    <DockPanel Background="{DynamicResource ThemeBackgroundCardBrush}">
+        <Border DockPanel.Dock="Top"
+                Padding="10,6"
+                BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
+                BorderThickness="0,0,0,1">
+            <Button x:Name="ReturnToMainWindowButton"
+                    HorizontalAlignment="Right"
+                    Command="{Binding ReturnToMainWindowCommand}"
+                    ToolTip.Tip="{loc:Loc Workspace_ReturnToMainWindow_Tooltip}"
+                    AutomationProperties.Name="{loc:Loc Workspace_ReturnToMainWindow}"
+                    Padding="8,3">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Path Data="M 13,3 L 3,13 M 3,6 V 13 H 10"
+                          Stroke="{DynamicResource ThemeTextSecondaryBrush}"
+                          StrokeThickness="1.5"
+                          Width="16" Height="16"
+                          VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc Workspace_ReturnToMainWindow}" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+        </Border>
+        <views:PokemonEditor DataContext="{Binding Editor}" />
+    </DockPanel>
+</UserControl>

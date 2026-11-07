@@ -23,9 +23,29 @@
 
     <Border Padding="0" Margin="0,5,0,0">
         <Grid RowDefinitions="20,46">
-            <controls:DoubleTapCommandBorder Command="{Binding OpenDetachedToolCommand}" ToolTip.Tip="{loc:Loc PartyViewer_PopOut}" Background="Transparent">
-                <TextBlock Text="{loc:Loc Tab_Party}" FontSize="10" Foreground="{DynamicResource ThemeTextMutedBrush}" />
-            </controls:DoubleTapCommandBorder>
+            <Grid ColumnDefinitions="*,Auto">
+                <controls:DoubleTapCommandBorder Command="{Binding OpenDetachedToolCommand}" ToolTip.Tip="{loc:Loc PartyViewer_PopOut}" Background="Transparent">
+                    <TextBlock Text="{loc:Loc Tab_Party}" FontSize="10" Foreground="{DynamicResource ThemeTextMutedBrush}" VerticalAlignment="Center" />
+                </controls:DoubleTapCommandBorder>
+                <!-- Visible pop-out action; double-tapping the label stays as a shortcut (#247). -->
+                <Button Grid.Column="1"
+                        x:Name="PopOutButton"
+                        Command="{Binding OpenDetachedToolCommand}"
+                        ToolTip.Tip="{loc:Loc PartyViewer_PopOut}"
+                        AutomationProperties.Name="{loc:Loc PartyViewer_PopOut}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="2,0"
+                        Width="22" Height="20"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <Path Data="M 3,13 L 13,3 M 6,3 H 13 V 10"
+                          Stroke="{DynamicResource ThemeTextSecondaryBrush}"
+                          StrokeThickness="1.5"
+                          Stretch="Uniform"
+                          Width="11" Height="11" />
+                </Button>
+            </Grid>
             <ItemsControl Grid.Row="1" ItemsSource="{Binding Slots}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
