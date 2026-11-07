@@ -64,10 +64,12 @@
 
                         <GridSplitter Grid.Column="1" Classes="pane-splitter" />
 
-                        <Grid x:Name="DetailPane" Grid.Column="2" RowDefinitions="Auto,Auto,Auto,*" MinWidth="200" Margin="8,0,0,0">
+                        <Grid x:Name="DetailPane" Grid.Column="2" RowDefinitions="Auto,*,Auto,2*" MinWidth="200" Margin="8,0,0,0">
                             <TextBlock Grid.Row="0" Text="{loc:Loc BlockEditor_Details}" FontWeight="SemiBold" Margin="0,0,0,4" />
-                            <Grid Grid.Row="1" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                                  IsVisible="{Binding HasSelection}">
+                            <!-- The metadata scrolls with the hex preview so a short window or tall CJK text never pushes the preview out of the pane. -->
+                            <ScrollViewer x:Name="DetailScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                                          IsVisible="{Binding HasSelection}">
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                                 <TextBlock Grid.Row="0" Text="{loc:Loc BlockEditor_KeyHeader}" Classes="muted" Margin="0,0,8,2" />
                                 <SelectableTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DetailKey}" TextWrapping="Wrap" />
                                 <TextBlock Grid.Row="1" Text="{loc:Loc BlockEditor_NameHeader}" Classes="muted" Margin="0,0,8,2" />
@@ -83,6 +85,7 @@
                                 <TextBlock Grid.Row="6" Text="{loc:Loc BlockEditor_ValueHeader}" Classes="muted" Margin="0,0,8,2" IsVisible="{Binding HasValue}" />
                                 <SelectableTextBlock Grid.Row="6" Grid.Column="1" Text="{Binding DetailValue}" TextWrapping="Wrap" IsVisible="{Binding HasValue}" />
                             </Grid>
+                            </ScrollViewer>
                             <TextBlock Grid.Row="2" Text="{Binding HexPreviewNote}" TextWrapping="Wrap" Classes="muted"
                                        IsVisible="{Binding HasHexPreviewNote}" Margin="0,4,0,4" />
                             <Border Grid.Row="3" Classes="database-results-pane" Margin="0,4,0,0">
