@@ -22,12 +22,18 @@ subagents). Treat them as part of the project's tooling.
    (and the equivalent `.codex/hooks/block-main-writes.sh` for Codex).
 4. **Never touch `<UIVersion>` in a PR — CI owns the version bump.** `.github/workflows/release.yml`
    derives the next version from the highest existing `v*` git tag (never from the file), writes it to
-   `Directory.Build.props`, commits, tags and publishes in one run on every push to `main`. A manual
+   `Directory.Build.props`, commits, tags and publishes in one run. A manual
    bump in a PR double-increments and can collide silently with a concurrent PR — see the 2026-08-28
    note in Working notes. `.agents/skills/pr-checklist` flags a hand-edited `<UIVersion>` as an error.
    **Your PR title is the version input**: `feat:` → minor, `fix`/`chore`/`deps`/`refactor`/`docs`/
    `test`/`ci`/`sync:` → patch, a `breaking` label or `!` in the prefix → major, anything unclassified
    → patch. (Top-level `<Version>` tracks upstream PKHeX.Core — that one is still hand-set, by a sync PR only.)
+5. **One release per round, never one per merge** (user decision, 2026-11-07: the app has many users
+   and frequent updates overwhelm them). Merging to `main` does NOT publish a version. `release.yml`
+   runs once each evening (schedule, 19:00 UTC) and ships everything merged since the last tag, and
+   it skips the run when nothing releasable is new. At the end of a work round with user-visible
+   changes, merge all of the round's PRs first, then cut ONE release:
+   `gh workflow run release.yml -f dry_run=false`. Never dispatch a release per PR or per fix.
 
 ## Architecture
 
@@ -80,11 +86,14 @@ Patterns to know:
 - Claude-created PRs are automatically merged once CI/checks pass — no manual check-in needed.
 - Flow: `gh pr checks <n> --watch`, then `gh pr merge <n> --merge --delete-branch`, then delete
   local branch and switch back to main.
+- Merging does not release (Hard Rule 5). A round's PRs collect on `main`; the release is cut once,
+  at the end of the round or by the evening schedule.
 
 ### Shipped update communication
 - Release announcements are automatic (since 2026-11-02): the `discord-announce` job in
   `.github/workflows/release.yml` posts the text-only update in the project Discord
   #downloads-and-updates through the `DISCORD_RELEASE_WEBHOOK` channel webhook after every release.
+  One release covers every PR merged since the previous one, so one post lists the whole round.
   The text comes from `.github/scripts/announce-release.py`: each merged PR's `## Release note`
   section, else a `feat:`/`fix:` title of a PR that changes a `PKHeX.*` project. Releases with no
   user-visible change post nothing.
@@ -99,7 +108,8 @@ Patterns to know:
   release whose `discord-announce` job failed or was skipped (standing approval from 2026-10-29
   still covers that), and check the channel first so nothing is posted twice. To preview or backfill:
   `gh workflow run discord-announce.yml -f tag=vX.Y.Z` (dry run by default, `-f dry_run=false` posts).
-  `.claude/hooks/remind-release-post.sh` reminds after every `gh pr merge` to check that job.
+  `.claude/hooks/remind-release-post.sh` reminds after every `gh pr merge` that merging does not release
+  and to check that job after the round's single release.
 
 ### Worktree shipping
 - Git commit/push/PR must run from inside the agent's worktree (not the repo root).
@@ -221,6 +231,11 @@ WinForms UI changes, version bump, PR, and auto-merge once CI is green — is en
 
 - **PKHeX.Core sync workflow** (`sync-upstream-core` skill): fetch latest SHA from kwsch/PKHeX (often ahead of the issue's named SHA — sync to tip), branch `chore/sync-pkhex-core-<short7>`, mirror `PKHeX.Core/` via `rsync -a --delete --exclude bin --exclude obj` and verify `diff -rq` = 0 (no fork edits, not even the `.csproj`), fix only consumer call sites, set `<Version>` to match upstream's (leave `<UIVersion>` alone — CI bumps it from the `sync:` PR title), write the 40-char SHA to `.github/upstream-sync/last-synced-sha.txt`, then verify build/tests and auto-merge once CI is green. Watch CI in the background (`gh pr checks <n> --watch --fail-fast`) so it doesn't block the turn.
 - **Frontend parity**: a green build only proves nothing broke, not that the Avalonia UI gained upstream's WinForms-side features. Syncs must classify upstream non-Core commits and open `frontend-parity`-labelled issues for genuine UI gaps without blocking the Core auto-merge.
+- **Release cadence** (2026-11-07): one release per round or evening, never per merge — see Hard
+  Rule 5. `release.yml` triggers on a 19:00 UTC schedule and `workflow_dispatch`, no longer on push;
+  `resolve-release-version.sh` sets `should_release=false` when main is already tagged or when only
+  docs/automation paths (`*.md`, `docs/`, `.claude/`, `.codex/`, `.agents/`, issue templates,
+  upstream-sync metadata) changed since the last tag.
 - **UIVersion policy**: CI owns the bump — never hand-edit `<UIVersion>` in a PR (changed 2026-08-28; see Working notes). `.github/workflows/release.yml` computes the next version from the highest existing `v*` **git tag**, not from `Directory.Build.props`, because file-derived bumps collide silently across concurrent PRs. The bump size still follows SemVer by change type, now read from the **PR title prefix**: feat→minor, fix/chore/refactor/deps/docs/test/ci/sync→patch, `breaking` label or `!` prefix→major, unclassified→patch (logged loudly in the run). Classification and the arithmetic live in `.github/scripts/resolve-release-version.sh`; `workflow_dispatch` with `dry_run=true` prints the resolution without writing anything. One-time catch-up 1.1.44→1.20.0 happened 2026-06-25; the convention is documented in `docs/development.md`.
 - **Auto-merge**: Claude-created PRs merge automatically once checks pass (`gh pr merge --squash --delete-branch` or `--merge --delete-branch` depending on repo history), no manual check-in required, including edge cases like suspected duplicate work in another session — still always via branch+PR, never direct pushes to main.
 - **Worktree shipping gotcha**: the `block-main-writes.sh` hook checks the shell's *cwd branch*; sandboxed Bash/subagents spawned from a main checkout get cwd pinned to repo root and `cd` doesn't persist across their tool calls, so they cannot ship from a worktree. Ship (commit/push/PR) from the agent that owns the worktree, or from the main session's Bash issuing `cd <worktree>` as its own separate call before subsequent git commands. Never stage bulk generated data on a tmpfs scratchpad — use a temp dir inside the worktree on real disk.

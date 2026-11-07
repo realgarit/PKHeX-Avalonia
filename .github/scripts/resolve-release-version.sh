@@ -24,7 +24,7 @@
 # Emits (stdout is a human-readable log; GITHUB_OUTPUT gets the machine values):
 #   current_tag current_version next_version next_tag bump rule
 #   pr_number pr_title head_pr_bump head_pr_rule
-#   tag_exists head_already_tagged should_release
+#   tag_exists head_already_tagged releasable_changes should_release
 #
 # Exit status is 0 whenever resolution succeeded, including when the caller
 # should skip; read `should_release` rather than the exit code.
@@ -301,6 +301,21 @@ if [[ -n "$CURRENT_TAG" ]] && [[ "$(git rev-list -n1 "$CURRENT_TAG" 2>/dev/null 
   HEAD_ALREADY_TAGGED=true
 fi
 
+# Releases run on a schedule (one per round), so a run can find only changes
+# that never reach a built artifact. These are the paths the old push trigger
+# ignored; a run whose every unreleased file matches them ships nothing.
+RELEASABLE_CHANGES=true
+if [[ -n "$CURRENT_TAG" ]] && git rev-parse -q --verify "refs/tags/${CURRENT_TAG}" >/dev/null 2>&1; then
+  RELEASABLE_CHANGES=false
+  while IFS= read -r changed; do
+    [[ -z "$changed" ]] && continue
+    case "$changed" in
+      *.md|docs/*|.claude/*|.codex/*|.agents/*|.github/ISSUE_TEMPLATE/*|.github/upstream-sync/*|      .gitattributes|.gitignore|.editorconfig|LICENSE) ;;
+      *) RELEASABLE_CHANGES=true; break ;;
+    esac
+  done < <(git diff --name-only --no-renames "${CURRENT_TAG}" "${HEAD_SHA}" 2>/dev/null || true)
+fi
+
 SHOULD_RELEASE=true
 if [[ "$TAG_EXISTS" == "true" ]]; then
   SHOULD_RELEASE=false
@@ -309,6 +324,10 @@ fi
 if [[ "$HEAD_ALREADY_TAGGED" == "true" ]]; then
   SHOULD_RELEASE=false
   echo "::notice::${HEAD_SHA:0:9} is already released as ${CURRENT_TAG} — nothing new to ship."
+fi
+if [[ "$SHOULD_RELEASE" == "true" && "$RELEASABLE_CHANGES" != "true" ]]; then
+  SHOULD_RELEASE=false
+  echo "::notice::Only documentation or automation files changed since ${CURRENT_TAG} — nothing new to ship."
 fi
 
 echo
@@ -320,6 +339,7 @@ echo " NEXT VERSION     : ${NEXT_VERSION}"
 echo " next tag         : ${NEXT_TAG}"
 echo " tag exists       : ${TAG_EXISTS}"
 echo " head already tag: ${HEAD_ALREADY_TAGGED}"
+echo " releasable files : ${RELEASABLE_CHANGES}"
 echo " should release   : ${SHOULD_RELEASE}"
 echo "--------------------------------------------------------------"
 
@@ -335,4 +355,5 @@ emit head_pr_bump "${HEAD_BUMP}"
 emit head_pr_rule "${HEAD_RULE}"
 emit tag_exists "${TAG_EXISTS}"
 emit head_already_tagged "${HEAD_ALREADY_TAGGED}"
+emit releasable_changes "${RELEASABLE_CHANGES}"
 emit should_release "${SHOULD_RELEASE}"

@@ -27,7 +27,9 @@ git diff main...HEAD -- Directory.Build.props
   2026-08-28 and each wrote the byte-identical 1.48.4 line, so git auto-merged all four with
   **zero conflict** — four fixes under one version, and three of them never triggered a release
   at all. `.github/workflows/release.yml` now derives the next version from the highest existing
-  `v*` git tag and bumps, tags and publishes in one run.
+  `v*` git tag and bumps, tags and publishes in one run. Merging does not release: releases run
+  once per round (evening schedule, or `gh workflow run release.yml -f dry_run=false` after the
+  round's last merge). Never dispatch a release for a single PR.
 - The top-level `<Version>` (date-stamped, e.g. `26.05.05`) tracks upstream `PKHeX.Core` and is
   still hand-set — but only inside a `chore/sync-pkhex-core-*` PR.
 

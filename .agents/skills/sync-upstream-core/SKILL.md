@@ -176,7 +176,8 @@ current value. Leave `Company/Authors/Copyright` untouched.
 
 **Do NOT touch `<UIVersion>`.** CI owns it since 2026-08-28: `.github/workflows/release.yml`
 resolves the next version from the highest existing `v*` git tag and bumps, tags and publishes in
-one run after this PR merges. A `sync:` PR title maps to a patch bump. `git diff` on
+one run. Merging the sync does not release by itself: the evening schedule (or the end-of-round
+dispatch) ships it together with the round's other changes. A `sync:` PR title maps to a patch bump. `git diff` on
 `Directory.Build.props` should show the `<Version>` line only, or nothing at all.
 
 To see exactly what CI will compute, without releasing anything:
