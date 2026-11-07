@@ -3,6 +3,7 @@
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
              xmlns:loc="using:PKHeX.Avalonia.Localization"
+             xmlns:controls="using:PKHeX.Avalonia.Controls"
              x:Class="PKHeX.Avalonia.Views.PartyViewer"
              x:DataType="vm:PartyViewerViewModel"
              Focusable="True">
@@ -107,7 +108,7 @@
                                     DragDrop.Drop="OnSlotDrop"
                                     DragDrop.DragOver="OnSlotDragOver"
                                     DragDrop.DragLeave="OnSlotDragLeave"
-                                    ToolTip.Tip="{Binding ToolTipSummary}"
+                                    controls:SlotHoverPreview.IsEnabled="True"
                                     AutomationProperties.Name="{Binding AccessibleName}"
                                     Click="OnSlotClicked"
                                     DoubleTapped="OnSlotDoubleTapped"

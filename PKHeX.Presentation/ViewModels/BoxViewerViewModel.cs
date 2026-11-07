@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
+public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator, ISlotPreviewSource
 {
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
@@ -52,6 +52,18 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
     /// again after the shared slot service starts a new session.
     /// </summary>
     public Guid SessionId => _sessionId;
+
+    /// <inheritdoc />
+    public AppSettings.SlotHoverSettings HoverSettings { get; init; } = new();
+
+    /// <inheritdoc />
+    public SlotPreviewViewModel? GetSlotPreview(SlotLocation location)
+    {
+        if (location.IsParty || location.Box < 0 || location.Box >= BoxCount || location.Slot < 0 || location.Slot >= SlotsPerBox)
+            return null;
+        var pk = _sav.GetBoxSlotAtIndex(location.Box, location.Slot);
+        return SlotPreviewViewModel.Create(pk, _sav, StorageSlotType.Box, _spriteRenderer, _haXMode, HoverSettings.ShowEncounter);
+    }
 
     /// <summary>
     /// The slot under the current keyboard/selection cursor, used to drive
@@ -120,7 +132,7 @@ public partial class BoxViewerViewModel : ViewModelBase, IBoxNavigator
         }
         if (_detachedViewer is null)
         {
-            _detachedViewer = new BoxViewerViewModel(_sav, _spriteRenderer, _slotService, _windowService, _dialogService, _haXMode, isDetached: true);
+            _detachedViewer = new BoxViewerViewModel(_sav, _spriteRenderer, _slotService, _windowService, _dialogService, _haXMode, isDetached: true) { HoverSettings = HoverSettings };
             _detachedViewer._embeddedViewer = this;
             _detachedViewer.LoadBox(CurrentBox);
             _detachedViewer.SlotActivated += (box, slot) => SlotActivated?.Invoke(box, slot);

@@ -68,6 +68,19 @@
                         </Grid>
                     </StackPanel>
                 </Border>
+<Border x:Name="SlotPreviewSection" BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,16">
+                    <StackPanel Spacing="{DynamicResource UiDensityViewStackSpacing}">
+                        <TextBlock Text="{loc:Loc Settings_SlotPreview}" FontSize="13" FontWeight="SemiBold" />
+                        <Grid ColumnDefinitions="*,150" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+                            <StackPanel Grid.Row="0" VerticalAlignment="Center" Spacing="2"><TextBlock Text="{loc:Loc Settings_SlotPreviewEnabled}" FontSize="11" FontWeight="Normal" TextWrapping="Wrap" VerticalAlignment="Center" /></StackPanel>
+                            <ToggleSwitch x:Name="SlotPreviewEnabledSwitch" FontSize="11" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" IsChecked="{Binding SlotPreviewEnabled}" OnContent="{loc:Loc Common_On}" OffContent="{loc:Loc Common_Off}" AutomationProperties.Name="{loc:Loc Settings_SlotPreviewEnabled}" ToolTip.Tip="{loc:Loc Settings_SlotPreviewEnabled_Desc}" />
+                            <StackPanel Grid.Row="1" VerticalAlignment="Center" Spacing="2"><TextBlock Text="{loc:Loc Settings_SlotPreviewDelay}" FontSize="11" FontWeight="Normal" TextWrapping="Wrap" VerticalAlignment="Center" /></StackPanel>
+                            <ComboBox x:Name="SlotPreviewDelayComboBox" FontSize="11" Grid.Row="1" Grid.Column="1" MinWidth="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" ItemsSource="{Binding SlotPreviewDelays}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" SelectedValue="{Binding SlotPreviewDelayMs}" IsEnabled="{Binding SlotPreviewEnabled}" AutomationProperties.Name="{loc:Loc Settings_SlotPreviewDelay}" ToolTip.Tip="{loc:Loc Settings_SlotPreviewDelay_Desc}" />
+                            <StackPanel Grid.Row="2" VerticalAlignment="Center" Spacing="2"><TextBlock Text="{loc:Loc Settings_SlotPreviewEncounter}" FontSize="11" FontWeight="Normal" TextWrapping="Wrap" VerticalAlignment="Center" /></StackPanel>
+                            <ToggleSwitch x:Name="SlotPreviewEncounterSwitch" FontSize="11" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" IsChecked="{Binding SlotPreviewShowEncounter}" IsEnabled="{Binding SlotPreviewEnabled}" OnContent="{loc:Loc Common_On}" OffContent="{loc:Loc Common_Off}" AutomationProperties.Name="{loc:Loc Settings_SlotPreviewEncounter}" ToolTip.Tip="{loc:Loc Settings_SlotPreviewEncounter_Desc}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
 <Border x:Name="KeyboardShortcutsSection" BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,16" IsVisible="{Binding CanOpenKeyboardShortcuts}">
                     <StackPanel Spacing="{DynamicResource UiDensityViewStackSpacing}">
                         <TextBlock Text="{loc:Loc Settings_KeyboardShortcuts}" FontSize="13" FontWeight="SemiBold" />
