@@ -57,6 +57,12 @@ Windows, CoreText on macOS, FreeType on Linux), so glyph edges differ slightly b
 systems (for example, macOS draws "1" one pixel before the line start). Keeping three sets of
 baselines would triple the repository size and need three machines to regenerate.
 
+Measured on the first CI run of this matrix (Windows-generated baselines): Windows CI matched every
+frame exactly (0 pixels, on a different Windows build than the one that generated them); Linux
+differed by 0.34–1.69 % and macOS by 2.0–5.7 %, in both cases only on text edges (the diff PNGs mark
+glyphs and nothing else). That is well above the 0.2 % limit, and a looser limit would also accept
+real layout changes.
+
 So the baselines are **generated on Windows**, and the diff **fails the build on Windows only**.
 On Linux and macOS CI the same frames are rendered, compared and published, and the measured
 difference is written to the job summary, but a mismatch does not fail the run. Set
