@@ -21,6 +21,7 @@ public partial class Misc7EditorViewModel
     [ObservableProperty] private int _country = 0;
     [ObservableProperty] private int _subRegion = 0;
     [ObservableProperty] private int _consoleRegion = 0;
+    [ObservableProperty] private int _vivillon = 0;
     [ObservableProperty] private uint _battlePoints = 0;
     [ObservableProperty] private int _festivalCoins = 0;
     [ObservableProperty] private string _festivalName = string.Empty;
@@ -46,9 +47,11 @@ public partial class Misc7EditorViewModel
     [ObservableProperty] private int _lastSavedSecond;
     [ObservableProperty] private IReadOnlyList<ComboItem> _countries = [];
     [ObservableProperty] private IReadOnlyList<ComboItem> _regions = [];
+    [ObservableProperty] private IReadOnlyList<ComboItem> _vivillonPatterns = [];
+    private bool _loadingRegions;
     public IReadOnlyList<ComboItem> Genders => WithUnknown([new(Localization.LocalizedStrings.Instance["Pokedex5Editor_Male"], 0), new(Localization.LocalizedStrings.Instance["Pokedex5Editor_Female"], 1)], Gender);
     public IReadOnlyList<ComboItem> Languages => WithUnknown(GameInfo.Sources.LanguageDataSource(7, EntityContext.Gen7), Language);
-    public IReadOnlyList<ComboItem> ConsoleRegions => WithUnknown(GameInfo.Sources.Regions, ConsoleRegion);
+    public IReadOnlyList<ComboItem> ConsoleRegions => RegionChoices.ConsoleRegions(ConsoleRegion);
     public IReadOnlyList<ComboItem> SkinColors => WithUnknown(Enumerable.Range(0, 8).Select(i => new ComboItem(Localization.LocalizedStrings.Instance["Trainer7_Skin_" + i], i)).ToArray(), SkinColor);
     public IReadOnlyList<ComboItem> BattleStyles => WithUnknown(Enumerable.Range(0, IsUSUM ? 9 : 8).Select(i => new ComboItem(Localization.LocalizedStrings.Instance["Trainer7_Style_" + i], i)).ToArray(), BattleStyle);
     public IReadOnlyList<Gen7TimeOffsetChoice> TimeOffsets
@@ -101,7 +104,7 @@ public partial class Misc7EditorViewModel
     public bool CanSave => !_closed && DisplayTid <= 999999 && (ulong)DisplaySid * 1_000_000 + DisplayTid <= uint.MaxValue && _invalidCoordinateText.Count == 0 && TrainerName.Length <= _sav.MaxStringLengthTrainer && FestivalName.Length <= 20 &&
         (Money == _baseline.Money || Money <= _sav.MaxMoney) &&
         SameOrRange(Gender, _baseline.Gender, 0, 1) && SameOrRange(Language, _baseline.Language, 1, 10) &&
-        Country is >= 0 and <= 255 && SubRegion is >= 0 and <= 255 && ConsoleRegion is >= 0 and <= 255 &&
+        Country is >= 0 and <= 255 && SubRegion is >= 0 and <= 255 && ConsoleRegion is >= 0 and <= 255 && SameOrRange(Vivillon, _baseline.Misc.Vivillon, 0, 19) &&
         PlayedHours is >= 0 and <= 65535 && SameOrRange(PlayedMinutes, _baseline.PlayedMinutes, 0, 59) && SameOrRange(PlayedSeconds, _baseline.PlayedSeconds, 0, 59) &&
         (BattlePoints == _baseline.Misc.BP || BattlePoints <= 9999) && SameOrRange(FestivalCoins, _baseline.Festa.FestaCoins, 0, 9999999) &&
         (AlolaOffset == _baseline.GameTime.AlolaTime || AlolaOffset is >= 3600 and <= 86400 && AlolaOffset % 3600 == 0) &&
@@ -140,9 +143,11 @@ public partial class Misc7EditorViewModel
         PlayedHours = _sav.PlayedHours;
         PlayedMinutes = _sav.PlayedMinutes;
         PlayedSeconds = _sav.PlayedSeconds;
-        Country = _sav.Country;
-        SubRegion = _sav.Region;
+        _loadingRegions = true;
+        try { Country = _sav.Country; SubRegion = _sav.Region; }
+        finally { _loadingRegions = false; }
         ConsoleRegion = _sav.ConsoleRegion;
+        Vivillon = _sav.Misc.Vivillon;
         BattlePoints = _sav.Misc.BP;
         FestivalCoins = _sav.Festa.FestaCoins;
         FestivalName = _sav.Festa.FestivalPlazaName;
@@ -159,7 +164,8 @@ public partial class Misc7EditorViewModel
         var last = ReadLastSaved(_sav);
         LastSavedDate = last is { } value ? new DateTimeOffset(value.Date, TimeSpan.Zero) : null;
         LastSavedTime = last?.TimeOfDay; LastSavedSecond = 0;
-        Countries = ReadGeo("countries", Country); Regions = ReadGeo($"sr_{Country:000}", SubRegion);
+        Countries = RegionChoices.Countries(Country); Regions = RegionChoices.SubRegions(Country, SubRegion);
+        VivillonPatterns = RegionChoices.VivillonPatterns(Vivillon, EntityContext.Gen7);
         TrainerRecords.Clear();
         foreach (var record in RecordLists.RecordList_7)
             if (IsUSUM || record.Key is not (70 or 72 or 73 or 74))
@@ -172,16 +178,20 @@ public partial class Misc7EditorViewModel
         OnPropertyChanged(nameof(XText)); OnPropertyChanged(nameof(YText)); OnPropertyChanged(nameof(ZText));
     }
 
-    partial void OnCountryChanged(int value) => Regions = ReadGeo($"sr_{value:000}", SubRegion);
-    private static IReadOnlyList<ComboItem> ReadGeo(string resource, int selected)
+    partial void OnCountryChanged(int value)
     {
-        List<ComboItem> values;
-        try { values = Util.GetCountryRegionList(resource, GameInfo.CurrentLanguage); }
-        catch (FormatException) { values = []; }
-        catch (ArgumentOutOfRangeException) { values = []; }
-        if (values.All(item => item.Value != selected))
-            values.Add(new(Localization.LocalizedStrings.Instance.Format("RaidSession_UnknownType", selected), selected));
-        return values;
+        // Sub-region IDs are per country: a user-picked country resets an ID it does not define.
+        if (!_loadingRegions && !RegionChoices.IsKnownSubRegion(value, SubRegion)) SubRegion = 0;
+        Regions = RegionChoices.SubRegions(value, SubRegion);
+        if (!_loadingRegions) OnPropertyChanged(nameof(SubRegion)); // replacing the list cleared the dropdown selection
+    }
+    partial void OnSubRegionChanged(int value)
+    {
+        if (Regions.All(item => item.Value != value)) { Regions = RegionChoices.SubRegions(Country, value); OnPropertyChanged(nameof(SubRegion)); }
+    }
+    partial void OnVivillonChanged(int value)
+    {
+        if (VivillonPatterns.All(item => item.Value != value)) { VivillonPatterns = RegionChoices.VivillonPatterns(value, EntityContext.Gen7); OnPropertyChanged(nameof(Vivillon)); }
     }
 
     private static DateTime? ReadLastSaved(SAV7 save)
@@ -210,6 +220,7 @@ public partial class Misc7EditorViewModel
         if (Country != _baseline.Country) _sav.Country = (byte)Country;
         if (SubRegion != _baseline.Region) _sav.Region = (byte)SubRegion;
         if (ConsoleRegion != _baseline.ConsoleRegion) _sav.ConsoleRegion = (byte)ConsoleRegion;
+        if (Vivillon != _baseline.Misc.Vivillon) _sav.Misc.Vivillon = Vivillon;
         if (BattlePoints != _baseline.Misc.BP) _sav.Misc.BP = BattlePoints;
         if (FestivalCoins != _baseline.Festa.FestaCoins) _sav.Festa.FestaCoins = FestivalCoins;
         if (FestivalName != _baseline.Festa.FestivalPlazaName) _sav.Festa.FestivalPlazaName = FestivalName;

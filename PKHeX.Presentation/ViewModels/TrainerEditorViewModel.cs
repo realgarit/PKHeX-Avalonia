@@ -122,7 +122,7 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
 
     public bool IsDisplayIdValid => !UsesSixDigitTrainerIds || _sav.IsValidTrainerID7(DisplaySid, DisplayTid);
 
-    private bool CanSave() => IsDisplayIdValid && (!IsZA || (!_zaClosed && IsZaInputValid));
+    private bool CanSave() => IsDisplayIdValid && IsRegionInputValid && (!IsZA || (!_zaClosed && IsZaInputValid));
 
     partial void OnDisplayTidChanged(uint value)
     {
@@ -258,6 +258,7 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
         LoadCoordinates();
         LoadCurrencies();
         LoadBattleChateau();
+        LoadRegionSettings();
         LoadZaFields();
     }
 
@@ -549,6 +550,7 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
         SaveCoordinates();
         SaveCurrencies();
         SaveBattleChateau();
+        SaveRegionSettings();
     }
 
     private void SaveBattleChateau()
@@ -729,6 +731,7 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
         PlaEditor?.RefreshLanguage();
         LanguageList = GameInfo.Sources.LanguageDataSource(_sav.Generation, _sav.Context);
         OnPropertyChanged(nameof(GenderList));
+        if (HasRegionSettings || HasVivillon) RefreshRegionLists();
         if (_sav is SAV9ZA za) LoadZaImages(za);
     }
 }

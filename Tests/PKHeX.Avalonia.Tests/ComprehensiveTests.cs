@@ -508,7 +508,10 @@ public class ComprehensiveTests
             "FormArgumentValue", "FormArgumentMax",
             // Modern interface metadata is absent on this PK3 fixture; PokemonMetadataTests
             // covers supported PA9/PA8 round trips and unsupported-format visibility.
-            "BattleVersion", "HandlingTrainerLanguage"
+            "BattleVersion", "HandlingTrainerLanguage",
+            // Gen 6/7 IRegionOrigin data is absent on this PK3 fixture; RegionSettingsTests
+            // covers PK6/PK7 round trips and unsupported-format visibility.
+            "OriginCountry", "OriginSubRegion", "OriginConsoleRegion"
         };
 
         foreach (var prop in properties)
