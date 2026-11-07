@@ -102,7 +102,28 @@
                               Width="16" Height="16" />
                     </Button>
 
+                    <!-- The detached Box window swaps pop-out for dock-back (#247). -->
                     <Button Grid.Column="4"
+                            x:Name="ReturnToMainWindowButton"
+                            IsVisible="{Binding IsDetached}"
+                            Command="{Binding ReturnToMainWindowCommand}"
+                            ToolTip.Tip="{loc:Loc Workspace_ReturnToMainWindow_Tooltip}"
+                            AutomationProperties.Name="{loc:Loc Workspace_ReturnToMainWindow}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center">
+                        <Path Data="M 13,3 L 3,13 M 3,6 V 13 H 10"
+                              Stroke="{DynamicResource ThemeTextSecondaryBrush}"
+                              StrokeThickness="1.5"
+                              Width="16" Height="16" />
+                    </Button>
+
+                    <Button Grid.Column="4"
+                            x:Name="PopOutButton"
+                            IsVisible="{Binding !IsDetached}"
                             Command="{Binding OpenDetachedToolCommand}"
                             ToolTip.Tip="{loc:Loc BoxViewer_PopOut}"
                             AutomationProperties.Name="{loc:Loc BoxViewer_PopOut}"

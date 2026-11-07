@@ -155,8 +155,29 @@ public partial class PartyViewerViewModel : ViewModelBase
     [RelayCommand]
     private void OpenDetachedTool()
     {
+        if (!IsSessionCurrent() || _windowService is null)
+            return;
+        IsDetachedWindowOpen = true;
+        _windowService.ShowTool(this, LocalizedStrings.Instance["Tab_Party"], () => IsDetachedWindowOpen = false);
+    }
+
+    /// <summary>
+    /// True while this Party viewer is also shown in its modeless window. The embedded and detached
+    /// views share this ViewModel, so the view swaps its pop-out action for a dock-back action.
+    /// </summary>
+    [ObservableProperty] private bool _isDetachedWindowOpen;
+
+    /// <summary>Raised when the detached Party window asks to return to the main window.</summary>
+    public event Action? ReturnToMainWindowRequested;
+
+    /// <summary>Dock-back: closes the Party window and asks the main window to show the Party view.</summary>
+    [RelayCommand]
+    private void ReturnToMainWindow()
+    {
+        _windowService?.CloseTool(this);
+        IsDetachedWindowOpen = false;
         if (IsSessionCurrent())
-            _windowService?.ShowTool(this, LocalizedStrings.Instance["Tab_Party"]);
+            ReturnToMainWindowRequested?.Invoke();
     }
     
     [RelayCommand]

@@ -79,6 +79,7 @@
                                 <Setter Property="Header" Value="{Binding Title}" />
                                 <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
                                 <Setter Property="Command" Value="{Binding Command}" />
+                                <Setter Property="IsVisible" Value="{Binding IsApplicable}" />
                                 <Setter Property="IsEnabled" Value="{Binding IsAvailable}" />
                                 <Setter Property="InputGesture" Value="{Binding Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
                             </ControlTheme>
@@ -96,6 +97,11 @@
                 <Separator />
                 <MenuItem Header="{loc:Loc Tab_Box}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.BoxWorkspaceTabIndex}" InputGesture="{Binding Shortcuts.TabBox.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
                 <MenuItem Header="{loc:Loc Tab_Party}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.PartyWorkspaceTabIndex}" InputGesture="{Binding Shortcuts.TabParty.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
+                <Separator />
+                <!-- Detached workspace windows (#247): each opens once and is focused when already open. -->
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenBoxWorkspace}" Command="{Binding OpenBoxWorkspaceCommand}" />
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenPartyWorkspace}" Command="{Binding OpenPartyWorkspaceCommand}" />
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenPokemonEditorWorkspace}" Command="{Binding OpenPokemonEditorWorkspaceCommand}" />
             </MenuItem>
             <MenuItem Header="{loc:Loc Menu_Help}">
                 <MenuItem Header="{loc:Loc Menu_Options_Language}"
@@ -240,14 +246,25 @@
                                 BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                                 Focusable="False"
                                 IsVisible="{Binding IsPokemonWorkspace}">
-                            <ContentControl Content="{Binding CurrentPokemonEditor}" Focusable="False"
-                                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                <ContentControl.ContentTemplate>
-                                    <DataTemplate DataType="vm:PokemonEditorViewModel">
-                                        <views:PokemonEditor />
-                                    </DataTemplate>
-                                </ContentControl.ContentTemplate>
-                            </ContentControl>
+                            <Grid>
+                                <ContentControl Content="{Binding EmbeddedPokemonEditor}" Focusable="False"
+                                                HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate DataType="vm:PokemonEditorViewModel">
+                                            <views:PokemonEditor />
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                                <!-- The editor moved to its own window: one editor, one place (#247). -->
+                                <StackPanel x:Name="DetachedEditorPlaceholder" IsVisible="{Binding IsPokemonEditorDetached}"
+                                            VerticalAlignment="Center" Margin="16" Spacing="10">
+                                    <TextBlock Text="{loc:Loc Workspace_PokemonEditorDetached}" TextWrapping="Wrap" TextAlignment="Center"
+                                               Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+                                    <Button HorizontalAlignment="Center" Content="{loc:Loc Workspace_ReturnToMainWindow}"
+                                            Command="{Binding DockPokemonEditorCommand}"
+                                            ToolTip.Tip="{loc:Loc Workspace_ReturnToMainWindow_Tooltip}" />
+                                </StackPanel>
+                            </Grid>
                         </Border>
 
                         <GridSplitter Grid.Column="1" Width="1"

@@ -75,6 +75,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(OpenSaveDiffCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenBoxWorkspaceCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPartyWorkspaceCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenPokemonEditorWorkspaceCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenEncounterDatabaseCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPssExportCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenBattleVideo4Command))]
@@ -320,6 +321,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 boxViewer.SetSlotRequested += OnBoxSetSlot;
                 boxViewer.DeleteSlotRequested += OnBoxDeleteSlot;
                 boxViewer.SaveFileDropRequested += OnSaveFileDropRequested;
+                boxViewer.ReturnToMainWindowRequested += OnBoxReturnToMainWindowRequested;
                 BoxViewer = boxViewer;
 
                 var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer, _slotService, _dialogService, IsHaXMode, () => BoxViewer?.CurrentBox ?? 0, _windowService);
@@ -327,6 +329,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 partyViewer.ViewSlotRequested += OnPartyViewSlot;
                 partyViewer.SetSlotRequested += OnPartySetSlot;
                 partyViewer.SaveFileDropRequested += OnSaveFileDropRequested;
+                partyViewer.ReturnToMainWindowRequested += OnPartyReturnToMainWindowRequested;
                 PartyViewer = partyViewer;
 
                 TrainerEditor?.Dispose();
@@ -361,6 +364,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 BoxViewer.SetSlotRequested -= OnBoxSetSlot;
                 BoxViewer.DeleteSlotRequested -= OnBoxDeleteSlot;
                 BoxViewer.SaveFileDropRequested -= OnSaveFileDropRequested;
+                BoxViewer.ReturnToMainWindowRequested -= OnBoxReturnToMainWindowRequested;
             }
             BoxViewer = null;
 
@@ -370,6 +374,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 PartyViewer.ViewSlotRequested -= OnPartyViewSlot;
                 PartyViewer.SetSlotRequested -= OnPartySetSlot;
                 PartyViewer.SaveFileDropRequested -= OnSaveFileDropRequested;
+                PartyViewer.ReturnToMainWindowRequested -= OnPartyReturnToMainWindowRequested;
             }
             PartyViewer = null;
 

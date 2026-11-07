@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using PKHeX.Application.Abstractions;
 
 namespace PKHeX.Avalonia.Tests.Harness;
@@ -72,6 +73,7 @@ public sealed class RecordingDialogService : IDialogService
 public sealed class NoopWindowService : IWindowService
 {
     private readonly HashSet<object> _openTools = [];
+    private readonly Dictionary<object, Action> _closedCallbacks = [];
 
     public List<(object ViewModel, string Title)> ShownDialogs { get; } = [];
     public List<(object ViewModel, string Title)> ShownTools { get; } = [];
@@ -85,6 +87,27 @@ public sealed class NoopWindowService : IWindowService
     {
         ShownDialogs.Add((viewModel, title));
         return Task.CompletedTask;
+    }
+
+    public List<object> ClosedTools { get; } = [];
+
+    public void ShowTool(object viewModel, string title, Action onClosed)
+    {
+        var opened = !_openTools.Contains(viewModel);
+        ShowTool(viewModel, title);
+        if (opened)
+            _closedCallbacks[viewModel] = onClosed;
+    }
+
+    public void CloseTool(object viewModel)
+    {
+        if (!_openTools.Remove(viewModel))
+            return;
+        if (ReferenceEquals(FocusedTool, viewModel))
+            FocusedTool = null;
+        ClosedTools.Add(viewModel);
+        if (_closedCallbacks.Remove(viewModel, out var callback))
+            callback();
     }
 
     public void ShowTool(object viewModel, string title)
@@ -102,8 +125,13 @@ public sealed class NoopWindowService : IWindowService
 
     public void CloseAllTools()
     {
+        var callbacks = _closedCallbacks.Values.ToList();
+        ClosedTools.AddRange(_openTools);
         _openTools.Clear();
+        _closedCallbacks.Clear();
         FocusedTool = null;
         CloseAllToolsCount++;
+        foreach (var callback in callbacks)
+            callback();
     }
 }
