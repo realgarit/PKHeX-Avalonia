@@ -126,6 +126,11 @@ public sealed class SpriteLoader
     public SKBitmap? GetAlphaOverlay() => LoadFromPrefix(OverlayPrefix, "alpha_alt.png");
     public SKBitmap? GetGigantamaxOverlay() => LoadFromPrefix(OverlayPrefix, "dyna.png");
     public SKBitmap? GetSlotOverlay(string name) => LoadFromPrefix(OverlayPrefix, name + ".png");
+    public SKBitmap? GetBallSprite(int ball) => ball <= 0 ? null : GetCached($"{ImagePrefix}ball._ball{ball}.png");
+    public SKBitmap? GetTypeIcon(int type) => type < 0 ? null : GetCached($"{ImagePrefix}types.square.type_icon_{type:00}.png");
+
+    private SKBitmap? GetCached(string resourceName) => _cache.GetOrAdd(resourceName, LoadSprite);
+
     public SKBitmap? GetLegalityOverlay(bool illegal) => LoadFromPrefix(ImagePrefix, illegal ? "warn.png" : "hint.png");
 
     public SKBitmap? GetEggSprite(ushort species)

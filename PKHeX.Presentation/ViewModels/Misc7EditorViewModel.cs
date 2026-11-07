@@ -294,10 +294,13 @@ public partial class Misc7EditorViewModel : ViewModelBase, IDisposable
             SaveTrainerFields(); SaveBattleTree(); SavePokeFinder(); SaveStamps(); SaveFlyDestinations(); SaveUltraData();
         }))
         { _sav = _session.Staged; Error = Localization.LocalizedStrings.Instance["LgpeTrainer_Conflict"]; return; }
+        bool locksChanged = !HasSameTeamLocks(_baseline, _session.Staged);
         _sav = _session.Staged; _baseline = (SAV7)_sav.Clone();
         LoadTrainerFields(); LoadBattleTree(); LoadPokeFinder(); LoadStamps(); LoadFlyDestinations(); if (IsUSUM) LoadUltraData();
         Error = string.Empty;
         OnPropertyChanged(nameof(CanUndoFashion));
+        NotifyBattleTeams();
+        if (locksChanged) BattleLocksCommitted?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
@@ -309,6 +312,7 @@ public partial class Misc7EditorViewModel : ViewModelBase, IDisposable
         LoadTrainerFields(); LoadBattleTree(); LoadPokeFinder(); LoadStamps(); LoadFlyDestinations();
         if (IsUSUM) LoadUltraData(); Error = string.Empty;
         OnPropertyChanged(nameof(CanUndoFashion));
+        NotifyBattleTeams();
     }
     [RelayCommand]
     private async Task FashionAsync(Gen7FashionMode mode)
@@ -328,8 +332,44 @@ public partial class Misc7EditorViewModel : ViewModelBase, IDisposable
         if (_closed) return;
         _session.Undo(); _sav = _session.Staged; _epoch++;
         OnPropertyChanged(nameof(CanUndoFashion));
+        NotifyBattleTeams();
     }
-    public void Dispose() { _closed = true; _epoch++; WeakReferenceMessenger.Default.UnregisterAll(this); }
+
+    #region Battle Teams
+
+    /// <summary>Raised after Apply wrote a Battle Team lock change to the live save.</summary>
+    public event EventHandler? BattleLocksCommitted;
+
+    /// <summary>True when any of the six staged Battle Teams is locked for a competition.</summary>
+    public bool IsBattleTeamLocked => _session.Staged.BoxLayout.IsAnyTeamLocked();
+    private bool CanUnlockBattleTeams() => !_closed && IsBattleTeamLocked;
+
+    /// <summary>Stages <see cref="BoxLayout7.UnlockAllTeams"/>; Apply writes it, Undo/Reset discard it.</summary>
+    [RelayCommand(CanExecute = nameof(CanUnlockBattleTeams))]
+    private void UnlockBattleTeams()
+    {
+        if (_closed) return;
+        _session.ApplyAction(static save => save.BoxLayout.UnlockAllTeams());
+        _sav = _session.Staged; _epoch++; Error = string.Empty;
+        OnPropertyChanged(nameof(CanUndoFashion));
+        NotifyBattleTeams();
+    }
+
+    private static bool HasSameTeamLocks(SAV7 a, SAV7 b)
+    {
+        for (int team = 0; team < 6; team++)
+            if (a.BoxLayout.GetIsTeamLocked(team) != b.BoxLayout.GetIsTeamLocked(team)) return false;
+        return true;
+    }
+
+    private void NotifyBattleTeams()
+    {
+        OnPropertyChanged(nameof(IsBattleTeamLocked));
+        UnlockBattleTeamsCommand.NotifyCanExecuteChanged();
+    }
+
+    #endregion
+    public void Dispose() { _closed = true; _epoch++; WeakReferenceMessenger.Default.UnregisterAll(this); UnlockBattleTeamsCommand.NotifyCanExecuteChanged(); }
     public void RefreshLanguage()
     {
         int country = Country, region = SubRegion, language = Language, gender = Gender, console = ConsoleRegion, skin = SkinColor, style = BattleStyle, camera = CameraVersion, vivillon = Vivillon;

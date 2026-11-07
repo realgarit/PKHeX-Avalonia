@@ -56,8 +56,11 @@
         <Menu Grid.Column="0" FontSize="11" VerticalAlignment="Center" Background="Transparent" BorderThickness="0">
             <MenuItem Header="{loc:Loc Menu_File}">
                 <MenuItem Header="{loc:Loc Menu_File_Open}" Command="{Binding OpenFileCommand}" InputGesture="{Binding Shortcuts.OpenFile.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
+                <MenuItem Header="{loc:Loc Menu_File_OpenPokemon}" Command="{Binding OpenPokemonFileCommand}" />
+                <MenuItem Header="{loc:Loc Menu_File_NewPokemonWorkspace}" Command="{Binding NewPokemonWorkspaceCommand}" />
                 <MenuItem Header="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" InputGesture="{Binding Shortcuts.SaveFile.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
                 <MenuItem Header="{loc:Loc Menu_File_SaveAs}" Command="{Binding SaveFileAsCommand}" InputGesture="{Binding Shortcuts.SaveFileAs.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
+                <MenuItem Header="{loc:Loc Menu_File_SavePokemonAs}" Command="{Binding SavePokemonAsCommand}" />
                 <Separator />
                 <MenuItem Header="{loc:Loc Menu_File_Close}" Command="{Binding CloseFileCommand}" InputGesture="{Binding Shortcuts.CloseFile.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
             </MenuItem>
@@ -76,6 +79,7 @@
                                 <Setter Property="Header" Value="{Binding Title}" />
                                 <Setter Property="AutomationProperties.Name" Value="{Binding Title}" />
                                 <Setter Property="Command" Value="{Binding Command}" />
+                                <Setter Property="IsVisible" Value="{Binding IsApplicable}" />
                                 <Setter Property="IsEnabled" Value="{Binding IsAvailable}" />
                                 <Setter Property="InputGesture" Value="{Binding Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
                             </ControlTheme>
@@ -93,6 +97,11 @@
                 <Separator />
                 <MenuItem Header="{loc:Loc Tab_Box}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.BoxWorkspaceTabIndex}" InputGesture="{Binding Shortcuts.TabBox.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
                 <MenuItem Header="{loc:Loc Tab_Party}" Command="{Binding SelectWorkspaceTabCommand}" CommandParameter="{x:Static vm:MainWindowViewModel.PartyWorkspaceTabIndex}" InputGesture="{Binding Shortcuts.TabParty.Shortcut, Converter={x:Static conv:ShortcutChordToKeyGestureConverter.Instance}}" />
+                <Separator />
+                <!-- Detached workspace windows (#247): each opens once and is focused when already open. -->
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenBoxWorkspace}" Command="{Binding OpenBoxWorkspaceCommand}" />
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenPartyWorkspace}" Command="{Binding OpenPartyWorkspaceCommand}" />
+                <MenuItem Header="{loc:Loc Menu_Tools_OpenPokemonEditorWorkspace}" Command="{Binding OpenPokemonEditorWorkspaceCommand}" />
             </MenuItem>
             <MenuItem Header="{loc:Loc Menu_Help}">
                 <MenuItem Header="{loc:Loc Menu_Options_Language}"
@@ -147,7 +156,11 @@
                         <Button Classes="workspace-top-tab" Classes.active="{Binding IsReportsWorkspace}" Content="{loc:Loc Workspace_Reports}" Command="{Binding SelectWorkspaceCommand}" CommandParameter="{x:Static vm:MainWorkspace.Reports}" />
                     </StackPanel>
                 </ScrollViewer>
-                <Button Grid.Column="2" Classes="compact-primary" Content="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" Padding="12,5" FontSize="11" />
+                <Button Grid.Column="2" Classes="compact-primary" Content="{loc:Loc Menu_File_Save}" Command="{Binding SaveFileCommand}" Padding="12,5" FontSize="11"
+                        IsVisible="{Binding !IsBlankWorkspace}" />
+                <!-- A standalone Pokémon workspace has no save to write; its primary action exports the Pokémon. -->
+                <Button Grid.Column="2" Classes="compact-primary" Content="{loc:Loc Menu_File_SavePokemonAs}" Command="{Binding SavePokemonAsCommand}" Padding="12,5" FontSize="11"
+                        IsVisible="{Binding IsBlankWorkspace}" />
             </Grid>
         </Border>
 
@@ -201,6 +214,16 @@
                             Command="{Binding OpenFileCommand}"
                             HorizontalAlignment="Center"
                             Classes="accent-gradient" />
+                    <TextBlock Text="{loc:Loc Hero_PokemonOnlyHint}"
+                               Classes="welcome-subtitle"
+                               TextWrapping="Wrap" MaxWidth="420" TextAlignment="Center"
+                               HorizontalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                        <Button Content="{loc:Loc Hero_OpenPokemonButton}"
+                                Command="{Binding OpenPokemonFileCommand}" />
+                        <Button Content="{loc:Loc Hero_NewPokemonWorkspaceButton}"
+                                Command="{Binding NewPokemonWorkspaceCommand}" />
+                    </StackPanel>
                 </StackPanel>
             </Border>
 
@@ -223,14 +246,25 @@
                                 BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
                                 Focusable="False"
                                 IsVisible="{Binding IsPokemonWorkspace}">
-                            <ContentControl Content="{Binding CurrentPokemonEditor}" Focusable="False"
-                                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                <ContentControl.ContentTemplate>
-                                    <DataTemplate DataType="vm:PokemonEditorViewModel">
-                                        <views:PokemonEditor />
-                                    </DataTemplate>
-                                </ContentControl.ContentTemplate>
-                            </ContentControl>
+                            <Grid>
+                                <ContentControl Content="{Binding EmbeddedPokemonEditor}" Focusable="False"
+                                                HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate DataType="vm:PokemonEditorViewModel">
+                                            <views:PokemonEditor />
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                                <!-- The editor moved to its own window: one editor, one place (#247). -->
+                                <StackPanel x:Name="DetachedEditorPlaceholder" IsVisible="{Binding IsPokemonEditorDetached}"
+                                            VerticalAlignment="Center" Margin="16" Spacing="10">
+                                    <TextBlock Text="{loc:Loc Workspace_PokemonEditorDetached}" TextWrapping="Wrap" TextAlignment="Center"
+                                               Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+                                    <Button HorizontalAlignment="Center" Content="{loc:Loc Workspace_ReturnToMainWindow}"
+                                            Command="{Binding DockPokemonEditorCommand}"
+                                            ToolTip.Tip="{loc:Loc Workspace_ReturnToMainWindow_Tooltip}" />
+                                </StackPanel>
+                            </Grid>
                         </Border>
 
                         <GridSplitter Grid.Column="1" Width="1"
