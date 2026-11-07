@@ -40,7 +40,7 @@
                                 DragDrop.Drop="OnSlotDrop"
                                 DragDrop.DragOver="OnSlotDragOver"
                                 DragDrop.DragLeave="OnSlotDragLeave"
-                                ToolTip.Tip="{Binding ToolTipSummary}"
+                                controls:SlotHoverPreview.IsEnabled="True"
                                 AutomationProperties.Name="{Binding AccessibleName}"
                                 Click="OnSlotClicked"
                                 DoubleTapped="OnSlotDoubleTapped"

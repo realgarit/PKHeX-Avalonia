@@ -29,6 +29,7 @@ public sealed class AppSettings : IProgramSettings
     public ThemeSettings Theme { get; set; } = new();
     public DensitySettings Density { get; set; } = new();
     public EditorBehaviorSettings EditorBehavior { get; set; } = new();
+    public SlotHoverSettings SlotHover { get; set; } = new();
     public LinuxSettings Linux { get; set; } = new();
     public List<ReportColumnLayout> BoxReportColumns { get; set; } = [];
 
@@ -139,6 +140,33 @@ public sealed class AppSettings : IProgramSettings
     public class EditorBehaviorSettings
     {
         public bool WarnClosingModified { get; set; } = true;
+    }
+
+    /// <summary>
+    /// Hover preview card for box and party slots. When disabled, slots keep the plain text tooltip.
+    /// Cry playback is not offered: PKHeX does not bundle Pokémon cries.
+    /// </summary>
+    public class SlotHoverSettings
+    {
+        /// <summary>Delay choices offered by the settings screen, in milliseconds.</summary>
+        public static IReadOnlyList<int> DelayChoices { get; } = [0, 200, 400, 700, 1000];
+
+        public const int DefaultDelayMs = 400;
+
+        /// <summary>Show the rich preview card instead of the plain text tooltip.</summary>
+        public bool Enabled { get; set; } = true;
+
+        /// <summary>Time the pointer must rest on a slot before the card opens.</summary>
+        public int DelayMs
+        {
+            get => _delayMs;
+            set => _delayMs = Math.Clamp(value, 0, 5000);
+        }
+
+        private int _delayMs = DefaultDelayMs;
+
+        /// <summary>Add the matched encounter and its location to the card.</summary>
+        public bool ShowEncounter { get; set; } = true;
     }
 
     /// <summary>

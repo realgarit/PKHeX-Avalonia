@@ -307,7 +307,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 pokemonEditor.SaveFileDropRequested += OnSaveFileDropRequested;
                 CurrentPokemonEditor = pokemonEditor;
 
-                var boxViewer = new BoxViewerViewModel(sav, _spriteRenderer, _slotService, _windowService, _dialogService, IsHaXMode);
+                var boxViewer = new BoxViewerViewModel(sav, _spriteRenderer, _slotService, _windowService, _dialogService, IsHaXMode) { HoverSettings = _settings.SlotHover };
                 boxViewer.SlotActivated += OnBoxSlotActivated;
                 boxViewer.ViewSlotRequested += OnBoxViewSlot;
                 boxViewer.SetSlotRequested += OnBoxSetSlot;
@@ -315,7 +315,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 boxViewer.SaveFileDropRequested += OnSaveFileDropRequested;
                 BoxViewer = boxViewer;
 
-                var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer, _slotService, _dialogService, IsHaXMode, () => BoxViewer?.CurrentBox ?? 0, _windowService);
+                var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer, _slotService, _dialogService, IsHaXMode, () => BoxViewer?.CurrentBox ?? 0, _windowService) { HoverSettings = _settings.SlotHover };
                 partyViewer.SlotActivated += OnPartySlotActivated;
                 partyViewer.ViewSlotRequested += OnPartyViewSlot;
                 partyViewer.SetSlotRequested += OnPartySetSlot;
