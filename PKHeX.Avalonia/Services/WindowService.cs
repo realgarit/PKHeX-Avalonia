@@ -125,6 +125,16 @@ public sealed class WindowService : IWindowService
             dialog.MinHeight = Math.Min(320, dialog.MaxHeight);
         }
 
+        if (viewModel is BlockEditorViewModel)
+        {
+            // The block grid would otherwise measure to thousands of rows wide/tall; open compact like upstream's dump.
+            dialog.SizeToContent = SizeToContent.Manual;
+            dialog.Width = Math.Min(860, dialog.MaxWidth);
+            dialog.Height = Math.Min(580, dialog.MaxHeight);
+            dialog.MinWidth = Math.Min(620, dialog.MaxWidth);
+            dialog.MinHeight = Math.Min(440, dialog.MaxHeight);
+        }
+
         if (viewModel is RaidEditorViewModel)
         {
             dialog.SizeToContent = SizeToContent.Manual;
