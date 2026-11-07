@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PKHeX.Presentation.ViewModels;
 
-public partial class PartyViewerViewModel : ViewModelBase
+public partial class PartyViewerViewModel : ViewModelBase, ISlotPreviewSource
 {
     private readonly SaveFile _sav;
     private readonly ISpriteRenderer _spriteRenderer;
@@ -45,6 +45,20 @@ public partial class PartyViewerViewModel : ViewModelBase
     /// again after the shared slot service starts a new session.
     /// </summary>
     public Guid SessionId => _sessionId;
+
+    /// <inheritdoc />
+    public AppSettings.SlotHoverSettings HoverSettings { get; init; } = new();
+
+    /// <inheritdoc />
+    public SlotPreviewViewModel? GetSlotPreview(SlotLocation location)
+    {
+        if (!location.IsParty || location.Slot < 0 || location.Slot >= _sav.PartyCount)
+            return null;
+        PKM pk;
+        try { pk = _sav.GetPartySlotAtIndex(location.Slot); }
+        catch { return null; }
+        return SlotPreviewViewModel.Create(pk, _sav, StorageSlotType.Party, _spriteRenderer, _haXMode, HoverSettings.ShowEncounter);
+    }
 
     public PartyViewerViewModel(SaveFile sav, ISpriteRenderer spriteRenderer, ISlotService? slotService = null, IDialogService? dialogService = null, bool haXMode = false, Func<int>? getCurrentBox = null, IWindowService? windowService = null)
     {
@@ -155,8 +169,29 @@ public partial class PartyViewerViewModel : ViewModelBase
     [RelayCommand]
     private void OpenDetachedTool()
     {
+        if (!IsSessionCurrent() || _windowService is null)
+            return;
+        IsDetachedWindowOpen = true;
+        _windowService.ShowTool(this, LocalizedStrings.Instance["Tab_Party"], () => IsDetachedWindowOpen = false);
+    }
+
+    /// <summary>
+    /// True while this Party viewer is also shown in its modeless window. The embedded and detached
+    /// views share this ViewModel, so the view swaps its pop-out action for a dock-back action.
+    /// </summary>
+    [ObservableProperty] private bool _isDetachedWindowOpen;
+
+    /// <summary>Raised when the detached Party window asks to return to the main window.</summary>
+    public event Action? ReturnToMainWindowRequested;
+
+    /// <summary>Dock-back: closes the Party window and asks the main window to show the Party view.</summary>
+    [RelayCommand]
+    private void ReturnToMainWindow()
+    {
+        _windowService?.CloseTool(this);
+        IsDetachedWindowOpen = false;
         if (IsSessionCurrent())
-            _windowService?.ShowTool(this, LocalizedStrings.Instance["Tab_Party"]);
+            ReturnToMainWindowRequested?.Invoke();
     }
     
     [RelayCommand]

@@ -131,9 +131,16 @@
         <Border Grid.Column="2" Classes="database-results-pane">
             <DockPanel>
                 <Button DockPanel.Dock="Top" x:Name="ToggleFiltersButton" Click="OnToggleFilters"
-                        Content="{loc:Loc PKMDatabaseView_ToggleFilters}" ToolTip.Tip="{loc:Loc PKMDatabaseView_ToggleFiltersTooltip}"
+                        ToolTip.Tip="{loc:Loc PKMDatabaseView_ToggleFiltersTooltip}"
+                        AutomationProperties.Name="{loc:Loc PKMDatabaseView_ToggleFilters}"
                         Classes="tool-filter-toggle"
-                        HorizontalAlignment="Left" Margin="0,0,0,8"/>
+                        HorizontalAlignment="Left" Margin="0,0,0,8">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <!-- Chevron points toward the filter pane: left while it is shown, right while hidden. -->
+                        <PathIcon x:Name="ToggleFiltersIcon" Classes="icon icon-small" Data="{StaticResource Icon.ChevronLeft}" VerticalAlignment="Center" />
+                        <TextBlock Text="{loc:Loc PKMDatabaseView_ToggleFilters}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
 
                 <Border DockPanel.Dock="Bottom" Classes="database-status">
                     <TextBlock Text="{Binding StatusText}" Opacity="0.7" FontSize="12"/>

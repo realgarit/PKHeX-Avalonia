@@ -151,9 +151,17 @@ public partial class LinkItemViewModel : ViewModelBase
         ItemNames = itemNames;
         _item = getItem();
         _quantity = getQty();
+        ItemName = LocalizedStrings.Instance.Format("Link6Editor_ItemSlotName", index);
+        QuantityName = LocalizedStrings.Instance.Format("Link6Editor_QuantitySlotName", index);
     }
 
     public int Index { get; }
+
+    /// <summary>Accessible name of the item picker, for example "Item 1".</summary>
+    public string ItemName { get; }
+
+    /// <summary>Accessible name of the quantity field, for example "Quantity 1".</summary>
+    public string QuantityName { get; }
 
     [ObservableProperty]
     private ushort _item;
@@ -177,7 +185,15 @@ public partial class LinkPokemonViewModel : ViewModelBase
         SpeciesName = GetSpeciesName(entity.Species, speciesNames);
         Nickname = entity.Nickname;
         Level = entity.Level;
+        SlotLabel = LocalizedStrings.Instance.Format("Link6Editor_SlotFormat", index);
+        LevelLabel = LocalizedStrings.Instance.Format("Link6Editor_LevelFormat", entity.Level);
     }
+
+    /// <summary>Card caption, for example "Slot 1".</summary>
+    public string SlotLabel { get; }
+
+    /// <summary>Level caption, for example "Lv. 50".</summary>
+    public string LevelLabel { get; }
 
     public int Index { get; }
     public string SpeciesName { get; }
@@ -186,8 +202,8 @@ public partial class LinkPokemonViewModel : ViewModelBase
 
     private static string GetSpeciesName(ushort species, System.Collections.Generic.IReadOnlyList<string> speciesNames)
     {
-        if (species == 0) return "(None)";
+        if (species == 0) return LocalizedStrings.Instance["Link6Editor_EmptySlot"];
         if (species < speciesNames.Count) return speciesNames[species];
-        return $"Species {species}";
+        return LocalizedStrings.Instance.Format("Link6Editor_UnknownSpecies", species);
     }
 }

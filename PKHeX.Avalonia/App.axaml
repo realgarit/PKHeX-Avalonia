@@ -84,6 +84,7 @@
             <converters:PngBytesToBitmapConverter x:Key="PngBytesToBitmap" />
             <converters:RibbonIconConverter x:Key="RibbonIcon" />
             <converters:PathGeometryConverter x:Key="PathGeometry" />
+            <converters:InventoryPouchIconConverter x:Key="InventoryPouchIcon" />
         </ResourceDictionary>
     </Application.Resources>
 
@@ -92,5 +93,6 @@
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
         <StyleInclude Source="avares://PKHeX.Avalonia/Styles/Theme.axaml" />
         <StyleInclude Source="avares://PKHeX.Avalonia/Styles/ControlSystem.axaml" />
+        <StyleInclude Source="avares://PKHeX.Avalonia/Styles/Icons.axaml" />
     </Application.Styles>
 </Application>

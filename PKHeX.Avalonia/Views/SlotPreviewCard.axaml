@@ -1,0 +1,130 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
+             x:Class="PKHeX.Avalonia.Views.SlotPreviewCard"
+             x:DataType="vm:SlotPreviewViewModel"
+             Focusable="False"
+             Width="280">
+
+    <UserControl.Styles>
+        <Style Selector="Border.legality-pill">
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="8,2" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+        <Style Selector="Border.legality-pill.legal">
+            <Setter Property="Background" Value="{DynamicResource ThemeSuccessGlowBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeSuccessBrush}" />
+        </Style>
+        <Style Selector="Border.legality-pill.illegal">
+            <Setter Property="Background" Value="{DynamicResource ThemeErrorGlowBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeErrorBrush}" />
+        </Style>
+        <Style Selector="Border.legality-pill.not-checked">
+            <Setter Property="Background" Value="{DynamicResource ThemeWarningGlowBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ThemeWarningBrush}" />
+        </Style>
+        <Style Selector="TextBlock.move-name">
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextPrimaryBrush}" />
+        </Style>
+        <Style Selector="TextBlock.move-name.illegal">
+            <Setter Property="Foreground" Value="{DynamicResource ThemeErrorBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="TextDecorations" Value="Underline" />
+        </Style>
+    </UserControl.Styles>
+
+    <Border x:Name="CardRoot"
+            Background="{DynamicResource ThemeBackgroundElevatedBrush}"
+            BorderBrush="{DynamicResource ThemeBorderDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="10">
+        <StackPanel Spacing="8">
+            <!-- Header: ball, name/species, gender, level -->
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                <Image x:Name="BallImage"
+                       Source="{Binding BallSprite, Converter={StaticResource PngBytesToBitmap}}"
+                       IsVisible="{Binding BallSprite, Converter={x:Static ObjectConverters.IsNotNull}}"
+                       Width="20" Height="20" VerticalAlignment="Center"
+                       RenderOptions.BitmapInterpolationMode="HighQuality" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock x:Name="TitleText" Text="{Binding Title}" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ThemeTextPrimaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="150" />
+                        <TextBlock x:Name="GenderText" Text="{Binding GenderSymbol}" IsVisible="{Binding HasGender}" FontSize="14"
+                                   Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+                        <PathIcon Data="{StaticResource Icon.Star}" IsVisible="{Binding IsShiny}" Width="12" Height="12" VerticalAlignment="Center"
+                                  Foreground="{DynamicResource ThemeShinyGoldBrush}" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding SpeciesName}" IsVisible="{Binding ShowSpeciesName}" FontSize="11"
+                               Foreground="{DynamicResource ThemeTextMutedBrush}" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+                <TextBlock Grid.Column="2" Text="{Binding LevelText}" FontSize="12" VerticalAlignment="Center"
+                           Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+            </Grid>
+
+            <!-- Sprite and held item -->
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}"
+                       Width="68" Height="56" Stretch="Uniform" VerticalAlignment="Top"
+                       RenderOptions.BitmapInterpolationMode="HighQuality" />
+                <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                    <TextBlock Text="{loc:Loc PokemonEditor_HeldItem}" IsVisible="{Binding HasHeldItem}" FontSize="10"
+                               Foreground="{DynamicResource ThemeTextMutedBrush}" />
+                    <TextBlock Text="{Binding HeldItemText}" IsVisible="{Binding HasHeldItem}" FontSize="12" TextWrapping="Wrap"
+                               Foreground="{DynamicResource ThemeTextPrimaryBrush}" />
+                    <TextBlock Text="{Binding BallName}" FontSize="10" TextWrapping="Wrap"
+                               Foreground="{DynamicResource ThemeTextMutedBrush}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Moves with type icons -->
+            <ItemsControl x:Name="MoveList" ItemsSource="{Binding Moves}" IsVisible="{Binding HasMoves}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:SlotPreviewMove">
+                        <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,1">
+                            <Image Source="{Binding TypeIcon, Converter={StaticResource PngBytesToBitmap}}"
+                                   Width="16" Height="16" VerticalAlignment="Center"
+                                   RenderOptions.BitmapInterpolationMode="HighQuality" />
+                            <TextBlock Classes="move-name" Classes.illegal="{Binding IsIllegal}"
+                                       Text="{Binding Name}" FontSize="11" VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis" MaxWidth="104" />
+                            <PathIcon Data="{StaticResource Icon.Close}" IsVisible="{Binding IsIllegal}" Width="9" Height="9" VerticalAlignment="Center"
+                                      Foreground="{DynamicResource ThemeErrorBrush}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Legality: color is never the only signal; the pill always carries text. -->
+            <StackPanel Spacing="4">
+                <Border x:Name="LegalityPill" Classes="legality-pill"
+                        Classes.legal="{Binding IsLegal}"
+                        Classes.illegal="{Binding IsIllegal}"
+                        Classes.not-checked="{Binding IsNotChecked}">
+                    <TextBlock Text="{Binding LegalityText}" FontSize="11" FontWeight="SemiBold"
+                               Foreground="{DynamicResource ThemeTextPrimaryBrush}" />
+                </Border>
+                <TextBlock x:Name="LegalityHintText" Text="{Binding LegalityHint}" IsVisible="{Binding HasLegalityHint}"
+                           FontSize="11" TextWrapping="Wrap" MaxLines="4" TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+            </StackPanel>
+
+            <!-- Optional encounter summary -->
+            <StackPanel x:Name="EncounterPanel" Spacing="1" IsVisible="{Binding HasEncounter}">
+                <TextBlock Text="{Binding EncounterText}" FontSize="11" TextWrapping="Wrap"
+                           Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+                <TextBlock Text="{Binding EncounterLocation}" IsVisible="{Binding HasEncounterLocation}" FontSize="11" TextWrapping="Wrap"
+                           Foreground="{DynamicResource ThemeTextMutedBrush}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

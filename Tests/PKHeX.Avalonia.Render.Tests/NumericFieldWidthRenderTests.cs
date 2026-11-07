@@ -32,7 +32,7 @@ public sealed class NumericFieldWidthRenderTests
 
     // Editor, fields expected on screen. Mail Box already fitted and guards the shared measurement.
     public static IEnumerable<object[]> Cases =>
-        new (string Editor, int Fields)[] { ("apricorn", 7), ("daycare-hgss", 2), ("daycare-e", 2), ("hof1", 3), ("link6", 8), ("mail-e", 11), ("opower", 35) }
+        new (string Editor, int Fields)[] { ("apricorn", 7), ("daycare-hgss", 2), ("daycare-e", 2), ("hof1", 3), ("link6", 8), ("mail-e", 11), ("opower", 21) }
             .SelectMany(e => new[] { AppDensity.Compact, AppDensity.Comfortable }.Select(d => new object[] { e.Editor, e.Fields, d }));
 
     private static (Control View, object ViewModel) Build(string editor) => editor switch

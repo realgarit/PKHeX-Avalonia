@@ -764,12 +764,24 @@
                                 <StackPanel>
                                     <TextBlock Text="{loc:Loc PokemonEditor_Markings}" FontWeight="Bold" Margin="0,0,0,6" Opacity="0.6" />
                                     <UniformGrid Columns="6">
-                                        <CheckBox Content="●" IsChecked="{Binding MarkingCircle}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingCircle}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingCircle}" FontSize="16" HorizontalAlignment="Center" />
-                                        <CheckBox Content="▲" IsChecked="{Binding MarkingTriangle}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingTriangle}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingTriangle}" FontSize="16" HorizontalAlignment="Center" />
-                                        <CheckBox Content="■" IsChecked="{Binding MarkingSquare}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingSquare}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingSquare}" FontSize="16" HorizontalAlignment="Center" />
-                                        <CheckBox Content="♥" IsChecked="{Binding MarkingHeart}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingHeart}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingHeart}" FontSize="16" HorizontalAlignment="Center" />
-                                        <CheckBox Content="★" IsChecked="{Binding MarkingStar}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingStar}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingStar}" FontSize="16" IsVisible="{Binding HasSixMarkings}" HorizontalAlignment="Center" />
-                                        <CheckBox Content="◆" IsChecked="{Binding MarkingDiamond}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingDiamond}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingDiamond}" FontSize="16" IsVisible="{Binding HasSixMarkings}" HorizontalAlignment="Center" />
+                                        <CheckBox IsChecked="{Binding MarkingCircle}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingCircle}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingCircle}" HorizontalAlignment="Center">
+                                            <PathIcon Classes="marking" Data="{StaticResource Icon.Circle}" />
+                                        </CheckBox>
+                                        <CheckBox IsChecked="{Binding MarkingTriangle}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingTriangle}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingTriangle}" HorizontalAlignment="Center">
+                                            <PathIcon Classes="marking" Data="{StaticResource Icon.Triangle}" />
+                                        </CheckBox>
+                                        <CheckBox IsChecked="{Binding MarkingSquare}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingSquare}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingSquare}" HorizontalAlignment="Center">
+                                            <PathIcon Classes="marking" Data="{StaticResource Icon.Square}" />
+                                        </CheckBox>
+                                        <CheckBox IsChecked="{Binding MarkingHeart}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingHeart}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingHeart}" HorizontalAlignment="Center">
+                                            <PathIcon Classes="marking" Data="{StaticResource Icon.Heart}" />
+                                        </CheckBox>
+                                        <CheckBox IsChecked="{Binding MarkingStar}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingStar}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingStar}" IsVisible="{Binding HasSixMarkings}" HorizontalAlignment="Center">
+                                            <PathIcon Classes="marking" Data="{StaticResource Icon.Star}" />
+                                        </CheckBox>
+                                        <CheckBox IsChecked="{Binding MarkingDiamond}" ToolTip.Tip="{loc:Loc PokemonEditor_MarkingDiamond}" AutomationProperties.Name="{loc:Loc PokemonEditor_MarkingDiamond}" IsVisible="{Binding HasSixMarkings}" HorizontalAlignment="Center">
+                                            <PathIcon Classes="marking" Data="{StaticResource Icon.Diamond}" />
+                                        </CheckBox>
                                     </UniformGrid>
                                 </StackPanel>
                             </Border>

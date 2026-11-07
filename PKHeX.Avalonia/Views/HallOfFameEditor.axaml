@@ -87,11 +87,10 @@
                                                            Opacity="0.7"
                                                            HorizontalAlignment="Center" />
                                                 <!-- Shiny indicator -->
-                                                <TextBlock Text="★"
-                                                           Foreground="Gold"
-                                                           FontSize="12"
-                                                           HorizontalAlignment="Center"
-                                                           IsVisible="{Binding IsShiny}" />
+                                                <PathIcon Classes="shiny-badge" Data="{StaticResource Icon.Star}"
+                                                          Width="12" Height="12"
+                                                          HorizontalAlignment="Center"
+                                                          IsVisible="{Binding IsShiny}" />
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>

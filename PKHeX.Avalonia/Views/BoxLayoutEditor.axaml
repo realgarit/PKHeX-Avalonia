@@ -44,12 +44,16 @@
                                                   ToolTip.Tip="{Binding SelectedWallpaper.Text}"
                                                   IsEnabled="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).CanEditWallpaper}"
                                                   AutomationProperties.Name="{loc:Loc BoxLayoutEditor_Wallpaper}" />
-                                        <Button Grid.Column="3" Content="▲" Command="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).MoveUpCommand}" CommandParameter="{Binding}"
+                                        <Button Grid.Column="3" Classes="icon-action" Command="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).MoveUpCommand}" CommandParameter="{Binding}"
                                                 IsEnabled="{Binding CanMoveUp}" ToolTip.Tip="{loc:Loc BoxLayoutEditor_MoveUp}"
-                                                AutomationProperties.Name="{loc:Loc BoxLayoutEditor_MoveUp}" Padding="8,2" />
-                                        <Button Grid.Column="4" Content="▼" Command="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).MoveDownCommand}" CommandParameter="{Binding}"
+                                                AutomationProperties.Name="{loc:Loc BoxLayoutEditor_MoveUp}">
+                                            <PathIcon Classes="icon" Data="{StaticResource Icon.ChevronUp}" />
+                                        </Button>
+                                        <Button Grid.Column="4" Classes="icon-action" Command="{Binding $parent[ItemsControl].((vm:BoxLayoutEditorViewModel)DataContext).MoveDownCommand}" CommandParameter="{Binding}"
                                                 IsEnabled="{Binding CanMoveDown}" ToolTip.Tip="{loc:Loc BoxLayoutEditor_MoveDown}"
-                                                AutomationProperties.Name="{loc:Loc BoxLayoutEditor_MoveDown}" Padding="8,2" />
+                                                AutomationProperties.Name="{loc:Loc BoxLayoutEditor_MoveDown}">
+                                            <PathIcon Classes="icon" Data="{StaticResource Icon.ChevronDown}" />
+                                        </Button>
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

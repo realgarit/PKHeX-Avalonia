@@ -16,6 +16,17 @@ public interface IWindowService
     /// </summary>
     void ShowTool(object viewModel, string title);
 
+    /// <summary>
+    /// Same as <see cref="ShowTool(object, string)"/>, and runs <paramref name="onClosed"/> once when
+    /// that window closes for any reason (the user, <see cref="CloseTool"/> or
+    /// <see cref="CloseAllTools"/>). If the window is already open it is focused and the callback
+    /// registered when it opened stays in effect.
+    /// </summary>
+    void ShowTool(object viewModel, string title, Action onClosed);
+
+    /// <summary>Closes the modeless tool window of <paramref name="viewModel"/>, if one is open.</summary>
+    void CloseTool(object viewModel);
+
     /// <summary>Closes all open modeless tool windows (e.g. when the active save changes).</summary>
     void CloseAllTools();
 }

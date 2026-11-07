@@ -17,6 +17,9 @@ public partial class MysteryGiftDatabaseView : UserControl
 
     private const double FilterMinWidth = 180;
 
+    private global::Avalonia.Media.Geometry? FindIcon(string key) =>
+        this.TryFindResource(key, out var value) ? value as global::Avalonia.Media.Geometry : null;
+
     private void OnToggleFilters(object? sender, RoutedEventArgs e)
     {
         var column = RootGrid.ColumnDefinitions[0];
@@ -25,7 +28,7 @@ public partial class MysteryGiftDatabaseView : UserControl
             column.MinWidth = FilterMinWidth;
             column.Width = new GridLength(_lastFilterWidth);
             FilterSplitter.IsVisible = true;
-            ToggleFiltersButton.Content = "◀ Filters";
+            ToggleFiltersIcon.Data = FindIcon("Icon.ChevronLeft");
         }
         else
         {
@@ -33,7 +36,7 @@ public partial class MysteryGiftDatabaseView : UserControl
             column.MinWidth = 0;
             column.Width = new GridLength(0);
             FilterSplitter.IsVisible = false;
-            ToggleFiltersButton.Content = "▶ Filters";
+            ToggleFiltersIcon.Data = FindIcon("Icon.ChevronRight");
         }
     }
 

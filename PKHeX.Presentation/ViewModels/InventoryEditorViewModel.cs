@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -166,7 +167,6 @@ public partial class InventoryPouchViewModel : ViewModelBase
         _itemNames = itemNames;
         _spriteRenderer = spriteRenderer;
         _availableItemIds = availableItemIds ?? pouch.GetAllItems().ToArray().Select(id => (int)id).ToArray();
-        PouchName = pouch.Type.ToString();
         MaxCount = maxCount ?? pouch.MaxCount;
 
         // Build item list for combo box
@@ -180,7 +180,14 @@ public partial class InventoryPouchViewModel : ViewModelBase
         LoadFromPouch();
     }
 
-    public string PouchName { get; }
+    /// <summary>Core pouch category; the view maps it to the shared pouch icon.</summary>
+    public InventoryType PouchType => _pouch.Type;
+
+    /// <summary>Localized pouch caption ("Key Items", "TMs &amp; HMs"), never the enum identifier.</summary>
+    public string PouchName => GetPouchName(_pouch.Type);
+
+    /// <summary>Localized display name of a Core pouch category.</summary>
+    public static string GetPouchName(InventoryType type) => LocalizedStrings.Instance[$"InventoryPouch_{type}"];
     public int MaxCount { get; }
     public bool SupportsFavorite => _pouch.Items.Any(i => i is IItemFavorite);
     public bool SupportsNew => _pouch.Items.Any(i => i is IItemNewFlag);
@@ -191,6 +198,8 @@ public partial class InventoryPouchViewModel : ViewModelBase
 
     public void RefreshLanguage()
     {
+        OnPropertyChanged(nameof(PouchName));
+
         // Rebuild item list for combo box
         var validItems = _availableItemIds;
         ItemList = validItems

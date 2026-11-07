@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
 using PKHeX.Application.Abstractions;
+using PKHeX.Avalonia.Controls;
 using PKHeX.Presentation.ViewModels;
 
 namespace PKHeX.Avalonia.Services;
@@ -125,6 +126,16 @@ public sealed class WindowService : IWindowService
             dialog.MinHeight = Math.Min(320, dialog.MaxHeight);
         }
 
+        if (viewModel is BlockEditorViewModel)
+        {
+            // The block grid would otherwise measure to thousands of rows wide/tall; open compact like upstream's dump.
+            dialog.SizeToContent = SizeToContent.Manual;
+            dialog.Width = Math.Min(860, dialog.MaxWidth);
+            dialog.Height = Math.Min(580, dialog.MaxHeight);
+            dialog.MinWidth = Math.Min(620, dialog.MaxWidth);
+            dialog.MinHeight = Math.Min(440, dialog.MaxHeight);
+        }
+
         if (viewModel is RaidEditorViewModel)
         {
             dialog.SizeToContent = SizeToContent.Manual;
@@ -212,7 +223,17 @@ public sealed class WindowService : IWindowService
         dialog.Opened += (_, _) => Resize();
     }
 
-    public void ShowTool(object viewModel, string title)
+    public void ShowTool(object viewModel, string title) => ShowToolCore(viewModel, title, null);
+
+    public void ShowTool(object viewModel, string title, Action onClosed) => ShowToolCore(viewModel, title, onClosed);
+
+    public void CloseTool(object viewModel)
+    {
+        if (_tools.TryGetValue(viewModel, out var window))
+            window.Close();
+    }
+
+    private void ShowToolCore(object viewModel, string title, Action? onClosed)
     {
         // Already open for this ViewModel? Bring it forward instead of duplicating.
         if (_tools.TryGetValue(viewModel, out var existing))
@@ -275,6 +296,7 @@ public sealed class WindowService : IWindowService
             if (window.Width > 0 && window.Height > 0)
                 ToolBounds[key] = (window.Position, window.Width, window.Height);
             _tools.Remove(viewModel);
+            onClosed?.Invoke();
         };
 
         _tools[viewModel] = window;
@@ -359,8 +381,24 @@ public sealed class WindowService : IWindowService
         // Reading Window.Width in Opened can adopt the platform's initial owner-sized
         // bounds instead of the content's intended dimensions on macOS.
         var content = window.Content as Control;
-        content?.Measure(new Size(window.MaxWidth, window.MaxHeight));
+        var limit = DialogSize.Limit(content, new Size(window.MaxWidth, window.MaxHeight));
+        if (content is not null)
+        {
+            // Style and template the host first. A view measured before styling has no control
+            // templates: its lists, tabs and inputs measure far too small, and the dialog opened
+            // at the 420 x 300 floor with clipped labels and unreachable actions.
+            window.ApplyStyling();
+            window.ApplyTemplate();
+            window.Measure(limit);
+            content.Measure(limit);
+        }
         var desired = content?.DesiredSize ?? default;
+        // A declared preference is the first-frame size: grids and virtualized lists have no
+        // realized rows before the window opens, so their measured height says nothing useful.
+        if (content is not null)
+            desired = new Size(
+                DialogSize.GetPreferredWidth(content) is var preferredWidth && double.IsFinite(preferredWidth) && preferredWidth > 0 ? limit.Width : desired.Width,
+                DialogSize.GetPreferredHeight(content) is var preferredHeight && double.IsFinite(preferredHeight) && preferredHeight > 0 ? limit.Height : desired.Height);
         var (width, height) = ClampInitialBounds(desired.Width, desired.Height, window.MaxWidth, window.MaxHeight);
         window.SizeToContent = SizeToContent.Manual;
         window.WindowState = WindowState.Normal;

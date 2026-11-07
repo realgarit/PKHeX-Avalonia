@@ -3,6 +3,7 @@
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:models="clr-namespace:PKHeX.Presentation.Models;assembly=PKHeX.Presentation"
              xmlns:loc="using:PKHeX.Avalonia.Localization"
+             xmlns:controls="using:PKHeX.Avalonia.Controls"
              x:Class="PKHeX.Avalonia.Views.PartyViewer"
              x:DataType="vm:PartyViewerViewModel"
              Focusable="True">
@@ -28,7 +29,28 @@
                            Text="{loc:Loc PartyViewer_Title}"
                            Classes="view-title"
                            VerticalAlignment="Center" />
+                <!-- Embedded and detached views share one ViewModel: while the Party window is
+                     open, both offer dock-back instead of pop-out (#247). -->
                 <Button Grid.Column="1"
+                        x:Name="ReturnToMainWindowButton"
+                        IsVisible="{Binding IsDetachedWindowOpen}"
+                        Command="{Binding ReturnToMainWindowCommand}"
+                        ToolTip.Tip="{loc:Loc Workspace_ReturnToMainWindow_Tooltip}"
+                        AutomationProperties.Name="{loc:Loc Workspace_ReturnToMainWindow}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center">
+                    <Path Data="M 13,3 L 3,13 M 3,6 V 13 H 10"
+                          Stroke="{DynamicResource ThemeTextSecondaryBrush}"
+                          StrokeThickness="1.5"
+                          Width="16" Height="16" />
+                </Button>
+                <Button Grid.Column="1"
+                        x:Name="PopOutButton"
+                        IsVisible="{Binding !IsDetachedWindowOpen}"
                         Command="{Binding OpenDetachedToolCommand}"
                         ToolTip.Tip="{loc:Loc PartyViewer_PopOut}"
                         AutomationProperties.Name="{loc:Loc PartyViewer_PopOut}"
@@ -86,7 +108,7 @@
                                     DragDrop.Drop="OnSlotDrop"
                                     DragDrop.DragOver="OnSlotDragOver"
                                     DragDrop.DragLeave="OnSlotDragLeave"
-                                    ToolTip.Tip="{Binding ToolTipSummary}"
+                                    controls:SlotHoverPreview.IsEnabled="True"
                                     AutomationProperties.Name="{Binding AccessibleName}"
                                     Click="OnSlotClicked"
                                     DoubleTapped="OnSlotDoubleTapped"
