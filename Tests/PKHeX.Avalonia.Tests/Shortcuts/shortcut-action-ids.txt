@@ -79,6 +79,7 @@ OpenPokeGear4
 OpenPokeathlon
 OpenPokebean
 OpenPokedex
+OpenPokemonEditorWorkspace
 OpenPokepuff
 OpenPoketch
 OpenPssExport

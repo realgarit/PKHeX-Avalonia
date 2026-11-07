@@ -747,18 +747,20 @@ public partial class MainWindowViewModel
     private async Task OpenMisc7Async()
     {
         if (CurrentSave is not SAV7 sav) return;
-        await _windowService.ShowDialogAsync(
-            new Misc7EditorViewModel(sav, _dialogService),
-            T("Dialog_MiscEditorGen7"));
+        var vm = new Misc7EditorViewModel(sav, _dialogService);
+        vm.BattleLocksCommitted += OnTrainerSaveSlotsChanged;
+        try { await _windowService.ShowDialogAsync(vm, T("Dialog_MiscEditorGen7")); }
+        finally { vm.BattleLocksCommitted -= OnTrainerSaveSlotsChanged; }
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenMisc8Async()
     {
         if (CurrentSave is not SAV8SWSH sav) return;
-        await _windowService.ShowDialogAsync(
-            new Misc8EditorViewModel(sav, _dialogService),
-            T("Dialog_MiscEditorSWSH"));
+        var vm = new Misc8EditorViewModel(sav, _dialogService);
+        vm.BattleLocksCommitted += OnTrainerSaveSlotsChanged;
+        try { await _windowService.ShowDialogAsync(vm, T("Dialog_MiscEditorSWSH")); }
+        finally { vm.BattleLocksCommitted -= OnTrainerSaveSlotsChanged; }
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]

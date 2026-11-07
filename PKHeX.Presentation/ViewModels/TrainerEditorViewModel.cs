@@ -43,6 +43,7 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
         _plaParentBaseline = sav is SAV8LA plaBaseline ? (SAV8LA)plaBaseline.Clone() : null;
         BdspEditor = sav is SAV8BS bdsp ? new BdspTrainerEditorViewModel(bdsp) : null;
         _bdspParentBaseline = sav is SAV8BS bdspBaseline ? (SAV8BS)bdspBaseline.Clone() : null;
+        InitializeBattleBox(sav);
         LoadFromSave();
     }
 
@@ -493,7 +494,9 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
             if (DisplayTid != swshBaseline.DisplayTID) SwshEditor.DisplayTid = DisplayTid;
             if (DisplaySid != swshBaseline.DisplaySID) SwshEditor.DisplaySid = DisplaySid;
             if (HasWatts && Watts != swshBaseline.MyStatus.Watt) SwshEditor.Watts = Watts;
-            if (IsBadgeCount && BadgeCount != swshBaseline.Badges) SwshEditor.BadgeCount = BadgeCount;
+            // The field shows the stored count clamped to 0-8; compare against that, so an
+            // untouched out-of-range value (e.g. 255) is not rewritten on a no-op Apply.
+            if (IsBadgeCount && BadgeCount != Math.Clamp(swshBaseline.Badges, 0, MaxBadgeCount)) SwshEditor.BadgeCount = BadgeCount;
             SwshEditor.SaveCommand.Execute(null);
             if (!SwshEditor.HasError) { _swshParentBaseline = (SAV8SWSH)_sav.Clone(); LoadFromSave(); }
             return;
@@ -533,6 +536,8 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
             return;
         }
         if (IsZA) { SaveZaFields(); return; }
+        // Commit the staged Battle Box first: a live conflict must leave every field unwritten.
+        if (!TryCommitBattleBox(out bool battleBoxChanged)) return;
         _sav.OT = TrainerName;
         _sav.Gender = (byte)Gender;
         _sav.Money = Money;
@@ -551,6 +556,7 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
         SaveCurrencies();
         SaveBattleChateau();
         SaveRegionSettings();
+        if (battleBoxChanged) RaiseSaveSlotsChanged();
     }
 
     private void SaveBattleChateau()
@@ -720,6 +726,7 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
         if (LgpeEditor is not null) { LgpeEditor.ResetCommand.Execute(null); _lgpeParentBaseline = (SAV7b)_sav.Clone(); LoadFromSave(); return; }
         if (_zaClosed) return;
         if (_zaSession is not null) { _zaEpoch++; _zaSession.Reset(); _sav = _zaSession.Staged; }
+        ResetBattleBox();
         LoadFromSave();
     }
 

@@ -298,6 +298,15 @@ public partial class MainWindowViewModel
         PartyViewer?.RefreshParty();
     }
 
+    partial void OnTrainerEditorChanged(TrainerEditorViewModel? oldValue, TrainerEditorViewModel? newValue)
+    {
+        if (oldValue is not null) oldValue.SaveSlotsChanged -= OnTrainerSaveSlotsChanged;
+        if (newValue is not null) newValue.SaveSlotsChanged += OnTrainerSaveSlotsChanged;
+    }
+
+    // An applied Battle Box / Battle Team unlock changes the slot lock markers.
+    private void OnTrainerSaveSlotsChanged(object? sender, EventArgs e) => OnBatchEditCompleted();
+
     private void OnUndoRedoPerformed(ISlotInfo info)
     {
         if (CurrentSave is { } save)
