@@ -165,7 +165,7 @@ public partial class Misc8EditorViewModel
         if (_closed || _dialogs is null) return; int epoch = _epoch;
         if (!await _dialogs.ShowConfirmationAsync(LocalizedStrings.Instance["Trainer8_Action" + kind], LocalizedStrings.Instance["Trainer8_Confirm" + kind], LocalizedStrings.Instance["TrainerEditor_ApplyChanges"], LocalizedStrings.Instance["Common_Cancel"])) return;
         if (_closed || epoch != _epoch || scopeStillValid?.Invoke() is false) return;
-        _session.ApplyAction(action); _sav = _session.Staged; _epoch++; OnPropertyChanged(nameof(CanUndo));
+        _session.ApplyAction(action); _sav = _session.Staged; _epoch++; OnPropertyChanged(nameof(CanUndo)); NotifyBattleTeams();
     }
     [RelayCommand] private Task ResetAppearance()
     {
@@ -178,9 +178,9 @@ public partial class Misc8EditorViewModel
             finally { save.Gender = original; }
         }, () => Gender == gender && SkinColor == skin);
     }
-    [RelayCommand] private void Undo() { if (_closed) return; _session.Undo(); _sav = _session.Staged; _epoch++; OnPropertyChanged(nameof(CanUndo)); }
-    [RelayCommand] private void Reset() { if (_closed) return; _session.Reset(); _sav = _session.Staged; _baseline = (SAV8SWSH)_sav.Clone(); _epoch++; LoadTrainerFields(); LoadMisc(); LoadBattleTower(); Error = string.Empty; OnPropertyChanged(nameof(CanUndo)); }
-    public void Dispose() { _closed = true; _epoch++; CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.UnregisterAll(this); }
+    [RelayCommand] private void Undo() { if (_closed) return; _session.Undo(); _sav = _session.Staged; _epoch++; OnPropertyChanged(nameof(CanUndo)); NotifyBattleTeams(); }
+    [RelayCommand] private void Reset() { if (_closed) return; _session.Reset(); _sav = _session.Staged; _baseline = (SAV8SWSH)_sav.Clone(); _epoch++; LoadTrainerFields(); LoadMisc(); LoadBattleTower(); Error = string.Empty; OnPropertyChanged(nameof(CanUndo)); NotifyBattleTeams(); }
+    public void Dispose() { _closed = true; _epoch++; CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.UnregisterAll(this); UnlockBattleTeamsCommand.NotifyCanExecuteChanged(); }
     public void RefreshLanguage()
     {
         int gender = Gender, language = Language, skin = SkinColor;
