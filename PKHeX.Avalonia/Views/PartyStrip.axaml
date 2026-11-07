@@ -123,9 +123,8 @@
                                                Stretch="Uniform"
                                                Width="36" Height="30"
                                                RenderOptions.BitmapInterpolationMode="HighQuality" />
-                                        <TextBlock Text="★"
-                                                   Foreground="{DynamicResource ThemeShinyBrush}"
-                                                   FontSize="10"
+                                        <PathIcon Classes="shiny-badge" Data="{StaticResource Icon.Star}"
+                                                   Width="9" Height="9"
                                                    HorizontalAlignment="Right"
                                                    VerticalAlignment="Top"
                                                    IsVisible="{Binding IsShiny}" />

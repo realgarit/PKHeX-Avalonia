@@ -132,7 +132,7 @@ public class InventoryStatusTests
         second.IsNew = false;
         pouch.SortByCount();
         vm.SaveCommand.Execute(null);
-        var actual = save.Inventory.Pouches.Single(p => p.Type.ToString() == pouch.PouchName);
+        var actual = save.Inventory.Pouches.Single(p => p.Type == pouch.PouchType);
         Assert.True(Assert.IsAssignableFrom<IItemNewFlag>(actual.Items.Single(i => i.Index == first.ItemId)).IsNew);
         Assert.False(Assert.IsAssignableFrom<IItemNewFlag>(actual.Items.Single(i => i.Index == second.ItemId)).IsNew);
     }

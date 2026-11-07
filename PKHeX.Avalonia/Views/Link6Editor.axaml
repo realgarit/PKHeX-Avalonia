@@ -6,72 +6,90 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:loc="using:PKHeX.Avalonia.Localization"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="550"
+             xmlns:pc="using:PKHeX.Avalonia.Controls"
+             MinWidth="440" MinHeight="300"
+             pc:DialogSize.PreferredWidth="600" pc:DialogSize.PreferredHeight="520"
              x:Class="PKHeX.Avalonia.Views.Link6Editor"
              x:DataType="vm:Link6EditorViewModel">
 
+    <!-- One header line with the link flag and file actions; the gift contents are split into
+         Items and Pokémon tabs so the dialog no longer expands every slot at once. -->
     <Border Classes="view-container">
-    <ScrollViewer>
-        <StackPanel Spacing="8">
-            <!-- Header Controls -->
-            <Grid ColumnDefinitions="Auto, *, Auto">
-                <StackPanel Orientation="Horizontal" Spacing="10">
+        <DockPanel>
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="{DynamicResource UiDensitySectionHeaderMargin}">
+                <WrapPanel Orientation="Horizontal" ItemSpacing="8" LineSpacing="4" VerticalAlignment="Center">
                     <CheckBox Content="{loc:Loc Link6Editor_LinkAvailable}" IsChecked="{Binding IsEnabled}" />
                     <Button Content="{loc:Loc Link6Editor_ImportPl6}" Command="{Binding ImportCommand}" />
                     <Button Content="{loc:Loc Link6Editor_ExportPl6}" Command="{Binding ExportCommand}" />
-                </StackPanel>
+                </WrapPanel>
+                <Button Grid.Column="1" Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" MinWidth="88" VerticalAlignment="Top" />
             </Grid>
 
-            <TextBlock Text="{loc:Loc Link6Editor_OriginSource}" FontWeight="Bold" />
-            <TextBox Text="{Binding Origin}" MaxLength="110" />
+            <TabControl Classes="compact-editor-tabs">
+                <TabItem Header="{loc:Loc Link6Editor_Items}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Spacing="6">
+                            <Border Classes="editor-section-padded">
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="6">
+                                    <TextBlock Text="{loc:Loc Link6Editor_OriginSource}" VerticalAlignment="Center" />
+                                    <TextBox Grid.Column="1" Text="{Binding Origin}" MaxLength="110"
+                                             AutomationProperties.Name="{loc:Loc Link6Editor_OriginSource}" />
+                                    <WrapPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" ItemSpacing="16" LineSpacing="6">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{loc:Loc Link6Editor_BattlePoints}" VerticalAlignment="Center" />
+                                            <NumericUpDown Value="{Binding BattlePoints}" Minimum="0" Maximum="65535" Width="144"
+                                                           AutomationProperties.Name="{loc:Loc Link6Editor_BattlePoints}" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{loc:Loc Link6Editor_PokeMiles}" VerticalAlignment="Center" />
+                                            <NumericUpDown Value="{Binding PokeMiles}" Minimum="0" Maximum="65535" Width="144"
+                                                           AutomationProperties.Name="{loc:Loc Link6Editor_PokeMiles}" />
+                                        </StackPanel>
+                                    </WrapPanel>
+                                </Grid>
+                            </Border>
 
-            <Grid ColumnDefinitions="Auto, Auto, Auto, Auto" RowDefinitions="Auto, Auto">
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc Link6Editor_BattlePoints}" VerticalAlignment="Center" Margin="0,0,10,0" />
-                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding BattlePoints}" Minimum="0" Maximum="65535" MinWidth="144" Margin="0,0,20,0" />
+                            <ItemsControl ItemsSource="{Binding Items}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:LinkItemViewModel">
+                                        <Grid ColumnDefinitions="28,*,144" ColumnSpacing="8" Margin="0,2">
+                                            <TextBlock Text="{Binding Index}" VerticalAlignment="Center" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+                                            <ComboBox Grid.Column="1" ItemsSource="{Binding ItemNames}" SelectedIndex="{Binding Item}" HorizontalAlignment="Stretch"
+                                                      AutomationProperties.Name="{Binding ItemName}" />
+                                            <NumericUpDown Grid.Column="2" Value="{Binding Quantity}" Minimum="0" Maximum="65535"
+                                                           AutomationProperties.Name="{Binding QuantityName}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
 
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Loc Link6Editor_PokeMiles}" VerticalAlignment="Center" Margin="0,0,10,0" />
-                <NumericUpDown Grid.Row="0" Grid.Column="3" Value="{Binding PokeMiles}" Minimum="0" Maximum="65535" MinWidth="144" />
-            </Grid>
-
-            <Border Classes="editor-rule" />
-            
-            <TextBlock Text="{loc:Loc Link6Editor_Items}" FontWeight="Bold" FontSize="16" />
-            <ItemsControl ItemsSource="{Binding Items}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid ColumnDefinitions="30, *, 144" Margin="0,5">
-                            <TextBlock Text="{Binding Index, StringFormat='#{0}'}" VerticalAlignment="Center" />
-                            <ComboBox Grid.Column="1" ItemsSource="{Binding ItemNames}" SelectedIndex="{Binding Item}" Margin="5,0" AutomationProperties.Name="Item" />
-                            <NumericUpDown Grid.Column="2" Value="{Binding Quantity}" Minimum="0" Maximum="65535" AutomationProperties.Name="Quantity" />
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-            <Border Classes="editor-rule" />
-
-            <TextBlock Text="{loc:Loc Link6Editor_Pokemon}" FontWeight="Bold" FontSize="16" />
-            <ItemsControl ItemsSource="{Binding Pokemon}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Classes="editor-section-padded" Padding="8" Margin="0,0,0,8" MinWidth="150">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Index, StringFormat='Slot {0}'}" FontWeight="Bold" />
-                                <TextBlock Text="{Binding Nickname}" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding SpeciesName}" FontSize="12" Opacity="0.7" />
-                                <TextBlock Text="{Binding Level, StringFormat='Level {0}'}" FontSize="12" />
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            
-            <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" HorizontalAlignment="Right" Margin="0,8,0,0" />
-        </StackPanel>
-    </ScrollViewer>
+                <TabItem Header="{loc:Loc Link6Editor_Pokemon}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding Pokemon}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="3" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:LinkPokemonViewModel">
+                                    <Border Classes="editor-section-padded" Margin="0,0,8,8">
+                                        <StackPanel Spacing="1">
+                                            <TextBlock Text="{Binding SlotLabel}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+                                            <TextBlock Text="{Binding Nickname}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding SpeciesName}" FontSize="12" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
+                                            <TextBlock Text="{Binding LevelLabel}" FontSize="12" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
     </Border>
 </UserControl>

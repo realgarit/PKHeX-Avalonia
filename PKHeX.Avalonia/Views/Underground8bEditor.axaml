@@ -5,6 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:loc="using:PKHeX.Avalonia.Localization"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+             xmlns:pc="using:PKHeX.Avalonia.Controls"
+             MinWidth="520" MinHeight="320"
+             pc:DialogSize.PreferredWidth="660" pc:DialogSize.PreferredHeight="480"
              x:Class="PKHeX.Avalonia.Views.Underground8bEditor"
              x:DataType="vm:Underground8bEditorViewModel">
     <Border Classes="view-container">
@@ -18,18 +21,22 @@
         <DataGrid Grid.Row="1" Classes="save-grid" ItemsSource="{Binding Items}" AutoGenerateColumns="False"
                   IsReadOnly="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="{loc:Loc Underground8bEditor_Id}" Binding="{Binding Index, StringFormat=\{0:D3\}}" IsReadOnly="True" Width="50" />
-                <DataGridTextColumn Header="{loc:Loc Underground8bEditor_Type}" Binding="{Binding Type}" IsReadOnly="True" Width="80" />
-                <DataGridTextColumn Header="{loc:Loc Underground8bEditor_Name}" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
-                <DataGridTemplateColumn Header="{loc:Loc Underground8bEditor_Count}" Width="80">
+                <!-- Headers size to their localized text with a floor, so "New" and "Favorite" are never cut
+                     to "Ne" / "Favori"; only the name column absorbs spare width. -->
+                <DataGridTextColumn Header="{loc:Loc Underground8bEditor_Id}" Binding="{Binding Index, StringFormat=\{0:D3\}}" IsReadOnly="True" Width="Auto" MinWidth="52" />
+                <DataGridTextColumn Header="{loc:Loc Underground8bEditor_Type}" Binding="{Binding Type}" IsReadOnly="True" Width="Auto" MinWidth="72" />
+                <DataGridTextColumn Header="{loc:Loc Underground8bEditor_Name}" Binding="{Binding Name}" IsReadOnly="True" Width="*" MinWidth="150" />
+                <DataGridTemplateColumn Header="{loc:Loc Underground8bEditor_Count}" Width="SizeToHeader" MinWidth="76">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <NumericUpDown Value="{Binding Count}" Minimum="0" Maximum="{Binding MaxValue}" HorizontalAlignment="Center" AutomationProperties.Name="Count" />
+                        <DataTemplate x:DataType="vm:UndergroundItem8bViewModel">
+                            <NumericUpDown Value="{Binding Count}" Minimum="0" Maximum="{Binding MaxValue}" ShowButtonSpinner="False" Width="64"
+                                           HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                                           AutomationProperties.Name="{loc:Loc Underground8bEditor_Count}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn Header="{loc:Loc Underground8bEditor_New}" Binding="{Binding IsNew}" Width="60" />
-                <DataGridCheckBoxColumn Header="{loc:Loc Underground8bEditor_Favorite}" Binding="{Binding IsFavorite}" Width="80" />
+                <DataGridCheckBoxColumn Header="{loc:Loc Underground8bEditor_New}" Binding="{Binding IsNew}" Width="SizeToHeader" MinWidth="64" />
+                <DataGridCheckBoxColumn Header="{loc:Loc Underground8bEditor_Favorite}" Binding="{Binding IsFavorite}" Width="SizeToHeader" MinWidth="84" />
             </DataGrid.Columns>
         </DataGrid>
 

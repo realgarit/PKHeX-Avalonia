@@ -23,7 +23,11 @@
                         SelectedItem="{Binding SelectedPouch}">
                 <TabControl.ItemTemplate>
                     <DataTemplate DataType="vm:InventoryPouchViewModel">
-                        <TextBlock Text="{Binding PouchName}" />
+                        <!-- Shared pouch icon plus the localized pouch name ("Key Items", not "KeyItems"). -->
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <PathIcon Classes="pouch-icon" Data="{Binding PouchType, Converter={StaticResource InventoryPouchIcon}}" />
+                            <TextBlock Text="{Binding PouchName}" VerticalAlignment="Center" />
+                        </StackPanel>
                     </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.ContentTemplate>

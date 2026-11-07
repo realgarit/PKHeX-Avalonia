@@ -76,10 +76,14 @@
                                                            AutomationProperties.Name="{Binding RecorderAutomationName}"
                                                            AutomationProperties.HelpText="{loc:Loc Shortcuts_RecorderHelp}"
                                                            ToolTip.Tip="{Binding DefaultText}" />
-                                <Button Grid.Column="2" Classes="icon-button shortcut-row-action" Content="×" Command="{Binding ClearCommand}"
-                                        AutomationProperties.Name="{Binding ClearAutomationName}" ToolTip.Tip="{Binding ClearAutomationName}" />
-                                <Button Grid.Column="3" Classes="icon-button shortcut-row-action" Content="↺" Command="{Binding ResetCommand}"
-                                        AutomationProperties.Name="{Binding ResetAutomationName}" ToolTip.Tip="{Binding DefaultText}" />
+                                <Button Grid.Column="2" Classes="icon-button shortcut-row-action" Command="{Binding ClearCommand}"
+                                        AutomationProperties.Name="{Binding ClearAutomationName}" ToolTip.Tip="{Binding ClearAutomationName}">
+                                    <PathIcon Classes="icon" Data="{StaticResource Icon.Close}" />
+                                </Button>
+                                <Button Grid.Column="3" Classes="icon-button shortcut-row-action" Command="{Binding ResetCommand}"
+                                        AutomationProperties.Name="{Binding ResetAutomationName}" ToolTip.Tip="{Binding DefaultText}">
+                                    <PathIcon Classes="icon" Data="{StaticResource Icon.Reset}" />
+                                </Button>
                                 <Grid Grid.Row="1" Grid.ColumnSpan="4" ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="0,4,0,0" IsVisible="{Binding HasMessage}">
                                     <TextBlock Text="{Binding Message}" FontSize="11" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" VerticalAlignment="Center" AutomationProperties.LiveSetting="Polite" />
                                     <Button Grid.Column="1" Classes="compact-secondary" FontSize="11" Content="{loc:Loc Shortcuts_Reassign}" Command="{Binding ReassignCommand}" IsVisible="{Binding HasPendingConflict}"

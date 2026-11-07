@@ -18,10 +18,22 @@
             <Border DockPanel.Dock="Bottom" Classes="card" Padding="12" Margin="0,12,0,0">
                 <StackPanel Spacing="8">
                     <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                        <Button Content="{loc:Loc EntitySeekView_Prev}" Command="{Binding SeekPreviousCommand}"
-                                ToolTip.Tip="{loc:Loc EntitySeekView_SeekPreviousTip}" />
-                        <Button Content="{loc:Loc EntitySeekView_Next}" Classes="accent" Command="{Binding SeekNextCommand}"
-                                ToolTip.Tip="{loc:Loc EntitySeekView_SeekNextTip}" />
+                        <Button Command="{Binding SeekPreviousCommand}"
+                                ToolTip.Tip="{loc:Loc EntitySeekView_SeekPreviousTip}"
+                                AutomationProperties.Name="{loc:Loc EntitySeekView_Prev}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <PathIcon Classes="icon icon-small" Data="{StaticResource Icon.ChevronLeft}" VerticalAlignment="Center" />
+                                <TextBlock Text="{loc:Loc EntitySeekView_Prev}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="accent" Command="{Binding SeekNextCommand}"
+                                ToolTip.Tip="{loc:Loc EntitySeekView_SeekNextTip}"
+                                AutomationProperties.Name="{loc:Loc EntitySeekView_Next}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="{loc:Loc EntitySeekView_Next}" VerticalAlignment="Center" />
+                                <PathIcon Classes="icon icon-small" Data="{StaticResource Icon.ChevronRight}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                     <TextBlock Text="{Binding SeekStatus}" HorizontalAlignment="Center"
                                Foreground="{DynamicResource ThemeTextMutedBrush}" FontSize="12"

@@ -20,7 +20,7 @@
             <Border Classes="editor-section-padded" Padding="8">
                 <StackPanel Spacing="12">
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <TextBlock Text="📁" FontSize="20" VerticalAlignment="Center"/>
+                        <PathIcon Classes="icon" Data="{StaticResource Icon.Folder}" Width="20" Height="20" VerticalAlignment="Center"/>
                         <TextBlock Text="{loc:Loc SaveHandlerTroubleshooter_SaveFile}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Grid ColumnDefinitions="*,Auto">
@@ -35,7 +35,7 @@
             <Border Classes="editor-section-padded" Padding="8">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <TextBlock Text="🔧" FontSize="20" VerticalAlignment="Center"/>
+                        <PathIcon Classes="icon" Data="{StaticResource Icon.Tool}" Width="20" Height="20" VerticalAlignment="Center"/>
                         <TextBlock Text="{loc:Loc SaveHandlerTroubleshooter_ForcedParameters}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
 

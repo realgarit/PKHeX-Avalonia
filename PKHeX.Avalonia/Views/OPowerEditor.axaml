@@ -2,8 +2,81 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:loc="using:PKHeX.Avalonia.Localization"
+             xmlns:pc="using:PKHeX.Avalonia.Controls"
              x:Class="PKHeX.Avalonia.Views.OPowerEditor"
-             x:DataType="vm:OPowerEditorViewModel">
+             x:DataType="vm:OPowerEditorViewModel"
+             MinWidth="440" MinHeight="300"
+             pc:DialogSize.PreferredWidth="560" pc:DialogSize.PreferredHeight="480">
+
+    <UserControl.Resources>
+        <!-- Caption row: repeats the unlock tier columns ("1", "2", "3", "S", "MAX") above the rows. -->
+        <DataTemplate x:Key="OPowerCaption" x:DataType="vm:OPowerEditorViewModel">
+            <Grid Classes="opower-row" ColumnDefinitions="*,52,52,180" Margin="0,0,0,4">
+                <TextBlock Text="{loc:Loc OPowerEditor_Power}" Classes="opower-caption" HorizontalAlignment="Left" />
+                <TextBlock Grid.Column="1" Text="{loc:Loc OPowerEditor_Level1}" Classes="opower-caption" TextWrapping="Wrap" TextAlignment="Center" />
+                <TextBlock Grid.Column="2" Text="{loc:Loc OPowerEditor_Level2}" Classes="opower-caption" TextWrapping="Wrap" TextAlignment="Center" />
+                <StackPanel Grid.Column="3" Spacing="2" VerticalAlignment="Bottom">
+                    <TextBlock Text="{loc:Loc OPowerEditor_Unlocks}" Classes="opower-caption" />
+                    <ItemsControl ItemsSource="{Binding UnlockColumns}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <TextBlock Text="{Binding}" Classes="opower-caption" Width="36" TextAlignment="Center" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="OPowerRow" x:DataType="vm:OPowerRowViewModel">
+            <Grid Classes="opower-row" ColumnDefinitions="*,52,52,180" Margin="0,1">
+                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Name}" />
+                <NumericUpDown Grid.Column="1" Value="{Binding Level1}" Minimum="0" Maximum="5"
+                               AutomationProperties.Name="{Binding Level1Name}" ToolTip.Tip="{Binding Level1Name}" />
+                <NumericUpDown Grid.Column="2" Value="{Binding Level2}" Minimum="0" Maximum="5"
+                               AutomationProperties.Name="{Binding Level2Name}" ToolTip.Tip="{Binding Level2Name}" />
+                <ItemsControl Grid.Column="3" ItemsSource="{Binding Unlocks}" VerticalAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:OPowerUnlockViewModel">
+                            <CheckBox IsChecked="{Binding IsUnlocked}" Width="36" MinWidth="0" Padding="0"
+                                      HorizontalContentAlignment="Center"
+                                      ToolTip.Tip="{Binding Name}" AutomationProperties.Name="{Binding Name}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <!-- One row per power: name, two stored levels, then one fixed cell per unlockable level so
+             every column lines up with the caption row. -->
+        <Style Selector="Grid.opower-row">
+            <Setter Property="ColumnSpacing" Value="6" />
+            <Setter Property="MinHeight" Value="{DynamicResource UiDensityInlineControlHeight}" />
+        </Style>
+        <Style Selector="Grid.opower-row > NumericUpDown">
+            <Setter Property="ShowButtonSpinner" Value="False" />
+            <Setter Property="Width" Value="52" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBlock.opower-caption">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="{DynamicResource ThemeTextSecondaryBrush}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+        </Style>
+    </UserControl.Styles>
 
     <Border Classes="view-container">
         <Panel>
@@ -13,82 +86,49 @@
             </StackPanel>
 
             <DockPanel IsVisible="{Binding IsSupported}">
-                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                    <TextBlock Text="{loc:Loc OPowerEditor_Title}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                        <Button Content="{loc:Loc OPowerEditor_UnlockAll}" Command="{Binding UnlockAllCommand}" Padding="12,6" />
-                        <Button Content="{loc:Loc OPowerEditor_ClearAll}" Command="{Binding ClearAllCommand}" Padding="12,6" />
+                <!-- Header: title and bulk actions stay on one line; the power flags wrap below them. -->
+                <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="{DynamicResource UiDensitySectionHeaderMargin}">
+                    <TextBlock Text="{loc:Loc OPowerEditor_Title}" Classes="view-title" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                        <Button Content="{loc:Loc OPowerEditor_UnlockAll}" Command="{Binding UnlockAllCommand}" />
+                        <Button Content="{loc:Loc OPowerEditor_ClearAll}" Command="{Binding ClearAllCommand}" />
                     </StackPanel>
-                </DockPanel>
-
-                <!-- Points -->
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,12">
-                    <TextBlock Text="{loc:Loc OPowerEditor_Points}" VerticalAlignment="Center" />
-                    <NumericUpDown Value="{Binding Points}" Minimum="0" Maximum="255" Width="128" />
-                </StackPanel>
-
-                <Grid ColumnDefinitions="*,16,*,16,200">
-                    <!-- Field Powers -->
-                    <Border Grid.Column="0" Classes="editor-section-padded">
-                        <DockPanel>
-                            <TextBlock DockPanel.Dock="Top" Text="{loc:Loc OPowerEditor_FieldPowers}" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
-                            <ScrollViewer>
-                                <ItemsControl ItemsSource="{Binding FieldPowers}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="vm:OPowerFieldViewModel">
-                                            <Grid ColumnDefinitions="*,60,4,60" Margin="0,2">
-                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="12"/>
-                                                <NumericUpDown Grid.Column="1" Value="{Binding Level1}" Minimum="0" Maximum="5" Width="55" Height="28" Padding="4" FontSize="12" Classes="compact"
-                                                               AutomationProperties.Name="{Binding Name, StringFormat='{}{0} Level 1'}"/>
-                                                <NumericUpDown Grid.Column="3" Value="{Binding Level2}" Minimum="0" Maximum="5" Width="55" Height="28" Padding="4" FontSize="12" Classes="compact"
-                                                               AutomationProperties.Name="{Binding Name, StringFormat='{}{0} Level 2'}"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </DockPanel>
-                    </Border>
-
-                    <!-- Battle Powers -->
-                    <Border Grid.Column="2" Classes="editor-section-padded">
-                        <DockPanel>
-                            <TextBlock DockPanel.Dock="Top" Text="{loc:Loc OPowerEditor_BattlePowers}" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
-                            <ScrollViewer>
-                                <ItemsControl ItemsSource="{Binding BattlePowers}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="vm:OPowerBattleViewModel">
-                                            <Grid ColumnDefinitions="*,60,4,60" Margin="0,2">
-                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="12"/>
-                                                <NumericUpDown Grid.Column="1" Value="{Binding Level1}" Minimum="0" Maximum="5" Width="55" Height="28" Padding="4" FontSize="12" Classes="compact"
-                                                               AutomationProperties.Name="{Binding Name, StringFormat='{}{0} Level 1'}"/>
-                                                <NumericUpDown Grid.Column="3" Value="{Binding Level2}" Minimum="0" Maximum="5" Width="55" Height="28" Padding="4" FontSize="12" Classes="compact"
-                                                               AutomationProperties.Name="{Binding Name, StringFormat='{}{0} Level 2'}"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </DockPanel>
-                    </Border>
-
-                    <!-- Unlocks -->
-                    <Border Grid.Column="4" Classes="editor-section-padded">
-                        <DockPanel>
-                            <TextBlock DockPanel.Dock="Top" Text="{loc:Loc OPowerEditor_Unlocks}" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" />
-                            <ScrollViewer>
-                                <ItemsControl ItemsSource="{Binding Unlocks}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="vm:OPowerUnlockViewModel">
-                                            <CheckBox IsChecked="{Binding IsUnlocked}" Content="{Binding Name}" Margin="0,1" FontSize="11"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </DockPanel>
-                    </Border>
                 </Grid>
+
+                <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" ItemSpacing="16" LineSpacing="4" Margin="{DynamicResource UiDensitySectionHeaderMargin}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="{loc:Loc OPowerEditor_Points}" VerticalAlignment="Center" />
+                        <NumericUpDown Value="{Binding Points}" Minimum="0" Maximum="255" Width="128"
+                                       AutomationProperties.Name="{loc:Loc OPowerEditor_Points}" />
+                    </StackPanel>
+                    <CheckBox IsChecked="{Binding Enable.IsUnlocked}" Content="{Binding Enable.Name}" VerticalAlignment="Center" />
+                    <CheckBox IsChecked="{Binding FullRecovery.IsUnlocked}" Content="{Binding FullRecovery.Name}" VerticalAlignment="Center" />
+                </WrapPanel>
+
+                <TabControl Classes="compact-editor-tabs">
+                    <TabItem Header="{loc:Loc OPowerEditor_FieldPowers}">
+                        <Border Classes="editor-section-padded">
+                            <DockPanel>
+                                <ContentControl DockPanel.Dock="Top" Content="{Binding}" ContentTemplate="{StaticResource OPowerCaption}" />
+                                <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                                    <ItemsControl ItemsSource="{Binding FieldPowers}" ItemTemplate="{StaticResource OPowerRow}" />
+                                </ScrollViewer>
+                            </DockPanel>
+                        </Border>
+                    </TabItem>
+                    <TabItem Header="{loc:Loc OPowerEditor_BattlePowers}">
+                        <Border Classes="editor-section-padded">
+                            <DockPanel>
+                                <ContentControl DockPanel.Dock="Top" Content="{Binding}" ContentTemplate="{StaticResource OPowerCaption}" />
+                                <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                                    <ItemsControl ItemsSource="{Binding BattlePowers}" ItemTemplate="{StaticResource OPowerRow}" />
+                                </ScrollViewer>
+                            </DockPanel>
+                        </Border>
+                    </TabItem>
+                </TabControl>
             </DockPanel>
         </Panel>
     </Border>
+
 </UserControl>

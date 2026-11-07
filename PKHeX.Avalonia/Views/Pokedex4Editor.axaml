@@ -65,8 +65,8 @@
                                 </DockPanel>
                                 <!-- Move Buttons -->
                                 <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
-                                    <Button Content="→" Command="{Binding AddGenderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" AutomationProperties.Name="Add Gender"/>
-                                    <Button Content="←" Command="{Binding RemoveGenderCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" AutomationProperties.Name="Remove Gender"/>
+                                    <Button Classes="icon-action" Command="{Binding AddGenderCommand}" HorizontalAlignment="Stretch" ToolTip.Tip="{loc:Loc Pokedex4Editor_AddGender}" AutomationProperties.Name="{loc:Loc Pokedex4Editor_AddGender}"><PathIcon Classes="icon" Data="{StaticResource Icon.ArrowRight}" /></Button>
+                                    <Button Classes="icon-action" Command="{Binding RemoveGenderCommand}" HorizontalAlignment="Stretch" ToolTip.Tip="{loc:Loc Pokedex4Editor_RemoveGender}" AutomationProperties.Name="{loc:Loc Pokedex4Editor_RemoveGender}"><PathIcon Classes="icon" Data="{StaticResource Icon.ArrowLeft}" /></Button>
                                 </StackPanel>
                                 <!-- Seen -->
                                 <DockPanel Grid.Column="4">
@@ -76,8 +76,8 @@
                                             <ListBox ItemsSource="{Binding SeenGenders}" SelectedItem="{Binding SelectedSeenGender}" Height="120" />
                                         </Border>
                                         <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
-                                            <Button Content="▲" Command="{Binding MoveGenderUpCommand}" Padding="8,6" AutomationProperties.Name="Move Gender Up"/>
-                                            <Button Content="▼" Command="{Binding MoveGenderDownCommand}" Padding="8,6" AutomationProperties.Name="Move Gender Down"/>
+                                            <Button Classes="icon-action" Command="{Binding MoveGenderUpCommand}" ToolTip.Tip="{loc:Loc Pokedex4Editor_MoveGenderUp}" AutomationProperties.Name="{loc:Loc Pokedex4Editor_MoveGenderUp}"><PathIcon Classes="icon" Data="{StaticResource Icon.ChevronUp}" /></Button>
+                                            <Button Classes="icon-action" Command="{Binding MoveGenderDownCommand}" ToolTip.Tip="{loc:Loc Pokedex4Editor_MoveGenderDown}" AutomationProperties.Name="{loc:Loc Pokedex4Editor_MoveGenderDown}"><PathIcon Classes="icon" Data="{StaticResource Icon.ChevronDown}" /></Button>
                                         </StackPanel>
                                     </Grid>
                                 </DockPanel>
@@ -98,8 +98,8 @@
                                 </DockPanel>
                                 <!-- Move Buttons -->
                                 <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
-                                    <Button Content="→" Command="{Binding AddFormCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" AutomationProperties.Name="Add Form"/>
-                                    <Button Content="←" Command="{Binding RemoveFormCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" AutomationProperties.Name="Remove Form"/>
+                                    <Button Classes="icon-action" Command="{Binding AddFormCommand}" HorizontalAlignment="Stretch" ToolTip.Tip="{loc:Loc Pokedex4Editor_AddForm}" AutomationProperties.Name="{loc:Loc Pokedex4Editor_AddForm}"><PathIcon Classes="icon" Data="{StaticResource Icon.ArrowRight}" /></Button>
+                                    <Button Classes="icon-action" Command="{Binding RemoveFormCommand}" HorizontalAlignment="Stretch" ToolTip.Tip="{loc:Loc Pokedex4Editor_RemoveForm}" AutomationProperties.Name="{loc:Loc Pokedex4Editor_RemoveForm}"><PathIcon Classes="icon" Data="{StaticResource Icon.ArrowLeft}" /></Button>
                                 </StackPanel>
                                 <!-- Seen -->
                                 <DockPanel Grid.Column="4">
@@ -109,8 +109,8 @@
                                             <ListBox ItemsSource="{Binding SeenForms}" SelectedItem="{Binding SelectedSeenForm}" Height="120" />
                                         </Border>
                                         <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
-                                            <Button Content="▲" Command="{Binding MoveFormUpCommand}" Padding="8,6" AutomationProperties.Name="Move Form Up"/>
-                                            <Button Content="▼" Command="{Binding MoveFormDownCommand}" Padding="8,6" AutomationProperties.Name="Move Form Down"/>
+                                            <Button Classes="icon-action" Command="{Binding MoveFormUpCommand}" ToolTip.Tip="{loc:Loc Pokedex4Editor_MoveFormUp}" AutomationProperties.Name="{loc:Loc Pokedex4Editor_MoveFormUp}"><PathIcon Classes="icon" Data="{StaticResource Icon.ChevronUp}" /></Button>
+                                            <Button Classes="icon-action" Command="{Binding MoveFormDownCommand}" ToolTip.Tip="{loc:Loc Pokedex4Editor_MoveFormDown}" AutomationProperties.Name="{loc:Loc Pokedex4Editor_MoveFormDown}"><PathIcon Classes="icon" Data="{StaticResource Icon.ChevronDown}" /></Button>
                                         </StackPanel>
                                     </Grid>
                                 </DockPanel>
