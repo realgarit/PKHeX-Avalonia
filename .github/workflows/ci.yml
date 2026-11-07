@@ -93,6 +93,16 @@ jobs:
         shell: bash
         run: python .github/scripts/report-test-durations.py
 
+      - name: Report visual regression summary
+        if: always() && steps.changes.outputs.docs_only != 'true'
+        shell: bash
+        run: |
+          # One line per baseline frame (docs/visual-regression.md); mismatches also upload
+          # expected/actual/diff PNGs in the test-results artifact below.
+          find . -path '*TestResults/visual-regression/visual-summary.txt' | while read -r f; do
+            { echo "### Visual regression (${{ matrix.os }})"; echo '```'; cat "$f"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          done
+
       - name: Upload test results
         if: always() && steps.changes.outputs.docs_only != 'true'
         uses: actions/upload-artifact@v7
@@ -109,4 +119,6 @@ jobs:
             **/TestResults/encounter-layout-*.txt
             **/TestResults/numeric-fields-*.png
             **/TestResults/numeric-fields-*.txt
+            **/TestResults/visual-regression/*.png
+            **/TestResults/visual-regression/visual-summary.txt
           retention-days: 14
