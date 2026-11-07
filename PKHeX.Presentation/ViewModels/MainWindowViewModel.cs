@@ -52,6 +52,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSave))]
+    [NotifyPropertyChangedFor(nameof(IsBlankWorkspace))]
     [NotifyPropertyChangedFor(nameof(WindowTitle))]
     [NotifyPropertyChangedFor(nameof(StatusText))]
     [NotifyPropertyChangedFor(nameof(CurrentSaveFileName))]
@@ -61,6 +62,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(SaveFileCommand))]
     [NotifyCanExecuteChangedFor(nameof(SaveFileAsCommand))]
     [NotifyCanExecuteChangedFor(nameof(CloseFileCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SavePokemonAsCommand))]
     [NotifyCanExecuteChangedFor(nameof(ImportShowdownCommand))]
     [NotifyCanExecuteChangedFor(nameof(ExportShowdownCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPKMDatabaseCommand))]
@@ -134,6 +136,8 @@ public partial class MainWindowViewModel : ViewModelBase
                 return CurrentSave is not null
                     ? LocalizedStrings.Instance.Format("Status_HaXMode_Game", CurrentSave.Version)
                     : LocalizedStrings.Instance["Status_HaXMode_NoSave"];
+            if (IsBlankWorkspace)
+                return LocalizedStrings.Instance.Format("Status_BlankWorkspace", CurrentSave!.Version);
             return CurrentSave is not null
                 ? LocalizedStrings.Instance.Format("Status_GameFormat", CurrentSave.Version)
                 : LocalizedStrings.Instance["Status_NoSaveLoaded"];
@@ -294,6 +298,9 @@ public partial class MainWindowViewModel : ViewModelBase
         _backupManager = null;
         _saveDiff = null;
 
+        // Any other save (or none) ends the standalone Pokémon workspace.
+        if (!ReferenceEquals(sav, _blankWorkspaceSave))
+            _blankWorkspaceSave = null;
         CurrentSave = sav;
         if (sav is not null)
         {
