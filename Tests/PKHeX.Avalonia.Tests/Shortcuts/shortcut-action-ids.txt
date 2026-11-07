@@ -93,6 +93,7 @@ OpenRecords
 OpenRoamer3
 OpenRoamer6
 OpenRsBoxWallpaper
+OpenSafariZone4
 OpenSaveDiff
 OpenSaveHandlerTroubleshooter
 OpenSealStickers8b

@@ -710,6 +710,13 @@ public partial class MainWindowViewModel
     }
 
     [RelayCommand(CanExecute = nameof(HasSave))]
+    private async Task OpenSafariZone4Async()
+    {
+        if (CurrentSave is not SAV4HGSS sav) return;
+        await _windowService.ShowDialogAsync(new SafariZone4EditorViewModel(sav), T("Safari4_Title"));
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSave))]
     private async Task OpenPokeathlonAsync()
     {
         if (CurrentSave is not SAV4HGSS sav) return;

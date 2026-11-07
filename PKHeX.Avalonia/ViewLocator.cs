@@ -115,6 +115,7 @@ public static class ViewLocator
         [typeof(Roamer3EditorViewModel)] = () => new Roamer3Editor(),
         [typeof(Roamer6EditorViewModel)] = () => new Roamer6Editor(),
         [typeof(RoamerEditorViewModel)] = () => new RoamerEditor(),
+        [typeof(SafariZone4EditorViewModel)] = () => new SafariZone4Editor(),
         [typeof(SaveDiffViewModel)] = () => new SaveDiffView(),
         [typeof(SaveHandlerTroubleshooterViewModel)] = () => new SaveHandlerTroubleshooter(),
         [typeof(SealStickers8bEditorViewModel)] = () => new SealStickers8bEditor(),
