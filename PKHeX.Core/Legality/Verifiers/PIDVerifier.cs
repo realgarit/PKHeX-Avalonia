@@ -73,6 +73,12 @@ public sealed class PIDVerifier : Verifier
         var pk = data.Entity;
         var enc = data.EncounterMatch;
 
+        if (enc.IsEgg)
+        {
+            VerifyShinyEgg(data, enc, pk);
+            return;
+        }
+
         if (!enc.Shiny.IsValid(pk))
             data.AddLine(GetInvalid(CheckIdentifier.Shiny, EncStaticPIDShiny));
 
@@ -111,6 +117,24 @@ public sealed class PIDVerifier : Verifier
                 data.AddLine(GetInvalid(CheckIdentifier.Shiny, EncStaticPIDShiny));
                 break;
         }
+    }
+
+    private static void VerifyShinyEgg(LegalityAnalysis data, IEncounterable enc, PKM pk)
+    {
+        if (enc.Shiny.IsValid(pk))
+            return;
+
+        // Can be hatched by another trainer after being generated.
+        if (!pk.IsEgg) // hatched
+        {
+            // Some generations can change the shiny state via trading.
+            // If it was able to trade and hatch, must have signs of doing so.
+            if (enc.Generation is 3)
+                return; // assumedly traded to a different OT, no location tracking
+            if (enc.Generation is (4 or 5 or 6 or 7) && pk.IsTradedEgg)
+                return; // egg location indicates was traded
+        }
+        data.AddLine(GetInvalid(CheckIdentifier.Shiny, EncStaticPIDShiny));
     }
 
     private void VerifyG5PID_IDCorrelation(LegalityAnalysis data)
@@ -162,6 +186,11 @@ public sealed class PIDVerifier : Verifier
             data.AddLine(Get(CheckIdentifier.EC, Severity.Fishy, PIDEncryptZero));
         }
 
+        if (pk.VC3) // HOME transfers
+        {
+            VerifyTransferECHOME(data);
+            return;
+        }
         // Gen3-5 => Gen6 have PID==EC with an edge case exception.
         if (Info.Generation is 3 or 4 or 5)
         {
@@ -169,6 +198,11 @@ public sealed class PIDVerifier : Verifier
             return;
         }
 
+        VerifyFutureOriginEC(data, pk, Info);
+    }
+
+    private static void VerifyFutureOriginEC(LegalityAnalysis data, PKM pk, LegalInfo Info)
+    {
         // Gen1-2, Gen6+ should have PID != EC
         if (pk.PID == pk.EncryptionConstant)
         {
@@ -228,6 +262,24 @@ public sealed class PIDVerifier : Verifier
 
         // Check to see if the PID and EC are properly configured.
         var expect = PK5.GetTransferPID(pk.EncryptionConstant, pk.ID32, out var bitFlipProc);
+        if (pk.PID == expect)
+            return;
+
+        var msg = bitFlipProc ? TransferEncryptGen6BitFlip : TransferEncryptGen6Equals;
+        data.AddLine(GetInvalid(CheckIdentifier.EC, msg));
+    }
+
+    private static void VerifyTransferECHOME(LegalityAnalysis data)
+    {
+        var pk = data.Entity;
+        if (data.EncounterMatch is WC8)
+        {
+            VerifyFutureOriginEC(data, pk, data.Info);
+            return;
+        }
+        
+        // Check to see if the PID and EC are properly configured.
+        var expect = HomeConverter.GetTransferPID(pk.EncryptionConstant, pk.ID32, out var bitFlipProc);
         if (pk.PID == expect)
             return;
 

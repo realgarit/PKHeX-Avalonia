@@ -115,10 +115,18 @@ public partial class EncounterDatabaseViewModel : ViewModelBase, IDisposable
         var names = GameInfo.Sources.VersionDataSource.ToDictionary(v => v.Value, v => v.Text);
         var blank = _sav.BlankPKM;
         var list = new List<ComboItem> { new(LocalizedStrings.Instance["EncounterDatabase_AnyGame"], 0) };
-        foreach (var version in GameUtil.GetVersionsWithinRange(blank, _sav.Context).Distinct().OrderByDescending(v => v))
+        foreach (var version in GetSearchableVersions(blank, _sav.Context).Distinct().OrderByDescending(v => v))
             list.Add(new ComboItem(names.TryGetValue((int)version, out var text) ? text : version.ToString(), (int)version));
         return list;
     }
+
+    /// <summary>
+    /// Versions the encounter generator can search. The HOME range also contains reserved IDs
+    /// (e.g. Winds/Waves) that have no entity context yet; Core's generator cannot build an
+    /// evolution chain for them, so they are excluded the same way upstream's generator skips them.
+    /// </summary>
+    private static IEnumerable<GameVersion> GetSearchableVersions(IGameValueLimit limit, EntityContext context) =>
+        GameUtil.GetVersionsWithinRange(limit, context).Where(static v => v.Context is not EntityContext.None);
 
     private bool CanSearch() => !IsSearching && AnyTypeSelected && (SelectedSpecies != 0 || Moves.Length != 0);
 
@@ -192,7 +200,7 @@ public partial class EncounterDatabaseViewModel : ViewModelBase, IDisposable
     private Query CaptureQuery()
     {
         var versions = SelectedVersion != 0 ? [(GameVersion)SelectedVersion]
-            : GameUtil.GetVersionsWithinRange(_sav.BlankPKM, _sav.Context).ToArray();
+            : GetSearchableVersions(_sav.BlankPKM, _sav.Context).ToArray();
         return new Query(SelectedSpecies, Moves, versions, TypeFilters.Where(t => t.IsChecked).Select(t => t.Group).ToHashSet(),
             Math.Min(LevelMin, LevelMax), Math.Max(LevelMin, LevelMax), LocationText.Trim(), ShinyFilter, EggFilter);
     }

@@ -98,11 +98,11 @@ public static class RibbonRules
     {
         // Legends can compete in Ranked starting from Series 10.
         // Past gen Pokémon can get the ribbon only if they've been reset.
-        if (evos.HasVisitedSWSH && IsRibbonValidMasterRankSWSH(pk, enc))
+        if (evos.HasVisitedSWSH && IsRibbonObtainableMasterRankSWSH(pk, enc))
             return true;
 
         // Legendaries can not compete in ranked yet.
-        if (evos.HasVisitedGen9 && IsRibbonValidMasterRankSV(pk, enc))
+        if (evos.HasVisitedGen9 && IsRibbonObtainableMasterRankSV(pk, enc))
             return true;
 
         return false;
@@ -111,7 +111,7 @@ public static class RibbonRules
     /// <summary>
     /// Checks if the entity participated in SW/SH ranked battles for the <see cref="IRibbonSetCommon8.RibbonMasterRank"/> ribbon.
     /// </summary>
-    private static bool IsRibbonValidMasterRankSWSH(PKM pk, IEncounterTemplate enc)
+    private static bool IsRibbonObtainableMasterRankSWSH(PKM pk, IEncounterTemplate enc)
     {
         // Transfers from prior games, as well as from GO, require the battle-ready symbol in order to participate in Ranked.
         if ((enc.Generation < 8 || enc.Context is EntityContext.Gen7b) && pk is IBattleVersion { BattleVersion: 0 })
@@ -132,8 +132,13 @@ public static class RibbonRules
         return true;
     }
 
-    private static bool IsRibbonValidMasterRankSV(PKM pk, IEncounterTemplate enc)
+    private static bool IsRibbonObtainableMasterRankSV(PKM pk, IEncounterTemplate enc)
     {
+        // FR/LG virtual console: can't be used in online ladder
+        // master rank ribbon not possible until S/V allows them online
+        if (pk.VC3)
+            return false;
+
         var species = pk.Species;
         if (species is (int)Greninja)
             return pk.Form == 0; // Disallow Ash-Greninja
@@ -197,6 +202,8 @@ public static class RibbonRules
     {
         if (!evos.HasVisitedGen3)
             return false;
+        if (!ParseSettings.AllowGBACrossTransferRSE(pk))
+            return false;
         if (ParseSettings.Settings.Game.Gen3.AllowBattleTowerTeamSwap)
             return true;
 
@@ -217,8 +224,10 @@ public static class RibbonRules
     /// <summary>
     /// Checks if the input can receive the <see cref="IRibbonSetUnique3.RibbonVictory"/> ribbon.
     /// </summary>
-    public static bool IsRibbonValidVictory(EvolutionHistory evos)
+    public static bool IsRibbonValidVictory(PKM pk, EvolutionHistory evos)
     {
+        if (!ParseSettings.AllowGBACrossTransferRSE(pk))
+            return false;
         if (evos.HasVisitedGen3)
             return IsAllowedBattleFrontier(evos.Gen3[0].Species) || ParseSettings.Settings.Game.Gen3.AllowBattleTowerTeamSwap;
         return false;
@@ -298,7 +307,7 @@ public static class RibbonRules
             var head = evos.Gen3[0]; // Checking contest with Gen3 head is fine; all false cases cannot evolve (evolution chain is same Gen3/Gen4).
             var contest = IsAllowedContest4(head.Species, head.Form) ? MaxContestBoth : MaxContest3;
             var battle = !IsAllowedBattleFrontier(head.Species)
-                ? ParseSettings.Settings.Game.Gen3.AllowBattleTowerTeamSwap ? MaxBattle3 : (byte)0
+                ? ParseSettings.Settings.Game.Gen3.AllowBattleTowerTeamSwap && ParseSettings.AllowGBACrossTransferRSE(pk) ? MaxBattle3 : (byte)0
                 : IsRibbonValidWinning(pk, enc, evos) ? MaxBattleBoth : MaxBattleBothNoWinning;
             return (contest, battle);
         }

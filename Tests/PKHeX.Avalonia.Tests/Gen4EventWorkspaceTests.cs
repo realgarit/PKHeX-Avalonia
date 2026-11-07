@@ -55,7 +55,7 @@ public sealed class Gen4EventWorkspaceTests
 
     [Theory]
     [InlineData("gen4_diamond.sav", "Game Corner Bonus Rounds Streak (Non-Korean)", "Stark Mountain Quest Cleared")]
-    [InlineData("gen4_platinum.sav", "Game Corner Bonus Rounds Streak (Japan and USA only)", "Stark Mountain Quest Cleared/Elite Four Rematch Unlocked")]
+    [InlineData("gen4_platinum.sav", "Game Corner Bonus Rounds Streak (JPN and USA only)", "Stark Mountain Quest Cleared/Elite Four Rematch Unlocked")]
     public void NewDpAndPlatinumDescriptionsAreVisibleAtTheUpstreamIndices(string file, string workName, string starkName)
     {
         using var language = new LanguageScope("en");

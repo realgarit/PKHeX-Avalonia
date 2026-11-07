@@ -26,12 +26,13 @@ public static class ChainBreedLegality
     /// <param name="species">The species of the Pokémon.</param>
     /// <param name="form">The form of the Pokémon.</param>
     /// <param name="version">The game version where the breeding occurs.</param>
+    /// <param name="flags">Logic tweaks for parsing.</param>
     /// <param name="moves">The moves of the Pokémon.</param>
     /// <returns>True if the moves can be produced by a valid breeding chain; otherwise, false.</returns>
-    public static bool IsValid(ushort species, byte form, GameVersion version, params ReadOnlySpan<ushort> moves)
+    public static bool IsValid(ushort species, byte form, GameVersion version, ChainBreedEraFlags flags, params ReadOnlySpan<ushort> moves)
     {
         Span<ChainBreedStep> buffer = stackalloc ChainBreedStep[MaxChainDepth];
-        var trace = new ChainBreedTrace(buffer);
+        var trace = new ChainBreedTrace(buffer) { Flags = flags };
         return IsValid(species, form, version, moves, ref trace);
     }
 
@@ -42,13 +43,14 @@ public static class ChainBreedLegality
     /// <param name="species">The species of the Pokémon.</param>
     /// <param name="form">The form of the Pokémon.</param>
     /// <param name="version">The game version where the breeding occurs.</param>
+    /// <param name="flags">Logic tweaks for parsing.</param>
     /// <param name="moves">The moves of the Pokémon.</param>
     /// <param name="summary">The summary of the breeding chain if the moves are valid.</param>
     /// <returns>True if the moves can be produced by a valid breeding chain; otherwise, false.</returns>
-    public static bool IsValid(ushort species, byte form, GameVersion version, ReadOnlySpan<ushort> moves, out ChainBreedSummary summary)
+    public static bool IsValid(ushort species, byte form, GameVersion version, ChainBreedEraFlags flags, ReadOnlySpan<ushort> moves, out ChainBreedSummary summary)
     {
         Span<ChainBreedStep> buffer = stackalloc ChainBreedStep[MaxChainDepth];
-        var trace = new ChainBreedTrace(buffer);
+        var trace = new ChainBreedTrace(buffer) { Flags = flags };
         bool result = IsValid(species, form, version, moves, ref trace);
         summary = result ? trace.GetSummary() : default;
         return result;
@@ -102,6 +104,7 @@ public static class ChainBreedLegality
         // Run the validation.
         return TryValidateCore(species, form, version, moves[..count], baseMoves, flags, ref trace, 0);
     }
+
     private static bool TryValidateCore(ushort eggSpecies, byte eggForm, GameVersion version,
         scoped ReadOnlySpan<ushort> moves, scoped ReadOnlySpan<ushort> baseMoves, scoped ReadOnlySpan<byte> flags,
         ref ChainBreedTrace trace, int depth)
@@ -317,6 +320,7 @@ public static class ChainBreedLegality
         if (pendingCount == 0)
             return true;
 
+        moves = pending[..pendingCount];
         Span<(ushort Species, byte Form)> eggSpecies = stackalloc (ushort, byte)[2];
         int eggSpeciesCount = GetEggSpeciesCandidates(fatherSpecies, fatherForm, version, eggSpecies);
         Span<byte> flags = stackalloc byte[MaxMoveCount];
@@ -329,11 +333,11 @@ public static class ChainBreedLegality
             var learn = GameData.GetLearnSource(version);
             var learnset = learn.GetLearnset(candidate.Species, candidate.Form);
             flags.Clear();
-            if (!MarkChildMoveFlags(candidate.Species, candidate.Form, version, pending[..pendingCount], learnset, flags))
+            if (!MarkChildMoveFlags(candidate.Species, candidate.Form, version, moves, learnset, flags))
                 continue;
 
             var baseMoves = learnset.GetBaseEggMoves(EggStateLegality.GetEggLevel(version.Generation));
-            if (!TryValidateCore(candidate.Species, candidate.Form, version, pending[..pendingCount], baseMoves, flags, ref trace, depth))
+            if (!TryValidateCore(candidate.Species, candidate.Form, version, moves, baseMoves, flags, ref trace, depth))
                 continue;
             return true;
         }
@@ -417,6 +421,7 @@ public static class ChainBreedLegality
         }
 
         // Check forward through evolutions (e.g., Tyrogue -> Hitmonlee/Hitmonchan/Hitmontop)
+        // We want to merge the branched evolutions together as any of them can source an egg move.
         var evos = tree.Forward.GetEvolutions(species, form);
         foreach (var (evoSpecies, evoForm) in evos)
         {
@@ -433,6 +438,7 @@ public static class ChainBreedLegality
 
     private static bool CanLearnFromHistoricalSource(ref ChainBreedTrace trace, ushort species, byte form, GameVersion version, ushort move)
     {
+        // Reaching this method requires all possible egg sources exhausted; only initial-moves encounters and past-generation learnsets remain.
         var generation = version.Generation;
 
         // Gen 3: Can use XD/Colo special encounters
@@ -441,7 +447,7 @@ public static class ChainBreedLegality
             if (CanLearnDirectly(ref trace, species, form, RS, move))
                 return true;
             // Check XD Shadow Pokemon encounters as origin.
-            if (CanLearnFromEncounterSpecial(Encounters3XD.Shadow, species, move))
+            if (!trace.Flags.HasFlag(ChainBreedEraFlags.NintendoSwitchGBA) && CanLearnFromEncounterSpecial(Encounters3XD.Shadow, species, move))
                 return true;
         }
 
@@ -482,10 +488,10 @@ public static class ChainBreedLegality
         GD or SI or GS => CanLearnDirectly2(ref trace, LearnSource2GS.Instance, species, form, move, false),
         C or GSC => CanLearnDirectly2(ref trace, LearnSource2C.Instance, species, form, move, true),
 
-        R or S or RS => CanLearnDirectly3(LearnSource3RS.Instance, species, form, move),
-        E or RSE => CanLearnDirectly3(LearnSource3E.Instance, species, form, move),
-        FR or FRLG => CanLearnDirectly3(LearnSource3FR.Instance, species, form, move),
-        LG => CanLearnDirectly3(LearnSource3LG.Instance, species, form, move),
+        R or S or RS => CanLearnDirectly3(LearnSource3RS.Instance, species, form, move, trace.Flags),
+        E or RSE => CanLearnDirectly3(LearnSource3E.Instance, species, form, move, trace.Flags),
+        FR or FRX or FRLG => CanLearnDirectly3(LearnSource3FR.Instance, species, form, move, trace.Flags),
+        LG or LGX => CanLearnDirectly3(LearnSource3LG.Instance, species, form, move, trace.Flags),
 
         D or P or DP => CanLearnDirectly4(LearnSource4DP.Instance, species, form, move, false),
         Pt or DPPt => CanLearnDirectly4(LearnSource4Pt.Instance, species, form, move, false),
@@ -555,7 +561,7 @@ public static class ChainBreedLegality
         return false;
     }
 
-    private static bool CanLearnDirectly3(ILearnSource<PersonalInfo3> source, ushort species, byte form, ushort move)
+    private static bool CanLearnDirectly3(ILearnSource<PersonalInfo3> source, ushort species, byte form, ushort move, ChainBreedEraFlags flags)
     {
         if (!source.TryGetPersonal(species, form, out var pi))
             return false;
@@ -570,12 +576,14 @@ public static class ChainBreedLegality
         if (hmIndex >= 0 && pi.TMHM[50 + hmIndex])
             return true;
 
-        if (LearnSource3RS.GetIsTutor(species, move))
-            return true; // XD
         if (LearnSource3E.GetIsTutorFRLG(species, move))
             return true; // FR/LG and Emerald
+        if (flags.HasFlag(ChainBreedEraFlags.NintendoSwitchGBA))
+            return false; // can't pull from other games
         if (LearnSource3E.GetIsSpecialTutor(species, move))
             return true; // Emerald
+        if (LearnSource3RS.GetIsTutor(species, move))
+            return true; // XD
 
         return false;
     }
@@ -618,7 +626,7 @@ public static class ChainBreedLegality
         // RSE are all the same learnsets for anything that can breed (only Deoxys differs between RS/E).
         R or S or E or RS or RSE => MarkChildMoveFlags3(species, form, LearnSource3E.Instance, PersonalTable.E[species, form], moves, learnset, flags),
         // FR/LG are all the same learnsets for anything that can breed (only Deoxys; Dugtrio has swapped move ordering: Sand-Attack is listed above Scratch only in LeafGreen).
-        FR or LG or FRLG => MarkChildMoveFlags3(species, form, LearnSource3FR.Instance, PersonalTable.FR[species, form], moves, learnset, flags),
+        FR or LG or FRX or LGX or FRLG => MarkChildMoveFlags3(species, form, LearnSource3FR.Instance, PersonalTable.FR[species, form], moves, learnset, flags),
 
         D or P or DP => MarkChildMoveFlags4(species, form, LearnSource4DP.Instance, PersonalTable.DP[species, form], version, moves, learnset, flags),
         Pt or DPPt => MarkChildMoveFlags4(species, form, LearnSource4Pt.Instance, PersonalTable.Pt[species, form], version, moves, learnset, flags),
@@ -669,6 +677,8 @@ public static class ChainBreedLegality
         var tms = PersonalInfo3.MachineMovesTechnical;
         var hms = PersonalInfo3.MachineMovesHidden;
         var tmhm = info.TMHM;
+
+        // Note: Pichu's Volt Tackle is a separate "bonus" move that is not an egg move. Same for other generations.
 
         for (int i = 0; i < moves.Length; i++)
         {
@@ -842,6 +852,11 @@ public static class ChainBreedLegality
         // ~~ Example: Volbeat w/ Dizzy Punch & Lunge (Illumise cannot learn either, and no father can share both).
         // ~~ In Gen8+, Egg Moves can be shared from other fathers onto the male then used for breeding, thus leaving only level up moves required for both parents.
 
+        // Note: all unreachable egg-move options (such as Gen7 Murkrow w/ Punishment) have been pruned from the eggmove resource.
+
+        // Not Implemented: this value is never updated, so the caller will always have an empty summary.
+        // This is only used to satisfy the out parameter requirement.
+        // The parent lineage of mixing and matching parents isn't really worth tracking.
         summary = default;
 
         var table = GameData.GetPersonal(version);
@@ -852,6 +867,7 @@ public static class ChainBreedLegality
 
         var (mi, mother) = ResolveMother(species, form, version, table);
         // If the evolved form is female-only, it must breed with a compatible father
+        // Every other male case can be solved by a single father that can pass all moves, or by a combination of fathers that can pass all moves.
         if (!mi.OnlyFemale)
             return true;
 
@@ -975,6 +991,7 @@ public static class ChainBreedLegality
                     continue;
 
                 // Check if this father can learn the move via level-up
+                // No need to check TM/Tutor because those will always be obtainable if the final egg can be TM/tutored and re-bred.
                 var fatherLearnset = learn.GetLearnset(fatherSpecies, fatherForm);
                 if (fatherLearnset.TryGetLevelLearnMove(move, out _))
                     return true; // Found a compatible father that can learn this move

@@ -33,6 +33,27 @@ public class EncounterDatabaseFilterTests
     }
 
     [Fact]
+    public async Task VersionListAndAnyGameSearchSkipVersionsWithoutContext()
+    {
+        // The HOME version range reaches reserved IDs (Winds/Waves) that have no entity context.
+        // Core's generator cannot search them, so "Any game" must not pass them on and the picker
+        // must not offer them. Gen 3 Switch transfers (FRX/LGX) do have a context and stay listed.
+        var vm = Create(Violet());
+        var listed = vm.VersionList.Where(v => v.Value != 0).Select(v => (GameVersion)v.Value).ToList();
+
+        Assert.DoesNotContain(GameVersion.WI, listed);
+        Assert.DoesNotContain(GameVersion.WA, listed);
+        Assert.All(listed, v => Assert.NotEqual(EntityContext.None, v.Context));
+        Assert.Contains(GameVersion.FRX, listed);
+        Assert.Contains(GameVersion.LGX, listed);
+
+        vm.SelectedSpecies = (ushort)Species.Pikachu;
+        await vm.SearchCommand.ExecuteAsync(null);
+
+        Assert.NotEmpty(vm.Results);
+    }
+
+    [Fact]
     public async Task CombinedVersionTypeAndLevelFiltersNarrowResults()
     {
         var vm = Create(Violet());
