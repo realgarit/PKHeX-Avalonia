@@ -75,6 +75,10 @@ def pull_requests(base: str | None, tag: str) -> list[int]:
     return numbers
 
 
+CLOSING_KEYWORD = re.compile(
+    r"^(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?\s+(?:[\w.-]+/[\w.-]+)?#\d+", re.IGNORECASE)
+
+
 def release_note(body: str) -> str | None:
     """The PR's `## Release note` section; '' when it opts out; None when absent or blank."""
     body = re.sub(r"<!--.*?-->", "", (body or "").replace("\r\n", "\n"), flags=re.DOTALL)
@@ -87,6 +91,10 @@ def release_note(body: str) -> str | None:
                 # tool attribution footer that often follows it at the end of a PR body.
                 if ANY_HEADING.match(nxt.strip()) or SECTION_END.match(nxt.strip()):
                     break
+                # GitHub closing keywords ("Closes #535") belong to the PR, not to users,
+                # and the Discord post must not carry issue numbers.
+                if CLOSING_KEYWORD.match(nxt.strip()):
+                    continue
                 section.append(nxt.rstrip())
             text = "\n".join(section).strip()
             if not text:

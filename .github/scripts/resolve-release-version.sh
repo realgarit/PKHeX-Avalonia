@@ -310,7 +310,9 @@ if [[ -n "$CURRENT_TAG" ]] && git rev-parse -q --verify "refs/tags/${CURRENT_TAG
   while IFS= read -r changed; do
     [[ -z "$changed" ]] && continue
     case "$changed" in
-      *.md|docs/*|.claude/*|.codex/*|.agents/*|.github/ISSUE_TEMPLATE/*|.github/upstream-sync/*|      .gitattributes|.gitignore|.editorconfig|LICENSE) ;;
+      *.md|docs/*|.claude/*|.codex/*|.agents/*|.github/ISSUE_TEMPLATE/*|.github/upstream-sync/*|      .gitattributes|.gitignore|.editorconfig|LICENSE|\
+      .github/scripts/announce-release.py|.github/workflows/discord-announce.yml|\
+      .github/workflows/pr-title.yml|.github/workflows/check-upstream-sync.yml) ;;
       *) RELEASABLE_CHANGES=true; break ;;
     esac
   done < <(git diff --name-only --no-renames "${CURRENT_TAG}" "${HEAD_SHA}" 2>/dev/null || true)
