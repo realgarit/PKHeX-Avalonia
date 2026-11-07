@@ -71,6 +71,10 @@ public sealed class WindowService : IWindowService
         else
         {
             SetMeasuredInitialBounds(dialog);
+            // Like tool windows, a measured dialog must not shrink below its view's declared
+            // minimum: Avalonia centers an oversized view and clips both edges (the PKM Database
+            // lost its filter labels and result columns). A small screen scrolls instead.
+            ConstrainToolBounds(dialog);
         }
 
         if (viewModel is AboutViewModel)
@@ -298,13 +302,25 @@ public sealed class WindowService : IWindowService
         if (screen is null)
             return new Size(1200, 760);
 
-        var scaling = owner.RenderScaling > 0 ? owner.RenderScaling : 1;
-        var workingWidth = screen.WorkingArea.Width / scaling;
-        var workingHeight = screen.WorkingArea.Height / scaling;
+        return ComputeAvailableToolSize(screen.WorkingArea.Width, screen.WorkingArea.Height, owner.DesktopScaling);
+    }
+
+    /// <summary>
+    /// Converts a screen working area to the client size a tool or dialog may use.
+    /// </summary>
+    /// <remarks>
+    /// Screen bounds are in desktop units, so they must be divided by <see cref="WindowBase.DesktopScaling"/>,
+    /// not <see cref="TopLevel.RenderScaling"/>. The two are equal on Windows and X11. On macOS the desktop
+    /// is measured in points (DesktopScaling 1) while a Retina display renders at 2x, so dividing by the
+    /// render scale halved every dialog: a 1470-point MacBook Air capped dialogs at about 690 wide, below
+    /// the PKM Database's 800-wide minimum, and its filter pane and result columns were cut off.
+    /// </remarks>
+    internal static Size ComputeAvailableToolSize(double workingWidth, double workingHeight, double desktopScaling)
+    {
+        var scaling = double.IsFinite(desktopScaling) && desktopScaling > 0 ? desktopScaling : 1;
         // Reserve the native title bar and a small work-area margin outside the client
-        // area. Tool hosts can scroll below their view minima on a small work area;
-        // modal dialogs retain their existing sizing policy through the helpers above.
-        return new Size(Math.Clamp(workingWidth - 48, 1, 1200), Math.Max(1, workingHeight - 48));
+        // area. Tool hosts can scroll below their view minima on a small work area.
+        return new Size(Math.Clamp(workingWidth / scaling - 48, 1, 1200), Math.Max(1, workingHeight / scaling - 48));
     }
 
     internal static void ConstrainToolBounds(Window window)

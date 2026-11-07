@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Application.Abstractions;
@@ -99,6 +100,18 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
 
     /// <summary>Opt-in native Wayland; the host reads the saved value on the next start.</summary>
     [ObservableProperty] private bool _useNativeWayland;
+
+    /// <summary>Interface scale choices for X11: 0 follows the desktop, otherwise a percentage.</summary>
+    public IReadOnlyList<ComboItem> InterfaceScales { get; } = CreateInterfaceScales();
+
+    /// <summary>The interface scale in percent (0 = follow the desktop); the host applies it on the next start.</summary>
+    [ObservableProperty] private int _interfaceScalePercent;
+
+    private static ComboItem[] CreateInterfaceScales() =>
+    [
+        new(LocalizedStrings.Instance["Settings_InterfaceScale_Automatic"], 0),
+        .. new[] { 100, 125, 150, 175, 200, 250, 300 }.Select(percent => new ComboItem($"{percent} %", percent)),
+    ];
 
     // ---------------------------------------------------------------------------------------------
     // Linux desktop integration (AppImage only — the section is hidden everywhere else)
@@ -267,6 +280,11 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         WarnClosingModified = _settings.EditorBehavior.WarnClosingModified;
         AllowBattleTowerTeamSwap = _settings.Legality.Game.Gen3.AllowBattleTowerTeamSwap;
         UseNativeWayland = _settings.Linux.UseNativeWayland;
+        // A saved value that is not in the list (edited by hand) shows as Automatic and is kept
+        // unless the user picks another choice.
+        InterfaceScalePercent = InterfaceScales.Any(o => o.Value == _settings.Linux.InterfaceScalePercent)
+            ? _settings.Linux.InterfaceScalePercent
+            : 0;
 
         SpritePreference = _settings.Sprite.SpritePreference;
         SelectedTheme = Themes.Contains(_themeService.CurrentTheme)
@@ -296,6 +314,8 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         _settings.EditorBehavior.WarnClosingModified = WarnClosingModified;
         _settings.Legality.Game.Gen3.AllowBattleTowerTeamSwap = AllowBattleTowerTeamSwap;
         _settings.Linux.UseNativeWayland = UseNativeWayland;
+        if (InterfaceScalePercent != 0 || InterfaceScales.Any(o => o.Value == _settings.Linux.InterfaceScalePercent))
+            _settings.Linux.InterfaceScalePercent = InterfaceScalePercent;
 
         _settings.Sprite.SpritePreference = SpritePreference;
 

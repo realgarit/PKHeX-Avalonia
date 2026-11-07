@@ -110,6 +110,13 @@
                             </StackPanel>
                             <ToggleSwitch x:Name="UseNativeWaylandSwitch" FontSize="11" VerticalAlignment="Center" Grid.Column="1" IsChecked="{Binding UseNativeWayland}" OnContent="{loc:Loc Common_On}" OffContent="{loc:Loc Common_Off}" AutomationProperties.Name="{loc:Loc Settings_UseNativeWayland}" ToolTip.Tip="{loc:Loc Settings_UseNativeWayland_Desc}" />
                         </Grid>
+                        <Grid ColumnDefinitions="*,150" ColumnSpacing="12">
+                            <StackPanel VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="{loc:Loc Settings_InterfaceScale}" FontSize="11" FontWeight="Normal" TextWrapping="Wrap" VerticalAlignment="Center" />
+                                <TextBlock Text="{loc:Loc Settings_InterfaceScale_Desc}" FontSize="11" FontWeight="Normal" Foreground="{DynamicResource ThemeTextSecondaryBrush}" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <ComboBox x:Name="InterfaceScaleComboBox" FontSize="11" Grid.Column="1" MinWidth="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" ItemsSource="{Binding InterfaceScales}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" SelectedValue="{Binding InterfaceScalePercent}" AutomationProperties.Name="{loc:Loc Settings_InterfaceScale}" ToolTip.Tip="{loc:Loc Settings_InterfaceScale_Desc}" />
+                        </Grid>
                     </StackPanel>
                 </Border>
 <Border BorderBrush="{DynamicResource ThemeBorderMutedBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,16" IsVisible="{Binding ShowLinuxIntegration}">

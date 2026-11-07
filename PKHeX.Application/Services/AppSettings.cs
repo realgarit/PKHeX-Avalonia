@@ -152,6 +152,13 @@ public sealed class AppSettings : IProgramSettings
         /// accepts the connection. Takes effect on the next start.
         /// </summary>
         public bool UseNativeWayland { get; set; }
+
+        /// <summary>
+        /// Interface scale in percent for the X11 backend, or 0 to follow the desktop (the default).
+        /// GNOME and other desktops do not always tell X11 apps their scale, so a high-resolution
+        /// screen can show a very small interface. Takes effect on the next start.
+        /// </summary>
+        public int InterfaceScalePercent { get; set; }
     }
 
     public class ReportColumnLayout
