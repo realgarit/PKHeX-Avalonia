@@ -188,8 +188,10 @@
                         <Button Content="{loc:Loc Update_Download}" Command="{Binding DownloadCommand}"
                                 IsVisible="{Binding CanDownload}" Padding="8,2" FontSize="11" />
                         <Button Content="{loc:Loc Update_Skip}" Command="{Binding SkipCommand}" Padding="8,2" FontSize="11" />
-                        <Button Content="✕" Command="{Binding DismissCommand}" Padding="6,2" FontSize="11"
-                                AutomationProperties.Name="Dismiss update notification" />
+                        <Button Classes="icon-action" Command="{Binding DismissCommand}" Padding="6,2"
+                                ToolTip.Tip="{loc:Loc Update_Dismiss}" AutomationProperties.Name="{loc:Loc Update_Dismiss}">
+                            <PathIcon Classes="icon icon-small" Data="{StaticResource Icon.Close}" />
+                        </Button>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -409,9 +411,12 @@
                                 <TextBlock Text="{loc:Loc Launcher_Title}" Classes="view-title" />
                                 <TextBlock Text="{loc:Loc Launcher_Hint}" Classes="view-subtitle" />
                             </StackPanel>
-                            <Button Grid.Column="1" Classes="icon-button" Content="×"
+                            <Button Grid.Column="1" Classes="icon-button"
                                     Command="{Binding CloseToolLauncherCommand}"
-                                    AutomationProperties.Name="{loc:Loc Launcher_Close}" />
+                                    ToolTip.Tip="{loc:Loc Launcher_Close}"
+                                    AutomationProperties.Name="{loc:Loc Launcher_Close}">
+                                <PathIcon Classes="icon" Data="{StaticResource Icon.Close}" />
+                            </Button>
                         </Grid>
                         <Border Grid.Row="1" Classes="launcher-search-box">
                             <Grid ColumnDefinitions="Auto,*">

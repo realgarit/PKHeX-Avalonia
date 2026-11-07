@@ -4,7 +4,9 @@
              xmlns:loc="using:PKHeX.Avalonia.Localization"
              x:Class="PKHeX.Avalonia.Views.MedalEditorView"
              x:DataType="vm:MedalEditorViewModel"
-             MinWidth="640" MinHeight="560">
+             xmlns:pc="using:PKHeX.Avalonia.Controls"
+             MinWidth="640" MinHeight="560"
+             pc:DialogSize.PreferredWidth="900" pc:DialogSize.PreferredHeight="640">
     <DockPanel Classes="tool-surface" Margin="12">
         <StackPanel Classes="tool-header-stack" DockPanel.Dock="Top">
             <TextBlock Text="{loc:Loc MedalEditorView_MedalRally}" FontSize="20" FontWeight="SemiBold" />
@@ -76,7 +78,7 @@
                                       IsReadOnly="False"
                                       MinHeight="320">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="48" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="SizeToHeader" MinWidth="56" IsReadOnly="True" />
                                     <DataGridTextColumn Header="{loc:Loc GlobalLink5Editor_Name}" Binding="{Binding Name}" Width="*" IsReadOnly="True" />
                                     <DataGridTextColumn Header="{loc:Loc MedalEditorView_Type}" Binding="{Binding Type}" Width="120" IsReadOnly="True" />
                                     <DataGridTemplateColumn Header="{loc:Loc MedalEditorView_State}" Width="160">
@@ -89,7 +91,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="{loc:Loc MedalEditorView_Unread}" Width="70">
+                                    <DataGridTemplateColumn Header="{loc:Loc MedalEditorView_Unread}" Width="SizeToHeader" MinWidth="70">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate DataType="vm:MedalItemViewModel">
                                                 <CheckBox IsChecked="{Binding IsUnread}"
@@ -145,8 +147,8 @@
                                       IsReadOnly="False"
                                       MinHeight="320">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="48" IsReadOnly="True" />
-                                    <DataGridTemplateColumn Header="{loc:Loc MedalEditorView_Complete}" Width="80">
+                                    <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="SizeToHeader" MinWidth="56" IsReadOnly="True" />
+                                    <DataGridTemplateColumn Header="{loc:Loc MedalEditorView_Complete}" Width="SizeToHeader" MinWidth="80">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate DataType="vm:HabitatRowViewModel">
                                                 <CheckBox IsChecked="{Binding IsComplete}" HorizontalAlignment="Center" AutomationProperties.Name="Complete" />

@@ -56,8 +56,8 @@
                                    Foreground="{DynamicResource ThemeTextPrimaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="150" />
                         <TextBlock x:Name="GenderText" Text="{Binding GenderSymbol}" IsVisible="{Binding HasGender}" FontSize="14"
                                    Foreground="{DynamicResource ThemeTextSecondaryBrush}" />
-                        <TextBlock Text="★" IsVisible="{Binding IsShiny}" FontSize="12" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource ThemeShinyGoldBrush}" />
+                        <PathIcon Data="{StaticResource Icon.Star}" IsVisible="{Binding IsShiny}" Width="12" Height="12" VerticalAlignment="Center"
+                                  Foreground="{DynamicResource ThemeShinyGoldBrush}" />
                     </StackPanel>
                     <TextBlock Text="{Binding SpeciesName}" IsVisible="{Binding ShowSpeciesName}" FontSize="11"
                                Foreground="{DynamicResource ThemeTextMutedBrush}" TextTrimming="CharacterEllipsis" />
@@ -97,8 +97,8 @@
                             <TextBlock Classes="move-name" Classes.illegal="{Binding IsIllegal}"
                                        Text="{Binding Name}" FontSize="11" VerticalAlignment="Center"
                                        TextTrimming="CharacterEllipsis" MaxWidth="104" />
-                            <TextBlock Text="✕" IsVisible="{Binding IsIllegal}" FontSize="10" VerticalAlignment="Center"
-                                       Foreground="{DynamicResource ThemeErrorBrush}" />
+                            <PathIcon Data="{StaticResource Icon.Close}" IsVisible="{Binding IsIllegal}" Width="9" Height="9" VerticalAlignment="Center"
+                                      Foreground="{DynamicResource ThemeErrorBrush}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
