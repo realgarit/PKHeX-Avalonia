@@ -1,0 +1,249 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
+             xmlns:loc="using:PKHeX.Avalonia.Localization"
+             xmlns:conv="using:PKHeX.Avalonia.Converters"
+             x:Class="PKHeX.Avalonia.Views.SafariZone4Editor"
+             x:DataType="vm:SafariZone4EditorViewModel"
+             MinWidth="640" MinHeight="480">
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}" />
+        <KeyBinding Gesture="Delete" Command="{Binding RemoveObjectCommand}" />
+    </UserControl.KeyBindings>
+    <UserControl.Styles>
+        <!-- Map tiles: a lightweight template, since the world has 1024 of them. -->
+        <Style Selector="Button.safari-cell">
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="BorderThickness" Value="0.5" />
+            <Setter Property="BorderBrush" Value="#28000000" />
+            <Setter Property="FontSize" Value="7" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <!-- Brush transitions would make every map refresh animate 1024 tiles. -->
+            <Setter Property="Transitions" Value="{x:Null}" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.safari-cell.problem">
+            <Setter Property="BorderBrush" Value="#D32F2F" />
+            <Setter Property="BorderThickness" Value="1.5" />
+        </Style>
+        <Style Selector="Button.safari-cell.selected">
+            <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+        <Style Selector="Button.safari-cell:focus-visible">
+            <Setter Property="BorderBrush" Value="{DynamicResource CompactFocusBrush}" />
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+    </UserControl.Styles>
+
+    <Border Classes="view-container">
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,8">
+                <TextBlock Text="{loc:Loc Safari4_Title}" Classes="view-title" />
+                <TextBlock Text="{loc:Loc Safari4_Staging}" TextWrapping="Wrap" Classes="muted" />
+            </StackPanel>
+
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,8,0,0">
+                <Button Content="{loc:Loc InventoryEditor_Reset}" Command="{Binding ResetCommand}" />
+                <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" IsCancel="True" />
+                <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" IsDefault="True" Classes="compact-primary" />
+            </StackPanel>
+
+            <TabControl Classes="compact-editor-tabs">
+                <!-- ===================== Areas ===================== -->
+                <TabItem Header="{loc:Loc Safari4_TabAreas}">
+                    <DockPanel Margin="0,6,0,0">
+                        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                            <ComboBox ItemsSource="{Binding Sets}" SelectedItem="{Binding SelectedSet}" MinWidth="170"
+                                      Margin="0,0,8,6" AutomationProperties.Name="{loc:Loc Safari4_Set}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate DataType="vm:SafariZoneSetViewModel"><TextBlock Text="{Binding Name}" /></DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <ComboBox ItemsSource="{Binding SelectedSet.Areas, FallbackValue={x:Null}}" SelectedItem="{Binding SelectedArea}"
+                                      MinWidth="160" Margin="0,0,8,6" AutomationProperties.Name="{loc:Loc Safari4_Slot}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate DataType="vm:SafariZoneAreaViewModel"><TextBlock Text="{Binding Name}" /></DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,0,8,6">
+                                <TextBlock Text="{loc:Loc Safari4_Map}" VerticalAlignment="Center" />
+                                <ComboBox ItemsSource="{Binding SelectedArea.MapChoices, FallbackValue={x:Null}}"
+                                          SelectedValue="{Binding SelectedArea.Map, FallbackValue={x:Null}}"
+                                          SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}"
+                                          MinWidth="130" AutomationProperties.Name="{loc:Loc Safari4_Map}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,0,8,6">
+                                <TextBlock Text="{loc:Loc Safari4_Count}" VerticalAlignment="Center" />
+                                <NumericUpDown Value="{Binding SelectedArea.Count, FallbackValue=0}" Minimum="0" Maximum="255"
+                                               FormatString="0" Width="128" AutomationProperties.Name="{loc:Loc Safari4_Count}" />
+                            </StackPanel>
+                            <CheckBox Content="{loc:Loc Safari4_AutoCount}" IsChecked="{Binding SelectedArea.IsAutoCount, FallbackValue=False}"
+                                      Margin="0,0,8,6" />
+                            <Button Content="{loc:Loc Safari4_ClearObjects}" Command="{Binding ClearObjectsCommand}" Margin="0,0,0,6" />
+                        </WrapPanel>
+
+                        <StackPanel DockPanel.Dock="Bottom" Spacing="2" Margin="0,6,0,0">
+                            <TextBlock Text="{Binding ProblemText}" TextWrapping="Wrap"
+                                       IsVisible="{Binding ProblemText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                            <TextBlock Text="{Binding StatusText}" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"
+                                       IsVisible="{Binding StatusText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                        </StackPanel>
+
+                        <Grid ColumnDefinitions="*,8,280">
+                            <DockPanel Grid.Column="0">
+                                <TextBlock DockPanel.Dock="Top" Text="{loc:Loc Safari4_MapHelp}" TextWrapping="Wrap" Classes="muted" Margin="0,0,0,4" />
+                                <Viewbox Stretch="Uniform" StretchDirection="Both" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    <ItemsControl x:Name="MapGrid" ItemsSource="{Binding Cells}"
+                                                  AutomationProperties.Name="{loc:Loc Safari4_MapName}"
+                                                  KeyboardNavigation.TabNavigation="Once">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Columns="32" Rows="32" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="vm:SafariZoneCellViewModel">
+                                                <Button Classes="safari-cell"
+                                                        Classes.problem="{Binding HasProblem}"
+                                                        Classes.selected="{Binding IsSelected}"
+                                                        Background="{Binding Fill, Converter={x:Static conv:HexColorToBrushConverter.Instance}}"
+                                                        Foreground="{Binding LabelForeground, Converter={x:Static conv:HexColorToBrushConverter.Instance}}"
+                                                        Content="{Binding Label}"
+                                                        Command="{Binding #MapGrid.((vm:SafariZone4EditorViewModel)DataContext).SelectTileCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        ToolTip.Tip="{Binding AccessibleName}"
+                                                        AutomationProperties.Name="{Binding AccessibleName}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Viewbox>
+                            </DockPanel>
+
+                            <DockPanel Grid.Column="2">
+                                <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,8"
+                                            IsEnabled="{Binding SelectedObject, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                    <TextBlock Text="{loc:Loc Safari4_SelectedObject}" FontWeight="SemiBold" />
+                                    <ComboBox ItemsSource="{Binding SelectedObject.TypeChoices, FallbackValue={x:Null}}"
+                                              SelectedValue="{Binding SelectedObject.Type, FallbackValue={x:Null}}"
+                                              SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}"
+                                              HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc Safari4_ObjectType}" />
+                                    <Grid ColumnDefinitions="Auto,6,*" RowDefinitions="Auto,4,Auto,4,Auto">
+                                        <TextBlock Grid.Row="0" Text="{loc:Loc Safari4_X}" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="0" Grid.Column="2" Value="{Binding SelectedObject.X, FallbackValue=0}"
+                                                       Minimum="0" Maximum="255" FormatString="0" AutomationProperties.Name="{loc:Loc Safari4_X}" />
+                                        <TextBlock Grid.Row="2" Text="{loc:Loc Safari4_Z}" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding SelectedObject.Z, FallbackValue=0}"
+                                                       Minimum="0" Maximum="255" FormatString="0" AutomationProperties.Name="{loc:Loc Safari4_Z}" />
+                                        <TextBlock Grid.Row="4" Text="{loc:Loc Safari4_Y}" VerticalAlignment="Center" />
+                                        <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding SelectedObject.Y, FallbackValue=0}"
+                                                       Minimum="0" Maximum="255" FormatString="0" AutomationProperties.Name="{loc:Loc Safari4_Y}" />
+                                    </Grid>
+                                    <TextBlock Text="{Binding SelectedObject.ProblemText, FallbackValue={x:Null}}" TextWrapping="Wrap" />
+                                    <Button Content="{loc:Loc Safari4_RemoveObject}" Command="{Binding RemoveObjectCommand}" />
+                                </StackPanel>
+                                <TextBlock DockPanel.Dock="Top" Text="{loc:Loc Safari4_Objects}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                <ListBox ItemsSource="{Binding SelectedArea.Objects, FallbackValue={x:Null}}" SelectedItem="{Binding SelectedObject}"
+                                         AutomationProperties.Name="{loc:Loc Safari4_Objects}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate DataType="vm:SafariZoneObjectRow">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Summary}" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Summary}" />
+                                                <TextBlock Text="{Binding ProblemText}" FontSize="11" TextWrapping="Wrap"
+                                                           IsVisible="{Binding ProblemText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </DockPanel>
+                        </Grid>
+                    </DockPanel>
+                </TabItem>
+
+                <!-- ===================== Progress ===================== -->
+                <TabItem Header="{loc:Loc Safari4_TabProgress}">
+                    <ScrollViewer Margin="0,6,0,0">
+                        <StackPanel Spacing="10">
+                            <Grid ColumnDefinitions="Auto,8,150" RowDefinitions="Auto,6,Auto,6,Auto,6,Auto" HorizontalAlignment="Left">
+                                <TextBlock Grid.Row="0" Text="{loc:Loc Safari4_DayDelay}" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="0" Grid.Column="2" Value="{Binding DayDelay}" Minimum="0" Maximum="255" FormatString="0"
+                                               AutomationProperties.Name="{loc:Loc Safari4_DayDelay}" />
+                                <TextBlock Grid.Row="2" Text="{loc:Loc Safari4_ElapsedMinutes}" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding ElapsedPlayMinutes}" Minimum="0" Maximum="65535" FormatString="0"
+                                               AutomationProperties.Name="{loc:Loc Safari4_ElapsedMinutes}" />
+                                <TextBlock Grid.Row="4" Text="{loc:Loc Safari4_UnlockLevel}" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding ObjectUnlockLevel}" Minimum="0" Maximum="63" FormatString="0"
+                                               AutomationProperties.Name="{loc:Loc Safari4_UnlockLevel}" />
+                                <CheckBox Grid.Row="6" Grid.ColumnSpan="3" Content="{loc:Loc Safari4_AreaSwitcher}" IsChecked="{Binding IsAreaSwitcherUnlocked}" />
+                            </Grid>
+
+                            <TextBlock Text="{loc:Loc Safari4_Ages}" FontWeight="SemiBold" />
+                            <TextBlock Text="{loc:Loc Safari4_AgesHelp}" TextWrapping="Wrap" Classes="muted" />
+                            <WrapPanel>
+                                <ComboBox ItemsSource="{Binding Sets}" SelectedItem="{Binding SelectedSet}" MinWidth="170"
+                                          Margin="0,0,8,6" AutomationProperties.Name="{loc:Loc Safari4_Set}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="vm:SafariZoneSetViewModel"><TextBlock Text="{Binding Name}" /></DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Content="{loc:Loc Safari4_MaxAges}" Command="{Binding MaxAgesCommand}" Margin="0,0,8,6" />
+                                <Button Content="{loc:Loc Safari4_ClearAges}" Command="{Binding ClearAgesCommand}" Margin="0,0,0,6" />
+                            </WrapPanel>
+                            <ItemsControl ItemsSource="{Binding SelectedSet.Ages, FallbackValue={x:Null}}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="vm:SafariZoneAgeRow">
+                                        <Grid ColumnDefinitions="120,128" Margin="0,0,16,6">
+                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Name}" />
+                                            <NumericUpDown Grid.Column="1" Value="{Binding Value}" Minimum="0" Maximum="255" FormatString="0"
+                                                           AutomationProperties.Name="{Binding Name}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- ===================== Linked trainer ===================== -->
+                <TabItem Header="{loc:Loc Safari4_TabLink}">
+                    <ScrollViewer Margin="0,6,0,0">
+                        <Grid ColumnDefinitions="Auto,8,180" RowDefinitions="Auto,6,Auto,6,Auto,6,Auto,6,Auto,6,Auto" HorizontalAlignment="Left">
+                            <CheckBox Grid.Row="0" Grid.ColumnSpan="3" Content="{loc:Loc Safari4_Linked}" IsChecked="{Binding IsLinked}" />
+                            <TextBlock Grid.Row="2" Text="{loc:Loc Safari4_LinkName}" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding LinkTrainerName}" MaxLength="7"
+                                     AutomationProperties.Name="{loc:Loc Safari4_LinkName}" />
+                            <TextBlock Grid.Row="4" Text="{loc:Loc Safari4_LinkId}" VerticalAlignment="Center" />
+                            <NumericUpDown Grid.Row="4" Grid.Column="2" Value="{Binding LinkTrainerId}" Minimum="0" Maximum="4294967295" FormatString="0" ShowButtonSpinner="False"
+                                           AutomationProperties.Name="{loc:Loc Safari4_LinkId}" />
+                            <TextBlock Grid.Row="6" Text="{loc:Loc Safari4_LinkGender}" VerticalAlignment="Center" />
+                            <NumericUpDown Grid.Row="6" Grid.Column="2" Value="{Binding LinkGender}" Minimum="0" Maximum="255" FormatString="0"
+                                           AutomationProperties.Name="{loc:Loc Safari4_LinkGender}" />
+                            <TextBlock Grid.Row="8" Text="{loc:Loc Safari4_LinkLanguage}" VerticalAlignment="Center" />
+                            <NumericUpDown Grid.Row="8" Grid.Column="2" Value="{Binding LinkLanguage}" Minimum="0" Maximum="255" FormatString="0"
+                                           AutomationProperties.Name="{loc:Loc Safari4_LinkLanguage}" />
+                            <TextBlock Grid.Row="10" Text="{loc:Loc Safari4_LinkVersion}" VerticalAlignment="Center" />
+                            <NumericUpDown Grid.Row="10" Grid.Column="2" Value="{Binding LinkVersion}" Minimum="0" Maximum="255" FormatString="0"
+                                           AutomationProperties.Name="{loc:Loc Safari4_LinkVersion}" />
+                        </Grid>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </Border>
+</UserControl>

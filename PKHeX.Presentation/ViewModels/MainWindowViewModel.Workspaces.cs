@@ -257,6 +257,8 @@ public partial class MainWindowViewModel
         RegisterMenuCapability("Menu_Pokedex", OpenPokedexCommand, "Menu_Gen4");
         RegisterConditionalMenuCapability("Dialog_ApricornEditor", OpenApricornCommand,
             "Menu_Gen4", () => CurrentSave is SAV4HGSS);
+        RegisterConditionalMenuCapability("Safari4_Title", OpenSafariZone4Command,
+            "Menu_Gen4", () => CurrentSave is SAV4HGSS);
         RegisterConditionalMenuCapability("Dialog_UndergroundEditor", OpenUndergroundCommand,
             "Menu_Gen4", () => CurrentSave is SAV4Sinnoh);
         RegisterConditionalMenuCapability("Dialog_GearEditorBattleRevolution", OpenGearBRCommand,
