@@ -332,11 +332,19 @@ public partial class Misc7EditorViewModel : ViewModelBase, IDisposable
     public void Dispose() { _closed = true; _epoch++; WeakReferenceMessenger.Default.UnregisterAll(this); }
     public void RefreshLanguage()
     {
-        int country = Country, region = SubRegion, language = Language, gender = Gender, console = ConsoleRegion, skin = SkinColor, style = BattleStyle, camera = CameraVersion;
+        int country = Country, region = SubRegion, language = Language, gender = Gender, console = ConsoleRegion, skin = SkinColor, style = BattleStyle, camera = CameraVersion, vivillon = Vivillon;
         ulong time = AlolaOffset;
-        Countries = ReadGeo("countries", country); Regions = ReadGeo($"sr_{country:000}", region);
-        foreach (var property in new[] { nameof(Genders), nameof(Languages), nameof(ConsoleRegions), nameof(SkinColors), nameof(BattleStyles), nameof(TimeOffsets), nameof(CameraVersions) }) OnPropertyChanged(property);
-        Country = country; SubRegion = region; Language = language; Gender = gender; ConsoleRegion = console; SkinColor = skin; BattleStyle = style; CameraVersion = camera; AlolaOffset = time;
+        _loadingRegions = true;
+        try
+        {
+            Countries = RegionChoices.Countries(country); Regions = RegionChoices.SubRegions(country, region);
+            VivillonPatterns = RegionChoices.VivillonPatterns(vivillon, EntityContext.Gen7);
+            foreach (var property in new[] { nameof(Genders), nameof(Languages), nameof(ConsoleRegions), nameof(SkinColors), nameof(BattleStyles), nameof(TimeOffsets), nameof(CameraVersions) }) OnPropertyChanged(property);
+            Country = country; SubRegion = region; Language = language; Gender = gender; ConsoleRegion = console; SkinColor = skin; BattleStyle = style; CameraVersion = camera; AlolaOffset = time; Vivillon = vivillon;
+            // Replacing these lists clears the dropdown selection even when the stored value is unchanged.
+            OnPropertyChanged(nameof(Country)); OnPropertyChanged(nameof(SubRegion)); OnPropertyChanged(nameof(Vivillon));
+        }
+        finally { _loadingRegions = false; }
         foreach (var row in StyleFlags) row.Name = Localization.LocalizedStrings.Instance["Trainer7_Style_" + row.Id];
         foreach (var row in Stamps) row.Name = Localization.LocalizedStrings.Instance["Trainer7_Stamp_" + row.Index];
         foreach (var definition in Gen7TrainerMapFlags.GetFlyDestinations(_sav).Concat(Gen7TrainerMapFlags.GetMapUnmask(_sav)))

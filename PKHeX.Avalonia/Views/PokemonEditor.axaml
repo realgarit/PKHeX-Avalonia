@@ -634,6 +634,34 @@
                                 </Grid>
                             </Border>
 
+                            <!-- 3DS Region Settings Card (Gen 6/7) -->
+                            <Border IsVisible="{Binding HasRegionOrigin}" Classes="editor-section">
+                                <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,Auto,Auto">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{loc:Loc RegionSettings_Title}" FontWeight="Bold" Margin="0,0,0,6" Opacity="0.6" />
+
+                                    <StackPanel Grid.Row="1" Grid.Column="0">
+                                        <TextBlock Text="{loc:Loc Trainer7_Country}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <ComboBox ItemsSource="{Binding OriginCountryList}"
+                                                  SelectedValue="{Binding OriginCountry}" SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc Trainer7_Country}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" Grid.Column="2">
+                                        <TextBlock Text="{loc:Loc Trainer7_SubRegion}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <ComboBox ItemsSource="{Binding OriginSubRegionList}"
+                                                  SelectedValue="{Binding OriginSubRegion}" SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc Trainer7_SubRegion}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,6,0,0">
+                                        <TextBlock Text="{loc:Loc Trainer7_ConsoleRegion}" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                        <ComboBox ItemsSource="{Binding OriginConsoleRegionList}"
+                                                  SelectedValue="{Binding OriginConsoleRegion}" SelectedValueBinding="{Binding Value}"
+                                                  DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch" AutomationProperties.Name="{loc:Loc Trainer7_ConsoleRegion}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
                             <StackPanel IsVisible="{Binding HasHandlerLanguage}" Spacing="4">
                                 <TextBlock Text="{loc:Loc Metadata_HandlingTrainerLanguage}" />
                                 <ComboBox ItemsSource="{Binding HandlerLanguageList}" SelectedValue="{Binding HandlingTrainerLanguage}"

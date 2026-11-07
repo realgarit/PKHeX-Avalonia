@@ -44,6 +44,8 @@
 <ComboBox ItemsSource="{Binding Regions}" SelectedValue="{Binding SubRegion}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" AutomationProperties.Name="{loc:Loc Trainer7_SubRegion}" />
 <TextBlock Text="{loc:Loc Trainer7_ConsoleRegion}" />
 <ComboBox ItemsSource="{Binding ConsoleRegions}" SelectedValue="{Binding ConsoleRegion}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" AutomationProperties.Name="{loc:Loc Trainer7_ConsoleRegion}" />
+<TextBlock Text="{loc:Loc RegionSettings_Vivillon}" />
+<ComboBox ItemsSource="{Binding VivillonPatterns}" SelectedValue="{Binding Vivillon}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" AutomationProperties.Name="{loc:Loc RegionSettings_Vivillon}" />
 <TextBlock Text="{loc:Loc Trainer7_AlolaOffset}" />
 <ComboBox ItemsSource="{Binding TimeOffsets}" SelectedValue="{Binding AlolaOffset}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Name}" AutomationProperties.Name="{loc:Loc Trainer7_AlolaOffset}" />
 <TextBlock Text="{loc:Loc Trainer7_BattlePoints}" />

@@ -241,6 +241,35 @@
                     </StackPanel>
                 </Border>
 
+                <!-- Region settings and Vivillon pattern (Gen 6) -->
+                <Border IsVisible="{Binding HasRegionSettings}" Classes="editor-section">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{loc:Loc RegionSettings_Title}" FontWeight="SemiBold" Opacity="0.6" />
+                        <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,4,Auto,8,Auto,4,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Loc Trainer7_Country}" FontSize="11" FontWeight="SemiBold" Opacity="0.7" />
+                            <ComboBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding CountryList}" SelectedValue="{Binding Country}"
+                                      SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch"
+                                      AutomationProperties.Name="{loc:Loc Trainer7_Country}" />
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Loc Trainer7_SubRegion}" FontSize="11" FontWeight="SemiBold" Opacity="0.7" />
+                            <ComboBox Grid.Row="2" Grid.Column="2" ItemsSource="{Binding SubRegionList}" SelectedValue="{Binding SubRegion}"
+                                      SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch"
+                                      AutomationProperties.Name="{loc:Loc Trainer7_SubRegion}" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="{loc:Loc Trainer7_ConsoleRegion}" FontSize="11" FontWeight="SemiBold" Opacity="0.7" />
+                            <ComboBox Grid.Row="6" Grid.Column="0" ItemsSource="{Binding ConsoleRegionList}" SelectedValue="{Binding ConsoleRegion}"
+                                      SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch"
+                                      AutomationProperties.Name="{loc:Loc Trainer7_ConsoleRegion}" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="2" Text="{loc:Loc RegionSettings_Vivillon}" FontSize="11" FontWeight="SemiBold" Opacity="0.7"
+                                       IsVisible="{Binding HasVivillon}" />
+                            <ComboBox Grid.Row="6" Grid.Column="2" ItemsSource="{Binding VivillonList}" SelectedValue="{Binding Vivillon}"
+                                      SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}" HorizontalAlignment="Stretch"
+                                      IsVisible="{Binding HasVivillon}" AutomationProperties.Name="{loc:Loc RegionSettings_Vivillon}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
                 <!-- Adventure & Coordinates (2 Columns) -->
                 <Grid ColumnDefinitions="*,8,*" IsVisible="{Binding HasAdventureInfo}">
                     <Border Grid.Column="0" Classes="editor-section">

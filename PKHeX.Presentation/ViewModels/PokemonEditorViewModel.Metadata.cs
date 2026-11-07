@@ -78,6 +78,7 @@ public partial class PokemonEditorViewModel
         ObedienceLevel = (_pk as IObedienceLevel)?.ObedienceLevel ?? 0;
         HandlingTrainerLanguage = handlerLanguage;
         HomeTracker = ((_pk as IHomeTrack)?.Tracker ?? 0).ToString("X16", CultureInfo.InvariantCulture);
+        LoadRegionOrigin();
         foreach (var name in new[] { nameof(HasPlusRecords), nameof(HasAlpha), nameof(HasGigantamax), nameof(HasDynamaxLevel), nameof(HasSizeScalars), nameof(HasScale),
                      nameof(HasBattleVersion), nameof(HasObedienceLevel), nameof(HasHandlerLanguage),
                      nameof(HasHomeTracker), nameof(BattleVersion), nameof(HandlingTrainerLanguage) })
@@ -94,6 +95,7 @@ public partial class PokemonEditorViewModel
         if (_pk is IBattleVersion battle) battle.BattleVersion = (GameVersion)BattleVersion;
         if (_pk is IObedienceLevel obedience) obedience.ObedienceLevel = ObedienceLevel;
         if (_pk is IHandlerLanguage handler) handler.HandlingTrainerLanguage = (byte)HandlingTrainerLanguage;
+        ApplyRegionOrigin();
         if (_pk is IHomeTrack home && IsHomeTrackerValid)
             home.Tracker = ulong.Parse(HomeTracker, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture);
     }
