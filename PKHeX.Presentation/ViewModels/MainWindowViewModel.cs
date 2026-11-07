@@ -52,6 +52,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSave))]
+    [NotifyPropertyChangedFor(nameof(IsBlankWorkspace))]
     [NotifyPropertyChangedFor(nameof(WindowTitle))]
     [NotifyPropertyChangedFor(nameof(StatusText))]
     [NotifyPropertyChangedFor(nameof(CurrentSaveFileName))]
@@ -61,6 +62,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(SaveFileCommand))]
     [NotifyCanExecuteChangedFor(nameof(SaveFileAsCommand))]
     [NotifyCanExecuteChangedFor(nameof(CloseFileCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SavePokemonAsCommand))]
     [NotifyCanExecuteChangedFor(nameof(ImportShowdownCommand))]
     [NotifyCanExecuteChangedFor(nameof(ExportShowdownCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPKMDatabaseCommand))]
@@ -73,6 +75,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(OpenSaveDiffCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenBoxWorkspaceCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPartyWorkspaceCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OpenPokemonEditorWorkspaceCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenEncounterDatabaseCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenPssExportCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenBattleVideo4Command))]
@@ -134,6 +137,8 @@ public partial class MainWindowViewModel : ViewModelBase
                 return CurrentSave is not null
                     ? LocalizedStrings.Instance.Format("Status_HaXMode_Game", CurrentSave.Version)
                     : LocalizedStrings.Instance["Status_HaXMode_NoSave"];
+            if (IsBlankWorkspace)
+                return LocalizedStrings.Instance.Format("Status_BlankWorkspace", CurrentSave!.Version);
             return CurrentSave is not null
                 ? LocalizedStrings.Instance.Format("Status_GameFormat", CurrentSave.Version)
                 : LocalizedStrings.Instance["Status_NoSaveLoaded"];
@@ -294,6 +299,9 @@ public partial class MainWindowViewModel : ViewModelBase
         _backupManager = null;
         _saveDiff = null;
 
+        // Any other save (or none) ends the standalone Pokémon workspace.
+        if (!ReferenceEquals(sav, _blankWorkspaceSave))
+            _blankWorkspaceSave = null;
         CurrentSave = sav;
         if (sav is not null)
         {
@@ -307,19 +315,21 @@ public partial class MainWindowViewModel : ViewModelBase
                 pokemonEditor.SaveFileDropRequested += OnSaveFileDropRequested;
                 CurrentPokemonEditor = pokemonEditor;
 
-                var boxViewer = new BoxViewerViewModel(sav, _spriteRenderer, _slotService, _windowService, _dialogService, IsHaXMode);
+                var boxViewer = new BoxViewerViewModel(sav, _spriteRenderer, _slotService, _windowService, _dialogService, IsHaXMode) { HoverSettings = _settings.SlotHover };
                 boxViewer.SlotActivated += OnBoxSlotActivated;
                 boxViewer.ViewSlotRequested += OnBoxViewSlot;
                 boxViewer.SetSlotRequested += OnBoxSetSlot;
                 boxViewer.DeleteSlotRequested += OnBoxDeleteSlot;
                 boxViewer.SaveFileDropRequested += OnSaveFileDropRequested;
+                boxViewer.ReturnToMainWindowRequested += OnBoxReturnToMainWindowRequested;
                 BoxViewer = boxViewer;
 
-                var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer, _slotService, _dialogService, IsHaXMode, () => BoxViewer?.CurrentBox ?? 0, _windowService);
+                var partyViewer = new PartyViewerViewModel(sav, _spriteRenderer, _slotService, _dialogService, IsHaXMode, () => BoxViewer?.CurrentBox ?? 0, _windowService) { HoverSettings = _settings.SlotHover };
                 partyViewer.SlotActivated += OnPartySlotActivated;
                 partyViewer.ViewSlotRequested += OnPartyViewSlot;
                 partyViewer.SetSlotRequested += OnPartySetSlot;
                 partyViewer.SaveFileDropRequested += OnSaveFileDropRequested;
+                partyViewer.ReturnToMainWindowRequested += OnPartyReturnToMainWindowRequested;
                 PartyViewer = partyViewer;
 
                 TrainerEditor?.Dispose();
@@ -354,6 +364,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 BoxViewer.SetSlotRequested -= OnBoxSetSlot;
                 BoxViewer.DeleteSlotRequested -= OnBoxDeleteSlot;
                 BoxViewer.SaveFileDropRequested -= OnSaveFileDropRequested;
+                BoxViewer.ReturnToMainWindowRequested -= OnBoxReturnToMainWindowRequested;
             }
             BoxViewer = null;
 
@@ -363,6 +374,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 PartyViewer.ViewSlotRequested -= OnPartyViewSlot;
                 PartyViewer.SetSlotRequested -= OnPartySetSlot;
                 PartyViewer.SaveFileDropRequested -= OnSaveFileDropRequested;
+                PartyViewer.ReturnToMainWindowRequested -= OnPartyReturnToMainWindowRequested;
             }
             PartyViewer = null;
 

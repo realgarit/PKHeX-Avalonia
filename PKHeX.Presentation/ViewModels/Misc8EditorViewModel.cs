@@ -133,8 +133,46 @@ public partial class Misc8EditorViewModel : ViewModelBase, IDisposable
         _epoch++;
         if (!_session.TryCommit(staged => { _sav = staged; SaveTrainerFields(); SaveMisc(); SaveBattleTower(); }))
         { _sav = _session.Staged; Error = LocalizedStrings.Instance["LgpeTrainer_Conflict"]; return; }
+        bool locksChanged = !HasSameTeamLocks(_baseline, _session.Staged);
         _sav = _session.Staged; _baseline = (SAV8SWSH)_sav.Clone(); LoadTrainerFields(); LoadMisc(); LoadBattleTower(); Error = string.Empty;
         OnPropertyChanged(nameof(CanUndo));
+        NotifyBattleTeams();
+        if (locksChanged) BattleLocksCommitted?.Invoke(this, EventArgs.Empty);
+    }
+
+    #endregion
+
+    #region Battle Teams
+
+    /// <summary>Raised after Apply wrote a Battle Team lock change to the live save.</summary>
+    public event EventHandler? BattleLocksCommitted;
+
+    /// <summary>True when any of the six staged Battle Teams is locked for a competition.</summary>
+    public bool IsBattleTeamLocked => _session.Staged.TeamIndexes.IsAnyTeamLocked();
+    private bool CanUnlockBattleTeams() => !_closed && IsBattleTeamLocked;
+
+    /// <summary>Stages <see cref="TeamIndexes8.UnlockAllTeams"/>; Apply writes it, Undo/Reset discard it.</summary>
+    [RelayCommand(CanExecute = nameof(CanUnlockBattleTeams))]
+    private void UnlockBattleTeams()
+    {
+        if (_closed) return;
+        _session.ApplyAction(static save => save.TeamIndexes.UnlockAllTeams());
+        _sav = _session.Staged; _epoch++; Error = string.Empty;
+        OnPropertyChanged(nameof(CanUndo));
+        NotifyBattleTeams();
+    }
+
+    private static bool HasSameTeamLocks(SAV8SWSH a, SAV8SWSH b)
+    {
+        for (int team = 0; team < 6; team++)
+            if (a.TeamIndexes.GetIsTeamLocked(team) != b.TeamIndexes.GetIsTeamLocked(team)) return false;
+        return true;
+    }
+
+    private void NotifyBattleTeams()
+    {
+        OnPropertyChanged(nameof(IsBattleTeamLocked));
+        UnlockBattleTeamsCommand.NotifyCanExecuteChanged();
     }
 
     #endregion

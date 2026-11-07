@@ -229,6 +229,19 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
     [ObservableProperty] private bool _setUpdateRecords;
     [ObservableProperty] private bool _modifyUnset;
     [ObservableProperty] private bool _warnClosingModified;
+
+    /// <summary>Show the rich slot hover card; off keeps the plain text tooltip.</summary>
+    [ObservableProperty] private bool _slotPreviewEnabled;
+
+    /// <summary>Hover delay in milliseconds before the slot card opens.</summary>
+    [ObservableProperty] private int _slotPreviewDelayMs;
+
+    /// <summary>Add encounter details to the slot card.</summary>
+    [ObservableProperty] private bool _slotPreviewShowEncounter;
+
+    /// <summary>Delay choices for the slot hover card.</summary>
+    public IReadOnlyList<ComboItem> SlotPreviewDelays { get; } =
+        AppSettings.SlotHoverSettings.DelayChoices.Select(ms => new ComboItem($"{ms} ms", ms)).ToArray();
     [ObservableProperty] private bool _allowBattleTowerTeamSwap;
 
     // Sprites
@@ -278,6 +291,12 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         SetUpdateRecords = _settings.SlotWrite.SetUpdateRecords;
         ModifyUnset = _settings.SlotWrite.ModifyUnset;
         WarnClosingModified = _settings.EditorBehavior.WarnClosingModified;
+        SlotPreviewEnabled = _settings.SlotHover.Enabled;
+        // A hand-edited delay that is not offered shows as the default and is kept unless changed.
+        SlotPreviewDelayMs = SlotPreviewDelays.Any(o => o.Value == _settings.SlotHover.DelayMs)
+            ? _settings.SlotHover.DelayMs
+            : AppSettings.SlotHoverSettings.DefaultDelayMs;
+        SlotPreviewShowEncounter = _settings.SlotHover.ShowEncounter;
         AllowBattleTowerTeamSwap = _settings.Legality.Game.Gen3.AllowBattleTowerTeamSwap;
         UseNativeWayland = _settings.Linux.UseNativeWayland;
         // A saved value that is not in the list (edited by hand) shows as Automatic and is kept
@@ -312,6 +331,10 @@ public partial class SettingsViewModel : ViewModelBase, ICloseableDialog
         _settings.SlotWrite.SetUpdateRecords = SetUpdateRecords;
         _settings.SlotWrite.ModifyUnset = ModifyUnset;
         _settings.EditorBehavior.WarnClosingModified = WarnClosingModified;
+        _settings.SlotHover.Enabled = SlotPreviewEnabled;
+        if (SlotPreviewDelayMs != AppSettings.SlotHoverSettings.DefaultDelayMs || SlotPreviewDelays.Any(o => o.Value == _settings.SlotHover.DelayMs))
+            _settings.SlotHover.DelayMs = SlotPreviewDelayMs;
+        _settings.SlotHover.ShowEncounter = SlotPreviewShowEncounter;
         _settings.Legality.Game.Gen3.AllowBattleTowerTeamSwap = AllowBattleTowerTeamSwap;
         _settings.Linux.UseNativeWayland = UseNativeWayland;
         if (InterfaceScalePercent != 0 || InterfaceScales.Any(o => o.Value == _settings.Linux.InterfaceScalePercent))

@@ -85,6 +85,19 @@
 <TabItem Name="Trainer7BattleTree" Classes="editor-tab" Header="{loc:Loc Misc7Editor_BattleTree}">
                     <ScrollViewer>
                         <StackPanel Spacing="8" Margin="0,4,0,0">
+                            <!-- Battle Teams lock -->
+                            <Border Classes="editor-section">
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="{loc:Loc Trainer_BattleTeams}" FontWeight="SemiBold" Opacity="0.6" />
+                                    <TextBlock Text="{loc:Loc Trainer_BattleLockLocked}" IsVisible="{Binding IsBattleTeamLocked}" TextWrapping="Wrap" />
+                                    <TextBlock Text="{loc:Loc Trainer_BattleLockUnlocked}" IsVisible="{Binding !IsBattleTeamLocked}" TextWrapping="Wrap" />
+                                    <TextBlock Text="{loc:Loc Trainer_BattleLockHelp}" TextWrapping="Wrap" FontSize="11" Opacity="0.7" />
+                                    <WrapPanel>
+                                        <Button Content="{loc:Loc Trainer_UnlockBattleTeams}" Command="{Binding UnlockBattleTeamsCommand}" Margin="0,0,8,4" />
+                                        <Button Content="{loc:Loc Menu_Options_Undo}" Command="{Binding UndoFashionCommand}" IsEnabled="{Binding CanUndoFashion}" Margin="0,0,8,4" />
+                                    </WrapPanel>
+                                </StackPanel>
+                            </Border>
                             <!-- Unlock Flags -->
                             <Border Classes="editor-section">
                                 <StackPanel Spacing="8">

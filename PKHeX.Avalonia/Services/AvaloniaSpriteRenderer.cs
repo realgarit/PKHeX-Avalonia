@@ -85,6 +85,10 @@ public sealed class AvaloniaSpriteRenderer : ISpriteRenderer
         return EncodePng(skBitmap);
     }
 
+    public byte[]? GetBallSprite(int ball) => _loader.GetBallSprite(ball) is { } bitmap ? EncodePng(bitmap) : null;
+
+    public byte[]? GetTypeIcon(int type) => _loader.GetTypeIcon(type) is { } bitmap ? EncodePng(bitmap) : null;
+
     public byte[]? GetEmptySlot()
     {
         using var surface = SKSurface.Create(new SKImageInfo(SpriteWidth, SpriteHeight));

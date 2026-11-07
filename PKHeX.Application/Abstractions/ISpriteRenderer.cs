@@ -17,5 +17,9 @@ public interface ISpriteRenderer
     /// <summary>Renders a raw bag item ID using its owning save's context and game.</summary>
     byte[]? GetItemSprite(int itemId, EntityContext context, GameVersion version);
     byte[]? GetEmptySlot();
+    /// <summary>Renders the Poké Ball icon for a <see cref="Ball"/> value, or null when none is bundled.</summary>
+    byte[]? GetBallSprite(int ball) => null;
+    /// <summary>Renders the square type icon for a <see cref="MoveType"/> index, or null when none is bundled.</summary>
+    byte[]? GetTypeIcon(int type) => null;
     void Initialize(SaveFile sav);
 }
