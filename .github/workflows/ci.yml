@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # dependabot-automerge starts this on main after its merge.
+  workflow_dispatch:
 
 # Prevent duplicate runs: group by PR number for PR events, by ref for pushes.
 # cancel-in-progress drops stale runs when new commits land on the same PR/branch.

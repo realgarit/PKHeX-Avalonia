@@ -1,0 +1,111 @@
+# Merges a Dependabot PR without a person when Renovate on git.realgar.ch
+# would automerge it too (realgarit/renovate-config, config.js packageRules):
+#
+# - every updated dependency is a minor or patch update, and
+# - it is a GitHub Actions update or a direct development dependency, and
+# - it is not playwright, @playwright/test, node or @types/node.
+#
+# Everything else stays open for review. The job waits until every other
+# check on the PR head is done and green, and at least one passed. A merge
+# made with GITHUB_TOKEN does not start push workflows, so DISPATCH names the
+# workflows to start on main afterwards (they need workflow_dispatch).
+#
+# Same script as fuenf-labs' reusable-dependabot-automerge.yml. Change both.
+name: dependabot-automerge
+
+on:
+  pull_request:
+
+permissions: {}
+
+jobs:
+  dependabot-automerge:
+    if: github.actor == 'dependabot[bot]' && github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+      checks: read
+      statuses: read
+    steps:
+      - name: Read Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+
+      - name: Merge when allowed and green
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          DEPS: ${{ steps.meta.outputs.updated-dependencies-json }}
+          DISPATCH: ci.yml
+          WAIT_MINUTES: 90
+        with:
+          script: |
+            const deps = JSON.parse(process.env.DEPS || '[]');
+            const minorOrPatch = ['version-update:semver-minor', 'version-update:semver-patch'];
+            const alwaysReview = ['playwright', '@playwright/test', 'node', '@types/node'];
+            const held = [];
+            if (deps.length === 0) held.push('Dependabot metadata lists no dependency');
+            for (const dep of deps) {
+              const name = dep.dependencyName;
+              if (!minorOrPatch.includes(dep.updateType)) {
+                held.push(`${name} is ${dep.updateType || 'not a version update'}`);
+              } else if (alwaysReview.includes(name) || name.startsWith('mcr.microsoft.com/playwright')) {
+                held.push(`${name} always needs a person`);
+              } else if (dep.packageEcosystem !== 'github_actions' && dep.dependencyType !== 'direct:development') {
+                held.push(`${name} is ${dep.dependencyType}`);
+              }
+            }
+            if (held.length > 0) {
+              core.notice(`Left for review: ${held.join('; ')}`);
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request;
+            const sha = pr.head.sha;
+            const green = ['success', 'skipped', 'neutral'];
+            const deadline = Date.now() + Number(process.env.WAIT_MINUTES) * 60 * 1000;
+            for (;;) {
+              const runs = (await github.paginate(github.rest.checks.listForRef, {
+                owner, repo, ref: sha, filter: 'latest', per_page: 100,
+              })).filter((run) => !run.name.endsWith('dependabot-automerge'));
+              const { data: combined } = await github.rest.repos.getCombinedStatusForRef({ owner, repo, ref: sha });
+              const pending = [
+                ...runs.filter((run) => run.status !== 'completed').map((run) => run.name),
+                ...combined.statuses.filter((s) => s.state === 'pending').map((s) => s.context),
+              ];
+              if (pending.length === 0) {
+                const failed = [
+                  ...runs.filter((run) => !green.includes(run.conclusion)).map((run) => `${run.name} (${run.conclusion})`),
+                  ...combined.statuses.filter((s) => s.state !== 'success').map((s) => `${s.context} (${s.state})`),
+                ];
+                if (failed.length > 0) {
+                  core.notice(`Not merged, these checks are not green: ${failed.join(', ')}`);
+                  return;
+                }
+                if (!runs.some((run) => run.conclusion === 'success') && combined.statuses.length === 0) {
+                  core.notice('Not merged: no other check passed on this PR.');
+                  return;
+                }
+                break;
+              }
+              if (Date.now() > deadline) {
+                core.setFailed(`Timed out waiting for: ${pending.join(', ')}`);
+                return;
+              }
+              await new Promise((resolve) => setTimeout(resolve, 30 * 1000));
+            }
+
+            await github.rest.pulls.merge({ owner, repo, pull_number: pr.number, sha, merge_method: 'merge' });
+            core.notice(`Merged #${pr.number} at ${sha}`);
+            try {
+              await github.rest.git.deleteRef({ owner, repo, ref: `heads/${pr.head.ref}` });
+            } catch (error) {
+              core.info(`Branch ${pr.head.ref} not deleted: ${error.message}`);
+            }
+            for (const workflow of (process.env.DISPATCH || '').split(/\s+/).filter(Boolean)) {
+              await github.rest.actions.createWorkflowDispatch({ owner, repo, workflow_id: workflow, ref: pr.base.ref });
+              core.info(`Started ${workflow} on ${pr.base.ref}`);
+            }
