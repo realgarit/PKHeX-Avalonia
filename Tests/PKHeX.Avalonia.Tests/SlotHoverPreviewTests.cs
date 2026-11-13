@@ -52,6 +52,27 @@ public class SlotHoverPreviewTests
     }
 
     [Fact]
+    public void Gen3HeldItem_UsesGen3ItemTable_InPreviewAndSlotLabels()
+    {
+        // Issue #554: Gen 3 stores its own item indexes. 139 is Oran Berry in Gen 3
+        // but a different item in the modern table.
+        const ushort oranBerryGen3 = 139;
+        var save = new SAV3E();
+        var pk = new PK3 { Species = (ushort)Species.Zigzagoon, PID = 0x12345678, CurrentLevel = 5, Ball = (byte)Ball.Poke, Move1 = (ushort)Move.Tackle, HeldItem = oranBerryGen3, Version = GameVersion.E };
+        save.SetBoxSlotAtIndex(pk, 0, 0, EntityImportSettings.None);
+
+        var expected = GameInfo.Strings.GetItemStrings(EntityContext.Gen3, GameVersion.E)[oranBerryGen3];
+        Assert.NotEqual(GameInfo.Strings.Item[oranBerryGen3], expected);
+
+        var vm = new BoxViewerViewModel(save, Renderer(save));
+        var preview = vm.GetSlotPreview(vm.Slots[0].Location);
+        Assert.NotNull(preview);
+        Assert.Equal(expected, preview.HeldItemText);
+        Assert.Equal(expected, vm.Slots[0].HeldItemName);
+        Assert.Equal(expected, StringResourceLookup.HeldItem(save.GetBoxSlotAtIndex(0, 0)));
+    }
+
+    [Fact]
     public void LegalSlot_PreviewShowsBallMovesWithTypeIconsAndEncounter()
     {
         var (save, pk) = LegalSave();

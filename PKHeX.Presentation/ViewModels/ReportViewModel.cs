@@ -68,7 +68,7 @@ public partial class ReportEntryViewModel : ObservableObject
         Nature = ((Nature)pk.Nature).ToString();
 
         Ability = StringResourceLookup.Ability(pk.Ability);
-        HeldItem = StringResourceLookup.Item(pk.HeldItem);
+        HeldItem = StringResourceLookup.HeldItem(pk);
         Move1 = StringResourceLookup.Move(pk.Move1);
         Move2 = StringResourceLookup.Move(pk.Move2);
         Move3 = StringResourceLookup.Move(pk.Move3);
