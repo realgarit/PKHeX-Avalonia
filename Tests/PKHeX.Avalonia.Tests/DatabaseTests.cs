@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
+using Avalonia.Headless.XUnit;
 using PKHeX.Core;
 using PKHeX.Presentation.ViewModels;
 using PKHeX.Avalonia.Services;
@@ -156,7 +157,9 @@ public class DatabaseTests : IDisposable
         Assert.Contains("Adamant", entry.NatureName);
     }
 
-    [Fact]
+    // The language message is a global broadcast: it also reaches view models whose views
+    // other headless tests created on the UI thread. Send it from that thread.
+    [AvaloniaFact]
     public void Verify_Database_Reacts_To_Language_Message()
     {
         var sav = BlankSaveFile.Get(GameVersion.E);
