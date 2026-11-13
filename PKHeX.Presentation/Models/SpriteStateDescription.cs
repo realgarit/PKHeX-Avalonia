@@ -14,7 +14,7 @@ public static class SpriteStateDescription
         {
             if (pk.IsEgg) labels.Add(strings["SlotState_Egg"]);
             if (pk.IsShiny) labels.Add(strings["SlotState_Shiny"]);
-            if (pk.HeldItem > 0) labels.Add(StringResourceLookup.Item(pk.HeldItem));
+            if (pk.HeldItem > 0) labels.Add(StringResourceLookup.HeldItem(pk));
             if (pk is IAlphaReadOnly { IsAlpha: true }) labels.Add(strings["SlotState_Alpha"]);
             if (pk is IGigantamaxReadOnly { CanGigantamax: true }) labels.Add(strings["SlotState_Gigantamax"]);
             if (state.Illegal) labels.Add(strings["SlotState_Illegal"]);

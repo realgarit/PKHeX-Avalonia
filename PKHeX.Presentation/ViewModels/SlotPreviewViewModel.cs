@@ -143,7 +143,7 @@ public sealed class SlotPreviewViewModel
             Sprite = renderer.GetSprite(pk),
             BallSprite = ball == 0 ? null : renderer.GetBallSprite(ball),
             BallName = ball == 0 ? string.Empty : StringResourceLookup.Lookup(strings.balllist, ball),
-            HeldItemText = pk.HeldItem > 0 ? StringResourceLookup.Item(pk.HeldItem) : string.Empty,
+            HeldItemText = StringResourceLookup.HeldItem(pk),
             Moves = moves,
             Legality = legality,
             LegalityText = legality switch

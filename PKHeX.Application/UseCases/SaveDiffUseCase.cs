@@ -106,7 +106,7 @@ public sealed class SaveDiffUseCase
                 if (leftCount == rightCount)
                     continue;
 
-                var name = Services.StringResourceLookup.Item(itemId);
+                var name = Services.StringResourceLookup.Item(itemId, left.Context, left.Version);
                 changes.Add(new SaveDiffChange(SaveDiffCategory.Inventory, $"{name} ({leftPouch.Type})",
                     leftCount.ToString(), rightCount.ToString()));
             }

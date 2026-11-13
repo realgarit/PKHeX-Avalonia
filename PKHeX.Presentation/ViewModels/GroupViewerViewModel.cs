@@ -89,7 +89,7 @@ public partial class GroupViewerViewModel : ViewModelBase
                 Level = pk.CurrentLevel,
                 Gender = (byte)pk.Gender,
                 HeldItem = (ushort)pk.HeldItem,
-                HeldItemName = pk.HeldItem > 0 ? StringResourceLookup.Item(pk.HeldItem) : string.Empty,
+                HeldItemName = StringResourceLookup.HeldItem(pk),
                 IsEgg = pk.IsEgg,
                 Form = pk.Form,
                 Ability = (ushort)pk.Ability,
