@@ -114,7 +114,7 @@ public partial class PartyViewerViewModel : ViewModelBase, ISlotPreviewSource
                 Level = pk.CurrentLevel,
                 Gender = (byte)pk.Gender,
                 HeldItem = (ushort)pk.HeldItem,
-                HeldItemName = pk.HeldItem > 0 ? StringResourceLookup.Item(pk.HeldItem) : string.Empty,
+                HeldItemName = StringResourceLookup.HeldItem(pk),
                 IsEgg = pk.IsEgg,
                 CurrentHp = (ushort)pk.Stat_HPCurrent,
                 MaxHp = (ushort)pk.Stat_HPMax,

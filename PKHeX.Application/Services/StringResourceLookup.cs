@@ -25,6 +25,17 @@ public static class StringResourceLookup
     public static string Item(int id)
         => Lookup(GameInfo.Strings.Item, id);
 
+    /// <summary>
+    /// Item name for an ID stored in the given format. Gen 1-3 and GameCube items use
+    /// their own index tables, so the modern list shows the wrong names for them.
+    /// </summary>
+    public static string Item(int id, EntityContext context, GameVersion version = GameVersion.Any)
+        => Lookup(GameInfo.Strings.GetItemStrings(context, version), id);
+
+    /// <summary>Name of the entity's held item, read from its own format's item table.</summary>
+    public static string HeldItem(PKM pk)
+        => pk.HeldItem > 0 ? Item(pk.HeldItem, pk.Context, pk.Version) : string.Empty;
+
     public static string Move(int id)
         => Lookup(GameInfo.Strings.Move, id);
 
