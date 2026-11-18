@@ -2,10 +2,12 @@ using System;
 using System.Collections.Specialized;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Utils;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Styling;
 using PKHeX.Core;
 
 namespace PKHeX.Avalonia.Controls;
@@ -68,6 +70,19 @@ public class FilterableComboBox : AutoCompleteBox
     }
 
     private void OnAccepted(object? sender, RoutedEventArgs e) => AcceptSelection();
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        // A press on a focusable popup item moves focus into the popup. AutoCompleteBox then focuses
+        // its text box again and closes the drop-down before the release reaches the adapter, so a
+        // mouse pick is lost (Avalonia 12.1.5). Focus stays in the text box; the adapter still gets
+        // the press and the release.
+        if (e.NameScope.Find<ListBox>("PART_SelectingItemsControl") is not { } list)
+            return;
+        list.Focusable = false;
+        list.Styles.Add(new Style(x => x.OfType<ListBoxItem>()) { Setters = { new Setter(FocusableProperty, false) } });
+    }
 
     private void OnGotFocus(object? sender, FocusChangedEventArgs e)
     {
