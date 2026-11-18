@@ -224,6 +224,8 @@ public sealed class SearchablePickerCommitTests
             Assert.Equal(2, picker.SelectedValue);
             Assert.Equal("Second", picker.Text);
             Assert.False(picker.IsDropDownOpen);
+            // The press must not move focus into the popup: AutoCompleteBox would close it before the release.
+            Assert.True(picker.IsKeyboardFocusWithin);
         }
         finally { window.Close(); }
     }
