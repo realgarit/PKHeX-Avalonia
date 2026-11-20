@@ -2,6 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:PKHeX.Presentation.ViewModels;assembly=PKHeX.Presentation"
              xmlns:loc="using:PKHeX.Avalonia.Localization"
+             xmlns:controls="clr-namespace:PKHeX.Avalonia.Controls"
+             MinWidth="640" MinHeight="420"
+             controls:DialogSize.PreferredWidth="900" controls:DialogSize.PreferredHeight="680"
              x:Class="PKHeX.Avalonia.Views.HallOfFameEditor"
              x:DataType="vm:HallOfFameEditorViewModel">
 
@@ -32,6 +35,16 @@
                             Padding="12,6" />
                 </DockPanel>
 
+                <!-- Footer -->
+                <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+                    <Button Content="{loc:Loc HallOfFameEditor_DeleteEntry}"
+                            Command="{Binding DeleteEntryCommand}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                        <Button Content="{loc:Loc Common_Cancel}" Command="{Binding CancelCommand}" IsCancel="True" />
+                        <Button Content="{loc:Loc Common_Save}" Command="{Binding SaveCommand}" Classes="accent" IsDefault="True" />
+                    </StackPanel>
+                </DockPanel>
+
                 <!-- Content -->
                 <Grid ColumnDefinitions="200,16,*">
                     <!-- Entry List -->
@@ -55,24 +68,40 @@
                             Classes="editor-section-padded"
                             Padding="16"
                             IsVisible="{Binding SelectedEntry, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <StackPanel DataContext="{Binding SelectedEntry}" Spacing="16">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding DateString}" Opacity="0.7" />
-                            </StackPanel>
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel DataContext="{Binding SelectedEntry}" x:DataType="vm:HallOfFameEntryViewModel" Spacing="12">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding DateString}" Opacity="0.7" />
+                                </StackPanel>
 
-                            <!-- Team Members -->
-                            <TextBlock Text="{loc:Loc HallOfFameEditor_Team}" FontWeight="SemiBold" />
-                            <ItemsControl ItemsSource="{Binding Members}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="vm:HallOfFameMemberViewModel">
-                                        <Border Margin="4" Padding="8"
-                                                Background="{DynamicResource ThemeBackgroundElevatedBrush}">
+                                <!-- Entry fields: clear number and date share the entry's packed index word. -->
+                                <WrapPanel Orientation="Horizontal" ItemSpacing="16" LineSpacing="8">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{loc:Loc HallOfFameEditor_ClearCount}" />
+                                        <NumericUpDown Value="{Binding ClearNumber}" Minimum="0" Maximum="{Binding MaxClearNumber}"
+                                                       FormatString="0" Width="140"
+                                                       AutomationProperties.Name="{loc:Loc HallOfFameEditor_ClearCount}" />
+                                    </StackPanel>
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{loc:Loc HallOfFameEditor_Date}" />
+                                        <DatePicker SelectedDate="{Binding Date}"
+                                                    AutomationProperties.Name="{loc:Loc HallOfFameEditor_Date}" />
+                                    </StackPanel>
+                                </WrapPanel>
+
+                                <!-- Team Members -->
+                                <TextBlock Text="{loc:Loc HallOfFameEditor_Team}" FontWeight="SemiBold" />
+                                <ListBox ItemsSource="{Binding Members}"
+                                         SelectedItem="{Binding SelectedMember}"
+                                         AutomationProperties.Name="{loc:Loc HallOfFameEditor_Team}">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate DataType="vm:HallOfFameMemberViewModel">
                                             <StackPanel Width="80">
                                                 <Image Source="{Binding Sprite, Converter={StaticResource PngBytesToBitmap}}"
                                                        Width="68" Height="56"
@@ -92,11 +121,109 @@
                                                           HorizontalAlignment="Center"
                                                           IsVisible="{Binding IsShiny}" />
                                             </StackPanel>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <TextBlock Text="{loc:Loc HallOfFameEditor_SelectMember}"
+                                           Opacity="0.6"
+                                           IsVisible="{Binding SelectedMember, Converter={x:Static ObjectConverters.IsNull}}" />
+
+                                <!-- Selected member -->
+                                <Border Classes="editor-section-padded"
+                                        IsVisible="{Binding SelectedMember, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                    <Grid DataContext="{Binding SelectedMember}" x:DataType="vm:HallOfFameMemberViewModel"
+                                          ColumnDefinitions="*,12,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                                        <TextBlock Grid.ColumnSpan="3" Text="{loc:Loc HallOfFameEditor_MemberDetails}" FontWeight="SemiBold" Margin="0,0,0,8" />
+
+                                        <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4" Margin="0,0,0,8">
+                                            <TextBlock Text="{loc:Loc PokemonEditor_Species}" />
+                                            <controls:FilterableComboBox ItemsSource="{Binding Owner.SpeciesOptions}" SelectedValue="{Binding Species}"
+                                                                         AutomationProperties.Name="{loc:Loc PokemonEditor_Species}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="2" Spacing="4" Margin="0,0,0,8">
+                                            <TextBlock Text="{loc:Loc PokemonEditor_Nickname}" />
+                                            <TextBox Text="{Binding Nickname}" MaxLength="12"
+                                                     AutomationProperties.Name="{loc:Loc PokemonEditor_Nickname}" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4" Margin="0,0,0,8">
+                                            <TextBlock Text="{loc:Loc PokemonEditor_Form}" />
+                                            <NumericUpDown Value="{Binding Form}" Minimum="0" Maximum="{Binding MaxForm}" FormatString="0"
+                                                           AutomationProperties.Name="{loc:Loc PokemonEditor_Form}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="2" Grid.Column="2" Spacing="4" Margin="0,0,0,8">
+                                            <TextBlock Text="{loc:Loc PokemonEditor_Level}" />
+                                            <NumericUpDown Value="{Binding Level}" Minimum="1" Maximum="100" FormatString="0"
+                                                           AutomationProperties.Name="{loc:Loc PokemonEditor_Level}" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" Grid.Column="0" Spacing="4" Margin="0,0,0,8">
+                                            <TextBlock Text="{loc:Loc PokemonEditor_Gender}" />
+                                            <ComboBox ItemsSource="{Binding Owner.GenderOptions}" SelectedValue="{Binding Gender}"
+                                                      SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}"
+                                                      HorizontalAlignment="Stretch"
+                                                      AutomationProperties.Name="{loc:Loc PokemonEditor_Gender}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Grid.Column="2" Spacing="4" Margin="0,0,0,8">
+                                            <TextBlock Text="{loc:Loc PokemonEditor_HeldItem}" />
+                                            <controls:FilterableComboBox ItemsSource="{Binding Owner.ItemOptions}" SelectedValue="{Binding HeldItem}"
+                                                                         AutomationProperties.Name="{loc:Loc PokemonEditor_HeldItem}" />
+                                        </StackPanel>
+
+                                        <WrapPanel Grid.Row="4" Grid.ColumnSpan="3" Orientation="Horizontal" ItemSpacing="16" Margin="0,0,0,8">
+                                            <CheckBox Content="{loc:Loc HallOfFameEditor_Nicknamed}" IsChecked="{Binding IsNicknamed}" />
+                                            <CheckBox Content="{loc:Loc HallOfFameEditor_Shiny}" IsChecked="{Binding IsShiny}" />
+                                        </WrapPanel>
+
+                                        <StackPanel Grid.Row="5" Grid.ColumnSpan="3" Spacing="4" Margin="0,0,0,8">
+                                            <TextBlock Text="{loc:Loc HallOfFameEditor_Moves}" />
+                                            <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,4,Auto">
+                                                <controls:FilterableComboBox ItemsSource="{Binding Owner.MoveOptions}" SelectedValue="{Binding Move1}"
+                                                                             AutomationProperties.Name="{loc:Loc HallOfFameEditor_Move1}" />
+                                                <controls:FilterableComboBox Grid.Column="2" ItemsSource="{Binding Owner.MoveOptions}" SelectedValue="{Binding Move2}"
+                                                                             AutomationProperties.Name="{loc:Loc HallOfFameEditor_Move2}" />
+                                                <controls:FilterableComboBox Grid.Row="2" ItemsSource="{Binding Owner.MoveOptions}" SelectedValue="{Binding Move3}"
+                                                                             AutomationProperties.Name="{loc:Loc HallOfFameEditor_Move3}" />
+                                                <controls:FilterableComboBox Grid.Row="2" Grid.Column="2" ItemsSource="{Binding Owner.MoveOptions}" SelectedValue="{Binding Move4}"
+                                                                             AutomationProperties.Name="{loc:Loc HallOfFameEditor_Move4}" />
+                                            </Grid>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="6" Grid.Column="0" Spacing="4" Margin="0,0,0,8">
+                                            <TextBlock Text="{loc:Loc HallOfFameEditor_OtName}" />
+                                            <TextBox Text="{Binding OriginalTrainerName}" MaxLength="12"
+                                                     AutomationProperties.Name="{loc:Loc HallOfFameEditor_OtName}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="6" Grid.Column="2" Spacing="4" Margin="0,0,0,8">
+                                            <TextBlock Text="{loc:Loc HallOfFameEditor_OtGender}" />
+                                            <ComboBox ItemsSource="{Binding Owner.OriginalTrainerGenderOptions}" SelectedValue="{Binding OriginalTrainerGender}"
+                                                      SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Text}"
+                                                      HorizontalAlignment="Stretch"
+                                                      AutomationProperties.Name="{loc:Loc HallOfFameEditor_OtGender}" />
+                                        </StackPanel>
+
+                                        <Grid Grid.Row="7" Grid.ColumnSpan="3" ColumnDefinitions="*,12,*,12,*">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{loc:Loc PokemonEditor_Tid}" />
+                                                <NumericUpDown Value="{Binding TID16}" Minimum="0" Maximum="65535" FormatString="0"
+                                                               AutomationProperties.Name="{loc:Loc PokemonEditor_Tid}" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Spacing="4">
+                                                <TextBlock Text="{loc:Loc PokemonEditor_Sid}" />
+                                                <NumericUpDown Value="{Binding SID16}" Minimum="0" Maximum="65535" FormatString="0"
+                                                               AutomationProperties.Name="{loc:Loc PokemonEditor_Sid}" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="4" Spacing="4">
+                                                <TextBlock Text="{loc:Loc HallOfFameEditor_EncryptionConstant}" />
+                                                <TextBox Text="{Binding EncryptionConstant}" MaxLength="8"
+                                                         AutomationProperties.Name="{loc:Loc HallOfFameEditor_EncryptionConstant}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
                     </Border>
 
                     <!-- No selection message -->
