@@ -4,6 +4,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PKHeX.Core;
+using PKHeX.Presentation.Localization;
 
 namespace PKHeX.Presentation.ViewModels;
 
@@ -18,9 +19,60 @@ public partial class SuperTrainingEditorViewModel : ViewModelBase
         _block = ((ISaveBlock6Main)_sav).SuperTrain;
         IsSupported = true;
 
+        LoadAll();
+    }
+
+    /// <summary>The block's counter tops out at 10 (Core clamps it); the tutorial tracker at 6.</summary>
+    public int CounterMaximum => 10;
+    public int TutorialIndexMaximum => 6;
+
+    [ObservableProperty]
+    private int _counter;
+
+    [ObservableProperty]
+    private int _tutorialIndex;
+
+    // Loading must not write back: an out-of-range stored tutorial value is shown clamped but kept as-is.
+    private bool _loading;
+
+    partial void OnCounterChanged(int value)
+    {
+        if (!_loading)
+            _block.Counter = (byte)Math.Clamp(value, 0, CounterMaximum);
+    }
+
+    partial void OnTutorialIndexChanged(int value)
+    {
+        if (!_loading)
+            _block.TutorialIndex = (uint)Math.Clamp(value, 0, TutorialIndexMaximum);
+    }
+
+    // Distribution regimens (6 event stages, separate from the 48 regular ones)
+    public ObservableCollection<SuperTrainDistributionViewModel> Distributions { get; } = [];
+
+    private void LoadAll()
+    {
+        _loading = true;
+        try
+        {
+            Counter = _block.Counter;
+            TutorialIndex = (int)Math.Min(_block.TutorialIndex, (uint)TutorialIndexMaximum);
+        }
+        finally
+        {
+            _loading = false;
+        }
         LoadBags();
         LoadRecords();
         LoadStages();
+        LoadDistributions();
+    }
+
+    public void LoadDistributions()
+    {
+        Distributions.Clear();
+        for (int i = 0; i < SuperTrainDistributionViewModel.Count; i++)
+            Distributions.Add(new SuperTrainDistributionViewModel(i, _block.GetIsDistributionUnlocked(i), _block));
     }
 
     public bool IsSupported { get; }
@@ -76,6 +128,15 @@ public partial class SuperTrainingEditorViewModel : ViewModelBase
     {
         _block.UnlockAllStages(true);
         LoadStages();
+        LoadDistributions();
+    }
+
+    /// <summary>Zeroes the whole Super Training block (stages, records, bags, counters), then reloads every tab.</summary>
+    [RelayCommand]
+    private void ClearAllData()
+    {
+        _block.ClearBlock();
+        LoadAll();
     }
 
     [RelayCommand]
@@ -176,4 +237,47 @@ public partial class SuperTrainRecordViewModel : ViewModelBase
     partial void OnSpecies2Changed(ushort value) { var h = _block.GetHolder2(_index); h.Species = value; }
     partial void OnForm2Changed(byte value) { var h = _block.GetHolder2(_index); h.Form = value; }
     partial void OnGender2Changed(byte value) { var h = _block.GetHolder2(_index); h.Gender = value; }
+
+    [RelayCommand]
+    private void ClearRecord1()
+    {
+        _block.ClearRecord1(_index);
+        Time1 = 0;
+        Species1 = 0;
+        Form1 = 0;
+        Gender1 = 0;
+    }
+
+    [RelayCommand]
+    private void ClearRecord2()
+    {
+        _block.ClearRecord2(_index);
+        Time2 = 0;
+        Species2 = 0;
+        Form2 = 0;
+        Gender2 = 0;
+    }
+}
+
+public partial class SuperTrainDistributionViewModel : ViewModelBase
+{
+    /// <summary>Number of distribution regimen flags in the block.</summary>
+    public const int Count = 6;
+
+    private readonly int _index;
+    private readonly SuperTrainBlock _block;
+
+    public SuperTrainDistributionViewModel(int index, bool isUnlocked, SuperTrainBlock block)
+    {
+        _index = index;
+        _block = block;
+        _isUnlocked = isUnlocked;
+    }
+
+    public string Name => LocalizedStrings.Instance.Format("SuperTrainingEditor_Distribution", _index + 1);
+
+    [ObservableProperty]
+    private bool _isUnlocked;
+
+    partial void OnIsUnlockedChanged(bool value) => _block.SetIsDistributionUnlocked(_index, value);
 }

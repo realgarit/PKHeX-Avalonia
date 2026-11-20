@@ -10,6 +10,23 @@
             <TextBlock DockPanel.Dock="Top" Text="{loc:Loc SuperTrainingEditor_Title}" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,16" />
 
             <TabControl>
+                <TabItem Header="{loc:Loc SuperTrainingEditor_General}">
+                    <StackPanel Spacing="12" Margin="0,8,0,0">
+                        <Grid ColumnDefinitions="Auto,12,160" RowDefinitions="Auto,8,Auto">
+                            <TextBlock Text="{loc:Loc SuperTrainingEditor_Counter}" VerticalAlignment="Center" />
+                            <NumericUpDown Grid.Column="2" Value="{Binding Counter}" Minimum="0" Maximum="{Binding CounterMaximum}" FormatString="0"
+                                           AutomationProperties.Name="{loc:Loc SuperTrainingEditor_Counter}" />
+                            <TextBlock Grid.Row="2" Text="{loc:Loc SuperTrainingEditor_TutorialIndex}" VerticalAlignment="Center" />
+                            <NumericUpDown Grid.Row="2" Grid.Column="2" Value="{Binding TutorialIndex}" Minimum="0" Maximum="{Binding TutorialIndexMaximum}" FormatString="0"
+                                           AutomationProperties.Name="{loc:Loc SuperTrainingEditor_TutorialIndex}" />
+                        </Grid>
+                        <StackPanel Spacing="4">
+                            <Button Content="{loc:Loc SuperTrainingEditor_ClearAllData}" Command="{Binding ClearAllDataCommand}" HorizontalAlignment="Left" />
+                            <TextBlock Text="{loc:Loc SuperTrainingEditor_ClearAllDataHint}" FontSize="11" Opacity="0.7" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+
                 <TabItem Header="{loc:Loc SuperTrainingEditor_TrainingBags}">
                     <ScrollViewer>
                         <ItemsControl ItemsSource="{Binding Bags}">
@@ -31,6 +48,21 @@
                 <TabItem Header="{loc:Loc SuperTrainingEditor_StagesUnlock}">
                     <DockPanel>
                         <Button DockPanel.Dock="Top" Content="{loc:Loc SuperTrainingEditor_UnlockAllStages}" Command="{Binding UnlockAllCommand}" Margin="0,0,0,8" />
+                        <StackPanel DockPanel.Dock="Bottom" Spacing="4" Margin="0,8,0,0">
+                            <TextBlock Text="{loc:Loc SuperTrainingEditor_Distributions}" FontWeight="SemiBold" />
+                            <ItemsControl ItemsSource="{Binding Distributions}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="vm:SuperTrainDistributionViewModel">
+                                        <CheckBox IsChecked="{Binding IsUnlocked}" Content="{Binding Name}" Margin="4,2" MinWidth="140" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
                         <ScrollViewer>
                             <ItemsControl ItemsSource="{Binding Stages}">
                                 <ItemsControl.ItemsPanel>
@@ -74,6 +106,7 @@
                                     <TextBlock Grid.Row="3" Grid.Column="0" Text="{loc:Loc SuperTrainingEditor_Gender}" VerticalAlignment="Center" Margin="0,0,8,4" />
                                     <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Gender1}" Minimum="0" Maximum="2" Margin="0,0,0,4" />
                                 </Grid>
+                                <Button Content="{loc:Loc SuperTrainingEditor_ClearRecord1}" Command="{Binding ClearRecord1Command}" HorizontalAlignment="Left" Margin="0,-8,0,8" />
 
                                 <TextBlock Text="{loc:Loc SuperTrainingEditor_Record2}" FontWeight="Bold" />
                                 <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto">
@@ -89,6 +122,7 @@
                                     <TextBlock Grid.Row="3" Grid.Column="0" Text="{loc:Loc SuperTrainingEditor_Gender}" VerticalAlignment="Center" Margin="0,0,8,4" />
                                     <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Gender2}" Minimum="0" Maximum="2" Margin="0,0,0,4" />
                                 </Grid>
+                                <Button Content="{loc:Loc SuperTrainingEditor_ClearRecord2}" Command="{Binding ClearRecord2Command}" HorizontalAlignment="Left" />
                             </StackPanel>
                         </ScrollViewer>
                     </Grid>
