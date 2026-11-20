@@ -110,6 +110,28 @@
                             </StackPanel>
                         </Border>
 
+                        <!-- Derived from courses, medals, event bests and Fame; recomputed after every edit. -->
+                        <Border Classes="editor-section-padded" Padding="8">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="{loc:Loc PokeathlonEditor_SummarySection}" FontWeight="SemiBold" />
+                                <Grid ColumnDefinitions="Auto,12,Auto,4,Auto,4,Auto" RowDefinitions="Auto,4,Auto,4,Auto">
+                                    <TextBlock Text="{loc:Loc PokeathlonEditor_GlobalScore}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding GlobalScore}" FontWeight="SemiBold" />
+
+                                    <TextBlock Grid.Row="2" Text="{loc:Loc PokeathlonEditor_FriendshipTrophies}" />
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding FriendshipTrophyCount}" FontWeight="SemiBold" />
+                                    <TextBlock Grid.Row="2" Grid.Column="4" Text="/" Opacity="0.6" />
+                                    <TextBlock Grid.Row="2" Grid.Column="6" Text="{Binding MaxFriendshipTrophies}" Opacity="0.6" />
+
+                                    <TextBlock Grid.Row="4" Text="{loc:Loc PokeathlonEditor_FameLevel}" />
+                                    <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding FameLevel}" FontWeight="SemiBold" />
+                                    <TextBlock Grid.Row="4" Grid.Column="4" Text="/" Opacity="0.6" />
+                                    <TextBlock Grid.Row="4" Grid.Column="6" Text="{Binding MaxFameLevel}" Opacity="0.6" />
+                                </Grid>
+                                <TextBlock Text="{loc:Loc PokeathlonEditor_SummaryHint}" FontSize="11" Opacity="0.7" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+
                         <Border Classes="editor-section-padded" Padding="8">
                             <StackPanel Spacing="8">
                                 <TextBlock Text="{loc:Loc PokeathlonEditor_DailyShopFlags}" FontWeight="SemiBold" />
