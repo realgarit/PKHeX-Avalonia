@@ -118,6 +118,7 @@ public partial class PokeathlonEditorViewModel : ViewModelBase
         _selectedConnection = Connections[0];
 
         _loading = false;
+        RefreshSummary();
     }
 
     public const int MaxSpeciesGen4 = 493;
@@ -321,8 +322,38 @@ public partial class PokeathlonEditorViewModel : ViewModelBase
 
     internal void MarkEdited()
     {
-        if (!_loading)
-            _sav.State.Edited = true;
+        if (_loading)
+            return;
+        _sav.State.Edited = true;
+        RefreshSummary();
+    }
+
+    // ---------------- Score summary (derived, read-only) ----------------
+
+    /// <summary>
+    /// The game's global score: the five course bests, the medal count and the ten event bests
+    /// (<see cref="Pokeathlon4.CalculateGlobalScore"/>). Recomputed after every edit.
+    /// </summary>
+    [ObservableProperty]
+    private uint _globalScore;
+
+    /// <summary>Friendship trophies the global score has earned (one per threshold reached).</summary>
+    [ObservableProperty]
+    private int _friendshipTrophyCount;
+
+    /// <summary>Fame level from the global Fame counter.</summary>
+    [ObservableProperty]
+    private int _fameLevel;
+
+    public int MaxFriendshipTrophies => Pokeathlon4.FriendshipTrophyThresholds.Length;
+    public int MaxFameLevel => PokeathlonGlobalCounters4.FameInclusiveThreshold.Length;
+
+    private void RefreshSummary()
+    {
+        var block = Block;
+        GlobalScore = block.CalculateGlobalScore();
+        FriendshipTrophyCount = Pokeathlon4.CalculateFriendshipTrophyCount(GlobalScore);
+        FameLevel = PokeathlonGlobalCounters4.GetFameLevel(block.GlobalCounters.Fame);
     }
 
     internal bool IsLoading => _loading;
