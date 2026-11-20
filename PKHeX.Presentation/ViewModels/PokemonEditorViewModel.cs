@@ -50,6 +50,12 @@ public partial class PokemonEditorViewModel : ViewModelBase
     public string SpdEvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpd", "PokemonEditor_ColEVs");
     public string SpeIvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpe", "PokemonEditor_ColIVs");
     public string SpeEvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpe", "PokemonEditor_ColEVs");
+    public string HpAvAutomationName => GetStatValueAutomationName("PokemonEditor_StatHp", "PokemonEditor_ColAVs");
+    public string AtkAvAutomationName => GetStatValueAutomationName("PokemonEditor_StatAtk", "PokemonEditor_ColAVs");
+    public string DefAvAutomationName => GetStatValueAutomationName("PokemonEditor_StatDef", "PokemonEditor_ColAVs");
+    public string SpaAvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpa", "PokemonEditor_ColAVs");
+    public string SpdAvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpd", "PokemonEditor_ColAVs");
+    public string SpeAvAutomationName => GetStatValueAutomationName("PokemonEditor_StatSpe", "PokemonEditor_ColAVs");
 
     public string Move1AutomationName => GetMoveAutomationName("PokemonEditor_CurrentMoves", 1);
     public string Move2AutomationName => GetMoveAutomationName("PokemonEditor_CurrentMoves", 2);
@@ -111,6 +117,12 @@ public partial class PokemonEditorViewModel : ViewModelBase
         OnPropertyChanged(nameof(SpdEvAutomationName));
         OnPropertyChanged(nameof(SpeIvAutomationName));
         OnPropertyChanged(nameof(SpeEvAutomationName));
+        OnPropertyChanged(nameof(HpAvAutomationName));
+        OnPropertyChanged(nameof(AtkAvAutomationName));
+        OnPropertyChanged(nameof(DefAvAutomationName));
+        OnPropertyChanged(nameof(SpaAvAutomationName));
+        OnPropertyChanged(nameof(SpdAvAutomationName));
+        OnPropertyChanged(nameof(SpeAvAutomationName));
         OnPropertyChanged(nameof(Move1AutomationName));
         OnPropertyChanged(nameof(Move2AutomationName));
         OnPropertyChanged(nameof(Move3AutomationName));
@@ -419,6 +431,14 @@ public partial class PokemonEditorViewModel : ViewModelBase
             EvSPD = _pk.EV_SPD;
             EvSPE = _pk.EV_SPE;
 
+            var awakened = _pk as IAwakened;
+            AvHP = awakened?.AV_HP ?? 0;
+            AvATK = awakened?.AV_ATK ?? 0;
+            AvDEF = awakened?.AV_DEF ?? 0;
+            AvSPA = awakened?.AV_SPA ?? 0;
+            AvSPD = awakened?.AV_SPD ?? 0;
+            AvSPE = awakened?.AV_SPE ?? 0;
+
             // Hyper Training (Partial)
             if (_pk is IHyperTrain ht)
             {
@@ -490,6 +510,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
             OnPropertyChanged(nameof(EggDate));
             OnPropertyChanged(nameof(ShowStatAlignment));
             OnPropertyChanged(nameof(HasHyperTraining));
+            OnPropertyChanged(nameof(HasAwakeningValues));
             OnPropertyChanged(nameof(CanHyperTrain));
             OnPropertyChanged(nameof(Tsv));
             OnPropertyChanged(nameof(PokemonGenderList));
@@ -562,6 +583,7 @@ public partial class PokemonEditorViewModel : ViewModelBase
 
         OnPropertyChanged(nameof(IVTotal));
         OnPropertyChanged(nameof(EVTotal));
+        OnPropertyChanged(nameof(AVTotal));
         OnPropertyChanged(nameof(CharacteristicText));
         OnPropertyChanged(nameof(ExpPercent));
         UpdateSprite();
@@ -1060,6 +1082,16 @@ public partial class PokemonEditorViewModel : ViewModelBase
         _pk.EV_SPA = EvSPA;
         _pk.EV_SPD = EvSPD;
         _pk.EV_SPE = EvSPE;
+
+        if (_pk is IAwakened awakened)
+        {
+            awakened.AV_HP = ClampAwakening(AvHP);
+            awakened.AV_ATK = ClampAwakening(AvATK);
+            awakened.AV_DEF = ClampAwakening(AvDEF);
+            awakened.AV_SPA = ClampAwakening(AvSPA);
+            awakened.AV_SPD = ClampAwakening(AvSPD);
+            awakened.AV_SPE = ClampAwakening(AvSPE);
+        }
 
         _pk.OriginalTrainerName = OriginalTrainerName;
         _pk.OriginalTrainerGender = (byte)OriginalTrainerGender;

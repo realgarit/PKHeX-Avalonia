@@ -511,7 +511,10 @@ public class ComprehensiveTests
             "BattleVersion", "HandlingTrainerLanguage",
             // Gen 6/7 IRegionOrigin data is absent on this PK3 fixture; RegionSettingsTests
             // covers PK6/PK7 round trips and unsupported-format visibility.
-            "OriginCountry", "OriginSubRegion", "OriginConsoleRegion"
+            "OriginCountry", "OriginSubRegion", "OriginConsoleRegion",
+            // Awakening Values exist only on Let's Go (PB7/IAwakened), not on this PK3 fixture;
+            // AwakeningValuesEditorTests covers the PB7 round trip.
+            "AvHP", "AvATK", "AvDEF", "AvSPA", "AvSPD", "AvSPE"
         };
 
         foreach (var prop in properties)
