@@ -96,9 +96,25 @@ public partial class MainWindowViewModel
         catch { return null; }
     }
 
+    /// <summary>
+    /// Compacts formats whose storage must be a gapless list (Let's Go) before they are written.
+    /// When slots moved, the open views and the undo history still point at the old slot positions,
+    /// so both are reset from the compacted save.
+    /// </summary>
+    private void CompactStorageBeforeWrite()
+    {
+        if (CurrentSave is not { } sav || !new CompactStorageUseCase().Execute(sav))
+            return;
+
+        _undoRedo.Initialize(sav);
+        BoxViewer?.RefreshCurrentBox();
+        PartyViewer?.RefreshParty();
+    }
+
     [RelayCommand(CanExecute = nameof(CanWriteSave))]
     private async Task SaveFileAsync()
     {
+        CompactStorageBeforeWrite();
         var success = await _saveFileService.SaveFileAsync();
         if (!success)
             await _dialogService.ShowErrorAsync(T("Common_Error"), T("File_FailedToSaveFile"));
@@ -111,6 +127,7 @@ public partial class MainWindowViewModel
         if (string.IsNullOrEmpty(path))
             return;
 
+        CompactStorageBeforeWrite();
         var success = await _saveFileService.SaveFileAsync(path);
         if (!success)
             await _dialogService.ShowErrorAsync(T("Common_Error"), T("File_FailedToSaveFile"));
@@ -160,6 +177,7 @@ public partial class MainWindowViewModel
                     return false;
             }
 
+            CompactStorageBeforeWrite();
             if (await _saveFileService.SaveFileAsync(path))
                 return ReferenceEquals(CurrentSave, save) && !save.State.Edited;
 
