@@ -79,6 +79,31 @@ public partial class PokemonEditorViewModel
     [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(EVTotal))]
     private int _evSPE;
 
+    // Awakening Values: Let's Go (PB7) has no EVs; its stat bonus comes from 0-200 AVs instead.
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(AVTotal))]
+    private int _avHP;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(AVTotal))]
+    private int _avATK;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(AVTotal))]
+    private int _avDEF;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(AVTotal))]
+    private int _avSPA;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(AVTotal))]
+    private int _avSPD;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Stat_HP), nameof(Stat_ATK), nameof(Stat_DEF), nameof(Stat_SPA), nameof(Stat_SPD), nameof(Stat_SPE), nameof(AVTotal))]
+    private int _avSPE;
+
     // Hyper Training
     [ObservableProperty]
     private bool _hyperTrainedHP;
@@ -118,6 +143,14 @@ public partial class PokemonEditorViewModel
     public int IVTotal => IvHP + IvATK + IvDEF + IvSPA + IvSPD + IvSPE;
     public int MaxEV => _pk.MaxEV;
     public int EVTotal => EvHP + EvATK + EvDEF + EvSPA + EvSPE + (_pk is GBPKM ? 0 : EvSPD);
+
+    /// <summary>
+    /// Let's Go (<see cref="IAwakened"/>) replaces the EV column with Awakening Values. Its EVs must
+    /// stay 0 to be legal, so the EV inputs are hidden rather than shown next to the AVs.
+    /// </summary>
+    public bool HasAwakeningValues => _pk is IAwakened;
+    public int MaxAV => AwakeningUtil.AwakeningMax;
+    public int AVTotal => AvHP + AvATK + AvDEF + AvSPA + AvSPD + AvSPE;
 
     public bool HasCharacteristic => _pk.Characteristic >= 0 && _pk.Characteristic < GameInfo.Strings.characteristics.Length;
     public string CharacteristicText => HasCharacteristic ? GameInfo.Strings.characteristics[_pk.Characteristic] : string.Empty;
@@ -164,6 +197,15 @@ public partial class PokemonEditorViewModel
         _pk.EV_SPA = EvSPA;
         _pk.EV_SPD = EvSPD;
         _pk.EV_SPE = EvSPE;
+        if (_pk is IAwakened awakened)
+        {
+            awakened.AV_HP = ClampAwakening(AvHP);
+            awakened.AV_ATK = ClampAwakening(AvATK);
+            awakened.AV_DEF = ClampAwakening(AvDEF);
+            awakened.AV_SPA = ClampAwakening(AvSPA);
+            awakened.AV_SPD = ClampAwakening(AvSPD);
+            awakened.AV_SPE = ClampAwakening(AvSPE);
+        }
         if (_pk is IHyperTrain ht)
         {
             ht.HT_HP = HyperTrainedHP;
@@ -204,6 +246,19 @@ public partial class PokemonEditorViewModel
         EvSPE = 0;
     }
 
+    [RelayCommand]
+    private void ClearAVs()
+    {
+        AvHP = 0;
+        AvATK = 0;
+        AvDEF = 0;
+        AvSPA = 0;
+        AvSPD = 0;
+        AvSPE = 0;
+    }
+
+    private static byte ClampAwakening(int value) => (byte)Math.Clamp(value, 0, AwakeningUtil.AwakeningMax);
+
     // Stat Alignment changes the displayed stats (gen8+ stores it independently of Nature).
     partial void OnStatAlignmentChanged(int value) { if (!_isLoading) { _pk.StatAlignment = (Nature)value; RecalculateStats(); Validate(); } }
 
@@ -240,6 +295,12 @@ public partial class PokemonEditorViewModel
         Validate();
     }
     partial void OnEvSPEChanged(int value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
+    partial void OnAvHPChanged(int value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
+    partial void OnAvATKChanged(int value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
+    partial void OnAvDEFChanged(int value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
+    partial void OnAvSPAChanged(int value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
+    partial void OnAvSPDChanged(int value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
+    partial void OnAvSPEChanged(int value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
     partial void OnHyperTrainedHPChanged(bool value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
     partial void OnHyperTrainedATKChanged(bool value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
     partial void OnHyperTrainedDEFChanged(bool value) { if (!_isLoading) { RecalculateStats(); Validate(); } }
