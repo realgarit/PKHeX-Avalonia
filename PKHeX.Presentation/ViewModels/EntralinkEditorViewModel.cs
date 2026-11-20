@@ -100,6 +100,13 @@ public partial class EntralinkEditorViewModel : ViewModelBase, ICloseableDialog
         if (_b2w2 != null) ((Entralink5B2W2)_entralink).PassPower3 = (byte)value;
     }
 
+    // Entralink missions completed (Black/White only; B2W2 has Pass Powers and the Funfest block instead)
+    [ObservableProperty] private int _missionsComplete;
+    partial void OnMissionsCompleteChanged(int value)
+    {
+        if (_entralink is Entralink5BW bw) bw.MissionsComplete = (byte)Math.Clamp(value, 0, byte.MaxValue);
+    }
+
     // Festa Missions (B2W2)
     [ObservableProperty] private int _festaHosted;
     [ObservableProperty] private int _festaParticipated;
@@ -184,6 +191,8 @@ public partial class EntralinkEditorViewModel : ViewModelBase, ICloseableDialog
     {
         WhiteLevel = _entralink.WhiteForestLevel;
         BlackLevel = _entralink.BlackCityLevel;
+        if (_entralink is Entralink5BW bw)
+            MissionsComplete = bw.MissionsComplete;
 
         if (_b2w2 != null)
         {
@@ -296,6 +305,17 @@ public partial class EntralinkEditorViewModel : ViewModelBase, ICloseableDialog
         _forest.UnlockAllAreas();
         UnlockedAreas = _forest.Unlock38Areas;
         Unlock9thArea = _forest.Unlock9thArea;
+    }
+
+    /// <summary>
+    /// Empties every Entrée Forest slot. Like every edit here it lands on the staged clone, so
+    /// Cancel discards it.
+    /// </summary>
+    [RelayCommand]
+    private void DeleteAllSlots()
+    {
+        _forest.DeleteAll();
+        LoadForest();
     }
 
     private bool CanRandomizeForest => _dialogService is not null;
