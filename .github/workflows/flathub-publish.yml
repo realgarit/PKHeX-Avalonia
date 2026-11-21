@@ -135,10 +135,35 @@ jobs:
           fi
           echo "Flathub pull request: https://github.com/${GH_REPO}/pull/${pr}" >> "$GITHUB_STEP_SUMMARY"
 
-          # Wait for flathubbot's test build. --watch returns non-zero on any failed
-          # check, and the merge refuses any head other than the commit pushed above.
-          sleep 60
-          gh pr checks "$pr" --watch --fail-fast --interval 60
+          # Wait until BOTH required statuses report success on this commit.
+          # flathubbot posts flathub/permissions only after flathub/build finishes
+          # (about 30 seconds later), so `gh pr checks --watch` can return while the
+          # second required status does not exist yet, and the merge is then refused
+          # by the branch policy (release v1.101.3). The combined status endpoint
+          # gives the latest state per context; a missing context counts as pending.
+          deadline=$((SECONDS + 3600))
+          while :; do
+            waiting=""
+            for context in flathub/build flathub/permissions; do
+              state="$(CONTEXT="$context" gh api "repos/${GH_REPO}/commits/${head}/status" \
+                --jq '[.statuses[] | select(.context == $ENV.CONTEXT)][0].state // "missing"')"
+              case "$state" in
+                success) ;;
+                failure|error)
+                  echo "::error::Flathub status ${context} reported ${state} on pull request #${pr}."
+                  exit 1 ;;
+                *) waiting="${waiting} ${context}(${state})" ;;
+              esac
+            done
+            [ -z "$waiting" ] && break
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              echo "::error::Timed out after 60 minutes waiting for:${waiting} on pull request #${pr}."
+              exit 1
+            fi
+            echo "Waiting for:${waiting}"
+            sleep 30
+          done
+          # The merge refuses any head other than the commit pushed above.
           gh pr merge "$pr" --merge --delete-branch --match-head-commit "$head"
           echo "Merged Flathub update to ${version}: Flathub builds and publishes it from master." >> "$GITHUB_STEP_SUMMARY"
 
