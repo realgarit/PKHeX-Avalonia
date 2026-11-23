@@ -34,19 +34,19 @@
 
   <ItemGroup>
     <!-- Avalonia UI -->
-    <PackageReference Include="Avalonia" Version="12.1.5" />
+    <PackageReference Include="Avalonia" Version="12.1.6" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.2" />
-    <PackageReference Include="Avalonia.Desktop" Version="12.1.5" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.5" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.5" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.6" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.6" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.6" />
     <!-- Native Wayland backend (opt-in in Avalonia 12.1); Program.cs falls back to X11. -->
-    <PackageReference Include="Avalonia.Wayland" Version="12.1.5" />
+    <PackageReference Include="Avalonia.Wayland" Version="12.1.6" />
 
     <!-- MVVM -->
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 
     <!-- DI -->
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.15" />
     <PackageReference Include="QRCoder" Version="1.8.1" />
 
     <!-- Rendering (for sprites) -->
