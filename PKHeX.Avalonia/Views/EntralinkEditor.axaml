@@ -26,6 +26,12 @@
                         <NumericUpDown Grid.Row="0" Grid.Column="3" Value="{Binding BlackLevel}" Minimum="0" Maximum="65535" />
                     </Grid>
 
+                    <Grid ColumnDefinitions="Auto, *" IsVisible="{Binding IsBW}">
+                        <TextBlock Grid.Column="0" Text="{loc:Loc EntralinkEditor_MissionsComplete}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <NumericUpDown Grid.Column="1" Value="{Binding MissionsComplete}" Minimum="0" Maximum="255" FormatString="0"
+                                       AutomationProperties.Name="{loc:Loc EntralinkEditor_MissionsComplete}" />
+                    </Grid>
+
                     <StackPanel IsVisible="{Binding IsB2W2}" Spacing="10">
                         <Separator />
                         <TextBlock Text="{loc:Loc EntralinkEditor_PassPowers}" FontWeight="Bold" />
@@ -121,6 +127,9 @@
                             </Button>
                             <Button Command="{Binding UndoRandomizeForestCommand}">
                                 <TextBlock Text="{loc:Loc EntralinkEditor_UndoRandomize}" TextWrapping="Wrap" />
+                            </Button>
+                            <Button Command="{Binding DeleteAllSlotsCommand}" AutomationProperties.Name="{loc:Loc EntralinkEditor_DeleteAllSlots}">
+                                <TextBlock Text="{loc:Loc EntralinkEditor_DeleteAllSlots}" TextWrapping="Wrap" />
                             </Button>
                         </StackPanel>
                         <ListBox ItemsSource="{Binding Areas}" SelectedItem="{Binding SelectedArea}">
