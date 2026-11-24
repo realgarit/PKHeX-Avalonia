@@ -123,7 +123,7 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
 
     public bool IsDisplayIdValid => !UsesSixDigitTrainerIds || _sav.IsValidTrainerID7(DisplaySid, DisplayTid);
 
-    private bool CanSave() => IsDisplayIdValid && IsRegionInputValid && (!IsZA || (!_zaClosed && IsZaInputValid));
+    private bool CanSave() => IsDisplayIdValid && IsRegionInputValid && IsGameSyncIdValid && (!IsZA || (!_zaClosed && IsZaInputValid));
 
     partial void OnDisplayTidChanged(uint value)
     {
@@ -260,6 +260,7 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
         LoadCurrencies();
         LoadBattleChateau();
         LoadRegionSettings();
+        LoadGen6Status();
         LoadZaFields();
     }
 
@@ -556,6 +557,7 @@ public partial class TrainerEditorViewModel : ViewModelBase, IDisposable
         SaveCurrencies();
         SaveBattleChateau();
         SaveRegionSettings();
+        SaveGen6Status();
         if (battleBoxChanged) RaiseSaveSlotsChanged();
     }
 
